@@ -10,9 +10,6 @@ RUN npm install
 # Prepare app directory
 COPY . /usr/src/app
 
-# Build the app
-RUN npm run build
-
 EXPOSE 8079
 
 # Start the app
