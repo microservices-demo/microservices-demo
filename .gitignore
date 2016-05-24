@@ -1,3 +1,15 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules
+jspm_packages
+
+# Optional npm cache directory
+.npm
+
 ### Go template
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o

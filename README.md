@@ -1,5 +1,10 @@
 # weaveDemo
 Demo microservices application for Weave.
 
-# Getting started
 
+# Installing
+## Local
+```
+cd scripts
+./install.sh
+```
