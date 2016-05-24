@@ -26,6 +26,14 @@ services:
     domainname: weave.local
     networks:
       - internal
+  accounts:
+    build: ./cart
+    ports:
+      - "80"
+    hostname: cart
+    domainname: weave.local
+    networks:
+      - internal
 
 networks:
   front:
