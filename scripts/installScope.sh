@@ -20,7 +20,7 @@ do_checks() {
     exit 0
   fi
   # check for scope
-  if [ ! `command -v scope` ]; then
+  if [ ! `command -v ./scope` ]; then
     echo "Scope script is not found!"
     exit 0
   fi
@@ -35,7 +35,7 @@ do_launch() {
   do_init
   echo "Launching Scope App on swarm-master..."
   eval $(docker-machine env swarm-master)
-  RET=`VERSION=${VERSION} scope launch `
+  RET=`VERSION=${VERSION} ./scope launch `
   SCOPE_MASTER=${RUNNING_HOST_NAMES[0]}
   SCOPE_SLAVES=${RUNNING_HOST_NAMES[*]:1}
   MASTER_NODE_IP=`docker-machine ip swarm-master`
@@ -43,7 +43,7 @@ do_launch() {
   do
     echo "Launching Scope Probe on ${MACHINE_NAME}..."
     eval $(docker-machine env ${MACHINE_NAME})
-    RET=`VERSION=${VERSION} scope launch --no-app ${MASTER_NODE_IP}`
+    RET=`VERSION=${VERSION} ./scope launch --no-app ${MASTER_NODE_IP}`
   done
   exit 1
 }
@@ -54,7 +54,7 @@ do_stop() {
   do
     echo "Stopping Scope on ${MACHINE_NAME}..."
     eval $(docker-machine env ${MACHINE_NAME})
-    RET=`VERSION=${VERSION} scope stop`
+    RET=`VERSION=${VERSION} ./scope stop`
   done
   exit 1
 }
@@ -65,7 +65,7 @@ do_status() {
   do
     echo "Stopping Scope on ${MACHINE_NAME}..."
     eval $(docker-machine env ${MACHINE_NAME})
-    RET=`VERSION=${VERSION} scope stop`
+    RET=`VERSION=${VERSION} ./scope stop`
   done
   exit 1
 }
