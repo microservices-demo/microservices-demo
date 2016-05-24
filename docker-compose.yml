@@ -9,6 +9,7 @@ services:
     domainname: weave.local
     networks:
       - front
+      - internal
   catalogue:
     build: ./catalogueService
     ports:
@@ -17,7 +18,17 @@ services:
     domainname: weave.local
     networks:
       - front
+  accounts:
+    build: ./accounts
+    ports:
+      - "80"
+    hostname: accounts
+    domainname: weave.local
+    networks:
+      - internal
 
 networks:
   front:
+    driver: weave
+  internal:
     driver: weave
