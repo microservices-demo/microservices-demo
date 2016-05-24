@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  front-end:
+    build: ./frontEnd
+    ports:
+      - "8079:8079"
+    hostname: front-end
+    domainname: weave.local
+    networks:
+      - front
+  catalogue:
+    build: ./catalogueService
+    ports:
+      - "8081:8081"
+    hostname: catalogue
+    domainname: weave.local
+    networks:
+      - front
+
+networks:
+  front:
+    driver: weave
