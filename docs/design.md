@@ -1,5 +1,4 @@
-# Architecture
-Inline-style: 
+# Architecture§
 ![Architecture diagram](https://github.com/ContainerSolutions/weaveDemo/raw/master/docs/images/Architecture.png "Architecture")
 
 # DockerCon Demo Narrative
