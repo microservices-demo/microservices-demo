@@ -1,6 +1,6 @@
 # Architecture
 Inline-style: 
-![alt text](https://github.com/ContainerSolutions/weaveDemo/raw/master/src/docs/images/Architecture.png "Architecture")
+![Architecture diagram](https://github.com/ContainerSolutions/weaveDemo/raw/master/docs/images/Architecture.png "Architecture")
 
 # DockerCon Demo Narrative
 ## Full demo (requires internet connection)
