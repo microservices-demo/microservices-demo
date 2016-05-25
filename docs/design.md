@@ -21,8 +21,21 @@
     - PUT /accounts/{id}  update account
     - POST /accounts/ create new account with customer id
 - Cart
-    - GET /carts/?custId=[customerId]
-    - PUT /carts/{id} (add/remove item to/from cart)
+    - Create cart    
+        - POST /carts 
+    - Get/remove/update cart
+        - GET/DELETE/PUT /carts/{id}
+    - Get cart for customerId (empty array if doesn't exist)
+        - GET /carts/search/findByCustomerId?custId=[customerId]
+    - Get items in cart
+        - GET /carts/{id}/items
+    - To add items to the cart, create a new item, then add the link to the cart. Orphaned items will be deleted.
+        - curl -XPOST -H 'Content-type: application/json' http://localhost:8080/items -d '{"itemId": "three", "quantity": 4 }'
+        - curl -v -X POST -H "Content-Type: text/uri-list" -d "http://localhost:8080/items/3" http://localhost:8080/carts/1/items
+    - Remove item from cart
+        - curl -XDELETE http://localhost:8080/carts/2/items/4
+    - Update quantities:
+        - curl -XPATCH -H 'Content-type: application/json' http://localhost:8080/items/5 -d '{"quantity": 100}'
 - Orders
     - POST /orders (create new order)
     - GET /orders/{id}
