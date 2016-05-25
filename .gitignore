@@ -42,7 +42,6 @@ _testmain.go
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
