@@ -5,7 +5,7 @@
 - Catalogue
     - GET /catalogue
     - GET /catalogue/{id}
-    - GET /catalogue/search?query={}
+    - GET /catalogue/search?query=[search-query]
     - PUT /catalogue/{id} (update count)
 - Login
     - GET /login (query params or basic auth?)
@@ -17,12 +17,11 @@
     - GET /shipping/{id}
 - Accounts:
     - GET /accounts/{id}
-    - GET /accounts/?custId= get account for customer
+    - GET /accounts/?custId=[customerId] get account for customer
     - PUT /accounts/{id}  update account
     - POST /accounts/ create new account with customer id
 - Cart
-    - GET /carts/{id}
-    - POST /carts/ (create new cart)
+    - GET /carts/?custId=[customerId]
     - PUT /carts/{id} (add/remove item to/from cart)
 - Orders
     - POST /orders (create new order)
