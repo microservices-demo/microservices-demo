@@ -1,9 +1,13 @@
 package works.weave.socks;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(collectionResourceRel = "cart", path = "cart")
-public interface CartRepository extends PagingAndSortingRepository<Cart, Long> {
+import java.util.List;
+
+@RepositoryRestResource
+public interface CartRepository extends CrudRepository<Cart, Long> {
+    List<Cart> findByCustomerId(@Param("custId") long id);
 }
 
