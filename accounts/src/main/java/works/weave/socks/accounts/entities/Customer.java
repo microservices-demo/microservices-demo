@@ -1,4 +1,4 @@
-package works.weave.socks;
+package works.weave.socks.accounts.entities;
 
 import javax.persistence.*;
 import java.util.List;

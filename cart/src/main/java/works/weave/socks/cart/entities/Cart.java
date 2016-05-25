@@ -1,4 +1,4 @@
-package works.weave.socks;
+package works.weave.socks.cart.entities;
 
 import javax.persistence.*;
 import java.util.HashSet;

@@ -1,8 +1,11 @@
-package works.weave.socks;
+package works.weave.socks.cart;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import works.weave.socks.cart.entities.Cart;
+import works.weave.socks.cart.entities.Item;
+import works.weave.socks.cart.repositories.CartRepository;
 
 import java.util.Arrays;
 import java.util.HashSet;
