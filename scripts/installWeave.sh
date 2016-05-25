@@ -62,7 +62,7 @@ do_launch() {
 
   echo "Launching Weave on Swarm Master..."
   #echo ">>> DOCKER_HOST=$SWARM_MASTER_URL weave launch-plugin"
-  RET=`DOCKER_HOST=$SWARM_MASTER_URL $WEAVE_BINARY launch-plugin`
+  RET=`DOCKER_HOST=$SWARM_MASTER_URL $WEAVE_BINARY launch-plugin --no-multicast-route`
   #echo ">>> DOCKER_HOST=$SWARM_MASTER_URL weave launch-router"
   RET=`DOCKER_HOST=$SWARM_MASTER_URL $WEAVE_BINARY launch-router`
   # echo ">>> DOCKER_HOST=$SWARM_MASTER_URL weave launch-proxy"
@@ -77,7 +77,7 @@ do_launch() {
       echo ""
       echo "Launching Weave on Swarm Slave $SWARM_HOST..."
       echo ">>> DOCKER_HOST=$SWARM_HOST weave launch-plugin"
-      RET=`DOCKER_HOST=$SWARM_HOST $WEAVE_BINARY launch-plugin`
+      RET=`DOCKER_HOST=$SWARM_HOST $WEAVE_BINARY launch-plugin --no-multicast-route`
 
       echo ">>> DOCKER_HOST=$SWARM_HOST weave launch-router $SWARM_MASTER_IP"
       RET=`DOCKER_HOST=$SWARM_HOST $WEAVE_BINARY launch-router $SWARM_MASTER_IP`
