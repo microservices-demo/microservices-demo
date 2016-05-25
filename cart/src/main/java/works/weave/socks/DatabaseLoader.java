@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {
@@ -16,8 +17,13 @@ public class DatabaseLoader implements CommandLineRunner {
 
         Cart cart = new Cart();
         cart.setCustomerId(1);
-        cart.setItems(Arrays.asList("fd90a-fda9f", "fd90a-fda9f"));
-
+        Item item = new Item();
+        item.setItemId("fdas9342-fdsa3f-fds");
+        item.setQuantity(2);
+        Item item2 = new Item();
+        item2.setItemId("fs9-gfdsa12");
+        item2.setQuantity(1);
+        cart.setItems(new HashSet<>(Arrays.asList(item, item2)));
         this.carts.save(cart);
     }
 }
