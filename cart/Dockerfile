@@ -7,4 +7,4 @@ COPY . /usr/src/cart
 RUN ./mvnw -DskipTests clean package
 RUN mv ./target/*.jar ./target/app.jar
 
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/usr/src/accounts/target/app.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","./target/app.jar"]
