@@ -1,6 +1,33 @@
 # Architecture§
 ![Architecture diagram](https://github.com/ContainerSolutions/weaveDemo/raw/master/docs/images/Architecture.png "Architecture")
 
+# API
+- Catalogue
+    - GET /catalogue
+    - GET /catalogue/{id}
+    - GET /catalogue/search?query={}
+    - PUT /catalogue/{id} (update count)
+- Login
+    - GET /login (query params or basic auth?)
+        - returns customer id
+- Payment
+    - GET /validate
+- Shipping
+    - POST /shipping
+    - GET /shipping/{id}
+- Accounts:
+    - GET /accounts/{id}
+    - GET /accounts/?custId= get account for customer
+    - PUT /accounts/{id}  update account
+    - POST /accounts/ create new account with customer id
+- Cart
+    - GET /carts/{id}
+    - POST /carts/ (create new cart)
+    - PUT /carts/{id} (add/remove item to/from cart)
+- Orders
+    - POST /orders (create new order)
+    - GET /orders/{id}
+
 # DockerCon Demo Narrative
 ## Full demo (requires internet connection)
 This could also run as a pre-recorded video demo.
