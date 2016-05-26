@@ -28,7 +28,6 @@ public class ShippingController {
     public String postShipping(@RequestBody Shipment shipment) {
     	System.out.println("Adding shipment to queue...");
         rabbitTemplate.convertAndSend("shipping-task", shipment);
-        // rabbitTemplate.convertAndSend("shipping-task", "{\"name\":\"" + shipment.getName() + "\"}");
         return "POST Shipping Resource. Name: " + shipment.getName() + " Id: "+ shipment.getId();
     }
 }

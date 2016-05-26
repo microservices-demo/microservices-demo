@@ -1,21 +1,17 @@
 package works.weave.socks;
 
-import java.util.concurrent.CountDownLatch;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Component
 public class ShippingTaskHandler {
 
-	// private CountDownLatch latch = new CountDownLatch(1);
+	@Autowired
+	DockerSpawner docker;
 
 	public void handleMessage(Shipment shipment) {
-		System.out.println("Received shipment task" + shipment.getName());
-		// TODO Spawn new worker container
-		// latch.countDown();
+		System.out.println("Received shipment task: " + shipment.getName());
+		docker.init();
+		docker.spawn();
 	}
-
-	// public CountDownLatch getLatch() {
-		// return latch;
-	// }
-
 }

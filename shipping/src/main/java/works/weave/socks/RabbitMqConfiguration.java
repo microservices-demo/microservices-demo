@@ -40,7 +40,6 @@ public class RabbitMqConfiguration
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate template = new RabbitTemplate(connectionFactory());
-        // template.setRoutingKey(SIMPLE_MESSAGE_QUEUE);
         template.setMessageConverter(jsonMessageConverter());
         return template;
     }

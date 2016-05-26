@@ -42,9 +42,6 @@ public class RabbitMqConfiguration
     {
         DefaultClassMapper typeMapper = new DefaultClassMapper();
         typeMapper.setDefaultType(Shipment.class);
-//        Map<String, Class<?>> idClassMapping = new HashMap<String, Class<?>>();
-//        idClassMapping.put("scrapingResult", UnitAmqpMessage.class);
-//        typeMapper.setIdClassMapping(idClassMapping);
         return typeMapper;
     }
 }

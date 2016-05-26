@@ -40,25 +40,6 @@ public class QueueMasterApplication implements CommandLineRunner {
 		return BindingBuilder.bind(queue).to(exchange).with(queueName);
 	}
 
-	// @Bean
-	// SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter) {
-	// 	SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-	// 	container.setConnectionFactory(connectionFactory);
-	// 	container.setQueueNames(queueName);
-	// 	container.setMessageListener(listenerAdapter);
-	// 	return container;
-	// }
-
- //    @Bean
- //    ShippingTaskReceiver receiver() {
- //        return new ShippingTaskReceiver();
- //    }
-
-	// @Bean
-	// MessageListenerAdapter listenerAdapter(ShippingTaskReceiver receiver) {
-	// 	return new MessageListenerAdapter(receiver, "receiveMessage");
-	// }
-
     public static void main(String[] args) throws InterruptedException {
         SpringApplication.run(QueueMasterApplication.class, args);
     }
@@ -66,9 +47,5 @@ public class QueueMasterApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Starting QueueMasterApplication...");
-        // Thread.sleep(5000);
-        // System.out.println("Sending message...");
-        // rabbitTemplate.convertAndSend(queueName, "Hello from RabbitMQ!");
-        // receiver().getLatch().await(10000, TimeUnit.MILLISECONDS);
     }
 }

@@ -47,9 +47,5 @@ public class ShippingServiceApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Starting Shipping Service");
-        // System.out.println("Waiting five seconds...");
-        // Thread.sleep(5000);
-        // System.out.println("Sending message...");
-        // rabbitTemplate.convertAndSend(queueName, "Task Init.");
     }
 }
