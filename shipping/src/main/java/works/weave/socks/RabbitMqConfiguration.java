@@ -18,8 +18,8 @@ public class RabbitMqConfiguration
     @Bean
     public ConnectionFactory connectionFactory()
     {
-        // CachingConnectionFactory connectionFactory = new CachingConnectionFactory("http://rabbitmq");
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("192.168.99.104");
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("rabbitmq");
+        // CachingConnectionFactory connectionFactory = new CachingConnectionFactory("192.168.99.104");
         connectionFactory.setUsername("guest");
         connectionFactory.setPassword("guest");
         return connectionFactory;

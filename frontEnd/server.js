@@ -6,6 +6,7 @@ var request = require('request');
 const PORT=8079;
 // var catalogueUrl = "http://192.168.99.100:8081/catalogue";
 var catalogueUrl = "http://catalogue:8081/catalogue";
+// var catalogueUrl = "http://localhost:8081/catalogue";
 
 var serve = serveStatic("./");
 

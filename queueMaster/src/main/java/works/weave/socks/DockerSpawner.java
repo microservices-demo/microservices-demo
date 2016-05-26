@@ -1,15 +1,20 @@
 package works.weave.socks;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.core.command.PullImageResultCallback;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class DockerSpawner {
 	
 	private DockerClient dc;
+
+	private String imageName = "alpine";
+	private String imageVersion = "3.1";
 
 	public void init() {
 		if (dc == null) {
@@ -22,13 +27,14 @@ public class DockerSpawner {
 
             DockerClientConfig config = builder.build();
             dc = DockerClientBuilder.getInstance(config).build();
-			// dc = DockerClientBuilder.getInstance("http://localhost:2375").build();
+
+            dc.pullImageCmd(imageName).withTag(imageVersion).exec(new PullImageResultCallback()).awaitSuccess();
 		}
 	}
 
 	public void spawn() {
 		System.out.println("Spawning new container");
-		CreateContainerResponse container = dc.createContainerCmd("alpine:3.1").withCmd("sleep", "30").exec();
+		CreateContainerResponse container = dc.createContainerCmd(imageName + ":" + imageVersion).withCmd("sleep", "30").exec();
 
 		dc.startContainerCmd(container.getId()).exec();
 		// dc.stopContainerCmd(container.getId()).exec();

@@ -42,6 +42,33 @@ services:
     domainname: weave.local
     networks:
       - internal
+  shipping:
+    build: ./shipping
+    ports:
+      - "8080:8080"
+    hostname: shipping
+    domainname: weave.local
+    networks:
+      - internal
+  queue-master:
+    build: ./queueMaster
+    ports:
+      - "80"
+    hostname: queue-master
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    domainname: weave.local
+    networks:
+      - internal
+  rabbitmq:
+    image: rabbitmq:3
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    hostname: rabbitmq
+    domainname: weave.local
+    networks:
+      - internal
 
 networks:
   front:

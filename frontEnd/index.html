@@ -38,6 +38,7 @@
                     <th>Id</th>
                     <th>Price</th>
                     <th>Count</th>
+                    <th>Add to Cart</th>
                 </tr>
             </thead>
         </table>
@@ -65,7 +66,12 @@
                 "columns": [
                     { "data": "Id" },
                     { "data": "Price" },
-                    { "data": "count" }
+                    { "data": "count" },
+                    {
+                        "data": null,
+                        "className": "center",
+                        "defaultContent": "ADD"
+                    }
                   ]
             } );
         } );

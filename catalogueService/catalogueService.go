@@ -12,6 +12,7 @@ var catalogue []Sock
 func main() {
 	var file string
 	file = "/config/socks.json"
+	// file = "./socks.json"
 	loadCatalogue(file)
 
 	var port string
