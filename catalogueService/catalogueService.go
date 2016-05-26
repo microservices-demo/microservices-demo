@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -9,15 +10,25 @@ import (
 
 var catalogue []Sock 
 
+var dev bool
+var port string
+
 func main() {
+
+	flag.BoolVar(&dev, "dev", false, "Run in development mode")
+	flag.StringVar(&port, "port", "8081", "Port on which to run")
+	flag.Parse()
+
 	var file string
-	file = "/config/socks.json"
-	// file = "./socks.json"
+	if dev {
+		file = "./socks.json"
+	} else {
+		file = "/config/socks.json"
+	}
 	loadCatalogue(file)
 
-	var port string
-	port = "8081"
 	http.HandleFunc("/catalogue", catalogueHandler)
+	fmt.Printf("Catalogue service running on port %s\n", port)
 	http.ListenAndServe(":" + port, nil)
 }
 
@@ -39,7 +50,7 @@ func loadCatalogue(file string) {
     }
 
     json.Unmarshal(f, &catalogue)
-    fmt.Printf("Results: %v\n", catalogue)
+    fmt.Printf("Loaded %d items into catalogue.\n", len(catalogue))
 }
 
 type Sock struct {

@@ -69,6 +69,14 @@ services:
     domainname: weave.local
     networks:
       - internal
+  payment:
+    build: ./paymentService
+    ports:
+      - "8081:8082"
+    hostname: payment
+    domainname: weave.local
+    networks:
+      - internal
 
 networks:
   front:

@@ -18,7 +18,7 @@
           <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
+          <a class="nav-link" href="#">Cart</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Contact</a>
@@ -60,7 +60,7 @@
         $(document).ready(function() {
             $('#example').DataTable( {
                 "ajax": {
-                    "url": "getData",
+                    "url": "catalogue",
                     "dataSrc": ""
                 },
                 "columns": [
@@ -70,7 +70,7 @@
                     {
                         "data": null,
                         "className": "center",
-                        "defaultContent": "ADD"
+                        "defaultContent": "Gimme"
                     }
                   ]
             } );
