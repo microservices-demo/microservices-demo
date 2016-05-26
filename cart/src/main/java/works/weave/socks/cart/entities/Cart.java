@@ -1,8 +1,8 @@
-package works.weave.socks;
+package works.weave.socks.cart.entities;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Cart {
@@ -13,7 +13,7 @@ public class Cart {
     private long customerId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Item> items = new HashSet<>();
+    private List<Item> items = new ArrayList<>();
 
     public long getCustomerId() {
         return customerId;
@@ -23,11 +23,11 @@ public class Cart {
         this.customerId = customerId;
     }
 
-    public Set<Item> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(Set<Item> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 }

@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>works.weave.socks</groupId>
-    <artifactId>cart</artifactId>
+    <artifactId>orders</artifactId>
     <packaging>jar</packaging>
 
-    <name>cart</name>
-    <description>User carts for socks eCommerce application</description>
+    <name>orders</name>
+    <description>Orders of socks eCommerce application</description>
 
     <parent>
         <groupId>works.weave</groupId>
@@ -18,6 +18,16 @@
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>works.weave.socks</groupId>
+            <artifactId>accounts</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>works.weave.socks</groupId>
+            <artifactId>cart</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
@@ -33,6 +43,11 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
         </dependency>
     </dependencies>
 </project>

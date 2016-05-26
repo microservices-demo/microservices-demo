@@ -34,9 +34,17 @@ services:
     domainname: weave.local
     networks:
       - internal
+  orders:
+    build: ./orders
+    ports:
+      - "80"
+    hostname: orders
+    domainname: weave.local
+    networks:
+      - internal
 
 networks:
   front:
-    driver: weave
+    driver: weavemesh
   internal:
-    driver: weave
+    driver: weavemesh

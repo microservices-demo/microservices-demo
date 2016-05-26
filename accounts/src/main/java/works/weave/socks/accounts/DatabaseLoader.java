@@ -1,8 +1,12 @@
-package works.weave.socks;
+package works.weave.socks.accounts;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import works.weave.socks.accounts.entities.Address;
+import works.weave.socks.accounts.entities.Card;
+import works.weave.socks.accounts.entities.Customer;
+import works.weave.socks.accounts.repositories.CustomerRepository;
 
 import java.util.Arrays;
 

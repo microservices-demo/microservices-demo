@@ -1,11 +1,13 @@
-package works.weave.socks;
+package works.weave.socks.cart;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import works.weave.socks.cart.entities.Cart;
+import works.weave.socks.cart.entities.Item;
+import works.weave.socks.cart.repositories.CartRepository;
 
 import java.util.Arrays;
-import java.util.HashSet;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {
@@ -23,7 +25,7 @@ public class DatabaseLoader implements CommandLineRunner {
         Item item2 = new Item();
         item2.setItemId("fs9-gfdsa12");
         item2.setQuantity(1);
-        cart.setItems(new HashSet<>(Arrays.asList(item, item2)));
+        cart.setItems(Arrays.asList(item, item2));
         this.carts.save(cart);
     }
 }
