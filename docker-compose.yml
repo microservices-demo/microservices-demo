@@ -72,6 +72,6 @@ services:
 
 networks:
   front:
-    driver: weavemesh
+    driver: weave
   internal:
-    driver: weavemesh
+    driver: weave
