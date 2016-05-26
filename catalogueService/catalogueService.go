@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 var catalogue []Sock 
@@ -27,9 +29,11 @@ func main() {
 	}
 	loadCatalogue(file)
 
-	http.HandleFunc("/catalogue", catalogueHandler)
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/catalogue", catalogueHandler)
+	router.HandleFunc("/catalogue/{catId}", itemHandler)
 	fmt.Printf("Catalogue service running on port %s\n", port)
-	http.ListenAndServe(":" + port, nil)
+	http.ListenAndServe(":" + port, router)
 }
 
 func catalogueHandler(w http.ResponseWriter, r *http.Request) {
@@ -41,6 +45,20 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	w.Write(data)
+}
+
+func itemHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+    catId := vars["catId"]
+
+	for _, sock := range catalogue {
+		if sock.Id == catId {
+			data, _ := json.Marshal(sock)
+			w.Write(data)
+			return
+		}
+	}
+	w.WriteHeader(404)
 }
 
 func loadCatalogue(file string) {

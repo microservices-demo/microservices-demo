@@ -11,7 +11,7 @@
     - GET /login (query params or basic auth?)
         - returns customer id
 - Payment
-    - GET /validate
+    - GET /paymentAuth
 - Shipping
     - POST /shipping
     - GET /shipping/{id}
