@@ -1,15 +1,18 @@
 package works.weave.socks.orders.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import works.weave.socks.accounts.entities.Address;
 import works.weave.socks.accounts.entities.Card;
 import works.weave.socks.accounts.entities.Customer;
-import works.weave.socks.cart.entities.Item;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+
+// curl -XPOST -H 'Content-type: application/json' http://localhost:8082/orders -d '{"customer": "http://localhost:8080/customer/1", "address": "http://localhost:8080/address/1", "card": "http://localhost:8080/card/1", "items": "http://localhost:8081/carts/1/items"}'
+
+// curl http://localhost:8082/orders/search/customerId\?custId\=1
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomerOrder {
 
     @Id
@@ -25,8 +28,7 @@ public class CustomerOrder {
     @OneToOne(cascade = CascadeType.ALL, targetEntity = Card.class)
     private Card card;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Item> items = new HashSet<>();
+    private String items;
 
     public long getId() {
         return id;
@@ -56,11 +58,11 @@ public class CustomerOrder {
         this.card = card;
     }
 
-    public Set<Item> getItems() {
+    public String getItems() {
         return items;
     }
 
-    public void setItems(Set<Item> items) {
+    public void setItems(String items) {
         this.items = items;
     }
 }

@@ -76,11 +76,12 @@ do_launch() {
     else
       echo ""
       echo "Launching Weave on Swarm Slave $SWARM_HOST..."
-      echo ">>> DOCKER_HOST=$SWARM_HOST weave launch-plugin"
-      RET=`DOCKER_HOST=$SWARM_HOST $WEAVE_BINARY launch-plugin --no-multicast-route`
 
       echo ">>> DOCKER_HOST=$SWARM_HOST weave launch-router $SWARM_MASTER_IP"
       RET=`DOCKER_HOST=$SWARM_HOST $WEAVE_BINARY launch-router $SWARM_MASTER_IP`
+
+      echo ">>> DOCKER_HOST=$SWARM_HOST weave launch-plugin"
+      RET=`DOCKER_HOST=$SWARM_HOST $WEAVE_BINARY launch-plugin --no-multicast-route`
 
       #echo ">>> DOCKER_HOST=$SWARM_HOST weave launch-proxy"
       #RET=`DOCKER_HOST=$SWARM_HOST weave launch-proxy`

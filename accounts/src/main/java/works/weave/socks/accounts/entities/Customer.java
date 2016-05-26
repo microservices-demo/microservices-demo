@@ -19,6 +19,10 @@ public class Customer {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Card> cards;
 
+    public long getId() {
+        return id;
+    }
+
     public String getFirstName() {
         return firstName;
     }
