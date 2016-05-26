@@ -5,6 +5,7 @@
 #####################################################################
 ARGS="$@"
 COMMAND="${1}"
+SCRIPT_DIR=`dirname "$0"`
 SCRIPT_NAME=`basename "$0"`
 MASTER_NODE_NAME="${2}"
 export VERSION=${SCOPE_VERSION:-latest}
@@ -23,13 +24,13 @@ do_checks() {
 do_launch() {
   do_checks
   echo "Creating docker-machines and installing swarm"
-  ./installSwarm.sh create 2
+  $SCRIPT_DIR/installSwarm.sh create 2
 
   echo "Installing weave"
-  ./installWeave.sh launch
+  $SCRIPT_DIR/installWeave.sh launch
 
   echo "Installing scope"
-  ./installScope.sh launch
+  $SCRIPT_DIR/installScope.sh launch
 
   exit 0
 }
@@ -37,10 +38,10 @@ do_stop() {
   do_checks
 
   echo "Stopping scope"
-  ./installScope.sh stop
+  $SCRIPT_DIR/installScope.sh stop
 
   echo "Stopping weave"
-  ./installWeave.sh stop
+  $SCRIPT_DIR/installWeave.sh stop
 
   exit 0
 }
@@ -48,7 +49,7 @@ do_destroy() {
   do_checks
 
   echo "Destroying swarm"
-  ./installSwarm.sh destroy
+  $SCRIPT_DIR/installSwarm.sh destroy
 
   exit 0
 }

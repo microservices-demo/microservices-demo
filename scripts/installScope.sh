@@ -5,6 +5,7 @@
 #####################################################################
 ARGS="$@"
 COMMAND="${1}"
+SCRIPT_DIR=`dirname "$0"`
 SCRIPT_NAME=`basename "$0"`
 MASTER_NODE_NAME="${2}"
 export VERSION=${SCOPE_VERSION:-latest}
@@ -20,7 +21,7 @@ do_checks() {
     exit 0
   fi
   # check for scope
-  if [ ! `command -v ./scope` ]; then
+  if [ ! `command -v $SCRIPT_DIR/scope` ]; then
     echo "Scope script is not found!"
     exit 0
   fi
@@ -43,7 +44,7 @@ do_launch() {
   do
     echo "Launching Scope Probe on ${MACHINE_NAME}..."
     eval $(docker-machine env ${MACHINE_NAME})
-    RET=`VERSION=${VERSION} ./scope launch --no-app ${MASTER_NODE_IP}`
+    RET=`VERSION=${VERSION} $SCRIPT_DIR/scope launch --no-app ${MASTER_NODE_IP}`
   done
   exit 1
 }
@@ -54,7 +55,7 @@ do_stop() {
   do
     echo "Stopping Scope on ${MACHINE_NAME}..."
     eval $(docker-machine env ${MACHINE_NAME})
-    RET=`VERSION=${VERSION} ./scope stop`
+    RET=`VERSION=${VERSION} $SCRIPT_DIR/scope stop`
   done
   exit 1
 }
@@ -65,7 +66,7 @@ do_status() {
   do
     echo "Stopping Scope on ${MACHINE_NAME}..."
     eval $(docker-machine env ${MACHINE_NAME})
-    RET=`VERSION=${VERSION} ./scope stop`
+    RET=`VERSION=${VERSION} $SCRIPT_DIR/scope stop`
   done
   exit 1
 }
