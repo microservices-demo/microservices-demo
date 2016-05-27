@@ -4,7 +4,7 @@ services:
   front-end:
     build: ./frontEnd
     ports:
-      - "8079:8079"
+      - "8079"
     hostname: front-end
     domainname: weave.local
     networks:
@@ -13,7 +13,7 @@ services:
   catalogue:
     build: ./catalogueService
     ports:
-      - "8081:8081"
+      - "8081"
     hostname: catalogue
     domainname: weave.local
     networks:
@@ -45,7 +45,7 @@ services:
   shipping:
     build: ./shipping
     ports:
-      - "8080:8080"
+      - "8080"
     hostname: shipping
     domainname: weave.local
     networks:
@@ -72,7 +72,7 @@ services:
   payment:
     build: ./paymentService
     ports:
-      - "8082:8082"
+      - "8082"
     hostname: payment
     domainname: weave.local
     networks:
