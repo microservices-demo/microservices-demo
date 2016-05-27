@@ -7,6 +7,7 @@
 ARGS="$@"
 COMMAND="${1}"
 SCRIPT_NAME=`basename "$0"`
+SCRIPT_DIR=`dirname "$0"`
 
 do_checks() {
   # check for docker-machine
@@ -24,7 +25,7 @@ do_checks() {
   if [ `command -v weave` ]; then
     WEAVE_BINARY=`command -v weave`
   else
-        WEAVE_BINARY=`command -v ./weave`
+        WEAVE_BINARY=`command -v $SCRIPT_DIR/weave`
   fi
   if [ ! $WEAVE_BINARY ]; then
     echo "Weave binary is not found!"
