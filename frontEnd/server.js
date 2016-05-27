@@ -16,7 +16,7 @@ var itemsUrl = "http://items/items";
 var customersUrl = "http://accounts/customers";
 
 if (app.get('env') == "development") {
-	catalogueUrl = "http://localhost:8081/catalogue";
+	catalogueUrl = "http://localhost:8084/catalogue";
 	accountsUrl = "http://localhost:8082/accounts";
 	cartsUrl = "http://localhost:8081/carts";
 	itemsUrl = "http://localhost:8081/items";
@@ -31,7 +31,7 @@ function handleError(res, reason, message, code) {
 
 // Catalogue
 app.get("/catalogue", function(req, res) {
-
+	console.log("Received request: " + req);
 	request(catalogueUrl, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 		    console.log(body);
@@ -80,7 +80,7 @@ app.get("/accounts/:id", function(req, res) {
 });
 
 //Carts
-app.get("/carts/", function(req, res) {
+app.get("/carts", function(req, res) {
 	console.log("Request received: " + req.url);
 	request.get(cartsUrl + "/search/findByCustomerId?custId=1", function (error, response, body) {
 		console.log("Response received from carts.");
@@ -95,25 +95,43 @@ app.get("/carts/", function(req, res) {
 
 app.get("/carts/:cartId", function(req, res) {
 	console.log("Request received: " + req.url);
-	request.get(cartsUrl + "/" + req.params.cartId, function (error, response, body) {
-		console.log("Response received from carts.");
-		if (!error && response.statusCode == 200) {
-		    // console.log(body);
-			res.writeHeader(200);
-			res.write(body);
-			res.end()
-		  } else {
-		  	console.log(error);
-			res.writeHeader(response.statusCode);
-			res.end()
-		  }
-	}.bind( {res: res} ));
+	async.waterfall([
+		function(callback) {
+			request.get(cartsUrl + "/" + req.params.cartId, function(error, response, body) {
+				if (error) {
+					console.log(error);
+					callback(true);
+					return;
+				}
+				console.log("Received response: " + JSON.stringify(body));
+				jsonBody = JSON.parse(body);
+				link = jsonBody._links.items.href;
+				callback(null, link);
+			});
+		},
+		function(arg1, callback) {
+			request.get(arg1, function(error, response, body) {
+				if (error) {
+					console.log(error);
+					callback(true);
+					return;
+				}
+				console.log("Received response: " + JSON.stringify(body));
+				callback(null, JSON.parse(body));
+			});
+		}
+	],
+	function(err, result) {
+		res.writeHeader(200);
+		// res.writeJs(result._embedded.items);
+		res.end(JSON.stringify(result._embedded.items))
+	});
 });
 
 app.post("/carts/:cartId/items", function(req, res) {
+	console.log("Request received with body: " + JSON.stringify(req.body));
 	async.waterfall([
 		function(callback) {
-			console.log("Request received with body: " + JSON.stringify(req.body));
 			var options = {
 			  uri: itemsUrl,
 			  method: 'POST',
@@ -127,6 +145,7 @@ app.post("/carts/:cartId/items", function(req, res) {
 					return;
 				}
 				console.log("Received response: " + JSON.stringify(body));
+				// jsonBody = JSON.parse(body);
 				link = body._links.item.href;
 				callback(null, link);
 			});
