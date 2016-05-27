@@ -5,9 +5,7 @@ Demo microservices application for Weave.
 # Installing
 ## Local
 ```
-cd scripts
-./install.sh
-cd ..
+./scripts/install.sh launch
 ./build.sh
 eval $(docker-machine env --swarm swarm-master)
 docker-compose up -d
