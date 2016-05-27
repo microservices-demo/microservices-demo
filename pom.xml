@@ -16,6 +16,8 @@
         <module>accounts</module>
         <module>cart</module>
         <module>orders</module>
+        <module>shipping</module>
+        <module>queueMaster</module>
     </modules>
 
     <parent>
