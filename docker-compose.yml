@@ -45,7 +45,7 @@ services:
   shipping:
     build: ./shipping
     ports:
-      - "8080"
+      - "80"
     hostname: shipping
     domainname: weave.local
     networks:
@@ -72,7 +72,7 @@ services:
   payment:
     build: ./paymentService
     ports:
-      - "8082"
+      - "80"
     hostname: payment
     domainname: weave.local
     networks:

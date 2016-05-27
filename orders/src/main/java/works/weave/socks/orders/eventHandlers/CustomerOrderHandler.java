@@ -1,5 +1,6 @@
 package works.weave.socks.orders.eventHandlers;
 
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
@@ -41,9 +42,14 @@ public class CustomerOrderHandler {
         try {
             String self = entityLinks.linkToSingleResource(CustomerOrder.class, order.getId()).getHref();
             System.out.println("URL " + self);
-            Unirest.post("http://shipping/shipping")
-                    .body("{ \"order\": \"" + self + "\" }")
-                    .asJson();
+            HttpResponse<String> jsonNodeHttpResponse = Unirest.post("http://shipping/shipping")
+                    .header("Content-type", "application/json")
+                    .body("{ \"id\": \"" + self + "\", \"name\": \"" + order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName() + "\" }")
+                    .asString();
+            System.out.println("Response: " + jsonNodeHttpResponse.getBody());
+            if (jsonNodeHttpResponse.getStatus() > 202) {
+                throw new IllegalStateException(jsonNodeHttpResponse.getBody());
+            }
         } catch (Exception e) {
             throw new IllegalStateException("Unable to create new shipment: " + e.getCause().toString(), e);
         }
