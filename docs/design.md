@@ -16,10 +16,17 @@
     - POST /shipping
     - GET /shipping/{id}
 - Accounts:
-    - GET /accounts/{id}
-    - GET /accounts/?custId=[customerId] get account for customer
-    - PUT /accounts/{id}  update account
-    - POST /accounts/ create new account with customer id
+    - Create address:
+        - curl -XPOST -H "Content-type: application/json" localhost:8080/addresses -d '{"street": "my road", "number": "3", "country": "UK", "city": "London"}'
+    - Create card: 
+        - curl -XPOST -H "Content-type: application/json" localhost:8080/cards -d '{"longNum": "5429804235432", "expires": "04/16", "ccv": "432"}'
+    - Create customer:
+        - curl -XPOST -H "Content-type: application/json" localhost:8080/customers -d '{"firstName": "alice", "lastName": "Green", "addresses": ["http://localhost:8080/addresses/2"], "cards": ["http://localhost:8080/cards/2"]}'
+    - GET /customers/{id}
+    - Get addresses for customer
+        - GET /customers/{id}/addresses
+    - PUT/PATCH/DELETE all work too.
+    - No username/password functionality. Customer id should be referenced from login service.
 - Cart
     - Create cart    
         - POST /carts 

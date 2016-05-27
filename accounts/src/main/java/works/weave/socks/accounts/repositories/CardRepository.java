@@ -4,7 +4,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import works.weave.socks.accounts.entities.Card;
 
-@RepositoryRestResource(collectionResourceRel = "card", path = "card")
+@RepositoryRestResource(collectionResourceRel = "card", path = "cards")
 public interface CardRepository extends PagingAndSortingRepository<Card, Long> {
 }
 
