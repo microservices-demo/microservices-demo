@@ -44,8 +44,11 @@
     - Update quantities:
         - curl -XPATCH -H 'Content-type: application/json' http://localhost:8080/items/5 -d '{"quantity": 100}'
 - Orders
-    - POST /orders (create new order)
-    - GET /orders/{id}
+    - Create new order
+        - curl -XPOST -H 'Content-type: application/json' http://orders/orders -d '{"customer": "http://accounts/customer/1", "address": "http://accounts/address/1", "card": "http://accounts/card/1", "items": "http://cart/carts/1/items"}
+    - GET/PATCH/DELETE /orders/{id}
+    - Find orders by customer ID:
+        - curl http://orders/orders/search/customerId?custId=1
 
 # DockerCon Demo Narrative
 ## Full demo (requires internet connection)
