@@ -1,6 +1,0 @@
-works/weave/socks/DockerSpawner.class
-works/weave/socks/ShippingTaskHandler.class
-works/weave/socks/Shipment.class
-works/weave/socks/RabbitMqConfiguration.class
-works/weave/socks/ShippingConsumerConfiguration.class
-works/weave/socks/QueueMasterApplication.class

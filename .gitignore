@@ -36,6 +36,7 @@ _testmain.go
 *.test
 *.prof
 ### Java template
+/target/
 *.class
 
 # Mobile Tools for Java (J2ME)
