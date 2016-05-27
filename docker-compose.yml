@@ -13,7 +13,7 @@ services:
   catalogue:
     build: ./catalogueService
     ports:
-      - "8081"
+      - "80"
     hostname: catalogue
     domainname: weave.local
     networks:
