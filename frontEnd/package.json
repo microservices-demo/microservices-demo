@@ -14,6 +14,7 @@
   "author": "Ian Crosby",
   "license": "MIT",
   "dependencies": {
+    "async": "^1.5.2",
     "body-parser": "^1.15.1",
     "express": "^4.13.4",
     "finalhandler": "^0.4.1",
