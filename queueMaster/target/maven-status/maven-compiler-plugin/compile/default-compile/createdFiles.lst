@@ -1,3 +1,4 @@
+works/weave/socks/DockerSpawner.class
 works/weave/socks/ShippingTaskHandler.class
 works/weave/socks/Shipment.class
 works/weave/socks/RabbitMqConfiguration.class
