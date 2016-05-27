@@ -72,7 +72,7 @@ do_launch() {
   for SWARM_HOST in $SWARM_SLAVES
   do
     if [ "$SWARM_MASTER_URL" == "$SWARM_HOST" ]; then
-      echo "Skipping this master..."
+      echo "..."
 
     else
       echo ""
@@ -101,7 +101,7 @@ do_stop() {
   do
     echo "Stopping Weave on Swarm Host $SWARM_HOST..."
     #echo ">>> DOCKER_HOST=$SWARM_HOST weave stop"
-    RET=`DOCKER_HOST=$SWARM_HOST ./weave stop`
+    RET=`DOCKER_HOST=$SWARM_HOST $WEAVE_BINARY stop`
   done
 
   #echo "RET=$RET"
