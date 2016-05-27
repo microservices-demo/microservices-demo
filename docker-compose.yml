@@ -42,6 +42,14 @@ services:
     domainname: weave.local
     networks:
       - internal
+  orders-db:
+    image: mongo
+    ports:
+      - "27017"
+    hostname: orders-db
+    domainname: weave.local
+    networks:
+      - internal
   shipping:
     build: ./shipping
     ports:
