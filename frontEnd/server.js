@@ -15,14 +15,14 @@ var ordersUrl = "http://orders/orders";
 var itemsUrl = "http://items/items";
 var customersUrl = "http://accounts/customers";
 
-if (app.get('env') == "development") {
-	catalogueUrl = "http://localhost:8084/catalogue";
-	accountsUrl = "http://localhost:8082/accounts";
-	cartsUrl = "http://localhost:8081/carts";
-	itemsUrl = "http://localhost:8081/items";
-	ordersUrl = "http://localhost:8083/orders";
-	customersUrl = "http://localhost:8082/customers";
-}
+// if (app.get('env') == "development") {
+// 	catalogueUrl = "http://localhost:8084/catalogue";
+// 	accountsUrl = "http://localhost:8082/accounts";
+// 	cartsUrl = "http://localhost:8081/carts";
+// 	itemsUrl = "http://localhost:8081/items";
+// 	ordersUrl = "http://localhost:8083/orders";
+// 	customersUrl = "http://localhost:8082/customers";
+// }
 
 function handleError(res, reason, message, code) {
 	console.log("Error: " + reason);
@@ -38,6 +38,10 @@ app.get("/catalogue", function(req, res) {
 			res.writeHeader(200);
 			res.write(body);
 			res.end()
+		  } else {
+		  	console.log(error)
+		  	console.log(response.statusCode)
+		  	return;
 		  }
 	}.bind( {res: res} ));
 });
@@ -50,6 +54,10 @@ app.get("/catalogue/:id", function(req, res) {
 			res.writeHeader(200);
 			res.write(body);
 			res.end()
+		  } else {
+		  	console.log(error)
+		  	console.log(response.statusCode)
+		  	return;
 		  }
 	}.bind( {res: res} ));
 });
@@ -63,6 +71,10 @@ app.get("/accounts/", function(req, res) {
 			res.writeHeader(200);
 			res.write(body);
 			res.end()
+		  } else {
+		  	console.log(error)
+		  	console.log(response.statusCode)
+		  	return;
 		  }
 	}.bind( {res: res} ));
 });
@@ -75,6 +87,10 @@ app.get("/accounts/:id", function(req, res) {
 			res.writeHeader(200);
 			res.write(body);
 			res.end()
+		  } else {
+		  	console.log(error)
+		  	console.log(response.statusCode)
+		  	return;
 		  }
 	}.bind( {res: res} ));
 });
@@ -89,6 +105,10 @@ app.get("/carts", function(req, res) {
 			res.writeHeader(200);
 			res.write(body);
 			res.end()
+		  } else {
+		  	console.log(error)
+		  	console.log(response.statusCode)
+		  	return;
 		  }
 	}.bind( {res: res} ));
 });
