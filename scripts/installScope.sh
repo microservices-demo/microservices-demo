@@ -36,7 +36,7 @@ do_launch() {
   do_init
   echo "Launching Scope App on swarm-master..."
   eval $(docker-machine env swarm-master)
-  RET=`VERSION=${VERSION} ./scope launch `
+  RET=`VERSION=${VERSION} $SCRIPT_DIR/scope launch `
   SCOPE_MASTER=${RUNNING_HOST_NAMES[0]}
   SCOPE_SLAVES=${RUNNING_HOST_NAMES[*]:1}
   MASTER_NODE_IP=`docker-machine ip swarm-master`
@@ -49,17 +49,6 @@ do_launch() {
   exit 1
 }
 do_stop() {
-  do_checks
-  do_init
-  for MACHINE_NAME in ${RUNNING_HOST_NAMES[*]}
-  do
-    echo "Stopping Scope on ${MACHINE_NAME}..."
-    eval $(docker-machine env ${MACHINE_NAME})
-    RET=`VERSION=${VERSION} $SCRIPT_DIR/scope stop`
-  done
-  exit 1
-}
-do_status() {
   do_checks
   do_init
   for MACHINE_NAME in ${RUNNING_HOST_NAMES[*]}
@@ -85,9 +74,6 @@ case "$COMMAND" in
     ;;
   stop)
     do_stop
-    ;;
-  status)
-    do_status
     ;;
   *)
     do_usage
