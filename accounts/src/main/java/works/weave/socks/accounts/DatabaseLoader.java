@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import works.weave.socks.accounts.entities.Address;
 import works.weave.socks.accounts.entities.Card;
 import works.weave.socks.accounts.entities.Customer;
+import works.weave.socks.accounts.repositories.AddressRepository;
+import works.weave.socks.accounts.repositories.CardRepository;
 import works.weave.socks.accounts.repositories.CustomerRepository;
 
 import java.util.Arrays;
@@ -14,6 +16,10 @@ import java.util.Arrays;
 public class DatabaseLoader implements CommandLineRunner {
     @Autowired
     private CustomerRepository customers;
+    @Autowired
+    private AddressRepository addresses;
+    @Autowired
+    private CardRepository cards;
 
     @Override
     public void run(String... strings) throws Exception {
@@ -29,14 +35,18 @@ public class DatabaseLoader implements CommandLineRunner {
         address.setCountry("UK");
         address.setPostcode("L10 3QD");
 
-        ben.setAddresses(Arrays.asList(address));
+        Address save = addresses.save(address);
+
+        ben.setAddresses(Arrays.asList(save));
 
         Card card = new Card();
         card.setLongNum("78542789543215432");
         card.setExpires("08/19");
         card.setCcv("894");
 
-        ben.setCards(Arrays.asList(card));
+        Card save1 = cards.save(card);
+
+        ben.setCards(Arrays.asList(save1));
 
         this.customers.save(ben);
     }

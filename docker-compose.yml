@@ -26,6 +26,14 @@ services:
     domainname: weave.local
     networks:
       - internal
+  accounts-db:
+    image: mongo
+    ports:
+      - "27017"
+    hostname: accounts-db
+    domainname: weave.local
+    networks:
+      - internal
   cart:
     build: ./cart
     ports:
@@ -34,11 +42,27 @@ services:
     domainname: weave.local
     networks:
       - internal
+  cart-db:
+    image: mongo
+    ports:
+      - "27017"
+    hostname: cart-db
+    domainname: weave.local
+    networks:
+      - internal
   orders:
     build: ./orders
     ports:
       - "80"
     hostname: orders
+    domainname: weave.local
+    networks:
+      - internal
+  orders-db:
+    image: mongo
+    ports:
+      - "27017"
+    hostname: orders-db
     domainname: weave.local
     networks:
       - internal

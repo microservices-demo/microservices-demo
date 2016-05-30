@@ -40,18 +40,18 @@ public class CustomerOrderHandler {
 
         // Ship
         try {
-            String self = entityLinks.linkToSingleResource(CustomerOrder.class, order.getId()).getHref();
-            System.out.println("URL " + self);
+            // We haven't actually written this to the db yet, so it doesn't have a link...
+            System.out.println("Posting to shipping");
             HttpResponse<String> jsonNodeHttpResponse = Unirest.post("http://shipping/shipping")
                     .header("Content-type", "application/json")
-                    .body("{ \"id\": \"" + self + "\", \"name\": \"" + order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName() + "\" }")
+                    .body("{ \"customerId\": \"" + order.getCustomerId() + "\", \"name\": \"" + order.getCustomerId() + "\" }")
                     .asString();
             System.out.println("Response: " + jsonNodeHttpResponse.getBody());
             if (jsonNodeHttpResponse.getStatus() > 202) {
                 throw new IllegalStateException(jsonNodeHttpResponse.getBody());
             }
         } catch (Exception e) {
-            throw new IllegalStateException("Unable to create new shipment: " + e.getCause().toString(), e);
+            throw new IllegalStateException("Unable to create new shipment.", e);
         }
     }
 }
