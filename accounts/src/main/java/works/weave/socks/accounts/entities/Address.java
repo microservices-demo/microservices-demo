@@ -1,17 +1,14 @@
 package works.weave.socks.accounts.entities;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 
-@Entity
+import java.math.BigInteger;
+
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private BigInteger id;
 
     private String number;
     private String street;

@@ -1,25 +1,31 @@
 package works.weave.socks.accounts.entities;
 
-import javax.persistence.*;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Document
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private BigInteger id;
 
     private String firstName;
     private String lastName;
+    private String username;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> addresses;
+    @DBRef(lazy = true)
+    private List<Address> addresses = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Card> cards;
+    @DBRef(lazy = true)
+    private List<Card> cards = new ArrayList<>();
 
-    public long getId() {
+    public BigInteger getId() {
         return id;
     }
 
@@ -53,5 +59,13 @@ public class Customer {
 
     public void setCards(List<Card> cards) {
         this.cards = cards;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

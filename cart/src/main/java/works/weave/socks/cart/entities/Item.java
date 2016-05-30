@@ -1,15 +1,12 @@
 package works.weave.socks.cart.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 
-@Entity
+import java.math.BigInteger;
+
 public class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private BigInteger id;
 
     private String itemId;
     private int quantity;

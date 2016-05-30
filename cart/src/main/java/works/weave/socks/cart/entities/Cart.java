@@ -1,25 +1,26 @@
 package works.weave.socks.cart.entities;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 public class Cart {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-    private long customerId;
+    private BigInteger id;
+    private BigInteger customerId;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @DBRef(lazy = true)
     private List<Item> items = new ArrayList<>();
 
-    public long getCustomerId() {
+    public BigInteger getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(long customerId) {
+    public void setCustomerId(BigInteger customerId) {
         this.customerId = customerId;
     }
 
