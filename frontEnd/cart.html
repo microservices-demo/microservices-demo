@@ -15,10 +15,10 @@
       <a class="navbar-brand" href="#">Sox</a>
       <ul class="nav navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="/index.html">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="/index.html">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Cart</a>
+          <a class="nav-link" href="#">Cart <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Contact</a>
@@ -54,6 +54,9 @@
     <script src="src/lib/tether.min.js"></script>
     <script src="src/lib/bootstrap.min.v4.js"></script>
     <script>
+        $.ajaxSetup({
+            contentType: "application/json; charset=utf-8"
+        });
         $(document).ready(function() {
             $('#example').DataTable( {
                 "ajax": {
@@ -72,6 +75,7 @@
             } );
         } );
 
+        // Purchase current cart + current customer
         function buy() {
             var jsonData = {
                 customer: 1
@@ -82,11 +86,13 @@
                     data : JSON.stringify(jsonData),
                     success: function(data, textStatus, jqXHR)
                     {
+                        alert("Order confirmed.\n" + JSON.stringify(data));
                         console.log('posted: ' + textStatus);
                     },
                     error: function (jqXHR, textStatus, errorThrown)
                     {
-                        console.log('error: ' + textStatus);
+                        alert("Problem with your order. " + errorThrown);
+                        console.log('error: ' + errorThrown);
                     }
                 });
         }

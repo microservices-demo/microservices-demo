@@ -10,11 +10,12 @@ app.use(bodyParser.json());
 
 var catalogueUrl = "http://catalogue/catalogue";
 var accountsUrl = "http://accounts/accounts";
-var cartsUrl = "http://carts/carts";
+var cartsUrl = "http://cart/carts";
 var ordersUrl = "http://orders/orders";
-var itemsUrl = "http://items/items";
+var itemsUrl = "http://cart/items";
 var customersUrl = "http://accounts/customers";
 
+// TODO dev is set in docker containers...
 // if (app.get('env') == "development") {
 // 	catalogueUrl = "http://localhost:8084/catalogue";
 // 	accountsUrl = "http://localhost:8082/accounts";
@@ -23,6 +24,8 @@ var customersUrl = "http://accounts/customers";
 // 	ordersUrl = "http://localhost:8083/orders";
 // 	customersUrl = "http://localhost:8082/customers";
 // }
+
+// TODO Add logging
 
 function handleError(res, reason, message, code) {
 	console.log("Error: " + reason);
@@ -33,14 +36,17 @@ function handleError(res, reason, message, code) {
 app.get("/catalogue", function(req, res) {
 	console.log("Received request: " + req);
 	request(catalogueUrl, function (error, response, body) {
+		// TODO add generic error handler
 		if (!error && response.statusCode == 200) {
 		    console.log(body);
 			res.writeHeader(200);
 			res.write(body);
 			res.end()
-		  } else {
+		  } else if (error != null ){
 		  	console.log(error)
-		  	console.log(response.statusCode)
+		  	return;
+		  } else {
+		   	console.log(response.statusCode)
 		  	return;
 		  }
 	}.bind( {res: res} ));
@@ -54,9 +60,11 @@ app.get("/catalogue/:id", function(req, res) {
 			res.writeHeader(200);
 			res.write(body);
 			res.end()
-		  } else {
+		  } else if (error != null ){
 		  	console.log(error)
-		  	console.log(response.statusCode)
+		  	return;
+		  } else {
+		   	console.log(response.statusCode)
 		  	return;
 		  }
 	}.bind( {res: res} ));
@@ -65,15 +73,17 @@ app.get("/catalogue/:id", function(req, res) {
 // Accounts
 app.get("/accounts/", function(req, res) {
 
-	request(accountsUrl + "?custId=1", function (error, response, body) {
+	request(accountsUrl + "?custId=" + req.params.custId, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 		    console.log(body);
 			res.writeHeader(200);
 			res.write(body);
 			res.end()
-		  } else {
+		  } else if (error != null ){
 		  	console.log(error)
-		  	console.log(response.statusCode)
+		  	return;
+		  } else {
+		   	console.log(response.statusCode)
 		  	return;
 		  }
 	}.bind( {res: res} ));
@@ -87,9 +97,11 @@ app.get("/accounts/:id", function(req, res) {
 			res.writeHeader(200);
 			res.write(body);
 			res.end()
-		  } else {
+		  } else if (error != null ){
 		  	console.log(error)
-		  	console.log(response.statusCode)
+		  	return;
+		  } else {
+		   	console.log(response.statusCode)
 		  	return;
 		  }
 	}.bind( {res: res} ));
@@ -98,16 +110,18 @@ app.get("/accounts/:id", function(req, res) {
 //Carts
 app.get("/carts", function(req, res) {
 	console.log("Request received: " + req.url);
-	request.get(cartsUrl + "/search/findByCustomerId?custId=1", function (error, response, body) {
+	request.get(cartsUrl + "/search/findByCustomerId?custId=" + req.params.custId, function (error, response, body) {
 		console.log("Response received from carts.");
 		if (!error && response.statusCode == 200) {
 		    // console.log(body);
 			res.writeHeader(200);
 			res.write(body);
 			res.end()
-		  } else {
+		  } else if (error != null ){
 		  	console.log(error)
-		  	console.log(response.statusCode)
+		  	return;
+		  } else {
+		   	console.log(response.statusCode)
 		  	return;
 		  }
 	}.bind( {res: res} ));
@@ -142,6 +156,12 @@ app.get("/carts/:cartId", function(req, res) {
 		}
 	],
 	function(err, result) {
+		if (err) {
+			console.log(err);
+			res.writeHeader(400);
+			res.end();
+			return;
+		}
 		res.writeHeader(200);
 		// res.writeJs(result._embedded.items);
 		res.end(JSON.stringify(result._embedded.items))
@@ -191,6 +211,12 @@ app.post("/carts/:cartId/items", function(req, res) {
 		}
 	],
 	function(err, result) {
+		if (err) {
+			console.log(err);
+			res.writeHeader(400);
+			res.end('Error');
+			return;
+		}
 		res.writeHeader(200);
 		res.write(JSON.stringify(result));
 		res.end()
@@ -223,7 +249,7 @@ app.post("/orders", function(req, res) {
 			});
 		},
 		function(arg1, callback) {
-			request.get(cartsUrl + "/search/findByCustomerId?custId=1", function (error, response, body) {
+			request.get(cartsUrl + "/search/findByCustomerId?custId=" + req.body.customer, function (error, response, body) {
 				if (error) {
 					console.log(error);
 					callback(true);
@@ -237,6 +263,12 @@ app.post("/orders", function(req, res) {
 		}
 	],
 	function(err, result) {
+		if (err) {
+			console.log(err);
+			res.writeHeader(400);
+			res.end("" + err);
+			return;
+		}
 		res.writeHeader(200);
 		res.write(JSON.stringify(result));
 		res.end()
