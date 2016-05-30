@@ -35,7 +35,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	u, p, ok := r.BasicAuth()
 	if !ok {
 		fmt.Printf("No Authorization header present.\n")
-		w.WriteHeader(403)
+		w.WriteHeader(401)
 		return
 	}
 	
@@ -50,8 +50,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	// TODO lookup customer id via accounts service
 
-	// respond with customer id OR 403 not authorized
-	w.WriteHeader(403)
+	// respond with customer id OR 401 not authorized
+	w.WriteHeader(401)
 }
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {

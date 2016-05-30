@@ -14,16 +14,18 @@ var cartsUrl = "http://cart/carts";
 var ordersUrl = "http://orders/orders";
 var itemsUrl = "http://cart/items";
 var customersUrl = "http://accounts/customers";
+var loginUrl = "http://login/login";
 
 // TODO dev is set in docker containers...
-// if (app.get('env') == "development") {
-// 	catalogueUrl = "http://localhost:8084/catalogue";
-// 	accountsUrl = "http://localhost:8082/accounts";
-// 	cartsUrl = "http://localhost:8081/carts";
-// 	itemsUrl = "http://localhost:8081/items";
-// 	ordersUrl = "http://localhost:8083/orders";
-// 	customersUrl = "http://localhost:8082/customers";
-// }
+if (app.get('env') == "development") {
+	catalogueUrl = "http://localhost:8084/catalogue";
+	accountsUrl = "http://localhost:8082/accounts";
+	cartsUrl = "http://localhost:8081/carts";
+	itemsUrl = "http://localhost:8081/items";
+	ordersUrl = "http://localhost:8083/orders";
+	customersUrl = "http://localhost:8082/customers";
+ loginUrl = "http://localhost:8084/login";
+}
 
 // TODO Add logging
 
@@ -31,6 +33,35 @@ function handleError(res, reason, message, code) {
 	console.log("Error: " + reason);
 	res.status(code || 500).json({"error": message});
 }
+
+/**
+ * API
+ */
+
+// Login
+app.get("/login", function(req, res) {
+	console.log("Received login request: " + req);
+	var options = {
+	  headers: {
+	  	'Authorization': req.get('Authorization')
+	  },
+	  uri: loginUrl
+	};
+	request(options, function(error, response, body) {
+		if (!error && response.statusCode == 200) {
+		    console.log(body);
+			res.writeHeader(200);
+			res.write(body);
+			res.end()
+		} else if (error != null ){
+		  	console.log(error)
+		} else {
+		   	console.log(response.statusCode)
+		}
+		res.status(401);
+		res.end();
+	}.bind( {res: res} ));
+});
 
 // Catalogue
 app.get("/catalogue", function(req, res) {
