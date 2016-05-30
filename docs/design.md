@@ -17,11 +17,11 @@
     - GET /shipping/{id}
 - Accounts:
     - Create address:
-        - curl -XPOST -H "Content-type: application/json" localhost:8080/addresses -d '{"street": "my road", "number": "3", "country": "UK", "city": "London"}'
+        - curl -XPOST -H "Content-type: application/json" http://accounts/addresses -d '{"street": "my road", "number": "3", "country": "UK", "city": "London"}'
     - Create card: 
-        - curl -XPOST -H "Content-type: application/json" localhost:8080/cards -d '{"longNum": "5429804235432", "expires": "04/16", "ccv": "432"}'
+        - curl -XPOST -H "Content-type: application/json" http://accounts/cards -d '{"longNum": "5429804235432", "expires": "04/16", "ccv": "432"}'
     - Create customer:
-        - curl -XPOST -H "Content-type: application/json" localhost:8080/customers -d '{"firstName": "alice", "lastName": "Green", "addresses": ["http://localhost:8080/addresses/2"], "cards": ["http://localhost:8080/cards/2"]}'
+        - curl -XPOST -H "Content-type: application/json" http://accounts/customers -d '{"firstName": "alice", "lastName": "Green", "addresses": ["http://accounts/addresses/0"], "cards": ["http://accounts/cards/0"]}'
     - GET /customers/{id}
     - Get addresses for customer
         - GET /customers/{id}/addresses
@@ -29,7 +29,7 @@
     - No username/password functionality. Customer id should be referenced from login service.
 - Cart
     - Create cart    
-        - POST /carts 
+        - curl -XPOST -H "Content-type: application/json" http://cart/carts -d '{"customerId": 1}' 
     - Get/remove/update cart
         - GET/DELETE/PUT /carts/{id}
     - Get cart for customerId (empty array if doesn't exist)
@@ -37,15 +37,15 @@
     - Get items in cart
         - GET /carts/{id}/items
     - To add items to the cart, create a new item, then add the link to the cart. Orphaned items will be deleted.
-        - curl -XPOST -H 'Content-type: application/json' http://localhost:8080/items -d '{"itemId": "three", "quantity": 4 }'
-        - curl -v -X POST -H "Content-Type: text/uri-list" -d "http://localhost:8080/items/3" http://localhost:8080/carts/1/items
+        - curl -XPOST -H 'Content-type: application/json' http://cart/items -d '{"itemId": "three", "quantity": 4 }'    
+        - curl -v -X POST -H "Content-Type: text/uri-list" -d "http://cart/items/27017283435201488713382769171" http://cart/carts/27017282808012190207258014226/items
     - Remove item from cart
         - curl -XDELETE http://localhost:8080/carts/2/items/4
     - Update quantities:
         - curl -XPATCH -H 'Content-type: application/json' http://localhost:8080/items/5 -d '{"quantity": 100}'
 - Orders
     - Create new order
-        - curl -XPOST -H 'Content-type: application/json' http://orders/orders -d '{"customer": "http://accounts/customer/1", "address": "http://accounts/address/1", "card": "http://accounts/card/1", "items": "http://cart/carts/1/items"}
+        - curl -XPOST -H 'Content-type: application/json' http://orders/orders -d '{"customer": "http://accounts/customers/27017261685533885656544909042", "address": "http://accounts/addresses/27017261685533885656544909040", "card": "http://accounts/cards/27017261685533885656544909041", "items": "http://cart/carts/27017282808012190207258014226/items", "customerId": 27017261685533885656544909042}'
     - GET/PATCH/DELETE /orders/{id}
     - Find orders by customer ID:
         - curl http://orders/orders/search/customerId?custId=1
