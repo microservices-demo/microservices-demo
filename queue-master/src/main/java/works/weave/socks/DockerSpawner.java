@@ -1,10 +1,10 @@
 package works.weave.socks;
 
-import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.core.command.PullImageResultCallback;
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
+import com.github.dockerjava.core.command.PullImageResultCallback;
 import org.springframework.stereotype.Component;
 
 

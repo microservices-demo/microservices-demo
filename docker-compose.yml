@@ -2,7 +2,7 @@ version: '2'
 
 services:
   front-end:
-    build: ./frontEnd
+    image: weaveworksdemos/front-end
     ports:
       - "8079"
     hostname: front-end
@@ -11,7 +11,7 @@ services:
       - front
       - internal
   catalogue:
-    build: ./catalogueService
+    image: weaveworksdemos/catalogue
     ports:
       - "80"
     hostname: catalogue
@@ -19,7 +19,7 @@ services:
     networks:
       - front
   accounts:
-    build: ./accounts
+    image: weaveworksdemos/accounts
     ports:
       - "80"
     hostname: accounts
@@ -35,7 +35,7 @@ services:
     networks:
       - internal
   cart:
-    build: ./cart
+    image: weaveworksdemos/cart
     ports:
       - "80"
     hostname: cart
@@ -51,7 +51,7 @@ services:
     networks:
       - internal
   orders:
-    build: ./orders
+    image: weaveworksdemos/orders
     ports:
       - "80"
     hostname: orders
@@ -67,7 +67,7 @@ services:
     networks:
       - internal
   shipping:
-    build: ./shipping
+    image: weaveworksdemos/shipping
     ports:
       - "80"
     hostname: shipping
@@ -75,7 +75,7 @@ services:
     networks:
       - internal
   queue-master:
-    build: ./queueMaster
+    image: weaveworksdemos/queue-master
     ports:
       - "80"
     hostname: queue-master
@@ -94,7 +94,7 @@ services:
     networks:
       - internal
   payment:
-    build: ./paymentService
+    image: weaveworksdemos/payment
     ports:
       - "80"
     hostname: payment
@@ -102,7 +102,7 @@ services:
     networks:
       - internal
   login:
-    build: ./login
+    image: weaveworksdemos/login
     ports:
       - "80"
     hostname: login

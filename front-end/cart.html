@@ -3,57 +3,65 @@
 <head>
     <title>Socks</title>
     <link rel="stylesheet" href="css/bootstrap.min.v4.css">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/u/bs/dt-1.10.12/datatables.min.css"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/u/bs/dt-1.10.12/datatables.min.css"/>
 
     <!-- Custom styles for this template -->
     <link href="css/jumbotron.css" rel="stylesheet">
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
 </head>
 <body>
-    <nav class="navbar navbar-static-top navbar-dark bg-inverse">
-      <a class="navbar-brand" href="#">Sox</a>
-      <ul class="nav navbar-nav">
+<nav class="navbar navbar-static-top navbar-dark bg-inverse">
+    <a class="navbar-brand" href="#">Sox</a>
+    <ul class="nav navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="/index.html">Home</a>
+            <a class="nav-link" href="/index.html">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Cart <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#">Cart <span
+                    class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Contact</a>
+            <a class="nav-link" href="#">Contact</a>
         </li>
-      </ul>
-    </nav>
+    </ul>
+</nav>
 
-    <div class="jumbotron">
-      <div class="container">
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" onclick="buy();">Buy now &raquo;</a></p>
+<div class="jumbotron">
+    <div class="container">
+        <p><a class="btn btn-primary btn-lg" href="#" role="button"
+              onclick="buy();">Buy now &raquo;</a></p>
 
-        <table id="example" class="table table-inverse display" cellspacing="0" width="100%">
+        <table id="example" class="table table-inverse display" cellspacing="0"
+               width="100%">
             <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Price</th>
-                    <th>Count</th>
-                </tr>
+            <tr>
+                <th>Id</th>
+                <th>Price</th>
+                <th>Count</th>
+            </tr>
             </thead>
         </table>
-      </div>
     </div>
-    <hr>
-    
-      <footer>
-        <p>&copy; Company 2015</p>
-      </footer>
-    </div> <!-- /container -->
+</div>
+<hr>
 
-    <script src="src/lib/jquery-2.2.0.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/u/bs/dt-1.10.12/datatables.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="src/lib/tether.min.js"></script>
-    <script src="src/lib/bootstrap.min.v4.js"></script>
-    <script>
+<footer>
+    <p>&copy; Company 2015</p>
+</footer>
+</div> <!-- /container -->
+
+<script src="src/lib/jquery-2.2.0.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/u/bs/dt-1.10.12/datatables.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')
+</script>
+<script src="src/lib/tether.min.js"></script>
+<script src="src/lib/bootstrap.min.v4.js"></script>
+<script>
         $.ajaxSetup({
             contentType: "application/json; charset=utf-8"
         });
@@ -96,6 +104,7 @@
                     }
                 });
         }
-    </script>
+
+</script>
 </body>
 </html>
