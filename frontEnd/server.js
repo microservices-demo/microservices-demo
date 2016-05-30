@@ -241,14 +241,53 @@ app.post("/orders", function(req, res) {
 				cardLink = jsonBody._links.cards.href;
 				var order = {
 					"customer": customerlink,
-					"address": addressLink,
-					"card": cardLink,
+					"address": null,
+					"card": null,
 					"items": null
 				}
+				callback(null, order, addressLink, cardLink);
+			});
+		},
+		function(order, addressLink, cardLink, callback) {
+			async.parallel([
+				function(callback) {
+					console.log("GET Request to: " + addressLink);
+					request.get(addressLink, function(error, response, body) {
+						if (error) {
+							console.log(error);
+							callback(true);
+							return;
+						}
+						console.log("Received response: " + JSON.stringify(body));
+						jsonBody = JSON.parse(body);
+						order.address = jsonBody._embedded.address[0]._links.self.href;
+						callback();
+					});
+				},
+				function(callback) {
+					console.log("GET Request to: " + cardLink);
+					request.get(cardLink, function(error, response, body) {
+						if (error) {
+							console.log(error);
+							callback(true);
+							return;
+						}
+						console.log("Received response: " + JSON.stringify(body));
+						jsonBody = JSON.parse(body);
+						order.card = jsonBody._embedded.card[0]._links.self.href;
+						callback();
+					});
+				}
+			], function(err, result) {
+				if (err) {
+					console.log(err);
+					return;
+				}
+				console.log(result);
 				callback(null, order);
 			});
 		},
-		function(arg1, callback) {
+		function(order, callback) {
 			request.get(cartsUrl + "/search/findByCustomerId?custId=" + req.body.customer, function (error, response, body) {
 				if (error) {
 					console.log(error);
@@ -257,8 +296,26 @@ app.post("/orders", function(req, res) {
 				}
 				console.log("Received response: " + JSON.stringify(body));
 				jsonBody = JSON.parse(body);
-				arg1.items = jsonBody._embedded.carts[0]._links.items.href;
-				callback(null, arg1);
+				order.items = jsonBody._embedded.carts[0]._links.items.href;
+				callback(null, order);
+			});
+		},
+		function(order, callback) {
+			var options = {
+			  uri: ordersUrl,
+			  method: 'POST',
+			  json: true,
+			  body: order
+			};
+			console.log("Posting Order: " + order);
+			request(options, function(error, response, body) {
+				if (error) {
+					console.log(error);
+					callback(true);
+					return;
+				}
+				// Check for error code
+				callback(null, body);
 			});
 		}
 	],
