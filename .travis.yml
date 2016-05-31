@@ -1,0 +1,23 @@
+language: java
+sudo: required
+services:
+  - docker
+jdk:
+  - oraclejdk8
+
+after_success:
+  - export MODULES="accounts cart catalogue front-end login orders payment queue-master shipping"
+  - export GROUP=weaveworksdemos
+  - cd $TRAVIS_BUILD_DIR
+  - echo "Building java services"
+  - mvn -DskipTests package
+
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "snapshot"; else echo $TRAVIS_BRANCH ; fi`
+  - for module in ${MODULES}; do
+  -   export REPO=${GROUP}/${module}
+  -   build -t ${REPO}:$COMMIT ./${module}
+  -   docker tag $REPO:$COMMIT $REPO:$TAG
+  -   docker push $REPO:$TAG
+  -   if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; fi
+  - done
