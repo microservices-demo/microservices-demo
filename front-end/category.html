@@ -52,8 +52,8 @@ _________________________________________________________ -->
         </div>
         <div class="col-md-6" data-animate="fadeInDown">
             <ul class="menu">
-                <li><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
-                </li>
+                <li id="login"><a href="#" data-toggle="modal" data-target="#login-modal">Login</a></li>
+                <li id="howdy"></li>
                 <!--<li><a href="register.html">Register</a></li>-->
                 <!--<li><a href="contact.html">Contact</a></li>-->
                 <!--<li><a href="#">Recently viewed</a></li>-->
@@ -762,6 +762,13 @@ _________________________________________________________ -->
                 $.ajaxSetup({
                     contentType: "application/json; charset=utf-8"
                 });
+
+                if ($.cookie('logged_in') != null && $.cookie('logged_in') != "") {
+                    $("#login").remove()
+                    $("#howdy").append('<a href="#">Howdy ' + $.cookie('logged_in') + '</a>')
+                } else {
+                    $("#howdy").remove()
+                }
 
                 $.getJSON('/catalogue', { get_param: 'value' }, function(data) {
                     $.each(data, function(index, element) {

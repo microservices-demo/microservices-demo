@@ -20,13 +20,13 @@ var loginUrl = "http://login/login";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-	catalogueUrl = "http://localhost:8084/catalogue";
+	catalogueUrl = "http://192.168.99.101:32805/catalogue";
 	accountsUrl = "http://localhost:8082/accounts";
 	cartsUrl = "http://localhost:8081/carts";
 	itemsUrl = "http://localhost:8081/items";
 	ordersUrl = "http://localhost:8083/orders";
 	customersUrl = "http://localhost:8082/customers";
- 	loginUrl = "http://localhost:8084/login";
+	loginUrl = "http://192.168.99.102:32785/login";
 }
 
 // TODO Add logging
@@ -51,12 +51,14 @@ app.get("/login", function(req, res) {
 	  },
 	  uri: loginUrl
 	};
+	res.status(200);
 	request(options, function(error, response, body) {
-		if (!error && response.statusCode == 200) {
+		if (!error && response.statusCode == 200 && body != null && body != "") {
 		    console.log(body);
 			customerId = JSON.parse(body).id;
-			res.cookie(cookie_name , customerId, {maxAge : 3600}).send('Cookie is set');
-			// res.writeHeader(200);
+			console.log(customerId);
+			res.cookie(cookie_name, customerId, {maxAge: 3600000}).send('Cookie is set');
+			console.log("Sent cookies.")
 			// res.write(body);
 			// res.end()
 			return

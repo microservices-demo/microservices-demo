@@ -53,8 +53,8 @@ _________________________________________________________ -->
         </div>
         <div class="col-md-6" data-animate="fadeInDown">
             <ul class="menu">
-                <li><a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
-                </li>
+                <li id="login"><a href="#" data-toggle="modal" data-target="#login-modal">Login</a></li>
+                <li id="howdy"></li>
                 <!--<li><a href="register.html">Register</a></li>-->
                 <!--<li><a href="contact.html">Contact</a></li>-->
                 <!--<li><a href="#">Recently viewed</a></li>-->
@@ -72,10 +72,10 @@ _________________________________________________________ -->
                     <h4 class="modal-title" id="Login">Customer login</h4>
                 </div>
                 <div class="modal-body">
-                    <form action="customer-orders.html" method="post">
+                    <form action="index.html">
                         <div class="form-group">
                             <input type="text" class="form-control"
-                                   id="email-modal" placeholder="email">
+                                   id="username-modal" placeholder="username">
                         </div>
                         <div class="form-group">
                             <input type="password" class="form-control"
@@ -83,7 +83,7 @@ _________________________________________________________ -->
                         </div>
 
                         <p class="text-center">
-                            <button class="btn btn-primary"><i
+                            <button class="btn btn-primary" onclick="login()"><i
                                     class="fa fa-sign-in"></i> Log in
                             </button>
                         </p>
@@ -767,7 +767,25 @@ _________________________________________________________ -->
 <script src="js/bootstrap-hover-dropdown.js"></script>
 <script src="js/owl.carousel.min.js"></script>
 <script src="js/front.js"></script>
+<script src="js/js.cookie.js"></script>
+<script src="js/client.js"></script>
+<script>
 
+    $(document).ready(function () {
+        $.ajaxSetup({
+            contentType: "application/json; charset=utf-8"
+        });
+
+        console.log("Logged_in: " + $.cookie('logged_in'));
+        if ($.cookie('logged_in') != null && $.cookie('logged_in') != "") {
+            $("#login").remove()
+            $("#howdy").append('<a href="#">Howdy ' + $.cookie('logged_in') + '</a>')
+        } else {
+            $("#howdy").remove()
+        }
+
+    })
+</script>
 
 </body>
 
