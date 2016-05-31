@@ -29,6 +29,11 @@ after_success:
       fi;
       echo "Pushing $REPO:$COMMIT";
       docker push $REPO:$COMMIT;
+      DOCKER_PUSH=$(echo $?);
+      if [[ "$DOCKER_PUSH" > 0 ]] ; then
+        echo "Docker push failed with exit code $DOCKER_PUSH";
+        exit 1;
+      fi;
       if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$COMMIT $REPO:snapshot; echo "Pushing $REPO:snapshot"; docker push $REPO:snapshot; fi;
       if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; fi;
     done;
