@@ -21,10 +21,12 @@
     - Create card: 
         - curl -XPOST -H "Content-type: application/json" http://accounts/cards -d '{"longNum": "5429804235432", "expires": "04/16", "ccv": "432"}'
     - Create customer:
-        - curl -XPOST -H "Content-type: application/json" http://accounts/customers -d '{"firstName": "alice", "lastName": "Green", "addresses": ["http://accounts/addresses/0"], "cards": ["http://accounts/cards/0"]}'
+        - curl -XPOST -H "Content-type: application/json" http://accounts/customers -d '{"firstName": "alice", "lastName": "Green", "username": "mrsAlice", "addresses": ["http://accounts/addresses/0"], "cards": ["http://accounts/cards/0"]}'
     - GET /customers/{id}
     - Get addresses for customer
         - GET /customers/{id}/addresses
+    - Find customers for username
+        - curl http://accounts/customers/search/findByUsername?username=bob  
     - PUT/PATCH/DELETE all work too.
     - No username/password functionality. Customer id should be referenced from login service.
 - Cart
