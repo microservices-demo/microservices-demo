@@ -13,14 +13,12 @@ after_success:
   - mvn -DskipTests package
 
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "snapshot"; else echo $TRAVIS_BRANCH ; fi`
   - for module in ${MODULES}; do
       export REPO=${GROUP}/${module};
       echo "Building ${REPO}:$COMMIT";
       docker build -t ${REPO}:$COMMIT ./${module};
-      echo "Tagging $REPO:$TAG";
-      docker tag $REPO:$COMMIT $REPO:$TAG;
-      echo "Pushing $REPO:$TAG";
-      docker push $REPO:$TAG;
+      echo "Pushing $REPO:$COMMIT";
+      docker push $REPO:$COMMIT;
+      if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$COMMIT $REPO:snapshot; echo "Pushing $REPO:snapshot"; docker push $REPO:snapshot; fi;
       if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; fi;
     done;
