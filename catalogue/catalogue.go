@@ -34,9 +34,10 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(false)
 	router.HandleFunc("/catalogue", catalogueHandler)
+	router.HandleFunc("/catalogue/size", sizeHandler)
 	router.HandleFunc("/catalogue/{catId}", itemHandler)
-	router.HandleFunc("/images", imageHandler)
 	router.HandleFunc("/tags/{tag}", tagHandler)
+	router.PathPrefix("/images/").Handler(http.StripPrefix("/images/", http.FileServer(http.Dir("./images/"))))
 	fmt.Printf("Catalogue service running on port %s\n", port)
 	http.ListenAndServe(":" + port, router)
 }
@@ -104,14 +105,18 @@ func itemHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(404)
 }
 
-func imageHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(501)
-}
+// func imageHandler(w http.ResponseWriter, r *http.Request) {
+// 	w.WriteHeader(501)
+// }
 
 func tagHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(501)
 }
 
+func sizeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("{\"size\":" + strconv.Itoa(len(catalogue)) + "}"))
+}
 func loadCatalogue(file string) {
 	f, err := ioutil.ReadFile(file)
     if err != nil {
