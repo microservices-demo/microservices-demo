@@ -20,20 +20,20 @@ after_success:
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
   - for module in ${MODULES}; do
       export REPO=${GROUP}/${module};
-      echo "Building ${REPO}:$COMMIT";
-      docker build -t ${REPO}:$COMMIT ./${module};
+      echo "Building ${REPO}:$TRAVIS_COMMIT";
+      docker build -t ${REPO}:$TRAVIS_COMMIT ./${module};
       DOCKER_EXIT=$(echo $?);
       if [[ "$DOCKER_EXIT" > 0 ]] ; then
         echo "Docker build failed with exit code $DOCKER_EXIT";
         exit 1;
       fi;
-      echo "Pushing $REPO:$COMMIT";
-      docker push $REPO:$COMMIT;
+      echo "Pushing $REPO:$TRAVIS_COMMIT";
+      docker push $REPO:$TRAVIS_COMMIT;
       DOCKER_PUSH=$(echo $?);
       if [[ "$DOCKER_PUSH" > 0 ]] ; then
         echo "Docker push failed with exit code $DOCKER_PUSH";
         exit 1;
       fi;
-      if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$COMMIT $REPO:snapshot; echo "Pushing $REPO:snapshot"; docker push $REPO:snapshot; fi;
-      if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; fi;
+      if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:snapshot; echo "Pushing $REPO:snapshot"; docker push $REPO:snapshot; fi;
+      if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; docker push $REPO:; fi;
     done;
