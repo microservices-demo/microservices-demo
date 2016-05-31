@@ -57,7 +57,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	// TODO lookup customer id via accounts service
 	if dev {
-		customerUrl = "http://localhost:8082/customers/findByUsername"
+		customerUrl = "http://localhost:8082/customers/search/findByUsername"
 	}
 	res, err := http.Get(customerUrl + "?username=" + u)
 	if err != nil {

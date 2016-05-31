@@ -18,16 +18,16 @@ var itemsUrl = "http://cart/items";
 var customersUrl = "http://accounts/customers";
 var loginUrl = "http://login/login";
 
-// TODO dev is set in docker containers...
-// if (app.get('env') == "development") {
- 	catalogueUrl = "http://192.168.99.101:32805/catalogue";
-// 	accountsUrl = "http://localhost:8082/accounts";
-// 	cartsUrl = "http://localhost:8081/carts";
-// 	itemsUrl = "http://localhost:8081/items";
-// 	ordersUrl = "http://localhost:8083/orders";
-// 	customersUrl = "http://localhost:8082/customers";
-//  loginUrl = "http://localhost:8084/login";
-// }
+console.log(app.get('env'));
+if (app.get('env') == "development") {
+	catalogueUrl = "http://localhost:8084/catalogue";
+	accountsUrl = "http://localhost:8082/accounts";
+	cartsUrl = "http://localhost:8081/carts";
+	itemsUrl = "http://localhost:8081/items";
+	ordersUrl = "http://localhost:8083/orders";
+	customersUrl = "http://localhost:8082/customers";
+ 	loginUrl = "http://localhost:8084/login";
+}
 
 // TODO Add logging
 
