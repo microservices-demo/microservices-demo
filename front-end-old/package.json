@@ -1,7 +1,7 @@
 {
   "name": "weave-demo-frontend",
   "version": "0.0.1",
-  "description": "Front end for weave demo application.",
+  "description": "Front end for micro serivces demo application.",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
