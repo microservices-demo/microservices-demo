@@ -14,10 +14,11 @@ after_success:
 
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "snapshot"; else echo $TRAVIS_BRANCH ; fi`
-  - for module in ${MODULES}; do
-  -   export REPO=${GROUP}/${module}
-  -   build -t ${REPO}:$COMMIT ./${module}
-  -   docker tag $REPO:$COMMIT $REPO:$TAG
-  -   docker push $REPO:$TAG
-  -   if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; fi
-  - done
+    for module in ${MODULES}; do
+      echo "Building $module"
+      export REPO=${GROUP}/${module}
+      docker build -t ${REPO}:$COMMIT ./${module}
+      docker tag $REPO:$COMMIT $REPO:$TAG
+      docker push $REPO:$TAG
+      if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; fi
+    done
