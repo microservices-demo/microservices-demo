@@ -3,10 +3,12 @@ var express = require('express');
 var path = require("path");
 var bodyParser = require("body-parser");
 var async = require("async");
+var cookieParser = require("cookie-parser");
 
 var app = express();
 app.use(express.static(__dirname + "/"));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 var catalogueUrl = "http://catalogue/catalogue";
 var accountsUrl = "http://accounts/accounts";
@@ -17,6 +19,7 @@ var customersUrl = "http://accounts/customers";
 var loginUrl = "http://login/login";
 
 // TODO dev is set in docker containers...
+<<<<<<< Updated upstream:front-end/server.js
 // if (app.get('env') == "development") {
 // 	catalogueUrl = "http://localhost:8084/catalogue";
 // 	accountsUrl = "http://localhost:8082/accounts";
@@ -26,6 +29,18 @@ var loginUrl = "http://login/login";
 // 	customersUrl = "http://localhost:8082/customers";
 //  loginUrl = "http://localhost:8084/login";
 // }
+=======
+console.log(app.get('env'));
+if (app.get('env') == "development") {
+	catalogueUrl = "http://localhost:8084/catalogue";
+	accountsUrl = "http://localhost:8082/accounts";
+	cartsUrl = "http://localhost:8081/carts";
+	itemsUrl = "http://localhost:8081/items";
+	ordersUrl = "http://localhost:8083/orders";
+	customersUrl = "http://localhost:8082/customers";
+ 	loginUrl = "http://localhost:8084/login";
+}
+>>>>>>> Stashed changes:frontEnd/server.js
 
 // TODO Add logging
 
@@ -33,6 +48,8 @@ function handleError(res, reason, message, code) {
 	console.log("Error: " + reason);
 	res.status(code || 500).json({"error": message});
 }
+
+var cookie_name = 'logged_in';
 
 /**
  * API
@@ -50,9 +67,12 @@ app.get("/login", function(req, res) {
 	request(options, function(error, response, body) {
 		if (!error && response.statusCode == 200) {
 		    console.log(body);
-			res.writeHeader(200);
-			res.write(body);
-			res.end()
+			customerId = JSON.parse(body).id;
+			res.cookie(cookie_name , customerId, {maxAge : 3600}).send('Cookie is set');
+			// res.writeHeader(200);
+			// res.write(body);
+			// res.end()
+			return
 		} else if (error != null ){
 		  	console.log(error)
 		} else {
@@ -104,7 +124,14 @@ app.get("/catalogue/:id", function(req, res) {
 // Accounts
 app.get("/accounts/", function(req, res) {
 
-	request(accountsUrl + "?custId=" + req.params.custId, function (error, response, body) {
+	var custId = req.params.custId;
+	if (!custId) {
+		custId = req.cookies.logged_in;	
+	}
+	if (!custId) {
+		custId = "1";
+	}
+	request(accountsUrl + "?custId=" + custId, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 		    console.log(body);
 			res.writeHeader(200);
@@ -141,7 +168,14 @@ app.get("/accounts/:id", function(req, res) {
 //Carts
 app.get("/carts", function(req, res) {
 	console.log("Request received: " + req.url);
-	request.get(cartsUrl + "/search/findByCustomerId?custId=" + req.params.custId, function (error, response, body) {
+	var custId = req.params.custId;
+	if (!custId) {
+		custId = req.cookies.logged_in;	
+	}
+	if (!custId) {
+		custId = "1";
+	}
+	request.get(cartsUrl + "/search/findByCustomerId?custId=" + custId, function (error, response, body) {
 		console.log("Response received from carts.");
 		if (!error && response.statusCode == 200) {
 		    // console.log(body);

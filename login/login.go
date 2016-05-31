@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+var customerUrl = "http://accounts/customers/findByUsername"
 var dev bool
 var port string
 var users []User
@@ -41,17 +42,42 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	
 	fmt.Printf("Lookup for user %s and password: %s.\n", u, p)
 
+	found := false
 	for _, user := range users {
 		if user.Name == u && user.Password == p {
-			w.WriteHeader(200)
-			return
+			found = true
 		}
 	}
 
-	// TODO lookup customer id via accounts service
+	if !found {
+		fmt.Printf("User not authorized.\n")
+		w.WriteHeader(401)
+		return
+	}
 
+	// TODO lookup customer id via accounts service
+	if dev {
+		customerUrl = "http://localhost:8082/customers/findByUsername"
+	}
+	res, err := http.Get(customerUrl + "?username=" + u)
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+	decoder := json.NewDecoder(res.Body)
+	var c Customer
+	err = decoder.Decode(&c)
+	if err != nil {
+		panic(err)
+	}
+	js, err := json.Marshal(c)
+	if err != nil {
+		panic(err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
 	// respond with customer id OR 401 not authorized
-	w.WriteHeader(401)
+	w.WriteHeader(200)
 }
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,4 +102,11 @@ type User struct {
 	Id string `json:"id"`
 	Name string `json:"name"`
 	Password string `json:"password"`
+}
+
+type Customer struct {
+	Id int `json:"id"`
+	FirstName string `json:"firstName"`
+    LastName string `json:"lastName"`
+    Username string `json:"username"`
 }

@@ -9,6 +9,7 @@ RUN npm install
 
 # Prepare app directory
 COPY . /usr/src/app
+ENV NODE_ENV "production"
 
 EXPOSE 8079
 
