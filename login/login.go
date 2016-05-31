@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"errors"
+	"strings"
 )
 
-var customerUrl = "http://accounts/customers/findByUsername"
+var customerUrl = "http://accounts/customers/search/findByUsername"
 var dev bool
 var port string
 var users []User
@@ -55,7 +57,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO lookup customer id via accounts service
 	if dev {
 		customerUrl = "http://localhost:8082/customers/search/findByUsername"
 	}
@@ -64,13 +65,38 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	defer res.Body.Close()
+	fmt.Printf("Body: %s", res.Body)
 	decoder := json.NewDecoder(res.Body)
-	var c Customer
-	err = decoder.Decode(&c)
+
+	var s Search
+	err = decoder.Decode(&s)
 	if err != nil {
 		panic(err)
 	}
-	js, err := json.Marshal(c)
+	fmt.Printf("Parsed: %s", s)
+
+    if len(s.Embedded.Customers) < 1 {
+        panic(errors.New("No customers found for that username."))
+    }
+
+	c := s.Embedded.Customers[0]
+	fmt.Printf("Customer: %s", c)
+
+    customer := c.Links.Customer.Href
+	fmt.Printf("Customer link: %s", customer)
+
+    idSplit := strings.Split(customer, "/")
+    id := idSplit[len(idSplit) - 1]
+	fmt.Printf("Customer id: %s", id)
+
+    var response Response
+    response.Username = c.Username
+    response.Customer = customer
+    response.Id = id
+
+	js, err := json.Marshal(response)
+    fmt.Printf("Marshalled: %s", js)
+
 	if err != nil {
 		panic(err)
 	}
@@ -104,9 +130,29 @@ type User struct {
 	Password string `json:"password"`
 }
 
+type Search struct {
+    Embedded Embedded `json:"_embedded"`
+}
+
+type Embedded struct {
+    Customers []Customer `json:"customer"`
+}
+
 type Customer struct {
-	Id int `json:"id"`
-	FirstName string `json:"firstName"`
-    LastName string `json:"lastName"`
     Username string `json:"username"`
+    Links Links  `json:"_links"`
+}
+
+type Links struct {
+    Customer Link `json:"customer"`
+}
+
+type Link struct {
+    Href string `json:"href"`
+}
+
+type Response struct {
+    Username string `json:"username"`
+    Customer string `json:"customer"`
+    Id  string  `json:"id"`
 }

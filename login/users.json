@@ -1,6 +1,11 @@
 [
   {
     "id": "",
+    "name": "user",
+    "password": "password"
+  },
+  {
+    "id": "",
     "name": "Eve_Berger",
     "password": "duis"
   },
