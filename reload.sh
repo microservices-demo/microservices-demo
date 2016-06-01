@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#Stops, removes, builds and starts a single docker-compose service/module.
 #Usage: ./reload.sh [service]
 # service = name of the module/service you want to rebuild and load
 

@@ -53,7 +53,7 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 	pageCount := 1
 	if len(page) > 0 {
 		pageCount, _ = strconv.Atoi(page)
-	} 
+	}
 	perPage := 10
 	if len(size) > 0 {
 		perPage, _ = strconv.Atoi(size)
@@ -62,7 +62,7 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 	if len(sortField) > 0 {
 		sortOn = strings.ToLower(sortField)
 	}
-	
+
 	var sorted []Sock = localizeUrl(filter(catalogue, tagField),  "http://" + r.Host)
 
 	switch sortOn {
@@ -79,9 +79,14 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 		case "tag":
 			sort.Sort(TagSorter(sorted))
 	}
-	end := (pageCount * perPage) 
+	end := (pageCount * perPage)
+	if (end > len(sorted)) {
+	    end = len(sorted)
+	}
 	start := end - perPage
-
+	if (start < 0) {
+	    start = 0
+	}
 	var data []byte
 	var err error
 
@@ -148,17 +153,33 @@ func filter(socks []Sock, tagString string) []Sock {
 	var r []Sock
 	tags := strings.Split(tagString, ",")
 	for _, s := range socks {
-		SockLoop:
-		for _, t := range s.Tags {
-			for _, m := range tags {
-				if t == m {
-					r = append(r, s)
-					break SockLoop
+        var count []string
+        for _, m := range tags {
+            TAGLABEL:
+            for _, t := range s.Tags {
+                fmt.Printf("sock tag: %s, current tag:%s\n", t, m)
+				if t == m && !contains(count, t) {
+                    fmt.Printf("appending: %s\n", m)
+                    count = append(count, t)
+                    break TAGLABEL
 				}
 			}
 		}
+        fmt.Printf("len(count) %d == len(tags) %d\n", len(count), len(tags))
+		if (len(count) == len(tags)) {
+			r = append(r, s)
+		}
 	}
 	return r
+}
+
+func contains(s []string, e string) bool {
+    for _, a := range s {
+        if a == e {
+            return true
+        }
+    }
+    return false
 }
 
 type Sock struct {
