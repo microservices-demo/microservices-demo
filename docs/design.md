@@ -4,12 +4,25 @@
 # API
 - Catalogue
     - GET /catalogue
+        - returns all items
+        - Optional query parameters:
+            - page: page number to return (default is 1)
+            - size: number of items per page (default is 10)
+            - sort: field on which to sort (default is 'id')
+            - tags: tags to filter on (default is none)
     - GET /catalogue/{id}
-    - GET /catalogue/search?query=[search-query]
-    - PUT /catalogue/{id} (update count)
+        - returns specific item
+    - GET /catalogue/size
+        - returns number of items in catalogue
+    - GET /tags
+        - returns list of tags
+    - GET /images/{imageId}
+        - returns image
+    - [Not Implemented] GET /catalogue/search?query=[search-query]
+    - [Not Implemented] PUT /catalogue/{id} (update count)
 - Login
-    - GET /login (query params or basic auth?)
-        - returns customer id
+    - GET /login (Uses Basic Authentication)
+        - returns customer object
 - Payment
     - GET /paymentAuth
 - Shipping
