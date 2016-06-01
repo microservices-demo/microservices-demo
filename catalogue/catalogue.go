@@ -157,15 +157,12 @@ func filter(socks []Sock, tagString string) []Sock {
         for _, m := range tags {
             TAGLABEL:
             for _, t := range s.Tags {
-                fmt.Printf("sock tag: %s, current tag:%s\n", t, m)
 				if t == m && !contains(count, t) {
-                    fmt.Printf("appending: %s\n", m)
                     count = append(count, t)
                     break TAGLABEL
 				}
 			}
 		}
-        fmt.Printf("len(count) %d == len(tags) %d\n", len(count), len(tags))
 		if (len(count) == len(tags)) {
 			r = append(r, s)
 		}
