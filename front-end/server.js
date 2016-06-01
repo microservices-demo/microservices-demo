@@ -76,11 +76,43 @@ app.get("/login", function(req, res, next) {
 	}.bind( {res: res} ));
 });
 
+function handleError(error, response) {
+	if (error != null || response.statusCode >= 400) {
+		if (response != null) {
+			console.error("Received error: Response = " + response.statusCode + ", Error = " + error);
+		} else {
+			console.error("Received error: Error = " + error);
+		}
+		return true;
+	}
+	return false;
+}
+
+function handleSuccess(res, body) {
+	console.log(body);
+	res.writeHeader(200);
+	res.write(body);
+	res.end()
+}
+
+function simpleHttpRequest(url, res, next) {
+	console.log("GET " + url);
+	request.get(url, function (error, response, body) {
+		if (handleError(error, response)) {
+			return next(error);
+		} else {
+			handleSuccess(res, body)
+		}
+	}.bind({res: res}));
+}
+
 // Catalogue
 app.get("/catalogue*", function(req, res, next) {
 	console.log("Received request: " + req);
 	request("http://localhost:8081" + req.url, function (error, response, body) {
-		if (error) { return next(error); }
+		if (handleError(error, response)) {
+			return next(error);
+		}
 		if (response.statusCode == 200) {
 		    console.log(body);
 			res.writeHeader(200);
@@ -96,102 +128,157 @@ app.get("/catalogue*", function(req, res, next) {
 });
 
 app.get("/tags", function(req, res, next) {
-	request(tagsUrl, function (error, response, body) {
-		if (error) { return next(error); }
-		if (response.statusCode == 200) {
-		    console.log(body);
-			res.writeHeader(200);
-			res.write(body);
-			res.end();
-		  } else {
-		   	console.log(response.statusCode);
-		   	res.status(response.statusCode);
-		   	res.end();
-		  	return;
-		  }
-	}.bind( {res: res} ));
+	simpleHttpRequest(tagsUrl, res, next);
 });
 
 app.get("/images/:id", function(req, res, next) {
-	request(imagesUrl + "/" + req.params.id, function (error, response, body) {
-		if (error) { return next(error); }
-		if (response.statusCode == 200) {
-		    console.log(body);
-			res.writeHeader(200);
-			res.write(body);
-			res.end();
-		  } else {
-		   	console.log(response.statusCode);
-		   	res.status(response.statusCode);
-		   	res.end();
-		  	return;
-		  }
-	}.bind( {res: res} ));
+	simpleHttpRequest(imagesUrl + "/" + req.params.id, res, next);
 });
 
 app.get("/catalogue/:id", function(req, res, next) {
-
-	request(catalogueUrl + "/" + req.params.id, function (error, response, body) {
-		if (error) { return next(error); }
-		if (response.statusCode == 200) {
-		    console.log(body);
-			res.writeHeader(200);
-			res.write(body);
-			res.end();
-		  } else {
-		   	console.log(response.statusCode);
-		   	res.status(response.statusCode);
-		   	res.end();
-		  	return;
-		  }
-	}.bind( {res: res} ));
+	simpleHttpRequest(catalogueUrl + "/" + req.params.id, res, next);
 });
 
 // Accounts
-app.get("/accounts/", function(req, res, next) {
-
-	var custId = req.params.custId;
-	if (!custId) {
-		custId = req.cookies.logged_in;	
-	}
-	if (!custId) {
-		custId = "1";
-	}
-	request(accountsUrl + "?custId=" + custId, function (error, response, body) {
-		if (error) { return next(error); }
-		if (response.statusCode == 200) {
-		    console.log(body);
-			res.writeHeader(200);
-			res.write(body);
-			res.end();
-		  } else {
-		   	console.log(response.statusCode);
-		   	res.status(response.statusCode);
-		   	res.end();
-		  	return;
-		  }
-	}.bind( {res: res} ));
-});
-
-app.get("/accounts/:id", function(req, res, next) {
-
-	request(accountsUrl + "/" + req.params.id, function (error, response, body) {
-		if (error) { return next(error); }
-		if (response.statusCode == 200) {
-		    console.log(body);
-			res.writeHeader(200);
-			res.write(body);
-			res.end();
-		  } else {
-		   	console.log(response.statusCode);
-		  	res.status(response.statusCode);
-		  	res.end();
-		  	return;
-		  }
-	}.bind( {res: res} ));
-});
+// NOTE: I don't think we need accounts yet.
+// app.get("/accounts/", function(req, res, next) {
+//
+// 	var custId = req.params.custId;
+// 	if (!custId) {
+// 		custId = req.cookies.logged_in;
+// 	}
+// 	if (!custId) {
+// 		custId = "1";
+// 	}
+// 	simpleHttpRequest(accountsUrl + "?custId=" + custId, res, next);
+// });
+//
+// app.get("/accounts/:id", function(req, res, next) {
+//
+// 	request(accountsUrl + "/" + req.params.id, function (error, response, body) {
+// 		if (error) { return next(error); }
+// 		if (response.statusCode == 200) {
+// 		    console.log(body);
+// 			res.writeHeader(200);
+// 			res.write(body);
+// 			res.end();
+// 		  } else {
+// 		   	console.log(response.statusCode);
+// 		  	res.status(response.statusCode);
+// 		  	res.end();
+// 		  	return;
+// 		  }
+// 	}.bind( {res: res} ));
+// });
 
 //Carts
+// List items in cart for current logged in user.
+// TODO: Refactor this into async.waterfall method.
+app.get("/cart/items", function (req, res) {
+	console.log("Request received: " + req.url + ", " + req.query.custId);
+
+	// Check if logged in. Get customer Id
+	var custId = req.cookies.logged_in;
+
+	// TODO REMOVE THIS, SECURITY RISK
+	if (app.get('env') == "development" && req.query.custId != null) {
+		custId = req.query.custId;
+	}
+	if (!custId) {
+		console.warn("Cannot fetch cart. User not logged in.")
+		res.status(401);
+		res.end();
+		return
+	}
+	// If cart doesn't exist yet, create cart for this user
+	request.get(cartsUrl + "/search/findByCustomerId?custId=" + custId, function (error, response, body) {
+		if (!handleError(error, response)) {
+			console.log("Received response: " + JSON.stringify(body));
+			jsonBody = JSON.parse(body);
+			carts = jsonBody._embedded.carts;
+			if (carts.length == 0) {
+				console.log("Cart does not exist for: " + custId);
+				request.post(
+					{
+						uri: cartsUrl
+						, json: true
+						, body: {"customerId": parseInt(custId)}
+					}, function (error, response, body) {
+						if (response.statusCode == 201) {
+							console.log('New cart created for customerId: ' + custId)
+							// Get cart url
+							request.get(cartsUrl + "/search/findByCustomerId?custId=" + custId, function (error, response, body) {
+								var cartUrl = "";
+								if (!handleError(error, response)) {
+									console.log("Received response: " + JSON.stringify(body));
+									jsonBody = JSON.parse(body);
+									console.log(JSON.stringify(jsonBody._embedded.carts[0]._links));
+									cartUrl = jsonBody._embedded.carts[0]._links.cart.href;
+									getItems(cartUrl, res); // Return cart items
+								}
+							}.bind({res: res}))
+						} else {
+							console.log('error: ' + response.statusCode)
+							console.log(body)
+						}
+					}.bind({res: res}))
+			} else {
+				console.log("Cart already exists for customer id: " + custId);
+				// Get cart url
+				request.get(cartsUrl + "/search/findByCustomerId?custId=" + custId, function (error, response, body) {
+					var cartUrl = "";
+					if (!handleError(error, response)) {
+						console.log("Received response: " + JSON.stringify(body));
+						jsonBody = JSON.parse(body);
+						console.log(JSON.stringify(jsonBody._embedded.carts[0]._links));
+						cartUrl = jsonBody._embedded.carts[0]._links.cart.href;
+						getItems(cartUrl, res); // Return cart items
+					}
+				}.bind({res: res}))
+			}
+
+		}
+	}.bind({res: res}));
+})
+
+function getItems(cartUrl, rest) {
+	async.waterfall([
+			function (callback) {
+				request.get(cartsUrl + "/" + req.params.cartId, function (error, response, body) {
+					if (error) {
+						console.log(error);
+						callback(true);
+						return;
+					}
+					console.log("Received response: " + JSON.stringify(body));
+					jsonBody = JSON.parse(body);
+					link = jsonBody._links.items.href;
+					callback(null, link);
+				});
+			},
+			function (arg1, callback) {
+				request.get(arg1, function (error, response, body) {
+					if (error) {
+						console.log(error);
+						callback(true);
+						return;
+					}
+					console.log("Received response: " + JSON.stringify(body));
+					callback(null, JSON.parse(body));
+				});
+			}
+		],
+		function (err, result) {
+			if (err) {
+				return next(err);
+			}
+			res.writeHeader(200);
+			// res.writeJs(result._embedded.items);
+			res.end(JSON.stringify(result._embedded.items))
+		});
+}
+
+// Left for posterity. Will remove soon.
 app.get("/carts", function(req, res, next) {
 	console.log("Request received: " + req.url);
 	var custId = req.params.custId;
@@ -218,6 +305,7 @@ app.get("/carts", function(req, res, next) {
 	}.bind( {res: res} ));
 });
 
+// Left for posterity. Will remove soon.
 app.get("/carts/:cartId", function(req, res, next) {
 	console.log("Request received: " + req.url);
 	async.waterfall([
@@ -254,6 +342,7 @@ app.get("/carts/:cartId", function(req, res, next) {
 	});
 });
 
+// Left for posterity. Will remove soon.
 app.post("/carts/:cartId/items", function(req, res, next) {
 	console.log("Request received with body: " + JSON.stringify(req.body));
 	async.waterfall([
