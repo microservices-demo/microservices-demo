@@ -17,6 +17,7 @@ var catalogue []Sock
 
 var dev bool
 var port string
+var tagList []string = []string{"blue", "brown", "green", "smelly", "large", "short", "magic", "toes", "formal"}
 
 func main() {
 
@@ -36,7 +37,7 @@ func main() {
 	router.HandleFunc("/catalogue", catalogueHandler)
 	router.HandleFunc("/catalogue/size", sizeHandler)
 	router.HandleFunc("/catalogue/{catId}", itemHandler)
-	router.HandleFunc("/tags/{tag}", tagHandler)
+	router.HandleFunc("/tags", tagHandler)
 	router.PathPrefix("/images/").Handler(http.StripPrefix("/images/", http.FileServer(http.Dir("./images/"))))
 	fmt.Printf("Catalogue service running on port %s\n", port)
 	http.ListenAndServe(":" + port, router)
@@ -47,6 +48,7 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 	page := r.FormValue("page")
 	size := r.FormValue("size")
 	sortField := r.FormValue("sort")
+	tagField := r.FormValue("tags")
 
 	pageCount := 1
 	if len(page) > 0 {
@@ -60,8 +62,9 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 	if len(sortField) > 0 {
 		sortOn = strings.ToLower(sortField)
 	}
+	
+	var sorted []Sock = localizeUrl(filter(catalogue, tagField),  "http://" + r.Host)
 
-	var sorted []Sock = catalogue[:]
 	switch sortOn {
 		case "id":
 			sort.Sort(IdSorter(sorted))
@@ -88,6 +91,7 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(data)
 }
 
@@ -97,7 +101,9 @@ func itemHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, sock := range catalogue {
 		if sock.Id == catId {
+			sock.ImageURL = "http://" + r.Host + sock.ImageURL
 			data, _ := json.Marshal(sock)
+			w.Header().Set("Content-Type", "application/json")
 			w.Write(data)
 			return
 		}
@@ -105,12 +111,11 @@ func itemHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(404)
 }
 
-// func imageHandler(w http.ResponseWriter, r *http.Request) {
-// 	w.WriteHeader(501)
-// }
-
 func tagHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(501)
+	body, err := json.Marshal(tagList)
+	if err != nil { panic(err) }
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(body)
 }
 
 func sizeHandler(w http.ResponseWriter, r *http.Request) {
@@ -127,6 +132,35 @@ func loadCatalogue(file string) {
     fmt.Printf("Loaded %d items into catalogue.\n", len(catalogue))
 }
 
+func localizeUrl(socks []Sock, host string) []Sock {
+	var r []Sock
+	for _, s := range socks {
+		s.ImageURL = host + s.ImageURL
+		r = append(r, s)
+	}
+	return r
+}
+
+func filter(socks []Sock, tagString string) []Sock {
+	if len(tagString) < 1 {
+		return socks[:]
+	}
+	var r []Sock
+	tags := strings.Split(tagString, ",")
+	for _, s := range socks {
+		SockLoop:
+		for _, t := range s.Tags {
+			for _, m := range tags {
+				if t == m {
+					r = append(r, s)
+					break SockLoop
+				}
+			}
+		}
+	}
+	return r
+}
+
 type Sock struct {
 	Id string `json:id`
 	Name string `json:"name"`
@@ -134,7 +168,7 @@ type Sock struct {
 	ImageURL string `json:"imageUrl"`
 	Price int `json:price`
 	Count int `json:"count"`
-	Tag []string `json:"tag"`
+	Tags []string `json:"tag"`
 }
 
 type IdSorter []Sock
@@ -171,4 +205,4 @@ type TagSorter []Sock
 
 func (a TagSorter) Len() int           { return len(a) }
 func (a TagSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a TagSorter) Less(i, j int) bool { return len(a[i].Tag) < len(a[j].Id) }
+func (a TagSorter) Less(i, j int) bool { return len(a[i].Tags) < len(a[j].Tags) }
