@@ -266,107 +266,7 @@ _________________________________________________________ -->
                 <div class="panel panel-default sidebar-menu">
 
                     <div class="panel-heading">
-                        <h3 class="panel-title">Categories</h3>
-                    </div>
-
-                    <div class="panel-body">
-                        <ul class="nav nav-pills nav-stacked category-menu">
-                            <li>
-                                <a href="category.html">Men <span
-                                        class="badge pull-right">42</span></a>
-                                <ul>
-                                    <li><a href="category.html">T-shirts</a>
-                                    </li>
-                                    <li><a href="category.html">Shirts</a>
-                                    </li>
-                                    <li><a href="category.html">Pants</a>
-                                    </li>
-                                    <li><a href="category.html">Accessories</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="active">
-                                <a href="category.html">Ladies <span
-                                        class="badge pull-right">123</span></a>
-                                <ul>
-                                    <li><a href="category.html">T-shirts</a>
-                                    </li>
-                                    <li><a href="category.html">Skirts</a>
-                                    </li>
-                                    <li><a href="category.html">Pants</a>
-                                    </li>
-                                    <li><a href="category.html">Accessories</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="category.html">Kids <span
-                                        class="badge pull-right">11</span></a>
-                                <ul>
-                                    <li><a href="category.html">T-shirts</a>
-                                    </li>
-                                    <li><a href="category.html">Skirts</a>
-                                    </li>
-                                    <li><a href="category.html">Pants</a>
-                                    </li>
-                                    <li><a href="category.html">Accessories</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                        </ul>
-
-                    </div>
-                </div>
-
-                <div class="panel panel-default sidebar-menu">
-
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Brands <a
-                                class="btn btn-xs btn-danger pull-right"
-                                href="#"><i class="fa fa-times-circle"></i>
-                            Clear</a></h3>
-                    </div>
-
-                    <div class="panel-body">
-
-                        <form>
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox">Armani (10)
-                                    </label>
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox">Versace (12)
-                                    </label>
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox">Carlo Bruni (15)
-                                    </label>
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox">Jack Honey (14)
-                                    </label>
-                                </div>
-                            </div>
-
-                            <button class="btn btn-default btn-sm btn-primary">
-                                <i class="fa fa-pencil"></i> Apply
-                            </button>
-
-                        </form>
-
-                    </div>
-                </div>
-
-                <div class="panel panel-default sidebar-menu">
-
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Colours <a
+                        <h3 class="panel-title">Filters <a
                                 class="btn btn-xs btn-danger pull-right"
                                 href="#"><i class="fa fa-times-circle"></i>
                             Clear</a></h3>
@@ -435,22 +335,14 @@ _________________________________________________________ -->
                 <div class="box info-bar">
                     <div class="row">
                         <div class="col-sm-12 col-md-4 products-showing">
-                            Showing <strong>12</strong> of <strong>25</strong>
-                            products
+                            <div id="totalProducts"></div>
                         </div>
 
                         <div class="col-sm-12 col-md-8  products-number-sort">
                             <div class="row">
                                 <form class="form-inline">
                                     <div class="col-md-6 col-sm-6">
-                                        <div class="products-number">
-                                            <strong>Show</strong> <a href="#"
-                                                                     class="btn btn-default btn-sm btn-primary">12</a>
-                                            <a href="#"
-                                               class="btn btn-default btn-sm">24</a>
-                                            <a href="#"
-                                               class="btn btn-default btn-sm">All</a>
-                                            products
+                                        <div id="products-number" class="products-number">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-sm-6">
@@ -484,21 +376,7 @@ _________________________________________________________ -->
                                 class="fa fa-chevron-down"></i> Load more</a>
                     </p>
 
-                    <ul class="pagination">
-                        <li><a href="#">&laquo;</a>
-                        </li>
-                        <li class="active"><a href="#">1</a>
-                        </li>
-                        <li><a href="#">2</a>
-                        </li>
-                        <li><a href="#">3</a>
-                        </li>
-                        <li><a href="#">4</a>
-                        </li>
-                        <li><a href="#">5</a>
-                        </li>
-                        <li><a href="#">&raquo;</a>
-                        </li>
+                    <ul id="pagination" class="pagination">
                     </ul>
                 </div>
 
@@ -695,6 +573,8 @@ _________________________________________________________ -->
 <script src="js/bootstrap-hover-dropdown.js"></script>
 <script src="js/owl.carousel.min.js"></script>
 <script src="js/front.js"></script>
+<script src="js/jquery.query-object.js"></script>
+<script src="js/client.js"></script>
 <script>
 
     $(document).ready(function () {
@@ -717,7 +597,38 @@ _________________________________________________________ -->
                     contentType: "application/json; charset=utf-8"
                 });
 
-                $.getJSON('/catalogue', { get_param: 'value' }, function(data) {
+                var size = $.query.get('size') ? $.query.get('size') : 6;
+                var page = $.query.get('page') ? $.query.get('page') : 1;
+
+                $.getJSON('/catalogue/size', function (data) {
+                    $('#totalProducts').append('Showing <strong>' + size + '</strong> of <strong>' + data.size + '</strong> products');
+                    var totalNumPages = Math.ceil(data.size / size);
+                    console.log("Total pages: " + totalNumPages);
+                    var pagination = "";
+                    for (var i = 1; i <= totalNumPages; i++) {
+                        if (page == i) {
+                            pagination = pagination + '<li class="active"><a href="#" onclick=setNewUrl("page",' + i + ')>' + i + '</a></li>';
+                        } else {
+                            pagination = pagination + '<li><a href="#" onclick=setNewUrl("page",' + i + ')>' + i + '</a></li>';
+                        }
+                    }
+                    console.log("Pagination: " + pagination);
+                    $('#pagination').append(pagination);
+
+                    var pageSize = [6, 12, data.size];
+                    var pageSizeHtml = "<strong>Show</strong>"
+                    pageSize.forEach(function (p) {
+                        if (size == p) {
+                            pageSizeHtml = pageSizeHtml + '<a href="#" onclick=setNewPageSize(' + p + ') class="btn btn-primary btn-sm">' + p + '</a>';
+                        } else {
+                            pageSizeHtml = pageSizeHtml + '<a href="#" onclick=setNewPageSize(' + p + ') class="btn btn-default btn-sm">' + p + '</a>';
+                        }
+                    })
+                    $('#products-number').append(pageSizeHtml);
+                });
+
+
+                $.getJSON('/catalogue?page=' + page + '&size=' + size, {get_param: 'value'}, function (data) {
                     $.each(data, function(index, element) {
                         $('#products').append('<div class="col-md-4 col-sm-6">\
                         <div class="product">\
@@ -725,12 +636,12 @@ _________________________________________________________ -->
                                     <div class="flipper">\
                                         <div class="front">\
                                             <a href="detail.html">\
-                                                <img src="img/holy_socks.jpg" alt="" class="img-responsive">\
+                                                <img src="' + element.imageUrl + '" alt="" class="img-responsive">\
                                             </a>\
                                         </div>\
                                         <div class="back">\
                                             <a href="detail.html">\
-                                                <img src="img/rugby_socks.jpg" alt="" class="img-responsive">\
+                                                <img src="' + element.imageUrl + '" alt="" class="img-responsive">\
                                             </a>\
                                         </div>\
                                     </div>\
@@ -739,7 +650,7 @@ _________________________________________________________ -->
                                     <img src="img/product1.jpg" alt="" class="img-responsive">\
                                 </a>\
                                 <div class="text">\
-                                    <h3><a href="detail.html">' + element.Id + '</a></h3>\
+                                    <h3><a href="detail.html">' + element.name + '</a></h3>\
                                     <p class="price">£' + element.Price + '</p>\
                                     <p class="buttons">\
                                         <a href="detail.html" class="btn btn-default">View detail</a>\

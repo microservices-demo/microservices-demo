@@ -30,7 +30,7 @@ var imagesUrl = "http://catalogue/images";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-	catalogueUrl = "http://localhost:8081/catalogue";
+	catalogueUrl = "http://192.168.99.101:32771/catalogue";
 	accountsUrl = "http://localhost:8082/accounts";
 	cartsUrl = "http://localhost:8081/carts";
 	itemsUrl = "http://localhost:8081/items";
@@ -51,7 +51,7 @@ var cookie_name = 'logged_in';
 
 // Login
 app.get("/login", function(req, res, next) {
-	console.log("Received login request: " + req);
+	console.log("Received login request: " + JSON.stringify(req));
 	var options = {
 	  headers: {
 	  	'Authorization': req.get('Authorization')
@@ -108,23 +108,7 @@ function simpleHttpRequest(url, res, next) {
 
 // Catalogue
 app.get("/catalogue*", function(req, res, next) {
-	console.log("Received request: " + req);
-	request("http://localhost:8081" + req.url, function (error, response, body) {
-		if (handleError(error, response)) {
-			return next(error);
-		}
-		if (response.statusCode == 200) {
-		    console.log(body);
-			res.writeHeader(200);
-			res.write(body);
-			res.end();
-		  } else {
-		   	console.log(response.statusCode);
-		   	res.status(response.statusCode);
-		   	res.end();
-		  	return;
-		  }
-	}.bind( {res: res} ));
+	simpleHttpRequest(catalogueUrl + req.url.toString().replace("/catalogue", ""), res, next);
 });
 
 app.get("/tags", function(req, res, next) {
