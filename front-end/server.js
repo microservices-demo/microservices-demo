@@ -46,36 +46,8 @@ if (app.get('env') == "development") {
 var cookie_name = 'logged_in';
 
 /**
- * API
+ * HELPERS
  */
-
-// Login
-app.get("/login", function(req, res, next) {
-	console.log("Received login request: " + JSON.stringify(req));
-	var options = {
-	  headers: {
-	  	'Authorization': req.get('Authorization')
-	  },
-	  uri: loginUrl
-	};
-	res.status(200);
-	request(options, function(error, response, body) {
-		if (error) { return next(error); }
-		if (response.statusCode == 200 && body != null && body != "") {
-		    console.log(body);
-			customerId = JSON.parse(body).id;
-			console.log(customerId);
-			res.cookie(cookie_name, customerId, {maxAge: 3600000}).send('Cookie is set');
-			console.log("Sent cookies.")
-			return
-		} else {
-		   	console.log(response.statusCode);
-		}
-		res.status(401);
-		res.end();
-	}.bind( {res: res} ));
-});
-
 function handleError(error, response) {
 	if (error != null || response.statusCode >= 400) {
 		if (response != null) {
@@ -106,7 +78,40 @@ function simpleHttpRequest(url, res, next) {
 	}.bind({res: res}));
 }
 
-// Catalogue
+/**
+ * API
+ */
+
+// Login
+app.get("/login", function (req, res, next) {
+	console.log("Received login request: " + JSON.stringify(req));
+	var options = {
+		headers: {
+			'Authorization': req.get('Authorization')
+		},
+		uri: loginUrl
+	};
+	res.status(200);
+	request(options, function (error, response, body) {
+		if (error) {
+			return next(error);
+		}
+		if (response.statusCode == 200 && body != null && body != "") {
+			console.log(body);
+			customerId = JSON.parse(body).id;
+			console.log(customerId);
+			res.cookie(cookie_name, customerId, {maxAge: 3600000}).send('Cookie is set');
+			console.log("Sent cookies.")
+			return
+		} else {
+			console.log(response.statusCode);
+		}
+		res.status(401);
+		res.end();
+	}.bind({res: res}));
+});
+
+// Catalogue (Images are linked directly
 app.get("/catalogue*", function(req, res, next) {
 	simpleHttpRequest(catalogueUrl + req.url.toString().replace("/catalogue", ""), res, next);
 });
@@ -115,50 +120,10 @@ app.get("/tags", function(req, res, next) {
 	simpleHttpRequest(tagsUrl, res, next);
 });
 
-app.get("/images/:id", function(req, res, next) {
-	simpleHttpRequest(imagesUrl + "/" + req.params.id, res, next);
-});
-
-app.get("/catalogue/:id", function(req, res, next) {
-	simpleHttpRequest(catalogueUrl + "/" + req.params.id, res, next);
-});
-
-// Accounts
-// NOTE: I don't think we need accounts yet.
-// app.get("/accounts/", function(req, res, next) {
-//
-// 	var custId = req.params.custId;
-// 	if (!custId) {
-// 		custId = req.cookies.logged_in;
-// 	}
-// 	if (!custId) {
-// 		custId = "1";
-// 	}
-// 	simpleHttpRequest(accountsUrl + "?custId=" + custId, res, next);
-// });
-//
-// app.get("/accounts/:id", function(req, res, next) {
-//
-// 	request(accountsUrl + "/" + req.params.id, function (error, response, body) {
-// 		if (error) { return next(error); }
-// 		if (response.statusCode == 200) {
-// 		    console.log(body);
-// 			res.writeHeader(200);
-// 			res.write(body);
-// 			res.end();
-// 		  } else {
-// 		   	console.log(response.statusCode);
-// 		  	res.status(response.statusCode);
-// 		  	res.end();
-// 		  	return;
-// 		  }
-// 	}.bind( {res: res} ));
-// });
-
 //Carts
 // List items in cart for current logged in user.
 // TODO: Refactor this into async.waterfall method.
-app.get("/cart/items", function (req, res) {
+app.get("/cart", function (req, res) {
 	console.log("Request received: " + req.url + ", " + req.query.custId);
 
 	// Check if logged in. Get customer Id
@@ -262,77 +227,47 @@ function getItems(cartUrl, rest) {
 		});
 }
 
-// Left for posterity. Will remove soon.
-app.get("/carts", function(req, res, next) {
-	console.log("Request received: " + req.url);
-	var custId = req.params.custId;
-	if (!custId) {
-		custId = req.cookies.logged_in;	
-	}
-	if (!custId) {
-		custId = "1";
-	}
-	request.get(cartsUrl + "/search/findByCustomerId?custId=" + custId, function (error, response, body) {
-		if (error) { return next(error); }
-		console.log("Response received from carts.");
-		if (response.statusCode == 200) {
-		    // console.log(body);
-			res.writeHeader(200);
-			res.write(body);
-			res.end();
-		  } else {
-		   	console.log(response.statusCode);
-		   	res.status(response.statusCode);
-		   	res.end();
-		  	return;
-		  }
-	}.bind( {res: res} ));
-});
-
-// Left for posterity. Will remove soon.
-app.get("/carts/:cartId", function(req, res, next) {
-	console.log("Request received: " + req.url);
-	async.waterfall([
-		function(callback) {
-			request.get(cartsUrl + "/" + req.params.cartId, function(error, response, body) {
-				if (error) {
-					console.log(error);
-					callback(true);
-					return;
-				}
-				console.log("Received response: " + JSON.stringify(body));
-				jsonBody = JSON.parse(body);
-				link = jsonBody._links.items.href;
-				callback(null, link);
-			});
-		},
-		function(arg1, callback) {
-			request.get(arg1, function(error, response, body) {
-				if (error) {
-					console.log(error);
-					callback(true);
-					return;
-				}
-				console.log("Received response: " + JSON.stringify(body));
-				callback(null, JSON.parse(body));
-			});
-		}
-	],
-	function(err, result) {
-		if (err) { return next(err); }
-		res.writeHeader(200);
-		// res.writeJs(result._embedded.items);
-		res.end(JSON.stringify(result._embedded.items))
-	});
-});
-
-// Left for posterity. Will remove soon.
-app.post("/carts/:cartId/items", function(req, res, next) {
+// Add new item to cart
+app.post("/cart", function (req, res, next) {
+	console.log("Request received: " + req.url + ", " + req.query.custId);
 	console.log("Request received with body: " + JSON.stringify(req.body));
+
+	// Check if logged in. Get customer Id
+	var custId = req.cookies.logged_in;
+
+	// TODO REMOVE THIS, SECURITY RISK
+	if (app.get('env') == "development" && req.query.custId != null) {
+		custId = req.query.custId;
+	}
+	if (!custId) {
+		console.warn("Cannot fetch cart. User not logged in.")
+		res.status(401);
+		res.end();
+		return
+	}
 	async.waterfall([
-		function(callback) {
+			function (callback) {
+				var options = {
+					uri: cartsUrl + "/search/findByCustomerId?custId=" + custId,
+					method: 'GET',
+					json: true
+				};
+				request(options, function (error, response, body) {
+					if (error) {
+						console.log(error);
+						callback(true);
+						return;
+					}
+					console.log("Received response: " + JSON.stringify(body));
+					jsonBody = JSON.parse(body);
+					console.log(JSON.stringify(jsonBody._embedded.carts[0]._links));
+					link = jsonBody._embedded.carts[0]._links.cart.href;
+					callback(null, link);
+				});
+			},
+			function (link, callback) {
 			var options = {
-			  uri: itemsUrl,
+				uri: link,
 			  method: 'POST',
 			  json: true,
 			  body: req.body
