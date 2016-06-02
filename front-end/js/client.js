@@ -4,7 +4,6 @@ function login() {
     $.ajax({
         url: "login",
         type: "GET",
-        async: false,
         success: function (data, textStatus, jqXHR) {
             alert("Logged in as " + username);
             console.log('posted: ' + textStatus);

@@ -18,7 +18,7 @@ app.use(function(err, req, res, next) {
     });
 });
 
-var catalogueUrl = "http://catalogue/catalogue";
+var catalogueUrl = "http://catalogue";
 var accountsUrl = "http://accounts/accounts";
 var cartsUrl = "http://cart/carts";
 var ordersUrl = "http://orders/orders";
@@ -26,19 +26,17 @@ var itemsUrl = "http://cart/items";
 var customersUrl = "http://accounts/customers";
 var loginUrl = "http://login/login";
 var tagsUrl = "http://catalogue/tags";
-var imagesUrl = "http://catalogue/catalogue/images";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-	catalogueUrl = "http://192.168.99.103:32769/catalogue";
+	catalogueUrl = "http://192.168.99.103:32776";
 	accountsUrl = "http://localhost:8082/accounts";
 	cartsUrl = "http://192.168.99.101:32768/carts";
 	itemsUrl = "http://192.168.99.101:32768/items";
 	ordersUrl = "http://localhost:8083/orders";
 	customersUrl = "http://localhost:8082/customers";
 	loginUrl = "http://localhost:8084/login";
-	tagsUrl = "http://localhost:8081/tags";
-	imagesUrl = "http://localhost:8081/catalogue/images";
+	tagsUrl = "http://192.168.99.103:32776/tags";
 }
 
 // TODO Add logging
@@ -84,7 +82,7 @@ function simpleHttpRequest(url, res, next) {
 
 // Login
 app.get("/login", function (req, res, next) {
-	console.log("Received login request: " + JSON.stringify(req));
+	console.log("Received login request");
 	var options = {
 		headers: {
 			'Authorization': req.get('Authorization')
@@ -111,9 +109,9 @@ app.get("/login", function (req, res, next) {
 	}.bind({res: res}));
 });
 
-// Catalogue (Images are linked directly
+// Catalogue
 app.get("/catalogue*", function(req, res, next) {
-	simpleHttpRequest(catalogueUrl + req.url.toString().replace("/catalogue", ""), res, next);
+	simpleHttpRequest(catalogueUrl + req.url.toString(), res, next);
 });
 
 app.get("/tags", function(req, res, next) {
@@ -156,18 +154,10 @@ app.get("/cart", function (req, res) {
 						, body: {"customerId": parseInt(custId)}
 					}, function (error, response, body) {
 						if (response.statusCode == 201) {
-							console.log('New cart created for customerId: ' + custId)
 							// Get cart url
-							request.get(cartsUrl + "/search/findByCustomerId?custId=" + custId, function (error, response, body) {
-								var cartUrl = "";
-								if (!handleError(error, response)) {
-									console.log("Received response: " + JSON.stringify(body));
-									jsonBody = JSON.parse(body);
-									console.log(JSON.stringify(jsonBody._embedded.carts[0]._links));
-									cartUrl = jsonBody._embedded.carts[0]._links.cart.href;
-									getItems(cartUrl, res); // Return cart items
-								}
-							}.bind({res: res}))
+							cartUrl = body._links.cart.href;
+							console.log('New cart created for customerId: ' + custId + ', at: ' + cartUrl);
+							getItems(cartUrl, res); // Return cart items
 						} else {
 							console.log('error: ' + response.statusCode)
 							console.log(body)
@@ -302,8 +292,9 @@ app.delete("/cart/:id", function (req, res, next) {
 							return;
 						}
 						if (response.statusCode == 201) {
-							console.log('New cart created for customerId: ' + custId + ', at: ' + body._links.cart);
-							callback(null, body._links.cart)
+							cartUrl = body._links.cart.href;
+							console.log('New cart created for customerId: ' + custId + ', at: ' + cartUrl);
+							callback(null, cartUrl)
 						} else {
 							console.log("Unable to create new cart");
 							callback(true);
@@ -461,8 +452,9 @@ app.post("/cart", function (req, res, next) {
 							return;
 						}
 						if (response.statusCode == 201) {
-							console.log('New cart created for customerId: ' + custId + ', at: ' + body._links.cart);
-							callback(null, body._links.cart)
+							cartUrl = body._links.cart.href;
+							console.log('New cart created for customerId: ' + custId + ', at: ' + cartUrl);
+							callback(null, cartUrl)
 						} else {
 							console.log("Unable to create new cart");
 							callback(true);
