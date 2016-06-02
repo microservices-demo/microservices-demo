@@ -30,10 +30,10 @@ var imagesUrl = "http://catalogue/catalogue/images";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-	catalogueUrl = "http://192.168.99.101:32771/catalogue";
+	catalogueUrl = "http://192.168.99.103:32769/catalogue";
 	accountsUrl = "http://localhost:8082/accounts";
-	cartsUrl = "http://localhost:8081/carts";
-	itemsUrl = "http://localhost:8081/items";
+	cartsUrl = "http://192.168.99.101:32768/carts";
+	itemsUrl = "http://192.168.99.101:32768/items";
 	ordersUrl = "http://localhost:8083/orders";
 	customersUrl = "http://localhost:8082/customers";
 	loginUrl = "http://localhost:8084/login";
@@ -133,6 +133,8 @@ app.get("/cart", function (req, res) {
 	if (app.get('env') == "development" && req.query.custId != null) {
 		custId = req.query.custId;
 	}
+	custId = 1; 	// TODO REMOVE!!!
+
 	if (!custId) {
 		console.warn("Cannot fetch cart. User not logged in.")
 		res.status(401);
@@ -190,10 +192,10 @@ app.get("/cart", function (req, res) {
 	}.bind({res: res}));
 })
 
-function getItems(cartUrl, rest) {
+function getItems(cartUrl, res) {
 	async.waterfall([
 			function (callback) {
-				request.get(cartsUrl + "/" + req.params.cartId, function (error, response, body) {
+				request.get(cartUrl, function (error, response, body) {
 					if (error) {
 						console.log(error);
 						callback(true);
@@ -232,6 +234,12 @@ app.post("/cart", function (req, res, next) {
 	console.log("Request received: " + req.url + ", " + req.query.custId);
 	console.log("Request received with body: " + JSON.stringify(req.body));
 
+	if (req.body.id == null) {
+		console.warn("Must pass id of item to add.")
+		next(new Error("Must pass id of item to add"), 400);
+		return;
+	}
+
 	// Check if logged in. Get customer Id
 	var custId = req.cookies.logged_in;
 
@@ -241,11 +249,11 @@ app.post("/cart", function (req, res, next) {
 	}
 	if (!custId) {
 		console.warn("Cannot fetch cart. User not logged in.")
-		res.status(401);
-		res.end();
-		return
+		next(new Error("Cannot fetch cart. User not logged in."), 400);
+		return;
 	}
 	async.waterfall([
+			// Get carts for current customer Id
 			function (callback) {
 				var options = {
 					uri: cartsUrl + "/search/findByCustomerId?custId=" + custId,
@@ -259,58 +267,179 @@ app.post("/cart", function (req, res, next) {
 						return;
 					}
 					console.log("Received response: " + JSON.stringify(body));
-					jsonBody = JSON.parse(body);
-					console.log(JSON.stringify(jsonBody._embedded.carts[0]._links));
-					link = jsonBody._embedded.carts[0]._links.cart.href;
-					callback(null, link);
+					var cartList = body._embedded.carts;
+					console.log(JSON.stringify(cartList));
+					callback(null, cartList);
 				});
 			},
-			function (link, callback) {
-			var options = {
-				uri: link,
-			  method: 'POST',
-			  json: true,
-			  body: req.body
-			};
-			request(options, function(error, response, body) {
-				if (error) {
-					console.log(error);
-					callback(true);
-					return;
+			// If the cart doesn't exist, create the cart
+			function (cartList, callback) {
+				if (cartList.length > 0) {
+					console.log("Cart already exists for: " + custId);
+					callback(null, cartList[0]._links.cart.href)
+				} else {
+					console.log("Cart does not exist for: " + custId);
+					console.log("Creating cart");
+					var options = {
+						uri: cartsUrl,
+						method: 'POST',
+						json: true,
+						body: {"customerId": parseInt(custId)}
+					};
+					request(options, function (error, response, body) {
+						if (error) {
+							console.log(error);
+							callback(true);
+							return;
+						}
+						if (response.statusCode == 201) {
+							console.log('New cart created for customerId: ' + custId + ', at: ' + body._links.cart);
+							callback(null, body._links.cart)
+						} else {
+							console.log("Unable to create new cart");
+							callback(true);
+						}
+					});
 				}
-				console.log("Received response: " + JSON.stringify(body));
-				// jsonBody = JSON.parse(body);
-				link = body._links.item.href;
-				callback(null, link);
-			});
-		},
-		function(arg1, callback) {
-			var options = {
-				headers: {
-					'Content-Type': 'text/uri-list'
-				},
-				uri: cartsUrl + "/" + req.params.cartId + "/items",
-				method: 'POST',
-				body: arg1
-			};
-			request(options, function(error, response, body) {
-				if (error) {
-					console.log(error);
-					callback(true);
-					return;
+
+			},
+			// Get items url
+			function (cartUrl, callback) {
+				var options = {
+					uri: cartUrl,
+					method: 'GET',
+					json: true
+				};
+				request(options, function (error, response, body) {
+					if (error) {
+						console.log(error);
+						callback(true);
+						return;
+					}
+					console.log("Current cart: " + JSON.stringify(body));
+					var itemsUrl = body._links.items.href;
+					callback(null, cartUrl, itemsUrl);
+				});
+			},
+			// Get current items
+			function (cartUrl, itemsUrl, callback) {
+				var options = {
+					uri: itemsUrl,
+					method: 'GET',
+					json: true
+				};
+				request(options, function (error, response, body) {
+					if (error) {
+						console.log(error);
+						callback(true);
+						return;
+					}
+					console.log("Current items: " + JSON.stringify(body._embedded.items));
+					callback(null, itemsUrl, body._embedded.items);
+				});
+			},
+			// If new item already exists in list, increment count. Else add new item.
+			function (currentItemsUrl, itemList, callback) {
+				var foundItemUrl = "";
+				var currentQuantity = 0;
+				console.log("Searching for item in cart of size: " + itemList.length);
+				for (var i = 0, len = itemList.length; i < len; i++) {
+					var item = itemList[i];
+					console.log("Searching: " + JSON.stringify(item));
+					console.log("Q: " + item.itemId + " == " + req.body.id);
+					if (item != null && item.itemId != null && item.itemId.toString() == req.body.id.toString()) {
+						console.log("Item found");
+						foundItemUrl = item._links.self.href;
+						currentQuantity = item.quantity;
+						break;
+					}
 				}
-				cartItem = body;
-				callback(null, cartItem);
-			});
-		}
-	],
-	function(err, result) {
-		if (err) { return next(err); }
-		
-		res.writeHeader(200);
-		res.write(JSON.stringify(result));
-		res.end()
-	});
+				if (foundItemUrl != null && foundItemUrl != "") {
+					var options = {
+						uri: foundItemUrl,
+						method: 'PATCH',
+						json: true,
+						body: {quantity: (currentQuantity + 1)}
+					};
+					request(options, function (error, response, body) {
+						if (error) {
+							console.log(error);
+							callback(true);
+							return;
+						}
+						callback(null, body._links.self.href);
+					});
+				} else {
+					// curl -XPOST -H 'Content-type: application/json' http://cart/items -d '{"itemId": "three", "quantity": 4 }'
+					// 	curl -v -X POST -H "Content-Type: text/uri-list" -d "http://cart/items/27017283435201488713382769171"
+					console.log("Item not found in current cart. Creating new item for: " + req.body.id.toString());
+					var options = {
+						uri: itemsUrl,
+						method: 'POST',
+						json: true,
+						body: {itemId: req.body.id.toString(), quantity: 1}
+					};
+					request(options, function (error, response, body) {
+						if (error) {
+							console.log(error);
+							callback(true);
+							return;
+						}
+						if (response.statusCode == 201) {
+							console.log('New item created: ' + JSON.stringify(body));
+							var newItemUrl = body._links.self.href;
+							console.log("Adding item to cart.")
+							var options = {
+								headers: {
+									'Content-Type': 'text/uri-list'
+								},
+								uri: currentItemsUrl,
+								method: 'POST',
+								body: body._links.self.href
+							};
+							request(options, function (error, response, body) {
+								if (error) {
+									console.log(error);
+									callback(true);
+									return;
+								}
+								console.log('New item added to current cart');
+								callback(null, newItemUrl);
+							});
+						} else {
+							console.log("Unable to create new item due to: " + response + ", " + JSON.stringify(body));
+							callback(true);
+						}
+					});
+				}
+			},
+			// Get created item
+			function (newItemUrl, callback) {
+				var options = {
+					uri: newItemUrl,
+					method: 'GET',
+					json: true
+				};
+				request(options, function (error, response, body) {
+					if (error) {
+						console.log(error);
+						callback(true);
+						return;
+					}
+					console.log("New/updated item: " + JSON.stringify(body));
+					callback(null, body);
+				});
+			},
+		],
+		function (err, result) {
+			if (err) {
+				return next(err);
+			}
+
+			res.writeHeader(201);
+			res.write(JSON.stringify(result));
+			res.end()
+		});
 });
 
 //Orders
