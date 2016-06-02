@@ -133,7 +133,7 @@ app.get("/cart", function (req, res) {
 	if (app.get('env') == "development" && req.query.custId != null) {
 		custId = req.query.custId;
 	}
-	custId = 1; 	// TODO REMOVE!!!
+	// custId = 1; 	// TODO REMOVE!!! TESTING
 
 	if (!custId) {
 		console.warn("Cannot fetch cart. User not logged in.")
@@ -215,7 +215,13 @@ function getItems(cartUrl, res) {
 						return;
 					}
 					console.log("Received response: " + JSON.stringify(body));
-					callback(null, JSON.parse(body));
+					try {
+						callback(null, JSON.parse(body));
+					} catch (e) {
+						console.log("Cart is empty.");
+						callback(null);
+						return;
+					}
 				});
 			}
 		],
@@ -224,21 +230,20 @@ function getItems(cartUrl, res) {
 				return next(err);
 			}
 			res.writeHeader(200);
-			// res.writeJs(result._embedded.items);
-			res.end(JSON.stringify(result._embedded.items))
+			if (result != null) {
+				res.end(JSON.stringify(result._embedded.items))
+			}
 		});
 }
 
-// Add new item to cart
-app.post("/cart", function (req, res, next) {
-	console.log("Request received: " + req.url + ", " + req.query.custId);
-	console.log("Request received with body: " + JSON.stringify(req.body));
-
-	if (req.body.id == null) {
-		console.warn("Must pass id of item to add.")
-		next(new Error("Must pass id of item to add"), 400);
+// Delete item from cart
+app.delete("/cart/:id", function (req, res, next) {
+	if (req.params.id == null) {
+		next(new Error("Must pass id of item to delete"), 400);
 		return;
 	}
+
+	console.log("Request received: " + req.url + ", " + req.params.id);
 
 	// Check if logged in. Get customer Id
 	var custId = req.cookies.logged_in;
@@ -247,6 +252,169 @@ app.post("/cart", function (req, res, next) {
 	if (app.get('env') == "development" && req.query.custId != null) {
 		custId = req.query.custId;
 	}
+	// // TODO REMOVE THIS, TESTING
+	// custId = 1;
+
+	if (!custId) {
+		console.warn("Cannot fetch cart. User not logged in.")
+		next(new Error("Cannot fetch cart. User not logged in."), 400);
+		return;
+	}
+
+	async.waterfall([
+// Get carts for current customer Id
+			function (callback) {
+				var options = {
+					uri: cartsUrl + "/search/findByCustomerId?custId=" + custId,
+					method: 'GET',
+					json: true
+				};
+				request(options, function (error, response, body) {
+					if (error) {
+						console.log(error);
+						callback(true);
+						return;
+					}
+					console.log("Received response: " + JSON.stringify(body));
+					var cartList = body._embedded.carts;
+					console.log(JSON.stringify(cartList));
+					callback(null, cartList);
+				});
+			},
+			// If the cart doesn't exist, create the cart
+			function (cartList, callback) {
+				if (cartList.length > 0) {
+					console.log("Cart already exists for: " + custId);
+					callback(null, cartList[0]._links.cart.href)
+				} else {
+					console.log("Cart does not exist for: " + custId);
+					console.log("Creating cart");
+					var options = {
+						uri: cartsUrl,
+						method: 'POST',
+						json: true,
+						body: {"customerId": parseInt(custId)}
+					};
+					request(options, function (error, response, body) {
+						if (error) {
+							console.log(error);
+							callback(true);
+							return;
+						}
+						if (response.statusCode == 201) {
+							console.log('New cart created for customerId: ' + custId + ', at: ' + body._links.cart);
+							callback(null, body._links.cart)
+						} else {
+							console.log("Unable to create new cart");
+							callback(true);
+						}
+					});
+				}
+
+			},
+			// Get items url
+			function (cartUrl, callback) {
+				var options = {
+					uri: cartUrl,
+					method: 'GET',
+					json: true
+				};
+				request(options, function (error, response, body) {
+					if (error) {
+						console.log(error);
+						callback(true);
+						return;
+					}
+					console.log("Current cart: " + JSON.stringify(body));
+					var itemsUrl = body._links.items.href;
+					callback(null, cartUrl, itemsUrl);
+				});
+			},
+			// Get current items
+			function (cartUrl, itemsUrl, callback) {
+				var options = {
+					uri: itemsUrl,
+					method: 'GET',
+					json: true
+				};
+				request(options, function (error, response, body) {
+					if (error) {
+						console.log(error);
+						callback(true);
+						return;
+					}
+					console.log("Current items: " + JSON.stringify(body._embedded.items));
+					callback(null, itemsUrl, body._embedded.items);
+				});
+			},
+			// Attempt to delete object
+			function (currentItemsUrl, itemList, callback) {
+				var foundItemUrl = "";
+				var currentQuantity = 0;
+				console.log("Searching for item in cart of size: " + itemList.length);
+				for (var i = 0, len = itemList.length; i < len; i++) {
+					var item = itemList[i];
+					console.log("Searching: " + JSON.stringify(item));
+					console.log("Q: " + item.itemId + " == " + req.params.id);
+					if (item != null && item.itemId != null && item.itemId.toString() == req.params.id.toString()) {
+						console.log("Item found");
+						foundItemUrl = item._links.self.href;
+						currentQuantity = item.quantity;
+						break;
+					}
+				}
+				if (foundItemUrl != null && foundItemUrl != "") {
+					var urlSplit = foundItemUrl.split('/');
+					var toDeleteUrl = currentItemsUrl + "/" + urlSplit[urlSplit.length - 1];
+					var options = {
+						uri: toDeleteUrl,
+						method: 'DELETE',
+					};
+					console.log("toDeleteUrl: " + toDeleteUrl);
+					request(options, function (error, response, body) {
+						if (error) {
+							console.log(error);
+							callback(true);
+							return;
+						}
+						console.log('Item deleted from current cart with status: ' + response.statusCode);
+						callback(null, response);
+					});
+				} else {
+					callback(new Error("Could not find item in cart to delete.", 404));
+				}
+			},
+		],
+		function (err, response) {
+			if (err) {
+				return next(err);
+			}
+			res.writeHeader(response.statusCode);
+			res.end()
+		});
+});
+
+// Add new item to cart
+app.post("/cart", function (req, res, next) {
+	console.log("Request received with body: " + JSON.stringify(req.body));
+	console.log("Request received: " + req.url + ", " + req.query.custId);
+
+	if (req.body.id == null) {
+		console.warn("Must pass id of item to add.")
+		next(new Error("Must pass id of item to add"), 400);
+		return;
+	}
+
+
+	// Check if logged in. Get customer Id
+	var custId = req.cookies.logged_in;
+
+	// TODO REMOVE THIS, SECURITY RISK
+	if (app.get('env') == "development" && req.query.custId != null) {
+		custId = req.query.custId;
+	}
+	// // TODO REMOVE THIS, TESTING
+	// custId = 1;
 	if (!custId) {
 		console.warn("Cannot fetch cart. User not logged in.")
 		next(new Error("Cannot fetch cart. User not logged in."), 400);
@@ -334,8 +502,13 @@ app.post("/cart", function (req, res, next) {
 						callback(true);
 						return;
 					}
-					console.log("Current items: " + JSON.stringify(body._embedded.items));
-					callback(null, itemsUrl, body._embedded.items);
+					try {
+						console.log("Current items: " + JSON.stringify(body._embedded.items));
+						callback(null, itemsUrl, body._embedded.items);
+					} catch (e) {
+						console.log("Cart is empty");
+						callback(null, itemsUrl, []);
+					}
 				});
 			},
 			// If new item already exists in list, increment count. Else add new item.

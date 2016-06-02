@@ -432,19 +432,19 @@ _________________________________________________________ -->
                             <tbody>
                             <tr>
                                 <td>Order subtotal</td>
-                                <th>$446.00</th>
+                                <th id="orderSubtotal">$446.00</th>
                             </tr>
                             <tr>
                                 <td>Shipping and handling</td>
-                                <th>$10.00</th>
+                                <th id="orderShipping">$10.00</th>
                             </tr>
                             <tr>
                                 <td>Tax</td>
-                                <th>$0.00</th>
+                                <th id="orderTax">£0.00</th>
                             </tr>
                             <tr class="total">
                                 <td>Total</td>
-                                <th>$456.00</th>
+                                <th id="orderGrandTotal">$456.00</th>
                             </tr>
                             </tbody>
                         </table>
@@ -681,6 +681,21 @@ _________________________________________________________ -->
     })
 </script>
 <script>
+    function deleteFromCart(id) {
+        console.log("Sending request to delete: " + id);
+        $.ajax({
+            url: "cart/" + id,
+            type: "DELETE",
+            success: function (data, textStatus, jqXHR) {
+                console.log('Item deleted: ' + id + ', ' + textStatus);
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('Could not delete item: ' + id + ', due to: ' + textStatus + ' | ' + errorThrown);
+            }
+        });
+    }
+
     $(document).ready(function () {
         $.ajaxSetup({
             contentType: "application/json; charset=utf-8"
@@ -690,11 +705,13 @@ _________________________________________________________ -->
             if (data != null) {
                 var cartTotal = 0;
                 var numItemsInCart = 0;
+                var shipping = 4.99;
                 $.each(data, function (index, element) {
-                    $.getJSON('/catalogue/' + element.itemId, function (data) {
-                        console.log(JSON.stringify(data));
-                        // {"Id":"574dad8b0329ff0f9ce4173a","name":"Herrera","description":"reprehenderit sit nostrud voluptate sit tempor laborum tempor officia eiusmod","imageUrl":"http://192.168.99.103:32769/images/sock.jpeg","Price":9,"count":409,"tag":["blue","large","green"]}%
-                        $('#cart-list').append(' <tr>\
+                    if (element != null && element.itemId != null && element.itemId != "null") {
+                        $.getJSON('/catalogue/' + element.itemId, function (data) {
+                            console.log(JSON.stringify(data));
+                            // {"Id":"574dad8b0329ff0f9ce4173a","name":"Herrera","description":"reprehenderit sit nostrud voluptate sit tempor laborum tempor officia eiusmod","imageUrl":"http://192.168.99.103:32769/images/sock.jpeg","Price":9,"count":409,"tag":["blue","large","green"]}%
+                            $('#cart-list').append(' <tr>\
                                                 <td>\
                                                     <a href="#">\
                                                         <img src="' + data.imageUrl + '" alt="White Blouse Armani">\
@@ -704,22 +721,29 @@ _________________________________________________________ -->
                                                     <a href="#">' + data.name + '</a>\
                                                 </td>\
                                                 <td>\
-                                                    <input type="number" value="' + data.count + '" class="form-control">\
+                                                    <input type="number" value="' + element.quantity + '" class="form-control">\
                                                 </td>\
-                                                <td>£' + data.price + '</td>\
-                                                <td>$0.00</td>\
-                                                <td>£' + data.count * data.price + '</td>\
+                                                <td>£' + data.Price + '</td>\
+                                                <td>£0.00</td>\
+                                                <td>£' + data.count * data.Price + '</td>\
                                                 <td>\
-                                                    <a href="#"><i class="fa fa-trash-o"></i></a>\
+                                                    <a href="#" onclick="deleteFromCart(\'' + data.Id + '\')"><i class="fa fa-trash-o"></i></a>\
                                                 </td>\
                                             </tr>');
-                        cartTotal = cartTotal + data.count * data.price;
-                        numItemsInCart = numItemsInCart + 1;
-                    });
-
+                            cartTotal = cartTotal + element.quantity * data.Price;
+                            console.log("Cur total: " + cartTotal)
+                            numItemsInCart = numItemsInCart + element.quantity;
+                        }).always(function () {
+                            console.log("Final counts: £" + cartTotal + ", with " + numItemsInCart + " items.");
+                            $('#numItemsInCart').text('You currently have ' + numItemsInCart + ' item(s) in your cart.');
+                            $('#cartTotal').text('£' + cartTotal);
+                            $('#orderSubtotal').text('£' + cartTotal);
+                            $('#orderShipping').text('£' + shipping);
+                            $('#orderGrandTotal').text('£' + (cartTotal + shipping));
+                        });
+                    }
                 });
-                $('#numItemsInCart').append('You currently have ' + numItemsInCart + ' item(s) in your cart.');
-                $('#cartTotal').append('£' + cartTotal);
+
             }
         });
     });
