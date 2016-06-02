@@ -26,19 +26,19 @@ var itemsUrl = "http://cart/items";
 var customersUrl = "http://accounts/customers";
 var loginUrl = "http://login/login";
 var tagsUrl = "http://catalogue/tags";
-var imagesUrl = "http://catalogue/images";
+var imagesUrl = "http://catalogue/catalogue/images";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-	catalogueUrl = "http://192.168.99.103:32769/catalogue";
+	catalogueUrl = "http://192.168.99.101:32771/catalogue";
 	accountsUrl = "http://localhost:8082/accounts";
 	cartsUrl = "http://localhost:8081/carts";
 	itemsUrl = "http://localhost:8081/items";
 	ordersUrl = "http://localhost:8083/orders";
 	customersUrl = "http://localhost:8082/customers";
 	loginUrl = "http://localhost:8084/login";
-	tagsUrl = "http://192.168.99.103:32769/tags";
-	imagesUrl = "http://localhost:8081/images";
+	tagsUrl = "http://localhost:8081/tags";
+	imagesUrl = "http://localhost:8081/catalogue/images";
 }
 
 // TODO Add logging

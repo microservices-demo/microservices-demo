@@ -7,13 +7,10 @@ External faciing API
 
 - GET /login
 - GET /catalogue
-- GET /tags
-- GET /images/{imageId}
-- GET /catalogue/{catalogueId}
-- GET /cart/items
-- GET /carts  [To be removed]
-- GET /carts/{cartId} [To be removed]
-- POST /carts/{cartId}/items
+- GET /catalogue/tags
+- GET /catalogue/images/{imageId}
+- GET /cart
+- POST /cart
 - POST /orders
 
 Internal APIs
@@ -32,7 +29,7 @@ Internal APIs
         - returns number of items in catalogue
     - GET /tags
         - returns list of tags
-    - GET /images/{imageId}
+    - GET /catalogue/images/{imageId}
         - returns image
     - [Not Implemented] GET /catalogue/search?query=[search-query]
     - [Not Implemented] PUT /catalogue/{id} (update count)
