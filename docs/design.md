@@ -3,19 +3,20 @@
 
 # API
 
-- External faciing API
+External faciing API
 
-GET /login
-GET /catalogue
-GET /tags
-GET /images/{imageId}
-GET /catalogue/{catalogueId}
-GET /cart/items
-GET /carts  [To be removed]
-GET /carts/{cartId} [To be removed]
-POST /carts/{cartId}/items
-POST /orders
+- GET /login
+- GET /catalogue
+- GET /tags
+- GET /images/{imageId}
+- GET /catalogue/{catalogueId}
+- GET /cart/items
+- GET /carts  [To be removed]
+- GET /carts/{cartId} [To be removed]
+- POST /carts/{cartId}/items
+- POST /orders
 
+Internal APIs
 
 - Catalogue
     - GET /catalogue
