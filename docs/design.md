@@ -2,6 +2,21 @@
 ![Architecture diagram](https://github.com/ContainerSolutions/weaveDemo/raw/master/docs/images/Architecture.png "Architecture")
 
 # API
+
+- External faciing API
+
+GET /login
+GET /catalogue
+GET /tags
+GET /images/{imageId}
+GET /catalogue/{catalogueId}
+GET /cart/items
+GET /carts  [To be removed]
+GET /carts/{cartId} [To be removed]
+POST /carts/{cartId}/items
+POST /orders
+
+
 - Catalogue
     - GET /catalogue
         - returns all items
