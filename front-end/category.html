@@ -268,53 +268,20 @@ _________________________________________________________ -->
                     <div class="panel-heading">
                         <h3 class="panel-title">Filters <a
                                 class="btn btn-xs btn-danger pull-right"
-                                href="#"><i class="fa fa-times-circle"></i>
+                                href="#" onclick='resetTags()'><i class="fa fa-times-circle"></i>
                             Clear</a></h3>
                     </div>
 
                     <div class="panel-body">
 
-                        <form>
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"> <span
-                                            class="colour white"></span> White
-                                        (14)
-                                    </label>
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"> <span
-                                            class="colour blue"></span> Blue
-                                        (10)
-                                    </label>
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"> <span
-                                            class="colour green"></span> Green
-                                        (20)
-                                    </label>
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"> <span
-                                            class="colour yellow"></span> Yellow
-                                        (13)
-                                    </label>
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"> <span
-                                            class="colour red"></span> Red (10)
-                                    </label>
-                                </div>
+                        <form id="filters-form">
+                            <div id="filters" class="form-group">
                             </div>
 
-                            <button class="btn btn-default btn-sm btn-primary">
+                            <a class="btn btn-default btn-sm btn-primary" href="#"
+                               onclick='setNewTags($("input:checkbox:checked").map(function () {return this.value;}).get().join(","));'>
                                 <i class="fa fa-pencil"></i> Apply
-                            </button>
+                            </a>
 
                         </form>
 
@@ -599,6 +566,7 @@ _________________________________________________________ -->
 
                 var size = $.query.get('size') ? $.query.get('size') : 6;
                 var page = $.query.get('page') ? $.query.get('page') : 1;
+                var tags = $.query.get('tags') ? $.query.get('tags') : "";
 
                 $.getJSON('/catalogue/size', function (data) {
                     $('#totalProducts').append('Showing <strong>' + size + '</strong> of <strong>' + data.size + '</strong> products');
@@ -607,9 +575,9 @@ _________________________________________________________ -->
                     var pagination = "";
                     for (var i = 1; i <= totalNumPages; i++) {
                         if (page == i) {
-                            pagination = pagination + '<li class="active"><a href="#" onclick=setNewUrl("page",' + i + ')>' + i + '</a></li>';
+                            pagination = pagination + '<li class="active"><a href="#" onclick=setNewPage(' + i + ')>' + i + '</a></li>';
                         } else {
-                            pagination = pagination + '<li><a href="#" onclick=setNewUrl("page",' + i + ')>' + i + '</a></li>';
+                            pagination = pagination + '<li><a href="#" onclick=setNewPage(' + i + ')>' + i + '</a></li>';
                         }
                     }
                     console.log("Pagination: " + pagination);
@@ -627,39 +595,52 @@ _________________________________________________________ -->
                     $('#products-number').append(pageSizeHtml);
                 });
 
+                $.getJSON('/tags', function (data) {
+                    $.each(data, function (index, element) {
+                        console.log("Current tags: " + tags);
+                        if (tags != null && tags != "" && tags.indexOf(element) > -1) {
+                            $('#filters').append('<div class="checkbox"><label><input type="checkbox" checked="true" value="' + element + '">' + element + '</label></div>');
+                        } else {
+                            $('#filters').append('<div class="checkbox"><label><input type="checkbox" value="' + element + '">' + element + '</label></div>');
+                        }
+                    })
+                });
 
-                $.getJSON('/catalogue?page=' + page + '&size=' + size, {get_param: 'value'}, function (data) {
-                    $.each(data, function(index, element) {
-                        $('#products').append('<div class="col-md-4 col-sm-6">\
-                        <div class="product">\
-                                <div class="flip-container">\
-                                    <div class="flipper">\
-                                        <div class="front">\
-                                            <a href="detail.html">\
-                                                <img src="' + element.imageUrl + '" alt="" class="img-responsive">\
-                                            </a>\
-                                        </div>\
-                                        <div class="back">\
-                                            <a href="detail.html">\
-                                                <img src="' + element.imageUrl + '" alt="" class="img-responsive">\
-                                            </a>\
+
+                $.getJSON('/catalogue', {page: page, size: size, tags: tags}, function (data) {
+                    if (data != null) {
+                        $.each(data, function (index, element) {
+                            $('#products').append('<div class="col-md-4 col-sm-6">\
+                            <div class="product">\
+                                    <div class="flip-container">\
+                                        <div class="flipper">\
+                                            <div class="front">\
+                                                <a href="detail.html">\
+                                                    <img src="' + element.imageUrl + '" alt="" class="img-responsive">\
+                                                </a>\
+                                            </div>\
+                                            <div class="back">\
+                                                <a href="detail.html">\
+                                                    <img src="' + element.imageUrl + '" alt="" class="img-responsive">\
+                                                </a>\
+                                            </div>\
                                         </div>\
                                     </div>\
+                                    <a href="detail.html" class="invisible">\
+                                        <img src="img/product1.jpg" alt="" class="img-responsive">\
+                                    </a>\
+                                    <div class="text">\
+                                        <h3><a href="detail.html">' + element.name + '</a></h3>\
+                                        <p class="price">£' + element.Price + '</p>\
+                                        <p class="buttons">\
+                                            <a href="detail.html" class="btn btn-default">View detail</a>\
+                                            <a href="basket.html" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>\
+                                        </p>\
+                                    </div>\
                                 </div>\
-                                <a href="detail.html" class="invisible">\
-                                    <img src="img/product1.jpg" alt="" class="img-responsive">\
-                                </a>\
-                                <div class="text">\
-                                    <h3><a href="detail.html">' + element.name + '</a></h3>\
-                                    <p class="price">£' + element.Price + '</p>\
-                                    <p class="buttons">\
-                                        <a href="detail.html" class="btn btn-default">View detail</a>\
-                                        <a href="basket.html" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>\
-                                    </p>\
-                                </div>\
-                            </div>\
-                            </div>');
-                    });
+                                </div>');
+                        });
+                    }
                 });
 
                 $('#example').on('click', 'a.addToCart', function (e) {

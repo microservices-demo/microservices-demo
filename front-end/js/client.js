@@ -22,32 +22,18 @@ function login() {
     });
 }
 
-(function ($) {
-    $.querystring = (function (a) {
-        var i,
-            p,
-            b = {};
-        if (a === "") {
-            return {};
-        }
-        for (i = 0; i < a.length; i += 1) {
-            p = a[i].split('=');
-            if (p.length === 2) {
-                b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
-            }
-        }
-        return b;
-    }(window.location.search.substr(1).split('&')));
-}(jQuery));
-
-function setNewUrl(name, value) {
-    window.location.search = $.query.set(name, value);
-}
-
 function setNewPageSize(value) {
-    window.location.search = $.query.set("page", 1).set("size", value);
+    location.search = $.query.set("page", 1).set("size", value);
 }
 
 function setNewPage(value) {
-    window.location.search = $.query.set("page", value);
+    location.search = $.query.set("page", value);
+}
+
+function setNewTags(value) {
+    location.search = $.query.set("tags", value);
+}
+
+function resetTags() {
+    location.search = $.query.remove("tags");
 }
