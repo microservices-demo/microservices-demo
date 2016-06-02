@@ -38,7 +38,7 @@ func main() {
 	router.HandleFunc("/catalogue/size", sizeHandler)
 	router.HandleFunc("/catalogue/{catId}", itemHandler)
 	router.HandleFunc("/tags", tagHandler)
-	router.PathPrefix("/images/").Handler(http.StripPrefix("/images/", http.FileServer(http.Dir("./images/"))))
+	router.PathPrefix("/catalogue/images/").Handler(http.StripPrefix("/catalogue/images/", http.FileServer(http.Dir("./images/"))))
 	fmt.Printf("Catalogue service running on port %s\n", port)
 	http.ListenAndServe(":" + port, router)
 }
