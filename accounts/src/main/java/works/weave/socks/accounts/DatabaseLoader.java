@@ -49,5 +49,32 @@ public class DatabaseLoader implements CommandLineRunner {
         ben.setCards(Arrays.asList(save1));
 
         this.customers.save(ben);
+
+        Customer eve = new Customer();
+        eve.setFirstName("Eve");
+        eve.setLastName("Berger");
+
+        address = new Address();
+        address.setNumber("1");
+        address.setStreet("The Avenues");
+        address.setCity("London");
+        address.setCountry("UK");
+        address.setPostcode("L10 3QD");
+
+        save = addresses.save(address);
+
+        eve.setAddresses(Arrays.asList(save));
+
+        card = new Card();
+        card.setLongNum("78542789543215432");
+        card.setExpires("08/19");
+        card.setCcv("894");
+
+        save1 = cards.save(card);
+
+        eve.setCards(Arrays.asList(save1));
+        eve.setUsername("Eve_Berger");
+
+        this.customers.save(eve);
     }
 }

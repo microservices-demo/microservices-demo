@@ -30,7 +30,7 @@ var imagesUrl = "http://catalogue/catalogue/images";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-	catalogueUrl = "http://192.168.99.101:32771/catalogue";
+	catalogueUrl = "http://localhost:8081/catalogue";
 	accountsUrl = "http://localhost:8082/accounts";
 	cartsUrl = "http://localhost:8081/carts";
 	itemsUrl = "http://localhost:8081/items";
@@ -84,7 +84,7 @@ function simpleHttpRequest(url, res, next) {
 
 // Login
 app.get("/login", function (req, res, next) {
-	console.log("Received login request: " + JSON.stringify(req));
+	console.log("Received login request: " + req);
 	var options = {
 		headers: {
 			'Authorization': req.get('Authorization')
