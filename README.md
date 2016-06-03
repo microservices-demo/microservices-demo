@@ -6,7 +6,11 @@ Demo microservices application for Weave.
 There are two options to run this demo. 1) Run on a single VM or host, 2) Run inside a Docker Swarm. The first option is best for beginners and swarm can introduce some complexity.
 
 ## Prerequisites
-Docker Toolbox, which includes docker-machine and docker-compose.
+Docker Toolbox, which includes docker-machine and docker-compose. I will assume that you have cloned this repo with:
+```
+git clone https://github.com/ContainerSolutions/weaveDemo.git
+cd weaveDemo
+```
 
 ## Non-swarm mode, local virtual machine
 Note that this pulls all images from docker-hub. Because of the variety of microservices, this will take a while.
