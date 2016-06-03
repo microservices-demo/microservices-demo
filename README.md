@@ -3,7 +3,46 @@ Demo microservices application for Weave.
 
 
 # Installing
-## Local
+There are two options to run this demo. 1) Run on a single VM or host, 2) Run inside a Docker Swarm. The first option is best for beginners and swarm can introduce some complexity.
+
+## Prerequisites
+Docker Toolbox, which includes docker-machine and docker-compose.
+
+## Non-swarm mode, local virtual machine
+Note that this pulls all images from docker-hub. Because of the variety of microservices, this will take a while.
+```
+docker-machine create default -d virtualbox
+eval $(docker-machine env default)
+docker-compose pull
+docker-compose up -d
+```
+
+## Non-swarm mode, remote host
+Setup the remote machines with docker, swarm, weave net and scope. Then:
+```
+docker-compose pull
+docker-compose up -d
+```
+
+## Docker Swarm (not recommended for newbies)
+You have two options. Allow docker compose to pull all the latest images from docker hub, or build the images with a script.
+
+### Local Demo mode
+```
+./scripts/install.sh launch
+eval $(docker-machine env --swarm swarm-master)
+docker-compose pull
+docker-compose up -d
+```
+
+### Remote Demo Mode
+Setup the remote machines with docker, swarm, weave net and scope. Then:
+```
+docker-compose pull
+docker-compose up -d
+```
+
+### Dev mode
 ```
 ./scripts/install.sh launch
 ./build.sh
@@ -12,14 +51,14 @@ docker-compose up -d
 ```
 Swarm up's are unstable. Pulling and building the project in stages seems to be more stable.
 
-## Remote
-```
-docker-compose pull
-docker-compose up -d
-```
-
 # Uninstalling
 This will remove all docker-machines.
+## Swarm
 ```
 ./scripts/install.sh destroy
+```
+
+## Non-swarm
+```
+docker-compose down
 ```
