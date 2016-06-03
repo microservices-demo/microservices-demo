@@ -1,12 +1,13 @@
 FROM python:2.7-wheezy
 
-COPY . /load_tester/
-
 # Install locust
 RUN pip install locustio
 
-EXPOSE 80
+ADD locustfile.py /config/locustfile.py
+ADD runLocust.sh /usr/local/bin/runLocust.sh
 
-WORKDIR = /load_tester
+ENV LOCUST_FILE /config/locustfile.py
 
-ENTRYPOINT ["./runLocust.sh"]
+EXPOSE 8089
+
+CMD ["/usr/local/bin/runLocust.sh"]

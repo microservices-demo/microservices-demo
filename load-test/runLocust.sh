@@ -17,10 +17,21 @@ EOF
   exit 1
 }
 
-if [[ $# -eq 0 ]]; then
-  do_usage
+if [ $# -eq 0 ]; then
+  if [ -n "${TARGET_HOST:+1}" ]; then
+	HOST=$TARGET_HOST
+  else
+	do_usage
+  fi
+fi
+
+if [ -n "${LOCUST_FILE:+1}" ]; then
+	echo "Locust file: " $LOCUST_FILE
+else
+	LOCUST_FILE="locustfile.py" 
+	echo "Default Locust file: " $LOCUST_FILE
 fi
 
 echo "Running load test against" $HOST
-locust --host=http://$HOST --clients=2 --hatch-rate=1 --num-request=10 --no-web
+locust --host=http://$HOST -f $LOCUST_FILE --clients=2 --hatch-rate=1 --num-request=10 --no-web
 echo "done"
