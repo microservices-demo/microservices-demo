@@ -4,6 +4,7 @@ function login() {
     $.ajax({
         url: "login",
         type: "GET",
+        async: false,
         success: function (data, textStatus, jqXHR) {
             alert("Logged in as " + username);
             console.log('posted: ' + textStatus);
@@ -11,7 +12,7 @@ function login() {
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alert("Problem with your login credentials. " + errorThrown);
-            console.log('error: ' + jqXHR);
+            console.log('error: ' + JSON.stringify(jqXHR));
             console.log('error: ' + textStatus);
             console.log('error: ' + errorThrown);
         },
