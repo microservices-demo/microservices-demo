@@ -13,7 +13,7 @@ public class Cart {
     private BigInteger id;
     private BigInteger customerId;
 
-    @DBRef(lazy = true)
+    @DBRef
     private List<Item> items = new ArrayList<>();
 
     public BigInteger getCustomerId() {

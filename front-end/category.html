@@ -554,10 +554,23 @@ _________________________________________________________ -->
     })
 </script>
 <script>
-            function addItem(arg1) {
-                console.log("add item");
-                console.log(arg1);
+    function addToCart(id) {
+        console.log("Sending request to add to cart: " + id);
+        $.ajax({
+            url: "cart",
+            type: "POST",
+            dataType: 'json',
+            data: JSON.stringify({"id": id}),
+            success: function (data, textStatus, jqXHR) {
+                console.log('Item added: ' + id + ', ' + textStatus);
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('Could not add item: ' + id + ', due to: ' + textStatus + ' | ' + errorThrown);
             }
+        });
+            }
+
             $(document).ready(function() {
 
                 $.ajaxSetup({
@@ -634,7 +647,7 @@ _________________________________________________________ -->
                                         <p class="price">£' + element.Price + '</p>\
                                         <p class="buttons">\
                                             <a href="detail.html" class="btn btn-default">View detail</a>\
-                                            <a href="basket.html" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>\
+                                            <a href="#" onclick="addToCart(\'' + element.Id + '\')" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>\
                                         </p>\
                                     </div>\
                                 </div>\
