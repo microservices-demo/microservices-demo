@@ -23,7 +23,6 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-
         Customer ben = new Customer();
         ben.setFirstName("Ben");
         ben.setLastName("LastName");
