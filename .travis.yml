@@ -35,5 +35,5 @@ after_success:
         exit 1;
       fi;
       if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:snapshot; echo "Pushing $REPO:snapshot"; docker push $REPO:snapshot; fi;
-      if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; docker push $REPO:; fi;
+      if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; docker tag $REPO:$TRAVIS_COMMIT $REPO:latest; docker push $REPO:latest; fi;
     done;
