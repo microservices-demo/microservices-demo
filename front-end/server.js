@@ -25,18 +25,18 @@ var ordersUrl = "http://orders/orders";
 var itemsUrl = "http://cart/items";
 var customersUrl = "http://accounts/customers";
 var loginUrl = "http://login/login";
-var tagsUrl = "http://catalogue/tags";
+var tagsUrl = catalogueUrl + "/tags";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-	catalogueUrl = "http://localhost:8081/catalogue";
+	catalogueUrl = "http://192.168.99.101:32768";
 	accountsUrl = "http://localhost:8082/accounts";
 	cartsUrl = "http://192.168.99.101:32768/carts";
 	itemsUrl = "http://192.168.99.101:32768/items";
 	ordersUrl = "http://localhost:8083/orders";
 	customersUrl = "http://localhost:8082/customers";
 	loginUrl = "http://localhost:8084/login";
-	tagsUrl = "http://192.168.99.103:32776/tags";
+	tagsUrl = catalogueUrl + "/tags";
 }
 
 // TODO Add logging
@@ -110,7 +110,12 @@ app.get("/login", function (req, res, next) {
 });
 
 // Catalogue
-app.get("/catalogue*", function(req, res, next) {
+app.get("/catalogue/images*", function (req, res, next) {
+	var url = catalogueUrl + req.url.toString();
+	request.get(url).pipe(res);
+});
+
+app.get("/catalogue*", function (req, res, next) {
 	simpleHttpRequest(catalogueUrl + req.url.toString(), res, next);
 });
 

@@ -63,7 +63,7 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 		sortOn = strings.ToLower(sortField)
 	}
 
-	var sorted []Sock = localizeUrl(filter(catalogue, tagField),  "http://" + r.Host)
+	var sorted []Sock = filter(catalogue, tagField)
 
 	switch sortOn {
 		case "id":
@@ -135,15 +135,6 @@ func loadCatalogue(file string) {
 
     json.Unmarshal(f, &catalogue)
     fmt.Printf("Loaded %d items into catalogue.\n", len(catalogue))
-}
-
-func localizeUrl(socks []Sock, host string) []Sock {
-	var r []Sock
-	for _, s := range socks {
-		s.ImageURL = host + s.ImageURL
-		r = append(r, s)
-	}
-	return r
 }
 
 func filter(socks []Sock, tagString string) []Sock {
