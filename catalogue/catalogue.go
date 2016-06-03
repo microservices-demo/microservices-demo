@@ -106,7 +106,7 @@ func itemHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, sock := range catalogue {
 		if sock.Id == catId {
-			sock.ImageURL = "http://" + r.Host + sock.ImageURL
+			sock.ImageURL = sock.ImageURL
 			data, _ := json.Marshal(sock)
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(data)

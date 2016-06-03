@@ -31,11 +31,11 @@ console.log(app.get('env'));
 if (app.get('env') == "development") {
 	catalogueUrl = "http://192.168.99.101:32768";
 	accountsUrl = "http://localhost:8082/accounts";
-	cartsUrl = "http://192.168.99.101:32768/carts";
-	itemsUrl = "http://192.168.99.101:32768/items";
+	cartsUrl = "http://192.168.99.103:32769/carts";
+	itemsUrl = "http://192.168.99.103:32769/items";
 	ordersUrl = "http://localhost:8083/orders";
 	customersUrl = "http://localhost:8082/customers";
-	loginUrl = "http://localhost:8084/login";
+	loginUrl = "http://192.168.99.101:32769/login";
 	tagsUrl = catalogueUrl + "/tags";
 }
 
@@ -89,7 +89,6 @@ app.get("/login", function (req, res, next) {
 		},
 		uri: loginUrl
 	};
-	res.status(200);
 	request(options, function (error, response, body) {
 		if (error) {
 			return next(error);
@@ -98,8 +97,10 @@ app.get("/login", function (req, res, next) {
 			console.log(body);
 			customerId = JSON.parse(body).id;
 			console.log(customerId);
+			res.status(200);
 			res.cookie(cookie_name, customerId, {maxAge: 3600000}).send('Cookie is set');
-			console.log("Sent cookies.")
+			console.log("Sent cookies.");
+			res.end();
 			return
 		} else {
 			console.log(response.statusCode);
@@ -156,7 +157,7 @@ app.get("/cart", function (req, res) {
 					{
 						uri: cartsUrl
 						, json: true
-						, body: {"customerId": parseInt(custId)}
+						, body: {"customerId": custId}
 					}, function (error, response, body) {
 						if (response.statusCode == 201) {
 							// Get cart url
@@ -288,7 +289,7 @@ app.delete("/cart/:id", function (req, res, next) {
 						uri: cartsUrl,
 						method: 'POST',
 						json: true,
-						body: {"customerId": parseInt(custId)}
+						body: {"customerId": custId}
 					};
 					request(options, function (error, response, body) {
 						if (error) {
@@ -448,7 +449,7 @@ app.post("/cart", function (req, res, next) {
 						uri: cartsUrl,
 						method: 'POST',
 						json: true,
-						body: {"customerId": parseInt(custId)}
+						body: {"customerId": custId}
 					};
 					request(options, function (error, response, body) {
 						if (error) {
@@ -577,7 +578,7 @@ app.post("/cart", function (req, res, next) {
 								callback(null, newItemUrl);
 							});
 						} else {
-							console.log("Unable to create new item due to: " + response + ", " + JSON.stringify(body));
+							console.log("Unable to create new item due to: " + JSON.stringify(response) + ", " + JSON.stringify(body));
 							callback(true);
 						}
 					});
