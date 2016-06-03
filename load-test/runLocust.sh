@@ -22,5 +22,5 @@ if [[ $# -eq 0 ]]; then
 fi
 
 echo "Running load test against" $HOST
-locust --host=http://$HOST -f locustTest.py --clients=2 --hatch-rate=1 --num-request=10 --no-web
+locust --host=http://$HOST --clients=2 --hatch-rate=1 --num-request=10 --no-web
 echo "done"

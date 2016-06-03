@@ -1,3 +1,5 @@
+# Not Used - remove this file.
+
 from locust import HttpLocust, TaskSet, task
 from random import randint
 import base64
