@@ -17,7 +17,7 @@ var catalogue []Sock
 
 var dev bool
 var port string
-var tagList []string = []string{"blue", "brown", "green", "black", "sport", "action", "skin", "smelly", "large", "short", "magic", "toes", "formal"}
+var tagList []string = []string{"geek", "blue", "brown", "green", "black", "sport", "action", "skin", "smelly", "large", "short", "magic", "toes", "formal"}
 
 func main() {
 

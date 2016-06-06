@@ -48,35 +48,34 @@
     ]
   },
   {
-    "id": "z0a4f044-b040-410d-8ead-4de0446aec7e",
-    "name": "Larson",
-    "description": "esse reprehenderit eiusmod exercitation ad fugiat proident ullamco dolor dolore",
+    "id": "03fef6ac-1896-4ce8-bd69-b798f85c6e0b",
+    "name": "Holy",
+    "description": "Socks fit for a Messiah. You too can experience walking in water with these special edition beauties. Each hole is lovingly proggled to leave smooth edges. The only sock approved by a higher power.",
     "imageUrl": [
-      "/catalogue/images/sock.jpeg",
-      "/catalogue/images/sock.jpeg"
+      "/catalogue/images/holy_1.jpeg",
+      "/catalogue/images/holy_2.jpeg",
+      "/catalogue/images/holy_3.jpeg"
     ],
-    "price": 7,
-    "count": 357,
+    "price": 999.99,
+    "count": 1,
     "tag": [
-      "short",
-      "green",
-      "formal"
+      "magic",
+      "action"
     ]
   },
   {
-    "id": "zza4f044-b040-410d-8ead-4de0446aec7e",
-    "name": "Jordan",
-    "description": "laboris elit cupidatat officia consequat est ea esse et sint",
+    "id": "d3588630-ad8e-49df-bbd7-3167f7efb246",
+    "name": "YouTube.sock",
+    "description": "We were not paid to sell this sock. It's just a bit geeky.",
     "imageUrl": [
-      "/catalogue/images/sock.jpeg",
-      "/catalogue/images/sock.jpeg"
+      "/catalogue/images/youtube_1.jpeg",
+      "/catalogue/images/youtube_2.jpeg"
     ],
-    "price": 10,
+    "price": 10.99,
     "count": 801,
     "tag": [
-      "blue",
-      "toes",
-      "short"
+      "geek",
+      "formal"
     ]
   },
   {
