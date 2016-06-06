@@ -33,8 +33,8 @@ if (app.get('env') == "development") {
     accountsUrl = "http://localhost:8082/accounts";
     cartsUrl = "http://192.168.99.102:32771/carts";
     itemsUrl = "http://192.168.99.102:32771/items";
-    ordersUrl = "http://localhost:8083/orders";
-    customersUrl = "http://localhost:8082/customers";
+    ordersUrl = "http://192.168.99.103:32768/orders";
+    customersUrl = "http://192.168.99.102:32769/customers";
     loginUrl = "http://192.168.99.103:32769/login";
     tagsUrl = catalogueUrl + "/tags";
 }
@@ -109,6 +109,22 @@ app.get("/cart", function (req, res) {
         }.bind({res: res}));
 });
 
+// Delete cart
+app.delete("/cart", function (req, res, next) {
+    var custId = getCustomerId(req);
+    async.waterfall([
+            async.apply(getCartUrlForCustomerId, custId),
+            deleteItem
+        ],
+        function (err, response) {
+            if (err) {
+                return next(err);
+            }
+            res.writeHeader(response.statusCode);
+            res.end()
+        });
+});
+
 // Delete item from cart
 app.delete("/cart/:id", function (req, res, next) {
     if (req.params.id == null) {
@@ -116,7 +132,7 @@ app.delete("/cart/:id", function (req, res, next) {
         return;
     }
 
-    console.log("Request received: " + req.url + ", " + req.params.id);
+    console.log("Delete item from cart: " + req.url);
 
     var custId = getCustomerId(req);
 
@@ -129,19 +145,7 @@ app.delete("/cart/:id", function (req, res, next) {
                 if (foundItem.url != null && foundItem.url != "") {
                     var urlSplit = foundItem.url.split('/');
                     var toDeleteUrl = currentItemsUrl + "/" + urlSplit[urlSplit.length - 1];
-                    var options = {
-                        uri: toDeleteUrl,
-                        method: 'DELETE'
-                    };
-                    console.log("toDeleteUrl: " + toDeleteUrl);
-                    request(options, function (error, response, body) {
-                        if (error) {
-                            callback(error);
-                            return;
-                        }
-                        console.log('Item deleted from current cart with status: ' + response.statusCode);
-                        callback(null, response);
-                    });
+                    deleteItem(toDeleteUrl, callback);
                 } else {
                     callback(new Error("Could not find item in cart to delete.", 404));
                 }
@@ -228,9 +232,11 @@ app.post("/cart", function (req, res, next) {
 //Orders
 app.post("/orders", function(req, res, next) {
     console.log("Request received with body: " + JSON.stringify(req.body));
+    var custId = getCustomerId(req);
+
     async.waterfall([
             function (callback) {
-                request(customersUrl + "/" + req.body.customer, function (error, response, body) {
+                request(customersUrl + "/" + custId, function (error, response, body) {
                     if (error) {
                         callback(error);
                         return;
@@ -245,7 +251,7 @@ app.post("/orders", function(req, res, next) {
                         "address": null,
                         "card": null,
                         "items": null
-                    }
+                    };
                     callback(null, order, addressLink, cardLink);
                 });
             },
@@ -256,7 +262,6 @@ app.post("/orders", function(req, res, next) {
                         request.get(addressLink, function (error, response, body) {
                             if (error) {
                                 callback(error);
-                                return;
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
@@ -269,7 +274,6 @@ app.post("/orders", function(req, res, next) {
                         request.get(cardLink, function (error, response, body) {
                             if (error) {
                                 callback(error);
-                                return;
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
@@ -279,22 +283,18 @@ app.post("/orders", function(req, res, next) {
                     }
                 ], function (err, result) {
                     if (err) {
-                        console.log(err);
-                        return;
+                        callback(err);
                     }
                     console.log(result);
                     callback(null, order);
                 });
             },
             function (order, callback) {
-                request.get(cartsUrl + "/search/findByCustomerId?custId=" + req.body.customer, function (error, response, body) {
-                    if (error) {
-                        callback(error);
-                        return;
+                getCartUrlForCustomerId(custId, function (err, cartUrl) {
+                    if (err) {
+                        return callback(err);
                     }
-                    console.log("Received response: " + JSON.stringify(body));
-                    jsonBody = JSON.parse(body);
-                    order.items = jsonBody._embedded.carts[0]._links.items.href;
+                    order.items = cartUrl;
                     callback(null, order);
                 });
             },
@@ -308,8 +308,7 @@ app.post("/orders", function(req, res, next) {
                 console.log("Posting Order: " + order);
                 request(options, function (error, response, body) {
                     if (error) {
-                        callback(error);
-                        return;
+                        return callback(error);
                     }
                     // Check for error code
                     callback(null, body);
@@ -320,7 +319,7 @@ app.post("/orders", function(req, res, next) {
             if (err) {
                 return next(err);
             }
-            respondSuccessBody(res, JSON.stringify(result));
+            respondStatusBody(res, 201, JSON.stringify(result));
         });
 });
 
@@ -557,5 +556,23 @@ function addItemToCart(currentItemsUrl, newItemUrl, callback) {
         }
         console.log('New item added to current cart');
         callback(null, newItemUrl);
+    });
+}
+
+// Delete something
+// Inputs:  toDeleteUrl - URL to delete
+// Returns: response - The response from the delete call
+function deleteItem(toDeleteUrl, callback) {
+    var options = {
+        uri: toDeleteUrl,
+        method: 'DELETE'
+    };
+    console.log("toDeleteUrl: " + toDeleteUrl);
+    request(options, function (error, response, body) {
+        if (error) {
+            return callback(error);
+        }
+        console.log('Item deleted with status: ' + response.statusCode);
+        callback(null, response);
     });
 }

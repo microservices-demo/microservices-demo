@@ -37,3 +37,37 @@ function setNewTags(value) {
 function resetTags() {
     location.search = $.query.remove("tags");
 }
+
+function order() {
+    $.ajax({
+        url: "orders",
+        type: "POST",
+        async: false,
+        success: function (data, textStatus, jqXHR) {
+            console.log("Order placed.");
+            alert("Order placed!");
+            deleteCart();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log('error: ' + JSON.stringify(jqXHR));
+            console.log('error: ' + textStatus);
+            console.log('error: ' + errorThrown);
+        }
+    });
+}
+
+function deleteCart() {
+    $.ajax({
+        url: "cart",
+        type: "DELETE",
+        async: true,
+        success: function (data, textStatus, jqXHR) {
+            console.log("Cart deleted.");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log('error: ' + JSON.stringify(jqXHR));
+            console.log('error: ' + textStatus);
+            console.log('error: ' + errorThrown);
+        }
+    });
+}
