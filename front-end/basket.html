@@ -513,7 +513,7 @@ _________________________________________________________ -->
                             $('#cart-list').append(' <tr>\
                                                 <td>\
                                                     <a href="#">\
-                                                        <img src="' + data.imageUrl + '" alt="' + data.namex + '">\
+                                                        <img src="' + data.imageUrl[0] + '" alt="' + data.namex + '">\
                                                     </a>\
                                                 </td>\
                                                 <td>\
@@ -522,15 +522,15 @@ _________________________________________________________ -->
                                                 <td>\
                                                     <input type="number" value="' + element.quantity + '" class="form-control">\
                                                 </td>\
-                                                <td>£' + data.Price.toFixed(2) + '</td>\
+                                                <td>£' + data.price.toFixed(2) + '</td>\
                                                 <td>£0.00</td>\
-                                                <td>£' + (element.quantity * data.Price).toFixed(2) + '</td>\
+                                                <td>£' + (element.quantity * data.price).toFixed(2) + '</td>\
                                                 <td>\
-                                                    <a href="#" onclick="deleteFromCart(\'' + data.Id + '\')"><i class="fa fa-trash-o"></i></a>\
+                                                    <a href="#" onclick="deleteFromCart(\'' + data.id + '\')"><i class="fa fa-trash-o"></i></a>\
                                                 </td>\
                                             </tr>');
-                            cartTotal = cartTotal + element.quantity * data.Price;
-                            console.log("Cur total: " + cartTotal)
+                            cartTotal = cartTotal + element.quantity * data.price;
+                            console.log("Cur total: " + cartTotal);
                             numItemsInCart = numItemsInCart + element.quantity;
                         }).always(function () {
                             console.log("Final counts: £" + cartTotal + ", with " + numItemsInCart + " items.");

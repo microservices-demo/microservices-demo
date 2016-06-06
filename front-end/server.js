@@ -29,7 +29,7 @@ var tagsUrl = catalogueUrl + "/tags";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-    catalogueUrl = "http://192.168.99.101:32770";
+    catalogueUrl = "http://localhost:8081";
     accountsUrl = "http://localhost:8082/accounts";
     cartsUrl = "http://192.168.99.102:32771/carts";
     itemsUrl = "http://192.168.99.102:32771/items";

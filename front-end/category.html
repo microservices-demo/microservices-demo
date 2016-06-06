@@ -428,12 +428,12 @@ _________________________________________________________ -->
                                         <div class="flipper">\
                                             <div class="front">\
                                                 <a href="detail.html">\
-                                                    <img src="' + element.imageUrl + '" alt="" class="img-responsive">\
+                                                    <img src="' + element.imageUrl[0] + '" alt="" class="img-responsive">\
                                                 </a>\
                                             </div>\
                                             <div class="back">\
                                                 <a href="detail.html">\
-                                                    <img src="' + element.imageUrl + '" alt="" class="img-responsive">\
+                                                    <img src="' + element.imageUrl[1] + '" alt="" class="img-responsive">\
                                                 </a>\
                                             </div>\
                                         </div>\
@@ -443,10 +443,10 @@ _________________________________________________________ -->
                                     </a>\
                                     <div class="text">\
                                         <h3><a href="detail.html">' + element.name + '</a></h3>\
-                                        <p class="price">£' + element.Price + '</p>\
+                                        <p class="price">£' + element.price + '</p>\
                                         <p class="buttons">\
                                             <a href="detail.html" class="btn btn-default">View detail</a>\
-                                            <a href="#" onclick="addToCart(\'' + element.Id + '\')" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>\
+                                            <a href="#" onclick="addToCart(\'' + element.id + '\')" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>\
                                         </p>\
                                     </div>\
                                 </div>\
@@ -454,39 +454,7 @@ _________________________________________________________ -->
                         });
                     }
                 });
-
-                $('#example').on('click', 'a.addToCart', function (e) {
-                    e.preventDefault();
-                    var $this = $(this);
-                    // console.log($this.closest('tr').cells[0].innerHTML);
-                    var $tr = $this.closest('tr');
-                    var index = $tr.index();
-                    // console.log(index);
-                    var table = document.getElementById("example");
-                    var sockId = table.rows[index+1].cells[0].innerHTML;
-                    console.log(sockId);
-                    var jsonData = {
-                        itemId: sockId,
-                        quantity: 1
-                    };
-                    $.ajax({
-                        url : "carts/1/items",
-                        type: "POST",
-                        data : JSON.stringify(jsonData),
-                        success: function(data, textStatus, jqXHR)
-                        {
-                            console.log('posted: ' + textStatus);
-                        },
-                        error: function (jqXHR, textStatus, errorThrown)
-                        {
-                            console.log('error: ' + textStatus);
-                        }
-                    });
-                } );
-
             } );
-                            // "defaultContent": '<a onclick="addItem(this)" href="javascript:void(0);" class="editor_edit">Add</a>'
-
 
 </script>
 

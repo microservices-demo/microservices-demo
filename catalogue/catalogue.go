@@ -17,7 +17,7 @@ var catalogue []Sock
 
 var dev bool
 var port string
-var tagList []string = []string{"blue", "brown", "green", "smelly", "large", "short", "magic", "toes", "formal"}
+var tagList []string = []string{"blue", "brown", "green", "black", "sport", "action", "skin", "smelly", "large", "short", "magic", "toes", "formal"}
 
 func main() {
 
@@ -171,11 +171,11 @@ func contains(s []string, e string) bool {
 }
 
 type Sock struct {
-	Id string `json:id`
+	Id string `json:"id"`
 	Name string `json:"name"`
 	Description string `json:"description"`
-	ImageURL string `json:"imageUrl"`
-	Price int `json:price`
+	ImageURL []string `json:"imageUrl"`
+	Price float32 `json:"price"`
 	Count int `json:"count"`
 	Tags []string `json:"tag"`
 }
