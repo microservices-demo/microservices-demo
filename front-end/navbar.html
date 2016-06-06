@@ -11,64 +11,61 @@ _________________________________________________________ -->
                 <img src="img/logo-small.png" alt="Obaju logo"
                      class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
             </a>
-            <div class="navbar-buttons">
-                <button type="button" class="navbar-toggle"
-                        data-toggle="collapse" data-target="#navigation">
-                    <span class="sr-only">Toggle navigation</span>
-                    <i class="fa fa-align-justify"></i>
-                </button>
-                <!--<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#search">-->
-                <!--<span class="sr-only">Toggle search</span>-->
-                <!--<i class="fa fa-search"></i>-->
-                <!--</button>-->
-                <a class="btn btn-default navbar-toggle" href="basket.html">
-                    <i class="fa fa-shopping-cart"></i> <span class="hidden-xs">3 items in cart</span>
-                </a>
-            </div>
         </div>
         <!--/.navbar-header -->
 
         <div class="navbar-collapse collapse" id="navigation">
 
             <ul class="nav navbar-nav navbar-left">
-                <li class="active"><a href="index.html">Home</a>
+                <li id="tabIndex"><a href="index.html">Home</a>
                 </li>
-                <li class="dropdown yamm-fw">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                       data-hover="dropdown" data-delay="200">Catalogue <b
+                <li id="tabCatalogue" class="dropdown yamm-fw">
+                    <a href="category.html" class="dropdown-toggle">Catalogue <b
                             class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
                             <div class="yamm-content">
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <h5>Socks</h5>
+                                        <h5>Colours</h5>
                                         <ul>
                                             <li>
-                                                <a href="category.html">Men's</a>
+                                                <a href="category.html?tags=blue">Blue</a>
                                             </li>
                                             <li>
-                                                <a href="category.html">Lady's</a>
+                                                <a href="category.html?tags=brown">Brown</a>
                                             </li>
                                             <li>
-                                                <a href="category.html">Dog's</a>
+                                                <a href="category.html?tags=green">Green</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <h5>Size</h5>
+                                        <ul>
+                                            <li>
+                                                <a href="category.html?tags=large">Large</a>
                                             </li>
                                             <li>
-                                                <a href="category.html">Unknown</a>
+                                                <a href="category.html?tags=short">Short</a>
+                                            </li>
+                                        </ul>
+                                        <h5>Function</h5>
+                                        <ul>
+                                            <li>
+                                                <a href="category.html?tags=toes">Toes</a>
+                                            </li>
+                                            <li>
+                                                <a href="category.html?tags=magic">Magic</a>
                                             </li>
                                         </ul>
                                     </div>
                                     <div class="col-sm-3">
                                         <h5>Featured</h5>
                                         <ul>
-                                            <li><a href="category.html">Hot
-                                                socks</a>
+                                            <li><a href="category.html?tags=formal">Formal</a>
                                             </li>
-                                            <li><a href="category.html">Cold
-                                                socks</a>
-                                            </li>
-                                            <li><a href="category.html">Docker
-                                                socks</a>
+                                            <li><a href="category.html?tags=smelly">Smelly</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -224,5 +221,19 @@ _________________________________________________________ -->
         }).error(function () {
             $('#basket-overview').remove();
         });
+
+        //Add Hover effect to menus
+        jQuery('ul.nav li.dropdown').hover(function () {
+            jQuery(this).find('.dropdown-menu').stop(true, true).delay(100).fadeIn();
+        }, function () {
+            jQuery(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut();
+        });
+
+        // Set active tabs
+        if (window.location.toString().indexOf("category.html") > -1) {
+            $('#tabCatalogue').addClass("active");
+        } else {
+            $('#tabIndex').addClass("active");
+        }
     });
 </script>
