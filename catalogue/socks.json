@@ -52,6 +52,7 @@
     "name": "Larson",
     "description": "esse reprehenderit eiusmod exercitation ad fugiat proident ullamco dolor dolore",
     "imageUrl": [
+      "/catalogue/images/sock.jpeg",
       "/catalogue/images/sock.jpeg"
     ],
     "price": 7,
@@ -67,6 +68,7 @@
     "name": "Jordan",
     "description": "laboris elit cupidatat officia consequat est ea esse et sint",
     "imageUrl": [
+      "/catalogue/images/sock.jpeg",
       "/catalogue/images/sock.jpeg"
     ],
     "price": 10,
@@ -82,6 +84,7 @@
     "name": "Kemp",
     "description": "qui fugiat laborum amet dolor non elit ullamco cillum dolor",
     "imageUrl": [
+      "/catalogue/images/sock.jpeg",
       "/catalogue/images/sock.jpeg"
     ],
     "price": 12,
@@ -97,6 +100,7 @@
     "name": "Maynard",
     "description": "proident occaecat irure et excepteur labore minim nisi amet irure",
     "imageUrl": [
+      "/catalogue/images/sock.jpeg",
       "/catalogue/images/sock.jpeg"
     ],
     "price": 18,
@@ -112,6 +116,7 @@
     "name": "Shepard",
     "description": "consequat amet cupidatat minim laborum tempor elit ex consequat in",
     "imageUrl": [
+      "/catalogue/images/sock.jpeg",
       "/catalogue/images/sock.jpeg"
     ],
     "price": 15,
@@ -127,6 +132,7 @@
     "name": "Figueroa",
     "description": "enim officia aliqua excepteur esse deserunt quis aliquip nostrud anim",
     "imageUrl": [
+      "/catalogue/images/sock.jpeg",
       "/catalogue/images/sock.jpeg"
     ],
     "price": 14,
