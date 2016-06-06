@@ -62,7 +62,7 @@
 
                 <div class="box">
 
-                    <form method="post" action="checkout1.html">
+                    <form method="post" action="#">
 
                         <h1>Shopping cart</h1>
                         <p class="text-muted" id="numItemsInCart"></p>
@@ -97,9 +97,9 @@
                                     shopping</a>
                             </div>
                             <div class="pull-right">
-                                <button class="btn btn-default"><i
+                                <a class="btn btn-default" onclick="alert('Stub. Todo.')"><i
                                         class="fa fa-refresh"></i> Update basket
-                                </button>
+                                </a>
                                 <button type="submit" class="btn btn-primary">
                                     Proceed to checkout <i
                                         class="fa fa-chevron-right"></i>
@@ -231,11 +231,11 @@
                             <tbody>
                             <tr>
                                 <td>Order subtotal</td>
-                                <th id="orderSubtotal">$446.00</th>
+                                <th id="orderSubtotal">£0.00</th>
                             </tr>
                             <tr>
                                 <td>Shipping and handling</td>
-                                <th id="orderShipping">$10.00</th>
+                                <th id="orderShipping">£4.99</th>
                             </tr>
                             <tr>
                                 <td>Tax</td>
@@ -243,7 +243,7 @@
                             </tr>
                             <tr class="total">
                                 <td>Total</td>
-                                <th id="orderGrandTotal">$456.00</th>
+                                <th id="orderGrandTotal">£4.99</th>
                             </tr>
                             </tbody>
                         </table>
@@ -514,7 +514,7 @@ _________________________________________________________ -->
                             $('#cart-list').append(' <tr>\
                                                 <td>\
                                                     <a href="#">\
-                                                        <img src="' + data.imageUrl + '" alt="' + data.name + '">\
+                                                        <img src="' + data.imageUrl + '" alt="' + data.namex + '">\
                                                     </a>\
                                                 </td>\
                                                 <td>\
