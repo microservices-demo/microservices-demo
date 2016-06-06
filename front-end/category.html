@@ -353,23 +353,6 @@ _________________________________________________________ -->
     })
 </script>
 <script>
-    function addToCart(id) {
-        console.log("Sending request to add to cart: " + id);
-        $.ajax({
-            url: "cart",
-            type: "POST",
-            dataType: 'json',
-            data: JSON.stringify({"id": id}),
-            success: function (data, textStatus, jqXHR) {
-                console.log('Item added: ' + id + ', ' + textStatus);
-                location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error('Could not add item: ' + id + ', due to: ' + textStatus + ' | ' + errorThrown);
-            }
-        });
-            }
-
             $(document).ready(function() {
 
                 $.ajaxSetup({
@@ -427,30 +410,30 @@ _________________________________________________________ -->
                                     <div class="flip-container">\
                                         <div class="flipper">\
                                             <div class="front">\
-                                                <a href="detail.html">\
+                                                <a href="detail.html?id=' + element.id + '">\
                                                     <img src="' + element.imageUrl[0] + '" alt="" class="img-responsive">\
                                                 </a>\
                                             </div>\
                                             <div class="back">\
-                                                <a href="detail.html">\
+                                                <a href="detail.html?id=' + element.id + '">\
                                                     <img src="' + element.imageUrl[1] + '" alt="" class="img-responsive">\
                                                 </a>\
                                             </div>\
                                         </div>\
                                     </div>\
-                                    <a href="detail.html" class="invisible">\
+                                    <a href="detail.html?id=' + element.id + '" class="invisible">\
                                         <img src="img/product1.jpg" alt="" class="img-responsive">\
                                     </a>\
                                     <div class="text">\
-                                        <h3><a href="detail.html">' + element.name + '</a></h3>\
+                                        <h3><a href="detail.html?id=' + element.id + '">' + element.name + '</a></h3>\
                                         <p class="price">£' + element.price + '</p>\
                                         <p class="buttons">\
-                                            <a href="detail.html" class="btn btn-default">View detail</a>\
+                                            <a href="detail.html?id=' + element.id + '" class="btn btn-default">View detail</a>\
                                             <a href="#" onclick="addToCart(\'' + element.id + '\')" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>\
                                         </p>\
                                     </div>\
                                 </div>\
-                                </div>');
+                            </div>');
                         });
                     }
                 });

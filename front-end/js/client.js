@@ -71,3 +71,20 @@ function deleteCart() {
         }
     });
 }
+
+function addToCart(id) {
+    console.log("Sending request to add to cart: " + id);
+    $.ajax({
+        url: "cart",
+        type: "POST",
+        dataType: 'json',
+        data: JSON.stringify({"id": id}),
+        success: function (data, textStatus, jqXHR) {
+            console.log('Item added: ' + id + ', ' + textStatus);
+            location.reload();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error('Could not add item: ' + id + ', due to: ' + textStatus + ' | ' + errorThrown);
+        }
+    });
+}
