@@ -2,7 +2,8 @@ from locust import HttpLocust, TaskSet, task
 from random import randint
 import base64
 import time
-
+               	
+counter = 0
 
 class AnonTasks(TaskSet):
 
@@ -26,29 +27,29 @@ class APITasks(TaskSet):
 	def on_start(self):
 		self.login()
 
-	def login(self):
-		base64string = base64.encodestring('%s:%s' % ("Eve_Berger", "duis")).replace('\n', '')
-		login = self.client.get("/login", headers={"Authorization":"Basic %s" % base64string})
-		print login.cookies
-		self.cust_id = login.cookies["logged_in"]
-
-	# @task
-	# def getCart(self):
-	# 	cart = self.client.get("/cart")
-	# 	print cart
-		# catalogue = self.client.get("/catalogue?size=100")
-		# sizeResponse = self.client.get("/catalogue/size")
-		# size = sizeResponse.json()["size"]
-		# index = randint(0, size-1)
-		# print index
-		# catItem = catalogue.json()[index]
-		# print catItem
-		# self.client.post("/cart", json={"itemId": catItem["Id"], "quantity": 3})
-		# self.client.post("/orders", json={"customer": self.cust_id})
+	@task
+	def purchaseItem(self):
+		createCustomer()
+		login()
+		addItemToCart()
+		buy()
+		deleteCustomer
 
 	@task
-	def buy(self):
+	def addRemoveFromCart(self):
+		createCustomer()
+		login()
+		addItemToCart()
+		removeItemFromCart()
+		deleteCustomer()
+
+	def removeItemFromCart(self):
+		self.client.delete("/cart/" + self.cart_id + "/items/" + self.item_id)
+
+	# @task
+	def addItemToCart(self):
 		cart = self.client.get("/cart")
+		self.cart_id = cart.json()["id"]
 		catalogue = self.client.get("/catalogue?size=100")
 		sizeResponse = self.client.get("/catalogue/size")
 		size = sizeResponse.json()["size"]
@@ -56,9 +57,32 @@ class APITasks(TaskSet):
 		print index
 		catItem = catalogue.json()[index]
 		print catItem
-		time.sleep(5)
-		self.client.post("/cart", json={"id": catItem["Id"], "quantity": 3})
+		time.sleep(2.0)
+		self.item_id = catItem["Id"]
+		self.client.post("/cart", json={"id": self.item_id, "quantity": 3})
+
+	def buy(self):
 		self.client.post("/orders", json={"customer": self.cust_id})
+
+	def login(self):
+		base64string = base64.encodestring('%s:%s' % (self.username, self.password)).replace('\n', '')
+		login = self.client.get("/login", headers={"Authorization":"Basic %s" % base64string})
+		# print login.cookies
+		# self.cust_id = login.cookies["logged_in"]
+
+	def createCustomer(self):
+		# TODO just use same address/card for all generated customers?
+		# address = self.client.post("/accounts/adresses", json={...})
+		# card = self.client.post("/accounts/cards", json={...})
+		global counter += 1
+		self.username = "test_user_" + counter
+		self.password = "test_password"
+		customer = self.client.post("/accounts/customers", json={"firstName": "testUser_" + counter, "lastName": "Last_Name", "username": self.username, "addresses": ["http://accounts/addresses/0"], "cards": ["http://accounts/cards/0"]})
+		self.cust_id = customer.json()["id"]
+		self.client.get("/register?username=" + "test_user_" + counter + "&password=" + self.password)
+
+	def deleteCustomer(self):
+		self.client.delete("/accounts/customers/" + self.cust_id)
 
 class ErrorTasks(TaskSet):
 
