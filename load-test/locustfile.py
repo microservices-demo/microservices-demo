@@ -34,7 +34,7 @@ class APITasks(TaskSet):
 		self.login()
 		self.addItemToCart()
 		self.buy()
-		self.deleteCustomer
+		self.deleteCustomer()
 
 	# @task
 	# def addRemoveFromCart(self):
