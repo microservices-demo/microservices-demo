@@ -24,6 +24,8 @@ var cartsUrl = "http://cart/carts";
 var ordersUrl = "http://orders/orders";
 var itemsUrl = "http://cart/items";
 var customersUrl = "http://accounts/customers";
+var addressUrl = "http://accounts/addresses";
+var cardsUrl = "http://accounts/cards";
 var loginUrl = "http://login/login";
 var registerUrl = "http://login/register";
 var tagsUrl = catalogueUrl + "/tags";
@@ -36,6 +38,8 @@ if (app.get('env') == "development") {
     itemsUrl = "http://192.168.99.102:32771/items";
     ordersUrl = "http://192.168.99.103:32768/orders";
     customersUrl = "http://192.168.99.102:32769/customers";
+    addressUrl = "http://192.168.99.102:32769/addresses";
+    cardsUrl = "http://192.168.99.102:32769/cards";
     loginUrl = "http://192.168.99.103:32769/login";
     registerUrl = "http://localhost:8084/register";
     tagsUrl = catalogueUrl + "/tags";
@@ -81,7 +85,103 @@ app.get("/login", function (req, res, next) {
 
 // Register - TO BE USED FOR TESTING ONLY (for now)
 app.get("/register", function(req, res, next) {
-    simpleHttpRequest(registerUrl, res, next);
+    simpleHttpRequest(registerUrl + "?username=" + req.query.username + "&password=" + req.query.password, res, next);
+});
+
+// Create Customer - TO BE USED FOR TESTING ONLY (for now)
+app.post("/customers", function(req, res, next) {
+    var options = {
+        uri: customersUrl,
+        method: 'POST',
+        json: true,
+        body: req.body
+    };
+    console.log("Posting Customer: " + req.body);
+    request(options, function (error, response, body) {
+        if (error) {
+            return next(error);
+        }
+        respondSuccessBody(res, JSON.stringify(body));
+    }.bind({res: res}));
+});
+
+// Create Address - TO BE USED FOR TESTING ONLY (for now)
+app.post("/addresses", function(req, res, next) {
+    var options = {
+        uri: addressUrl,
+        method: 'POST',
+        json: true,
+        body: req.body
+    };
+    console.log("Posting Address: " + req.body);
+    request(options, function (error, response, body) {
+        if (error) {
+            return next(error);
+        }
+        respondSuccessBody(res, JSON.stringify(body));
+    }.bind({res: res}));
+});
+
+// Create Card - TO BE USED FOR TESTING ONLY (for now)
+app.post("/cards", function(req, res, next) {
+    var options = {
+        uri: cardsUrl,
+        method: 'POST',
+        json: true,
+        body: req.body
+    };
+    console.log("Posting Card: " + req.body);
+    request(options, function (error, response, body) {
+        if (error) {
+            return next(error);
+        }
+        respondSuccessBody(res, JSON.stringify(body));
+    }.bind({res: res}));
+});
+
+// Delete Customer - TO BE USED FOR TESTING ONLY (for now)
+app.delete("/customers/:id", function(req, res, next) {
+    console.log("Deleting Customer " + req.params.id);
+    var options = {
+        uri: customersUrl + "/" + req.params.id,
+        method: 'DELETE'
+    };
+    request(options, function (error, response, body) {
+        if (error) {
+            return next(error);
+        }
+        respondSuccessBody(res, JSON.stringify(body));
+    }.bind({res: res}));
+});
+
+// Delete Address - TO BE USED FOR TESTING ONLY (for now)
+app.delete("/addresses/:id", function(req, res, next) {
+    console.log("Deleting Address " + req.params.id);
+    var options = {
+        uri: addressUrl + "/" + req.params.id,
+        method: 'DELETE'
+    };
+    request(options, function (error, response, body) {
+        if (error) {
+            return next(error);
+        }
+        respondSuccessBody(res, JSON.stringify(body));
+    }.bind({res: res}));
+});
+
+// Delete Card - TO BE USED FOR TESTING ONLY (for now)
+app.delete("/cards/:id", function(req, res, next) {
+    console.log("Deleting Card " + req.params.id);
+    var options = {
+        uri: cardsUrl + "/" + req.params.id,
+        method: 'DELETE'
+    };
+    request(options, function (error, response, body) {
+        if (error) {
+            return next(error);
+        }
+        respondSuccessBody(res, JSON.stringify(body));
+    }.bind({res: res}));
 });
 
 // Catalogue
@@ -306,7 +406,9 @@ app.post("/orders", function(req, res, next) {
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
-                            order.address = jsonBody._embedded.address[0]._links.self.href;
+                            // TODO Temp Hack/fix :)
+                            // order.address = jsonBody._embedded.address[0]._links.self.href;
+                            order.address = addressLink
                             callback();
                         });
                     },
@@ -318,7 +420,9 @@ app.post("/orders", function(req, res, next) {
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
-                            order.card = jsonBody._embedded.card[0]._links.self.href;
+                            // TODO Temp Hack/fix :)
+                            // order.card = jsonBody._embedded.card[0]._links.self.href;
+                            order.card = cardLink
                             callback();
                         });
                     }
