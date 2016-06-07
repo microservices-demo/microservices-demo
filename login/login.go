@@ -2,11 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"errors"
 	"strings"
 )
 
@@ -30,8 +30,9 @@ func main() {
 	loadUsers(file)
 
 	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/register", registerHandler)
 	fmt.Printf("Login service running on port %s\n", port)
-	http.ListenAndServe(":" + port, nil)
+	http.ListenAndServe(":"+port, nil)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +42,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(401)
 		return
 	}
-	
+
 	fmt.Printf("Lookup for user %s and password: %s.\n", u, p)
 
 	found := false
@@ -75,27 +76,27 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("Parsed: %s", s)
 
-    if len(s.Embedded.Customers) < 1 {
-        panic(errors.New("No customers found for that username."))
-    }
+	if len(s.Embedded.Customers) < 1 {
+		panic(errors.New("No customers found for that username."))
+	}
 
 	c := s.Embedded.Customers[0]
 	fmt.Printf("Customer: %s", c)
 
-    customer := c.Links.Customer.Href
+	customer := c.Links.Customer.Href
 	fmt.Printf("Customer link: %s", customer)
 
-    idSplit := strings.Split(customer, "/")
-    id := idSplit[len(idSplit) - 1]
+	idSplit := strings.Split(customer, "/")
+	id := idSplit[len(idSplit)-1]
 	fmt.Printf("Customer id: %s", id)
 
-    var response Response
-    response.Username = c.Username
-    response.Customer = customer
-    response.Id = id
+	var response Response
+	response.Username = c.Username
+	response.Customer = customer
+	response.Id = id
 
 	js, err := json.Marshal(response)
-    fmt.Printf("Marshalled: %s", js)
+	fmt.Printf("Marshalled: %s", js)
 
 	if err != nil {
 		panic(err)
@@ -110,9 +111,13 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	// Create new customer via accounts service
 
 	// Store id? user and password
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+	users = append(users, User{Id: "", Name: username, Password: password})
 
+	w.WriteHeader(200)
 	// Not yet implemented
-	w.WriteHeader(501)
+	// w.WriteHeader(501)
 }
 
 func loadUsers(file string) {
@@ -125,34 +130,34 @@ func loadUsers(file string) {
 }
 
 type User struct {
-	Id string `json:"id"`
-	Name string `json:"name"`
+	Id       string `json:"id"`
+	Name     string `json:"name"`
 	Password string `json:"password"`
 }
 
 type Search struct {
-    Embedded Embedded `json:"_embedded"`
+	Embedded Embedded `json:"_embedded"`
 }
 
 type Embedded struct {
-    Customers []Customer `json:"customer"`
+	Customers []Customer `json:"customer"`
 }
 
 type Customer struct {
-    Username string `json:"username"`
-    Links Links  `json:"_links"`
+	Username string `json:"username"`
+	Links    Links  `json:"_links"`
 }
 
 type Links struct {
-    Customer Link `json:"customer"`
+	Customer Link `json:"customer"`
 }
 
 type Link struct {
-    Href string `json:"href"`
+	Href string `json:"href"`
 }
 
 type Response struct {
-    Username string `json:"username"`
-    Customer string `json:"customer"`
-    Id  string  `json:"id"`
+	Username string `json:"username"`
+	Customer string `json:"customer"`
+	Id       string `json:"id"`
 }

@@ -4,7 +4,7 @@ services:
   front-end:
     image: weaveworksdemos/front-end
     ports:
-      - "8079"
+      - "80:8079"
     hostname: front-end
     domainname: weave.local
     restart: always

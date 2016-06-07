@@ -23,8 +23,15 @@ do_checks() {
 }
 do_launch() {
   do_checks
-  echo "Creating docker-machines and installing swarm"
-  $SCRIPT_DIR/installSwarm.sh create 2
+  case "$COMMAND" in
+    launch)
+      echo "Creating docker-machines and installing swarm Locally"
+      $SCRIPT_DIR/installSwarm.sh create 2
+      ;;
+    launch-aws)
+      echo "Creating docker-machines and installing swarm on AWS"
+      $SCRIPT_DIR/installSwarm.sh create 2 amazonec2
+  esac
 
   echo "Installing weave"
   $SCRIPT_DIR/installWeave.sh launch
@@ -56,14 +63,14 @@ do_destroy() {
 do_usage() {
     cat >&2 <<EOF
 Usage:
-  ${SCRIPT_NAME} [ launch | stop | destroy ] OPTIONS
+  ${SCRIPT_NAME} [ launch | launch-aws | stop | destroy ] OPTIONS
 Description:
   Installs swarm, weave and scope on a docker-machine VM
 EOF
   exit 1
 }
 case "$COMMAND" in
-  launch)
+  launch | launch-aws)
     do_launch
     ;;
   stop)
