@@ -10,6 +10,7 @@ public class Item {
 
     private String itemId;
     private int quantity;
+    private float unitPrice;
 
     public String getItemId() {
         return itemId;
@@ -25,5 +26,13 @@ public class Item {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public float getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(float unitPrice) {
+        this.unitPrice = unitPrice;
     }
 }

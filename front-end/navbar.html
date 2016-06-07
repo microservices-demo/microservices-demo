@@ -75,7 +75,8 @@ _________________________________________________________ -->
                         </li>
                     </ul>
                 </li>
-
+                <li id="tabAccount"><a href="customer-orders.html">Account</a>
+                </li>
                 <!--<li class="dropdown yamm-fw">-->
                 <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">Template <b class="caret"></b></a>-->
                 <!--<ul class="dropdown-menu">-->
@@ -205,6 +206,10 @@ _________________________________________________________ -->
             contentType: "application/json; charset=utf-8"
         });
 
+        if ($.cookie('logged_in') == null || $.cookie('logged_in') == "") {
+            $("#tabAccount").remove()
+        }
+
         $.getJSON('/cart', {}, function (data) {
             if (data != null) {
                 var numItemsInCart = 0;
@@ -232,6 +237,8 @@ _________________________________________________________ -->
         // Set active tabs
         if (window.location.toString().indexOf("category.html") > -1) {
             $('#tabCatalogue').addClass("active");
+        } else if (window.location.toString().indexOf("customer-") > -1) {
+            $('#tabAccount').addClass("active");
         } else {
             $('#tabIndex').addClass("active");
         }

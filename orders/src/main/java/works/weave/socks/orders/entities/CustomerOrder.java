@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.Date;
 
 // curl -XPOST -H 'Content-type: application/json' http://localhost:8082/orders -d '{"customer": "http://localhost:8080/customer/1", "address": "http://localhost:8080/address/1", "card": "http://localhost:8080/card/1", "items": "http://localhost:8081/carts/1/items"}'
 
@@ -27,6 +29,10 @@ public class CustomerOrder {
     private String card;
 
     private String items;
+
+    private float total;
+
+    private Date date = Calendar.getInstance().getTime();
 
     public BigInteger getId() {
         return id;
@@ -70,5 +76,21 @@ public class CustomerOrder {
 
     public void setCustomerId(BigInteger customerId) {
         this.customerId = customerId;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }
