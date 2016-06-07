@@ -7,6 +7,9 @@ services:
       - "8079"
     hostname: front-end
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - front
       - internal
@@ -16,6 +19,9 @@ services:
       - "80"
     hostname: catalogue
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - front
   accounts:
@@ -24,6 +30,9 @@ services:
       - "80"
     hostname: accounts
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
   accounts-db:
@@ -32,6 +41,9 @@ services:
       - "27017"
     hostname: accounts-db
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
   cart:
@@ -40,6 +52,9 @@ services:
       - "80"
     hostname: cart
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
   cart-db:
@@ -48,6 +63,9 @@ services:
       - "27017"
     hostname: cart-db
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
   orders:
@@ -56,6 +74,9 @@ services:
       - "80"
     hostname: orders
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
   orders-db:
@@ -64,6 +85,9 @@ services:
       - "27017"
     hostname: orders-db
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
   shipping:
@@ -72,6 +96,9 @@ services:
       - "80"
     hostname: shipping
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
   queue-master:
@@ -82,6 +109,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
   rabbitmq:
@@ -91,6 +121,9 @@ services:
       - "15672:15672"
     hostname: rabbitmq
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
   payment:
@@ -99,6 +132,9 @@ services:
       - "80"
     hostname: payment
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
   login:
@@ -107,6 +143,9 @@ services:
       - "80"
     hostname: login
     domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
     networks:
       - internal
 networks:
