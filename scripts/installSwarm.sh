@@ -5,6 +5,7 @@
 #######################################################################
 CMD="${1}"
 COUNT="${2:-1}"
+DRIVER="${3:-virtualbox}"
 do_checks() {
   if [ ! `command -v docker-machine` ]; then
     echo "Docker Machine is not found!"
@@ -20,10 +21,39 @@ do_checks() {
 do_create() {
   do_checks
   KEYSTORE_NAME=`docker-machine ls --format="{{.Name}}" --filter="name=swarm-keystore"`
+
+  if "$DRIVER" == "AWS"; then
+    if [ ! `command -v aws` ]; then
+      echo "AWS command line tools not found."
+      exit 0
+    fi
+
+    #Set up Security Group in AWS
+
+    group_name="docker-networking"
+    aws ec2 create-security-group --group-name ${group_name} --description "A Security Group for Docker Networking"
+    # Permit SSH, required for Docker Machine
+    aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol tcp --port 22 --cidr 0.0.0.0/0
+    aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol tcp --port 2376 --cidr 0.0.0.0/0
+    # Permit Consul HTTP API
+    aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol tcp --port 8500 --cidr 0.0.0.0/0
+    # Weave 
+    aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol tcp --port 6783 --cidr 0.0.0.0/0
+    aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol udp --port 6783 --cidr 0.0.0.0/0
+
+    CREATE_ARGS="--driver amazonec2 --amazonec2-instance-type=t2.medium --amazonec2-security-group ${group_name}"
+    ETHERNET="eth0"
+  else
+    CREATE_ARGS="--driver virtualbox"
+    ETHERNET="eth1"
+  fi
+
   if [ -z "$KEYSTORE_NAME" ]; then
     # Create the machine that'll be used for config
     # and coordination by the Swarm master & members.
-    docker-machine create -d virtualbox swarm-keystore
+    # docker-machine create -d virtualbox swarm-keystore
+    # Install on AWS.
+    docker-machine create $CREATE_ARGS swarm-keystore
     echo "Docker Machine 'swarm-keystore' instance created!"
     # Check we have a working Docker host, and exit if all is not
     # well. Better to find out now than later...
@@ -47,12 +77,12 @@ do_create() {
   # the ongoing overhead of talking to each machine).
   KEYSTORE_IP=$(docker-machine ip swarm-keystore)
   # Create the Swarm master node
-  docker-machine create -d virtualbox \
+  docker-machine create $CREATE_ARGS \
     --swarm \
     --swarm-master \
     --swarm-discovery="consul://${KEYSTORE_IP}:8500" \
     --engine-opt="cluster-store=consul://${KEYSTORE_IP}:8500" \
-    --engine-opt="cluster-advertise=eth1:2376" \
+    --engine-opt="cluster-advertise=${ETHERNET}:2376" \
     swarm-master
   eval $(docker-machine env --swarm swarm-master)
   # Create multiple Swarm slave nodes, per the user input
@@ -85,11 +115,11 @@ do_add() {
     EXISTS=`docker-machine ls --format="{{.Name}}" --filter="name=swarm-node-${count}"`
     if [ -z "$EXISTS" ]; then
       echo "Swarm node 'swarm-node-${count}' does not exist"
-      docker-machine create -d virtualbox \
+      docker-machine create --driver amazonec2 --amazonec2-zone=b --amazonec2-instance-type=t2.large \
         --swarm \
         --swarm-discovery="consul://${KEYSTORE_IP}:8500" \
         --engine-opt="cluster-store=consul://${KEYSTORE_IP}:8500" \
-        --engine-opt="cluster-advertise=eth1:2376" \
+        --engine-opt="cluster-advertise=${ETHERNET}:2376" \
         swarm-node-${count}
       counter=$((counter + 1))
     else

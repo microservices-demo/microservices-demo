@@ -17,7 +17,7 @@ COPY . /usr/src/app
 
 ENV NODE_ENV "production"
 
-EXPOSE 8079
+# EXPOSE 8079
 
 # Start the app
 CMD [ "npm", "start" ]

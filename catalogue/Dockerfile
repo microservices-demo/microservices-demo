@@ -1,6 +1,6 @@
 FROM golang:1.6
 
-EXPOSE 80
+#EXPOSE 80
 COPY socks.json /config/socks.json
 RUN go get github.com/gorilla/mux
 

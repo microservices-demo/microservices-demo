@@ -1,6 +1,6 @@
 FROM java:openjdk-8-alpine
 
-EXPOSE 80
+#EXPOSE 80
 WORKDIR /usr/src/cart
 
 COPY . /usr/src/cart
