@@ -27,6 +27,7 @@ do_launch() {
     launch)
       echo "Creating docker-machines and installing swarm Locally"
       $SCRIPT_DIR/installSwarm.sh create 2
+      ;;
     launch-aws)
       echo "Creating docker-machines and installing swarm on AWS"
       $SCRIPT_DIR/installSwarm.sh create 2 amazonec2

@@ -22,7 +22,8 @@ do_create() {
   do_checks
   KEYSTORE_NAME=`docker-machine ls --format="{{.Name}}" --filter="name=swarm-keystore"`
 
-  if "$DRIVER" == "AWS"; then
+  if ["$DRIVER" -eq "AWS"]; then
+    echo "Installing Swarm on AWS..."
     if [ ! `command -v aws` ]; then
       echo "AWS command line tools not found."
       exit 0
@@ -41,7 +42,7 @@ do_create() {
     aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol tcp --port 6783 --cidr 0.0.0.0/0
     aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol udp --port 6783 --cidr 0.0.0.0/0
 
-    CREATE_ARGS="--driver amazonec2 --amazonec2-instance-type=t2.medium --amazonec2-security-group ${group_name}"
+    CREATE_ARGS="--driver amazonec2 --amazonec2-instance-type=t2.medium --amazonec2-vpc-id=vpc-a7d209c0 --amazonec2-zone=d --amazonec2-security-group ${group_name}"
     ETHERNET="eth0"
   else
     CREATE_ARGS="--driver virtualbox"
@@ -115,7 +116,7 @@ do_add() {
     EXISTS=`docker-machine ls --format="{{.Name}}" --filter="name=swarm-node-${count}"`
     if [ -z "$EXISTS" ]; then
       echo "Swarm node 'swarm-node-${count}' does not exist"
-      docker-machine create --driver amazonec2 --amazonec2-zone=b --amazonec2-instance-type=t2.large \
+      docker-machine create $CREATE_ARGS \
         --swarm \
         --swarm-discovery="consul://${KEYSTORE_IP}:8500" \
         --engine-opt="cluster-store=consul://${KEYSTORE_IP}:8500" \
