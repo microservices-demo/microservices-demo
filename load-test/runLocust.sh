@@ -17,7 +17,6 @@ EOF
   exit 1
 }
 
-TARGET_HOST=localhost
 CLIENTS=2
 REQUESTS=10
 
