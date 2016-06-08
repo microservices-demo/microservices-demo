@@ -4,8 +4,14 @@ var path = require("path");
 var bodyParser = require("body-parser");
 var async = require("async");
 var cookieParser = require("cookie-parser");
+var session = require('express-session')
 
 var app = express();
+app.use(session({
+    secret: 'sooper secret',
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(express.static(__dirname + "/"));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -56,31 +62,61 @@ var cookie_name = 'logged_in';
 // Login
 app.get("/login", function (req, res, next) {
     console.log("Received login request");
-    var options = {
-        headers: {
-            'Authorization': req.get('Authorization')
+
+    async.waterfall([
+        function (callback) {
+            var options = {
+                headers: {
+                    'Authorization': req.get('Authorization')
+                },
+                uri: loginUrl
+            };
+            request(options, function (error, response, body) {
+                if (error) {
+                    callback(error);
+                }
+                if (response.statusCode == 200 && body != null && body != "") {
+                    console.log(body);
+                    customerId = JSON.parse(body).id;
+                    console.log(customerId);
+                    callback(customerId);
+                } else {
+                    console.log(response.statusCode);
+                    callback(true);
+                }
+            });
         },
-        uri: loginUrl
-    };
-    request(options, function (error, response, body) {
-        if (error) {
-            return next(error);
+        function (custId, callback) {
+            var sessionId = req.session.id;
+            console.log("Merging carts for customer id: " + custId + " and session id: " + sessionId);
+
+            var options = {
+                uri: cartsUrl + "/merge?custId=" + custId + "&sessionId=" + sessionId,
+                method: 'GET'
+            };
+            request(options, function (error, response, body) {
+                if (error) {
+                    callback(error);
+                    return;
+                }
+                console.log('Carts merged.');
+                callback(null, custId);
+            });
         }
-        if (response.statusCode == 200 && body != null && body != "") {
-            console.log(body);
-            customerId = JSON.parse(body).id;
-            console.log(customerId);
-            res.status(200);
-            res.cookie(cookie_name, customerId, {maxAge: 3600000}).send('Cookie is set');
-            console.log("Sent cookies.");
+    ],
+    function (err, custId) {
+        if (err) {
+            console.log("Error with log in: " + err);
+            res.status(401);
             res.end();
-            return
-        } else {
-            console.log(response.statusCode);
+            return;
         }
-        res.status(401);
+        res.status(200);
+        res.cookie(cookie_name, custId, {maxAge: 3600000}).send('Cookie is set');
+        console.log("Sent cookies.");
         res.end();
-    }.bind({res: res}));
+        return;
+    });
 });
 
 // Register - TO BE USED FOR TESTING ONLY (for now)
@@ -348,7 +384,12 @@ app.post("/cart", function (req, res, next) {
 //Orders
 app.get("/orders", function (req, res, next) {
     console.log("Request received with body: " + JSON.stringify(req.body));
-    var custId = getCustomerId(req);
+    // var custId = getCustomerId(req);
+    var custId = req.cookies.logged_in;
+    if (!custId) {
+        throw new Error("User not logged in.");
+        return
+    }
 
     async.waterfall([
             function (callback) {
@@ -371,7 +412,12 @@ app.get("/orders", function (req, res, next) {
 
 app.post("/orders", function(req, res, next) {
     console.log("Request received with body: " + JSON.stringify(req.body));
-    var custId = getCustomerId(req);
+    // var custId = getCustomerId(req);
+    var custId = req.cookies.logged_in;
+    if (!custId) {
+        throw new Error("User not logged in.");
+        return
+    }
 
     async.waterfall([
             function (callback) {
@@ -523,7 +569,12 @@ function getCustomerId(req) {
     }
 
     if (!custId) {
-        throw new Error("User not logged in.");
+        if (!req.session.id) {
+            throw new Error("wAT!?!?");
+        }
+        // Use Session ID instead
+        return req.session.id;
+        // throw new Error("User not logged in.");
     }
 
     return custId;
