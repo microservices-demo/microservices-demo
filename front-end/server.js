@@ -32,15 +32,15 @@ var tagsUrl = catalogueUrl + "/tags";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-    catalogueUrl = "http://192.168.99.101:32770";
-    accountsUrl = "http://localhost:8082/accounts";
-    cartsUrl = "http://192.168.99.102:32771/carts";
-    itemsUrl = "http://192.168.99.102:32771/items";
-    ordersUrl = "http://192.168.99.103:32768/orders";
-    customersUrl = "http://192.168.99.102:32769/customers";
-    addressUrl = "http://192.168.99.102:32769/addresses";
-    cardsUrl = "http://192.168.99.102:32769/cards";
-    loginUrl = "http://192.168.99.103:32769/login";
+    catalogueUrl = "http://192.168.99.101:32769";
+    accountsUrl = "http://192.168.99.102:32781/accounts";
+    cartsUrl = "http://192.168.99.102:32783/carts";
+    itemsUrl = "http://192.168.99.101:32769/items";
+    ordersUrl = "http://192.168.99.102:32780/orders";
+    customersUrl = "http://192.168.99.102:32781/customers";
+    addressUrl = "http://192.168.99.102:32781/addresses";
+    cardsUrl = "http://192.168.99.102:32781/cards";
+    loginUrl = "http://192.168.99.101:32770/login";
     registerUrl = "http://localhost:8084/register";
     tagsUrl = catalogueUrl + "/tags";
 }
@@ -208,7 +208,7 @@ app.get("/cart", function (req, res) {
         if (error) {
             return next(error);
         }
-        respondStatusBody(res, response.statusCode, JSON.stringify(body))
+        respondStatusBody(res, response.statusCode, body)
     });
 });
 
@@ -225,7 +225,7 @@ app.delete("/cart", function (req, res, next) {
             return next(error);
         }
         console.log('User cart deleted with status: ' + response.statusCode);
-        respondStatusBody(res, response.statusCode, null);
+        respondStatus(res, response.statusCode);
     });
 });
 
@@ -248,13 +248,13 @@ app.delete("/cart/:id", function (req, res, next) {
             return next(error);
         }
         console.log('Item deleted with status: ' + response.statusCode);
-        respondStatusBody(res, response.statusCode, null);
+        respondStatus(res, response.statusCode);
     });
 });
 
 // Add new item to cart
 app.post("/cart", function (req, res, next) {
-    console.log("Request received with body: " + JSON.stringify(req.body));
+    console.log("Attempting to add to cart: " + JSON.stringify(req.body));
 
     if (req.body.id == null) {
         next(new Error("Must pass id of item to add"), 400);
@@ -273,8 +273,8 @@ app.post("/cart", function (req, res, next) {
         if (error) {
             return callback(error);
         }
-        console.log('Item deleted with status: ' + response.statusCode);
-        respondStatusBody(res, response.statusCode, null);
+        console.log('Item added with status: ' + response.statusCode);
+        respondStatus(res, response.statusCode);
     });
 });
 
@@ -374,7 +374,7 @@ app.post("/orders", function(req, res, next) {
                                 if (error) {
                                     return callback(error);
                                 }
-                                callback(null, cartsUrl + "/" + custId + "/items", JSON.stringify(body))
+                                callback(null, cartsUrl + "/" + custId + "/items", JSON.parse(body))
                             });
                         }
                     ],
@@ -382,9 +382,10 @@ app.post("/orders", function(req, res, next) {
                         if (err) {
                             return callback(err);
                         }
-                        console.log("Summing cart.");
+                        console.log("Summing cart. " + JSON.stringify(itemList));
                         var sum = 0;
                         for (var i = 0; i < itemList.length; i++) {
+                            console.log("" + itemList[i].quantity + " + " + itemList[i].unitPrice);
                             sum = sum + itemList[i].quantity * itemList[i].unitPrice;
                         }
                         order.items = currentItemsUrl;
@@ -436,6 +437,11 @@ function respondStatusBody(res, statusCode, body) {
     console.log(body);
     res.writeHeader(statusCode);
     res.write(body);
+    res.end()
+}
+
+function respondStatus(res, statusCode) {
+    res.writeHeader(statusCode);
     res.end()
 }
 
