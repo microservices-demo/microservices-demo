@@ -17,6 +17,10 @@ EOF
   exit 1
 }
 
+TARGET_HOST=localhost
+CLIENTS=2
+REQUESTS=10
+
 while getopts ":h:c:r:" o; do
   case "${o}" in
     h)
@@ -24,11 +28,11 @@ while getopts ":h:c:r:" o; do
         echo $TARGET_HOST
         ;;
     c)
-        C=${OPTARG:=2}
+        CLIENTS=${OPTARG:-2}
         echo $c
         ;;
     r)
-        R=${OPTARG:=10}
+        REQUESTS=${OPTARG:-10}
         echo $r
         ;;
     *)
@@ -45,5 +49,5 @@ else
 fi
 
 echo "Running load test against $TARGET_HOST. Spawning $C clients and $R total requets."
-locust --host=http://$TARGET_HOST -f $LOCUST_FILE --clients=$C --hatch-rate=1 --num-request=$R --no-web
+locust --host=http://$TARGET_HOST -f $LOCUST_FILE --clients=$CLIENTS --hatch-rate=1 --num-request=$REQUESTS --no-web
 echo "done"
