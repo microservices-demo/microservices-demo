@@ -99,7 +99,7 @@
                                 <a class="btn btn-default" onclick="alert('Stub. Todo.')"><i
                                         class="fa fa-refresh"></i> Update basket
                                 </a>
-                                <button type="submit" class="btn btn-primary" onclick="order()">
+                                <button id="orderButton" type="submit" class="btn btn-primary" onclick="order()" disabled>
                                     Proceed to checkout <i
                                         class="fa fa-chevron-right"></i>
                                 </button>
@@ -366,6 +366,7 @@ _________________________________________________________ -->
                             numItemsInCart = numItemsInCart + element.quantity;
                         }).always(function () {
                             console.log("Final counts: £" + cartTotal + ", with " + numItemsInCart + " items.");
+                            $('#orderButton').prop('disabled', false);
                             $('#numItemsInCart').text('You currently have ' + numItemsInCart + ' item(s) in your cart.');
                             $('#cartTotal').text('£' + cartTotal.toFixed(2));
                             $('#orderSubtotal').text('£' + cartTotal.toFixed(2));
