@@ -32,15 +32,15 @@ var tagsUrl = catalogueUrl + "/tags";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-    catalogueUrl = "http://192.168.99.101:32769";
-    accountsUrl = "http://192.168.99.102:32781/accounts";
-    cartsUrl = "http://192.168.99.102:32783/carts";
-    itemsUrl = "http://192.168.99.101:32769/items";
-    ordersUrl = "http://192.168.99.102:32780/orders";
-    customersUrl = "http://192.168.99.102:32781/customers";
-    addressUrl = "http://192.168.99.102:32781/addresses";
-    cardsUrl = "http://192.168.99.102:32781/cards";
-    loginUrl = "http://192.168.99.101:32770/login";
+    catalogueUrl = "http://192.168.99.102:32770";
+    accountsUrl = "http://192.168.99.101:32769/accounts";
+    cartsUrl = "http://192.168.99.102:32773/carts";
+    itemsUrl = "http://192.168.99.102:32773/items";
+    ordersUrl = "http://192.168.99.101:32770/orders";
+    customersUrl = "http://192.168.99.101:32769/customers";
+    addressUrl = "http://192.168.99.101:32769/addresses";
+    cardsUrl = "http://192.168.99.101:32769/cards";
+    loginUrl = "http://192.168.99.101:32771/login";
     registerUrl = "http://localhost:8084/register";
     tagsUrl = catalogueUrl + "/tags";
 }
@@ -263,18 +263,31 @@ app.post("/cart", function (req, res, next) {
 
     var custId = getCustomerId(req);
 
-    var options = {
-        uri: cartsUrl + "/" + custId + "/items",
-        method: 'POST',
-        json: true,
-        body: {itemId: req.body.id.toString()}
-    };
-    request(options, function (error, response, body) {
-        if (error) {
-            return callback(error);
+    async.waterfall([
+        function (callback) {
+            request(catalogueUrl + "/catalogue/" + req.body.id.toString(), function (error, response, body) {
+                callback(error, JSON.parse(body));
+            });
+        },
+        function (item, callback) {
+            var options = {
+                uri: cartsUrl + "/" + custId + "/items",
+                method: 'POST',
+                json: true,
+                body: {itemId: item.id, unitPrice: item.price}
+            };
+            request(options, function (error, response, body) {
+                callback(error, response.statusCode);
+            });
         }
-        console.log('Item added with status: ' + response.statusCode);
-        respondStatus(res, response.statusCode);
+    ], function (err, statusCode) {
+        if (err) {
+            return next(err);
+        }
+        if (statusCode != 201) {
+            return next(new Error("Unable to add to cart. Status code: " + statusCode))
+        }
+        respondStatus(res, statusCode);
     });
 });
 
