@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import works.weave.socks.cart.entities.Cart;
+import works.weave.socks.cart.entities.Item;
 import works.weave.socks.cart.repositories.CartRepository;
 import works.weave.socks.cart.repositories.ItemRepository;
 
@@ -43,5 +44,27 @@ public class CartsController {
             logger.debug("New cart created for user: " + customerId);
             return cartRepository.save(new Cart(customerId));
         });
+    }
+
+    @RequestMapping(value="/merge", method = RequestMethod.GET)
+    public Cart mergeCarts(@RequestParam(value="custId") String cartId, @RequestParam(value="sessionId") String sessionId) {
+        List<Cart> custCarts = cartRepository.findByCustomerId(cartId);
+        List<Cart> sessionCarts = cartRepository.findByCustomerId(sessionId);
+        Cart custCart = new Cart();
+
+        // Assume single cart per
+        if (sessionCarts.size() != 1) {
+            // Nothing to merge...
+            return custCart;
+        }
+
+        if (custCarts.size() > 0) {
+            custCart = custCarts.get(0);
+        }
+        for (Item i : sessionCarts.get(0).contents()) {
+            custCart.add(i);
+        }
+        // custCart.contents().addAll(sessionCarts.get(0).contents());
+        return custCart;
     }
 }
