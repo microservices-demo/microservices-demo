@@ -1,4 +1,4 @@
-FROM golang:1.6
+FROM golang:1.6-alpine
 
 #EXPOSE 80
 COPY socks.json /config/socks.json
