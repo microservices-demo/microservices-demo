@@ -19,7 +19,6 @@ app.use(function(err, req, res, next) {
 });
 
 var catalogueUrl = "http://catalogue";
-var accountsUrl = "http://accounts/accounts";
 var cartsUrl = "http://cart/carts";
 var ordersUrl = "http://orders/orders";
 var itemsUrl = "http://cart/items";
@@ -193,6 +192,11 @@ app.get("/catalogue*", function (req, res, next) {
 
 app.get("/tags", function(req, res, next) {
     simpleHttpRequest(tagsUrl, res, next);
+});
+
+// Accounts
+app.get("/accounts/:id", function (req, res, next) {
+    simpleHttpRequest(customersUrl + "/" + req.params.id, res, next);
 });
 
 //Carts
