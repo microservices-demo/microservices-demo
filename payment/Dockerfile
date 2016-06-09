@@ -1,4 +1,4 @@
-FROM golang:1.6
+FROM golang:1.6-alpine
 
 COPY *.* /go/src/github.com/containersolutions/weave-demo/payment/
 RUN go install github.com/containersolutions/weave-demo/payment/
