@@ -1,38 +1,45 @@
 package works.weave.socks.cart.entities;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigInteger;
+import javax.validation.constraints.NotNull;
 
+@Document
 public class Item {
     @Id
-    private BigInteger id;
+    private String id;
 
-    private String itemId;
-    private int quantity;
-    private float unitPrice;
+    @NotNull(message = "Item Id must not be null")
+    public String itemId;
+    public int quantity = 1;
+    public float unitPrice = 0.0F;
 
-    public String getItemId() {
-        return itemId;
+    public void increment() {
+        quantity = quantity + 1;
     }
 
-    public void setItemId(String id) {
-        this.itemId = id;
+    public void merge(Item item2) {
+        quantity = item2.quantity;
     }
 
-    public int getQuantity() {
-        return quantity;
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id='" + id + '\'' +
+                ", itemId='" + itemId + '\'' +
+                ", quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                '}';
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    public float getUnitPrice() {
-        return unitPrice;
-    }
+        Item item = (Item) o;
 
-    public void setUnitPrice(float unitPrice) {
-        this.unitPrice = unitPrice;
+        return itemId != null ? itemId.equals(item.itemId) : item.itemId == null;
     }
 }
