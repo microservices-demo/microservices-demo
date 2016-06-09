@@ -6,7 +6,7 @@ import works.weave.socks.cart.entities.Item;
 
 import java.math.BigInteger;
 
-@RepositoryRestResource(collectionResourceRel = "items", path = "items")
-public interface ItemRepository extends MongoRepository<Item, BigInteger> {
+@RepositoryRestResource
+public interface ItemRepository extends MongoRepository<Item, String> {
 }
 

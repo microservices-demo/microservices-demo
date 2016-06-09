@@ -77,7 +77,6 @@ function addToCart(id) {
     $.ajax({
         url: "cart",
         type: "POST",
-        dataType: 'json',
         data: JSON.stringify({"id": id}),
         success: function (data, textStatus, jqXHR) {
             console.log('Item added: ' + id + ', ' + textStatus);

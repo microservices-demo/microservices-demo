@@ -32,15 +32,15 @@ var tagsUrl = catalogueUrl + "/tags";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-    catalogueUrl = "http://192.168.99.101:32770";
-    accountsUrl = "http://localhost:8082/accounts";
-    cartsUrl = "http://192.168.99.102:32771/carts";
-    itemsUrl = "http://192.168.99.102:32771/items";
-    ordersUrl = "http://192.168.99.103:32768/orders";
-    customersUrl = "http://192.168.99.102:32769/customers";
-    addressUrl = "http://192.168.99.102:32769/addresses";
-    cardsUrl = "http://192.168.99.102:32769/cards";
-    loginUrl = "http://192.168.99.103:32769/login";
+    catalogueUrl = "http://192.168.99.102:32770";
+    accountsUrl = "http://192.168.99.101:32769/accounts";
+    cartsUrl = "http://192.168.99.102:32773/carts";
+    itemsUrl = "http://192.168.99.102:32773/items";
+    ordersUrl = "http://192.168.99.101:32770/orders";
+    customersUrl = "http://192.168.99.101:32769/customers";
+    addressUrl = "http://192.168.99.101:32769/addresses";
+    cardsUrl = "http://192.168.99.101:32769/cards";
+    loginUrl = "http://192.168.99.101:32771/login";
     registerUrl = "http://localhost:8084/register";
     tagsUrl = catalogueUrl + "/tags";
 }
@@ -204,72 +204,57 @@ app.get("/cart", function (req, res) {
     console.log("Request received: " + req.url + ", " + req.query.custId);
     var custId = getCustomerId(req);
 
-    async.waterfall([
-            async.apply(getCartUrlForCustomerId, custId),
-            getCartItems
-        ],
-        function (err, currentItemsUrl, itemList) {
-            if (err) {
-                return next(err);
-            }
-            respondSuccessBody(res, JSON.stringify(itemList))
-        }.bind({res: res}));
+    request(cartsUrl + "/" + custId + "/items", function (error, response, body) {
+        if (error) {
+            return next(error);
+        }
+        respondStatusBody(res, response.statusCode, body)
+    });
 });
 
 // Delete cart
 app.delete("/cart", function (req, res, next) {
     var custId = getCustomerId(req);
-    async.waterfall([
-            async.apply(getCartUrlForCustomerId, custId),
-            deleteItem
-        ],
-        function (err, response) {
-            if (err) {
-                return next(err);
-            }
-            res.writeHeader(response.statusCode);
-            res.end()
-        });
+    console.log('Attempting to delete cart for user: ' + custId);
+    var options = {
+        uri: cartsUrl + "/" + custId,
+        method: 'DELETE'
+    };
+    request(options, function (error, response, body) {
+        if (error) {
+            return next(error);
+        }
+        console.log('User cart deleted with status: ' + response.statusCode);
+        respondStatus(res, response.statusCode);
+    });
 });
 
 // Delete item from cart
 app.delete("/cart/:id", function (req, res, next) {
     if (req.params.id == null) {
-        next(new Error("Must pass id of item to delete"), 400);
-        return;
+        return next(new Error("Must pass id of item to delete"), 400);
     }
 
     console.log("Delete item from cart: " + req.url);
 
     var custId = getCustomerId(req);
 
-    async.waterfall([
-            async.apply(getCartUrlForCustomerId, custId),
-            getCartItems,
-            // Attempt to delete object
-            function (currentItemsUrl, itemList, callback) {
-                var foundItem = findItem(itemList, req.params.id.toString());
-                if (foundItem.url != null && foundItem.url != "") {
-                    var urlSplit = foundItem.url.split('/');
-                    var toDeleteUrl = currentItemsUrl + "/" + urlSplit[urlSplit.length - 1];
-                    deleteItem(toDeleteUrl, callback);
-                } else {
-                    callback(new Error("Could not find item in cart to delete.", 404));
-                }
-            }
-        ],
-        function (err, response) {
-            if (err) {
-                return next(err);
-            }
-            res.writeHeader(response.statusCode);
-            res.end()
-        });
+    var options = {
+        uri: cartsUrl + "/" + custId + "/items/" + req.params.id.toString(),
+        method: 'DELETE'
+    };
+    request(options, function (error, response, body) {
+        if (error) {
+            return next(error);
+        }
+        console.log('Item deleted with status: ' + response.statusCode);
+        respondStatus(res, response.statusCode);
+    });
 });
 
 // Add new item to cart
 app.post("/cart", function (req, res, next) {
-    console.log("Request received with body: " + JSON.stringify(req.body));
+    console.log("Attempting to add to cart: " + JSON.stringify(req.body));
 
     if (req.body.id == null) {
         next(new Error("Must pass id of item to add"), 400);
@@ -279,70 +264,31 @@ app.post("/cart", function (req, res, next) {
     var custId = getCustomerId(req);
 
     async.waterfall([
-            async.apply(getCartUrlForCustomerId, custId),
-            getCartItems,
-            // If new item already exists in list, increment count. Else add new item.
-            function (currentItemsUrl, itemList, callback) {
-                var foundItem = findItem(itemList, req.body.id.toString());
-                if (foundItem.url != null && foundItem.url != "") {
-                    var options = {
-                        uri: foundItem.url,
-                        method: 'PATCH',
-                        json: true,
-                        body: {quantity: (foundItem.quantity + 1)}
-                    };
-                    request(options, function (error, response, body) {
-                        if (error) {
-                            callback(error);
-                            return;
-                        }
-                        callback(null, body._links.self.href);
-                    });
-                } else {
-                    // curl -XPOST -H 'Content-type: application/json' http://cart/items -d '{"itemId": "three", "quantity": 4 }'
-                    // 	curl -v -X POST -H "Content-Type: text/uri-list" -d "http://cart/items/27017283435201488713382769171"
-                    console.log("Item not found in current cart. Creating new item for: " + req.body.id.toString());
-                    async.waterfall([
-                            function (callback) {
-                                request.get(catalogueUrl + "/catalogue/" + req.body.id.toString(), function (error, response, body) {
-                                    if (error) {
-                                        return next(error);
-                                    }
-                                    console.log("Item from catalogue: " + body);
-                                    callback(null, currentItemsUrl, req.body.id.toString(), JSON.parse(body));
-                                });
-                            },
-                            createNewItem,
-                            addItemToCart
-                        ],
-                        function (err, newItemUrl) {
-                            callback(err, newItemUrl);
-                        });
-                }
-            },
-            // Get created item
-            function (newItemUrl, callback) {
-                var options = {
-                    uri: newItemUrl,
-                    method: 'GET',
-                    json: true
-                };
-                request(options, function (error, response, body) {
-                    if (error) {
-                        callback(error);
-                        return;
-                    }
-                    console.log("New/updated item: " + JSON.stringify(body));
-                    callback(null, body);
-                });
-            }
-        ],
-        function (err, result) {
-            if (err) {
-                return next(err);
-            }
-            respondStatusBody(res, 201, JSON.stringify(result));
-        });
+        function (callback) {
+            request(catalogueUrl + "/catalogue/" + req.body.id.toString(), function (error, response, body) {
+                callback(error, JSON.parse(body));
+            });
+        },
+        function (item, callback) {
+            var options = {
+                uri: cartsUrl + "/" + custId + "/items",
+                method: 'POST',
+                json: true,
+                body: {itemId: item.id, unitPrice: item.price}
+            };
+            request(options, function (error, response, body) {
+                callback(error, response.statusCode);
+            });
+        }
+    ], function (err, statusCode) {
+        if (err) {
+            return next(err);
+        }
+        if (statusCode != 201) {
+            return next(new Error("Unable to add to cart. Status code: " + statusCode))
+        }
+        respondStatus(res, statusCode);
+    });
 });
 
 //Orders
@@ -436,16 +382,23 @@ app.post("/orders", function(req, res, next) {
             },
             function (order, callback) {
                 async.waterfall([
-                        async.apply(getCartUrlForCustomerId, custId),
-                        getCartItems
+                        function (callback) {
+                            request(cartsUrl + "/" + custId + "/items", function (error, response, body) {
+                                if (error) {
+                                    return callback(error);
+                                }
+                                callback(null, cartsUrl + "/" + custId + "/items", JSON.parse(body))
+                            });
+                        }
                     ],
                     function (err, currentItemsUrl, itemList) {
                         if (err) {
                             return callback(err);
                         }
-                        console.log("Summing cart.");
+                        console.log("Summing cart. " + JSON.stringify(itemList));
                         var sum = 0;
                         for (var i = 0; i < itemList.length; i++) {
+                            console.log("" + itemList[i].quantity + " + " + itemList[i].unitPrice);
                             sum = sum + itemList[i].quantity * itemList[i].unitPrice;
                         }
                         order.items = currentItemsUrl;
@@ -500,6 +453,11 @@ function respondStatusBody(res, statusCode, body) {
     res.end()
 }
 
+function respondStatus(res, statusCode) {
+    res.writeHeader(statusCode);
+    res.end()
+}
+
 function simpleHttpRequest(url, res, next) {
     console.log("GET " + url);
     request.get(url, function (error, response, body) {
@@ -527,207 +485,4 @@ function getCustomerId(req) {
     }
 
     return custId;
-}
-
-
-// Get the current user's cart url. Create a new cart if one doesn't exist.
-// Returns: Url of user's cart
-function getCartUrlForCustomerId(custId, callback) {
-    async.waterfall([
-            function (callback) {
-                var options = {
-                    uri: cartsUrl + "/search/findByCustomerId?custId=" + custId,
-                    method: 'GET',
-                    json: true
-                };
-                request(options, function (error, response, body) {
-                    if (error) {
-                        return callback(error);
-                    }
-                    console.log("Received response: " + JSON.stringify(body));
-                    var cartList = body._embedded.carts;
-                    console.log(JSON.stringify(cartList));
-                    callback(null, cartList);
-                });
-            },
-            function (cartList, callback) {
-                if (cartList.length == 0) {
-                    console.log("Cart does not exist for: " + custId);
-                    console.log("Creating cart");
-                    var options = {
-                        uri: cartsUrl,
-                        method: 'POST',
-                        json: true,
-                        body: {"customerId": custId}
-                    };
-                    request(options, function (error, response, body) {
-                        if (error) {
-                            callback(error);
-                            return;
-                        }
-                        if (response.statusCode == 201) {
-                            cartList.push(body);
-                            console.log('New cart created for customerId: ' + custId + ': ' + JSON.stringify(body));
-                            callback(null, cartList)
-                        } else {
-                            callback("Unable to create new cart. Body: " + JSON.stringify(body));
-                            return;
-                        }
-                    });
-                } else {
-                    callback(null, cartList)
-                }
-            },
-            function (cartList, callback) {
-                var cartUrl = cartList[0]._links.cart.href;
-                console.log("Using cart url: " + cartUrl);
-                callback(null, cartUrl);
-            }
-        ],
-        function (err, cartUrl) {
-            callback(err, cartUrl);
-        });
-}
-
-// Get cart items
-// Parameters:  cartUrl:    URL of the current cart
-// Returns:     itemsUrl:   Url of the current item list
-//              items:      All of the current cart's items
-function getCartItems(cartUrl, callback) {
-    async.waterfall([
-            // Get items url
-            function (callback) {
-                var options = {
-                    uri: cartUrl,
-                    method: 'GET',
-                    json: true
-                };
-                request(options, function (error, response, body) {
-                    if (error) {
-                        callback(error);
-                        return;
-                    }
-                    console.log("Current cart: " + JSON.stringify(body));
-                    var itemsUrl = body._links.items.href;
-                    callback(null, cartUrl, itemsUrl);
-                });
-            },
-            // Get current items
-            function (cartUrl, itemsUrl, callback) {
-                var options = {
-                    uri: itemsUrl,
-                    method: 'GET',
-                    json: true
-                };
-                request(options, function (error, response, body) {
-                    if (error) {
-                        callback(error);
-                        return;
-                    }
-                    console.log("Current items: " + JSON.stringify(body._embedded.items));
-                    callback(null, itemsUrl, body._embedded.items);
-                });
-            }
-        ],
-        function (err, currentItemsUrl, itemList) {
-            callback(err, currentItemsUrl, itemList);
-        });
-
-}
-
-
-// Find an item in a list
-// Inputs:  itemList    -   List of items
-//          idemId      -   ID of the item to find
-// Returns: { url: Url pointing to the item,
-//            quantity: Current quantity }
-function findItem(itemList, itemId) {
-    var foundItemUrl = "";
-    var currentQuantity = 0;
-    console.log("Searching for item in cart of size: " + itemList.length);
-    for (var i = 0, len = itemList.length; i < len; i++) {
-        var item = itemList[i];
-        console.log("Searching: " + JSON.stringify(item));
-        console.log("Q: " + item.itemId + " == " + itemId);
-        if (item != null && item.itemId != null && item.itemId.toString() == itemId) {
-            console.log("Item found");
-            foundItemUrl = item._links.self.href;
-            currentQuantity = item.quantity;
-            break;
-        }
-    }
-    return {
-        url: foundItemUrl,
-        quantity: currentQuantity
-    }
-}
-
-// Create a new item
-// Inputs:  currentItemsUrl - Url of current list of items
-//          itemId - Id of item you want to create
-// Returns: currentItemsUrl - Url of current list of items
-//          newItemUrl - Url pointing to new item
-function createNewItem(currentItemsUrl, itemId, item, callback) {
-    var options = {
-        uri: itemsUrl,
-        method: 'POST',
-        json: true,
-        body: {itemId: itemId, quantity: 1, unitPrice: item.price}
-    };
-    request(options, function (error, response, body) {
-        if (error) {
-            callback(error);
-            return;
-        }
-        if (response.statusCode == 201) {
-            console.log('New item created: ' + JSON.stringify(body));
-            var newItemUrl = body._links.self.href;
-            callback(null, currentItemsUrl, newItemUrl);
-        } else {
-            callback(new Error("Unable to create new item due to: " + JSON.stringify(response) + ", " + JSON.stringify(body)));
-            return;
-        }
-    });
-}
-
-// Add newly created item to the cart
-// Inputs:  currentItemsUrl - Url of current list of items
-//          newItemUrl - Url pointing to new item
-// Returns: newItemUrl - Url pointing to new item
-function addItemToCart(currentItemsUrl, newItemUrl, callback) {
-    console.log("Adding item to cart: " + newItemUrl);
-    var options = {
-        headers: {
-            'Content-Type': 'text/uri-list'
-        },
-        uri: currentItemsUrl,
-        method: 'POST',
-        body: newItemUrl
-    };
-    request(options, function (error, response, body) {
-        if (error) {
-            callback(error);
-            return;
-        }
-        console.log('New item added to current cart');
-        callback(null, newItemUrl);
-    });
-}
-
-// Delete something
-// Inputs:  toDeleteUrl - URL to delete
-// Returns: response - The response from the delete call
-function deleteItem(toDeleteUrl, callback) {
-    var options = {
-        uri: toDeleteUrl,
-        method: 'DELETE'
-    };
-    console.log("toDeleteUrl: " + toDeleteUrl);
-    request(options, function (error, response, body) {
-        if (error) {
-            return callback(error);
-        }
-        console.log('Item deleted with status: ' + response.statusCode);
-        callback(null, response);
-    });
 }
