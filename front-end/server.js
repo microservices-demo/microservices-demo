@@ -10,7 +10,7 @@ var app = express();
 app.use(session({
     secret: 'sooper secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true
 }));
 app.use(express.static(__dirname + "/"));
 app.use(bodyParser.json());
@@ -38,15 +38,15 @@ var tagsUrl = catalogueUrl + "/tags";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-    catalogueUrl = "http://192.168.99.102:32770";
-    accountsUrl = "http://192.168.99.101:32769/accounts";
-    cartsUrl = "http://192.168.99.102:32773/carts";
+    catalogueUrl = "http://192.168.99.101:32770";
+    accountsUrl = "http://192.168.99.101:32768/accounts";
+    cartsUrl = "http://192.168.99.103:32773/carts";
     itemsUrl = "http://192.168.99.102:32773/items";
     ordersUrl = "http://192.168.99.101:32770/orders";
-    customersUrl = "http://192.168.99.101:32769/customers";
-    addressUrl = "http://192.168.99.101:32769/addresses";
-    cardsUrl = "http://192.168.99.101:32769/cards";
-    loginUrl = "http://192.168.99.101:32771/login";
+    customersUrl = "http://192.168.99.101:32768/customers";
+    addressUrl = "http://192.168.99.101:32768/addresses";
+    cardsUrl = "http://192.168.99.101:32768/cards";
+    loginUrl = "http://192.168.99.103:32769/login";
     registerUrl = "http://localhost:8084/register";
     tagsUrl = catalogueUrl + "/tags";
 }
@@ -79,7 +79,7 @@ app.get("/login", function (req, res, next) {
                     console.log(body);
                     customerId = JSON.parse(body).id;
                     console.log(customerId);
-                    callback(customerId);
+                    callback(null, customerId);
                 } else {
                     console.log(response.statusCode);
                     callback(true);
@@ -91,7 +91,7 @@ app.get("/login", function (req, res, next) {
             console.log("Merging carts for customer id: " + custId + " and session id: " + sessionId);
 
             var options = {
-                uri: cartsUrl + "/merge?custId=" + custId + "&sessionId=" + sessionId,
+                uri: cartsUrl + "/merge/" + custId + "?sessionId=" + sessionId,
                 method: 'GET'
             };
             request(options, function (error, response, body) {
@@ -236,10 +236,10 @@ app.get("/tags", function(req, res, next) {
 
 //Carts
 // List items in cart for current logged in user.
-app.get("/cart", function (req, res) {
+app.get("/cart", function (req, res, next) {
     console.log("Request received: " + req.url + ", " + req.query.custId);
     var custId = getCustomerId(req);
-
+    console.log("Customer ID: " + custId);
     request(cartsUrl + "/" + custId + "/items", function (error, response, body) {
         if (error) {
             return next(error);
@@ -302,6 +302,7 @@ app.post("/cart", function (req, res, next) {
     async.waterfall([
         function (callback) {
             request(catalogueUrl + "/catalogue/" + req.body.id.toString(), function (error, response, body) {
+                console.log(body);
                 callback(error, JSON.parse(body));
             });
         },
@@ -312,6 +313,7 @@ app.post("/cart", function (req, res, next) {
                 json: true,
                 body: {itemId: item.id, unitPrice: item.price}
             };
+            console.log("POST to carts: " + options.uri + " body: " + options.body);
             request(options, function (error, response, body) {
                 callback(error, response.statusCode);
             });
