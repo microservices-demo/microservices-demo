@@ -15,7 +15,7 @@ func main() {
 
 	http.HandleFunc("/paymentAuth", paymentAuthHandler)
 	fmt.Printf("Payment service running on port %s\n", port)
-	http.ListenAndServe(":" + port, nil)
+	http.ListenAndServe(":"+port, nil)
 }
 
 func paymentAuthHandler(w http.ResponseWriter, r *http.Request) {

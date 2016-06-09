@@ -13,7 +13,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var catalogue []Sock 
+var catalogue []Sock
 
 var dev bool
 var port string
@@ -40,7 +40,7 @@ func main() {
 	router.HandleFunc("/tags", tagHandler)
 	router.PathPrefix("/catalogue/images/").Handler(http.StripPrefix("/catalogue/images/", http.FileServer(http.Dir("./images/"))))
 	fmt.Printf("Catalogue service running on port %s\n", port)
-	http.ListenAndServe(":" + port, router)
+	http.ListenAndServe(":"+port, router)
 }
 
 func catalogueHandler(w http.ResponseWriter, r *http.Request) {
@@ -66,26 +66,26 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 	var sorted []Sock = filter(catalogue, tagField)
 
 	switch sortOn {
-		case "id":
-			sort.Sort(IdSorter(sorted))
-		case "name":
-			sort.Sort(NameSorter(sorted))
-		case "description":
-			sort.Sort(DescriptionSorter(sorted))
-		case "price":
-			sort.Sort(PriceSorter(sorted))
-		case "count":
-			sort.Sort(CountSorter(sorted))
-		case "tag":
-			sort.Sort(TagSorter(sorted))
+	case "id":
+		sort.Sort(IdSorter(sorted))
+	case "name":
+		sort.Sort(NameSorter(sorted))
+	case "description":
+		sort.Sort(DescriptionSorter(sorted))
+	case "price":
+		sort.Sort(PriceSorter(sorted))
+	case "count":
+		sort.Sort(CountSorter(sorted))
+	case "tag":
+		sort.Sort(TagSorter(sorted))
 	}
 	end := (pageCount * perPage)
-	if (end > len(sorted)) {
-	    end = len(sorted)
+	if end > len(sorted) {
+		end = len(sorted)
 	}
 	start := end - perPage
-	if (start < 0) {
-	    start = 0
+	if start < 0 {
+		start = 0
 	}
 	var data []byte
 	var err error
@@ -102,7 +102,7 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 
 func itemHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-    catId := vars["catId"]
+	catId := vars["catId"]
 
 	for _, sock := range catalogue {
 		if sock.Id == catId {
@@ -118,7 +118,9 @@ func itemHandler(w http.ResponseWriter, r *http.Request) {
 
 func tagHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := json.Marshal(tagList)
-	if err != nil { panic(err) }
+	if err != nil {
+		panic(err)
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(body)
 }
@@ -129,12 +131,12 @@ func sizeHandler(w http.ResponseWriter, r *http.Request) {
 }
 func loadCatalogue(file string) {
 	f, err := ioutil.ReadFile(file)
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 
-    json.Unmarshal(f, &catalogue)
-    fmt.Printf("Loaded %d items into catalogue.\n", len(catalogue))
+	json.Unmarshal(f, &catalogue)
+	fmt.Printf("Loaded %d items into catalogue.\n", len(catalogue))
 }
 
 func filter(socks []Sock, tagString string) []Sock {
@@ -144,17 +146,17 @@ func filter(socks []Sock, tagString string) []Sock {
 	var r []Sock
 	tags := strings.Split(tagString, ",")
 	for _, s := range socks {
-        var count []string
-        for _, m := range tags {
-            TAGLABEL:
-            for _, t := range s.Tags {
+		var count []string
+		for _, m := range tags {
+		TAGLABEL:
+			for _, t := range s.Tags {
 				if t == m && !contains(count, t) {
-                    count = append(count, t)
-                    break TAGLABEL
+					count = append(count, t)
+					break TAGLABEL
 				}
 			}
 		}
-		if (len(count) == len(tags)) {
+		if len(count) == len(tags) {
 			r = append(r, s)
 		}
 	}
@@ -162,22 +164,22 @@ func filter(socks []Sock, tagString string) []Sock {
 }
 
 func contains(s []string, e string) bool {
-    for _, a := range s {
-        if a == e {
-            return true
-        }
-    }
-    return false
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
 
 type Sock struct {
-	Id string `json:"id"`
-	Name string `json:"name"`
-	Description string `json:"description"`
-	ImageURL []string `json:"imageUrl"`
-	Price float32 `json:"price"`
-	Count int `json:"count"`
-	Tags []string `json:"tag"`
+	Id          string   `json:"id"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	ImageURL    []string `json:"imageUrl"`
+	Price       float32  `json:"price"`
+	Count       int      `json:"count"`
+	Tags        []string `json:"tag"`
 }
 
 type IdSorter []Sock
