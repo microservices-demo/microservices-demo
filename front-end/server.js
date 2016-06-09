@@ -530,7 +530,140 @@ function getCustomerId(req) {
 
     if (!custId) {
         if (!req.session.id) {
-            throw new Error("wAT!?!?");
+           throw new Error("User not logged in.");
+        }
+        // Use Session ID instead
+        return req.session.id;
+    }
+
+    return custId;
+}
+
+
+// Get the current user's cart url. Create a new cart if one doesn't exist.
+// Returns: Url of user's cart
+function getCartUrlForCustomerId(custId, callback) {
+    async.waterfall([
+            function (callback) {
+                var options = {
+                    uri: cartsUrl + "/search/findByCustomerId?custId=" + custId,
+                    method: 'GET',
+                    json: true
+                };
+                request(options, function (error, response, body) {
+                    if (error) {
+                        return callback(error);
+                    }
+                    console.log("Received response: " + JSON.stringify(body));
+                    var cartList = body._embedded.carts;
+                    console.log(JSON.stringify(cartList));
+                    callback(null, cartList);
+                });
+            },
+            function (cartList, callback) {
+                if (cartList.length == 0) {
+                    console.log("Cart does not exist for: " + custId);
+                    console.log("Creating cart");
+                    var options = {
+                        uri: cartsUrl,
+                        method: 'POST',
+                        json: true,
+                        body: {"customerId": custId}
+                    };
+                    request(options, function (error, response, body) {
+                        if (error) {
+                            callback(error);
+                            return;
+                        }
+                        if (response.statusCode == 201) {
+                            cartList.push(body);
+                            console.log('New cart created for customerId: ' + custId + ': ' + JSON.stringify(body));
+                            callback(null, cartList)
+                        } else {
+                            callback("Unable to create new cart. Body: " + JSON.stringify(body));
+                            return;
+                        }
+                    });
+                } else {
+                    callback(null, cartList)
+                }
+            },
+            function (cartList, callback) {
+                var cartUrl = cartList[0]._links.cart.href;
+                console.log("Using cart url: " + cartUrl);
+                callback(null, cartUrl);
+            }
+        ],
+        function (err, cartUrl) {
+            callback(err, cartUrl);
+        });
+}
+
+// Get cart items
+// Parameters:  cartUrl:    URL of the current cart
+// Returns:     itemsUrl:   Url of the current item list
+//              items:      All of the current cart's items
+function getCartItems(cartUrl, callback) {
+    async.waterfall([
+            // Get items url
+            function (callback) {
+                var options = {
+                    uri: cartUrl,
+                    method: 'GET',
+                    json: true
+                };
+                request(options, function (error, response, body) {
+                    if (error) {
+                        callback(error);
+                        return;
+                    }
+                    console.log("Current cart: " + JSON.stringify(body));
+                    var itemsUrl = body._links.items.href;
+                    callback(null, cartUrl, itemsUrl);
+                });
+            },
+            // Get current items
+            function (cartUrl, itemsUrl, callback) {
+                var options = {
+                    uri: itemsUrl,
+                    method: 'GET',
+                    json: true
+                };
+                request(options, function (error, response, body) {
+                    if (error) {
+                        callback(error);
+                        return;
+                    }
+                    console.log("Current items: " + JSON.stringify(body._embedded.items));
+                    callback(null, itemsUrl, body._embedded.items);
+                });
+            }
+        ],
+        function (err, currentItemsUrl, itemList) {
+            callback(err, currentItemsUrl, itemList);
+        });
+
+}
+
+
+// Find an item in a list
+// Inputs:  itemList    -   List of items
+//          idemId      -   ID of the item to find
+// Returns: { url: Url pointing to the item,
+//            quantity: Current quantity }
+function findItem(itemList, itemId) {
+    var foundItemUrl = "";
+    var currentQuantity = 0;
+    console.log("Searching for item in cart of size: " + itemList.length);
+    for (var i = 0, len = itemList.length; i < len; i++) {
+        var item = itemList[i];
+        console.log("Searching: " + JSON.stringify(item));
+        console.log("Q: " + item.itemId + " == " + itemId);
+        if (item != null && item.itemId != null && item.itemId.toString() == itemId) {
+            console.log("Item found");
+            foundItemUrl = item._links.self.href;
+            currentQuantity = item.quantity;
+            break;
         }
         // Use Session ID instead
         return req.session.id;
