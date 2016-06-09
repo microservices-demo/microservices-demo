@@ -151,5 +151,13 @@ services:
 networks:
   front:
     driver: weave
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.32.0.0/13
   internal:
     driver: weave
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.40.0.0/13
