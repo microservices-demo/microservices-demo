@@ -4,8 +4,14 @@ var path = require("path");
 var bodyParser = require("body-parser");
 var async = require("async");
 var cookieParser = require("cookie-parser");
+var session = require('express-session')
 
 var app = express();
+app.use(session({
+    secret: 'sooper secret',
+    resave: false,
+    saveUninitialized: true
+}));
 app.use(express.static(__dirname + "/"));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -32,15 +38,15 @@ var tagsUrl = catalogueUrl + "/tags";
 
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-    catalogueUrl = "http://192.168.99.102:32770";
-    accountsUrl = "http://192.168.99.101:32769/accounts";
-    cartsUrl = "http://192.168.99.102:32773/carts";
+    catalogueUrl = "http://192.168.99.101:32770";
+    accountsUrl = "http://192.168.99.101:32768/accounts";
+    cartsUrl = "http://192.168.99.103:32773/carts";
     itemsUrl = "http://192.168.99.102:32773/items";
     ordersUrl = "http://192.168.99.101:32770/orders";
-    customersUrl = "http://192.168.99.101:32769/customers";
-    addressUrl = "http://192.168.99.101:32769/addresses";
-    cardsUrl = "http://192.168.99.101:32769/cards";
-    loginUrl = "http://192.168.99.101:32771/login";
+    customersUrl = "http://192.168.99.101:32768/customers";
+    addressUrl = "http://192.168.99.101:32768/addresses";
+    cardsUrl = "http://192.168.99.101:32768/cards";
+    loginUrl = "http://192.168.99.103:32769/login";
     registerUrl = "http://localhost:8084/register";
     tagsUrl = catalogueUrl + "/tags";
 }
@@ -56,31 +62,61 @@ var cookie_name = 'logged_in';
 // Login
 app.get("/login", function (req, res, next) {
     console.log("Received login request");
-    var options = {
-        headers: {
-            'Authorization': req.get('Authorization')
+
+    async.waterfall([
+        function (callback) {
+            var options = {
+                headers: {
+                    'Authorization': req.get('Authorization')
+                },
+                uri: loginUrl
+            };
+            request(options, function (error, response, body) {
+                if (error) {
+                    callback(error);
+                }
+                if (response.statusCode == 200 && body != null && body != "") {
+                    console.log(body);
+                    customerId = JSON.parse(body).id;
+                    console.log(customerId);
+                    callback(null, customerId);
+                } else {
+                    console.log(response.statusCode);
+                    callback(true);
+                }
+            });
         },
-        uri: loginUrl
-    };
-    request(options, function (error, response, body) {
-        if (error) {
-            return next(error);
+        function (custId, callback) {
+            var sessionId = req.session.id;
+            console.log("Merging carts for customer id: " + custId + " and session id: " + sessionId);
+
+            var options = {
+                uri: cartsUrl + "/merge/" + custId + "?sessionId=" + sessionId,
+                method: 'GET'
+            };
+            request(options, function (error, response, body) {
+                if (error) {
+                    callback(error);
+                    return;
+                }
+                console.log('Carts merged.');
+                callback(null, custId);
+            });
         }
-        if (response.statusCode == 200 && body != null && body != "") {
-            console.log(body);
-            customerId = JSON.parse(body).id;
-            console.log(customerId);
-            res.status(200);
-            res.cookie(cookie_name, customerId, {maxAge: 3600000}).send('Cookie is set');
-            console.log("Sent cookies.");
+    ],
+    function (err, custId) {
+        if (err) {
+            console.log("Error with log in: " + err);
+            res.status(401);
             res.end();
-            return
-        } else {
-            console.log(response.statusCode);
+            return;
         }
-        res.status(401);
+        res.status(200);
+        res.cookie(cookie_name, custId, {maxAge: 3600000}).send('Cookie is set');
+        console.log("Sent cookies.");
         res.end();
-    }.bind({res: res}));
+        return;
+    });
 });
 
 // Register - TO BE USED FOR TESTING ONLY (for now)
@@ -200,10 +236,10 @@ app.get("/tags", function(req, res, next) {
 
 //Carts
 // List items in cart for current logged in user.
-app.get("/cart", function (req, res) {
+app.get("/cart", function (req, res, next) {
     console.log("Request received: " + req.url + ", " + req.query.custId);
     var custId = getCustomerId(req);
-
+    console.log("Customer ID: " + custId);
     request(cartsUrl + "/" + custId + "/items", function (error, response, body) {
         if (error) {
             return next(error);
@@ -266,6 +302,7 @@ app.post("/cart", function (req, res, next) {
     async.waterfall([
         function (callback) {
             request(catalogueUrl + "/catalogue/" + req.body.id.toString(), function (error, response, body) {
+                console.log(body);
                 callback(error, JSON.parse(body));
             });
         },
@@ -276,6 +313,7 @@ app.post("/cart", function (req, res, next) {
                 json: true,
                 body: {itemId: item.id, unitPrice: item.price}
             };
+            console.log("POST to carts: " + options.uri + " body: " + options.body);
             request(options, function (error, response, body) {
                 callback(error, response.statusCode);
             });
@@ -294,7 +332,12 @@ app.post("/cart", function (req, res, next) {
 //Orders
 app.get("/orders", function (req, res, next) {
     console.log("Request received with body: " + JSON.stringify(req.body));
-    var custId = getCustomerId(req);
+    // var custId = getCustomerId(req);
+    var custId = req.cookies.logged_in;
+    if (!custId) {
+        throw new Error("User not logged in.");
+        return
+    }
 
     async.waterfall([
             function (callback) {
@@ -317,7 +360,12 @@ app.get("/orders", function (req, res, next) {
 
 app.post("/orders", function(req, res, next) {
     console.log("Request received with body: " + JSON.stringify(req.body));
-    var custId = getCustomerId(req);
+    // var custId = getCustomerId(req);
+    var custId = req.cookies.logged_in;
+    if (!custId) {
+        throw new Error("User not logged in.");
+        return
+    }
 
     async.waterfall([
             function (callback) {
@@ -481,7 +529,145 @@ function getCustomerId(req) {
     }
 
     if (!custId) {
-        throw new Error("User not logged in.");
+        if (!req.session.id) {
+           throw new Error("User not logged in.");
+        }
+        // Use Session ID instead
+        return req.session.id;
+    }
+
+    return custId;
+}
+
+
+// Get the current user's cart url. Create a new cart if one doesn't exist.
+// Returns: Url of user's cart
+function getCartUrlForCustomerId(custId, callback) {
+    async.waterfall([
+            function (callback) {
+                var options = {
+                    uri: cartsUrl + "/search/findByCustomerId?custId=" + custId,
+                    method: 'GET',
+                    json: true
+                };
+                request(options, function (error, response, body) {
+                    if (error) {
+                        return callback(error);
+                    }
+                    console.log("Received response: " + JSON.stringify(body));
+                    var cartList = body._embedded.carts;
+                    console.log(JSON.stringify(cartList));
+                    callback(null, cartList);
+                });
+            },
+            function (cartList, callback) {
+                if (cartList.length == 0) {
+                    console.log("Cart does not exist for: " + custId);
+                    console.log("Creating cart");
+                    var options = {
+                        uri: cartsUrl,
+                        method: 'POST',
+                        json: true,
+                        body: {"customerId": custId}
+                    };
+                    request(options, function (error, response, body) {
+                        if (error) {
+                            callback(error);
+                            return;
+                        }
+                        if (response.statusCode == 201) {
+                            cartList.push(body);
+                            console.log('New cart created for customerId: ' + custId + ': ' + JSON.stringify(body));
+                            callback(null, cartList)
+                        } else {
+                            callback("Unable to create new cart. Body: " + JSON.stringify(body));
+                            return;
+                        }
+                    });
+                } else {
+                    callback(null, cartList)
+                }
+            },
+            function (cartList, callback) {
+                var cartUrl = cartList[0]._links.cart.href;
+                console.log("Using cart url: " + cartUrl);
+                callback(null, cartUrl);
+            }
+        ],
+        function (err, cartUrl) {
+            callback(err, cartUrl);
+        });
+}
+
+// Get cart items
+// Parameters:  cartUrl:    URL of the current cart
+// Returns:     itemsUrl:   Url of the current item list
+//              items:      All of the current cart's items
+function getCartItems(cartUrl, callback) {
+    async.waterfall([
+            // Get items url
+            function (callback) {
+                var options = {
+                    uri: cartUrl,
+                    method: 'GET',
+                    json: true
+                };
+                request(options, function (error, response, body) {
+                    if (error) {
+                        callback(error);
+                        return;
+                    }
+                    console.log("Current cart: " + JSON.stringify(body));
+                    var itemsUrl = body._links.items.href;
+                    callback(null, cartUrl, itemsUrl);
+                });
+            },
+            // Get current items
+            function (cartUrl, itemsUrl, callback) {
+                var options = {
+                    uri: itemsUrl,
+                    method: 'GET',
+                    json: true
+                };
+                request(options, function (error, response, body) {
+                    if (error) {
+                        callback(error);
+                        return;
+                    }
+                    console.log("Current items: " + JSON.stringify(body._embedded.items));
+                    callback(null, itemsUrl, body._embedded.items);
+                });
+            }
+        ],
+        function (err, currentItemsUrl, itemList) {
+            callback(err, currentItemsUrl, itemList);
+        });
+
+}
+
+
+// Find an item in a list
+// Inputs:  itemList    -   List of items
+//          idemId      -   ID of the item to find
+// Returns: { url: Url pointing to the item,
+//            quantity: Current quantity }
+function findItem(itemList, itemId) {
+    var foundItemUrl = "";
+    var currentQuantity = 0;
+    console.log("Searching for item in cart of size: " + itemList.length);
+    for (var i = 0, len = itemList.length; i < len; i++) {
+        var item = itemList[i];
+        console.log("Searching: " + JSON.stringify(item));
+        console.log("Q: " + item.itemId + " == " + itemId);
+        if (item != null && item.itemId != null && item.itemId.toString() == itemId) {
+            console.log("Item found");
+            foundItemUrl = item._links.self.href;
+            currentQuantity = item.quantity;
+            break;
+        }
+        // Use Session ID instead
+        return req.session.id;
+        // throw new Error("User not logged in.");
     }
 
     return custId;

@@ -1,4 +1,4 @@
-FROM golang:1.6
+FROM golang:1.6-alpine
 
 #EXPOSE 80
 COPY users.json /config/users.json
