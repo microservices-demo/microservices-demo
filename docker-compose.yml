@@ -11,7 +11,8 @@ services:
     environment:
       - reschedule:on-node-failure
     networks:
-      - front
+      - external
+      - secure
       - internal
   catalogue:
     image: weaveworksdemos/catalogue
@@ -23,7 +24,7 @@ services:
     environment:
       - reschedule:on-node-failure
     networks:
-      - front
+      - external
   accounts:
     image: weaveworksdemos/accounts
     ports:
@@ -34,7 +35,7 @@ services:
     environment:
       - reschedule:on-node-failure
     networks:
-      - internal
+      - secure
   accounts-db:
     image: mongo
     ports:
@@ -45,7 +46,7 @@ services:
     environment:
       - reschedule:on-node-failure
     networks:
-      - internal
+      - secure
   cart:
     image: weaveworksdemos/cart
     ports:
@@ -100,7 +101,7 @@ services:
     environment:
       - reschedule:on-node-failure
     networks:
-      - internal
+      - backoffice
   queue-master:
     image: weaveworksdemos/queue-master
     ports:
@@ -113,7 +114,7 @@ services:
     environment:
       - reschedule:on-node-failure
     networks:
-      - internal
+      - backoffice
   rabbitmq:
     image: rabbitmq:3
     ports:
@@ -125,7 +126,7 @@ services:
     environment:
       - reschedule:on-node-failure
     networks:
-      - internal
+      - backoffice
   payment:
     image: weaveworksdemos/payment
     ports:
@@ -136,7 +137,7 @@ services:
     environment:
       - reschedule:on-node-failure
     networks:
-      - internal
+      - secure
   login:
     image: weaveworksdemos/login
     ports:
@@ -147,9 +148,13 @@ services:
     environment:
       - reschedule:on-node-failure
     networks:
-      - internal
+      - secure
 networks:
-  front:
+  external:
+    driver: weave
+  secure:
     driver: weave
   internal:
+    driver: weave
+  backoffice:
     driver: weave
