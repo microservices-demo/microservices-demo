@@ -25,7 +25,6 @@ app.use(function(err, req, res, next) {
 });
 
 var catalogueUrl = "http://catalogue";
-var accountsUrl = "http://accounts/accounts";
 var cartsUrl = "http://cart/carts";
 var ordersUrl = "http://orders/orders";
 var itemsUrl = "http://cart/items";
@@ -36,6 +35,15 @@ var loginUrl = "http://login/login";
 var registerUrl = "http://login/register";
 var tagsUrl = catalogueUrl + "/tags";
 
+/**
+ * DEVELOPMENT MODE
+ * If you are running the front end from your IDE or just in your localhost, first start a proxy
+ * on the swarm to proxy all your requests. The request module will then proxy all traffic for you.
+ *
+ * _Docker Command_
+ * (Assumes that you have eval'ed the --swarm swarm master.)
+ * docker $(docker-machine config swarm-master) run -p 8888:8888 -d --hostname=proxy.weave.local paintedfox/tinyproxy; docker network connect weavedemo_front proxy ; docker network connect weavedemo_internal proxy
+ */
 console.log(app.get('env'));
 if (app.get('env') == "development") {
     catalogueUrl = "http://192.168.99.101:32770";
@@ -49,9 +57,8 @@ if (app.get('env') == "development") {
     loginUrl = "http://192.168.99.103:32769/login";
     registerUrl = "http://localhost:8084/register";
     tagsUrl = catalogueUrl + "/tags";
+    request = request.defaults({proxy: "http://192.168.99.101:8888"})
 }
-
-// TODO Add logging
 
 var cookie_name = 'logged_in';
 
@@ -232,6 +239,11 @@ app.get("/catalogue*", function (req, res, next) {
 
 app.get("/tags", function(req, res, next) {
     simpleHttpRequest(tagsUrl, res, next);
+});
+
+// Accounts
+app.get("/accounts/:id", function (req, res, next) {
+    simpleHttpRequest(customersUrl + "/" + req.params.id, res, next);
 });
 
 //Carts

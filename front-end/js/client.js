@@ -22,6 +22,11 @@ function login() {
     });
 }
 
+function logout() {
+    $.removeCookie('logged_in');
+    location.reload();
+}
+
 function setNewPageSize(value) {
     location.search = $.query.set("page", 1).set("size", value);
 }
@@ -84,6 +89,20 @@ function addToCart(id) {
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.error('Could not add item: ' + id + ', due to: ' + textStatus + ' | ' + errorThrown);
+        }
+    });
+}
+
+function username(id, callback) {
+    console.log("Requesting user account information " + id);
+    $.ajax({
+        url: "accounts/" + id,
+        type: "GET",
+        success: function (data, textStatus, jqXHR) {
+            callback(JSON.parse(data).firstName + " " + JSON.parse(data).lastName);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error('Could not get user information: ' + id + ', due to: ' + textStatus + ' | ' + errorThrown);
         }
     });
 }
