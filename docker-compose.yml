@@ -81,6 +81,7 @@ services:
     networks:
       - internal
       - secure
+      - backoffice
   orders-db:
     image: mongo
     ports:
