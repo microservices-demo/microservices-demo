@@ -43,7 +43,12 @@ function resetTags() {
     location.search = $.query.remove("tags");
 }
 
-function order() {
+function order(event) {
+    if (!$.cookie('logged_in')) {
+        alert("You must be logged in to place an order.");
+        return false;
+    }
+
     $.ajax({
         url: "orders",
         type: "POST",
@@ -59,6 +64,7 @@ function order() {
             console.log('error: ' + errorThrown);
         }
     });
+    return true;
 }
 
 function deleteCart() {
