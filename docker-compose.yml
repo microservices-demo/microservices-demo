@@ -80,6 +80,7 @@ services:
       - reschedule:on-node-failure
     networks:
       - internal
+      - secure
   orders-db:
     image: mongo
     ports:
@@ -152,17 +153,25 @@ services:
 networks:
   external:
     driver: weave
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.32.1.0/24
   secure:
     driver: weave
     ipam:
       driver: default
       config:
-      - subnet: 10.32.0.0/13
+      - subnet: 10.32.2.0/24
   internal:
     driver: weave
     ipam:
       driver: default
       config:
-      - subnet: 10.40.0.0/13
+      - subnet: 10.32.3.0/24
   backoffice:
     driver: weave
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.32.4.0/24
