@@ -15,12 +15,14 @@ public class Item {
     public int quantity = 1;
     public float unitPrice = 0.0F;
 
-    public void increment() {
-        quantity = quantity + 1;
+    public Item() {
     }
 
-    public void merge(Item item2) {
-        quantity = item2.quantity;
+    public Item(Item item, int quantity) {
+        this.id = item.id;
+        this.itemId = item.itemId;
+        this.quantity = quantity;
+        this.unitPrice = item.unitPrice;
     }
 
     @Override
