@@ -1,20 +1,20 @@
 package works.weave.socks.cart.item;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import works.weave.socks.cart.entities.Item;
 
 import java.util.function.Supplier;
 
-public class FoundItem<T> implements Supplier<T> {
-    private final MongoRepository<T, String> repo;
+public class FoundItem implements Supplier<Item> {
+    private final ItemDAO repo;
     private final String id;
 
-    public <REPO extends MongoRepository<T, String>> FoundItem(REPO repo, String id) {
+    public FoundItem(ItemDAO repo, String id) {
         this.repo = repo;
         this.id = id;
     }
 
     @Override
-    public T get() {
+    public Item get() {
         return repo.findOne(id);
     }
 }

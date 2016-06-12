@@ -1,7 +1,6 @@
 package works.weave.socks.cart.cart;
 
 import works.weave.socks.cart.entities.Cart;
-import works.weave.socks.cart.entities.Item;
 
 import java.util.function.Supplier;
 
@@ -29,7 +28,7 @@ public interface Resource<T> {
 
         @Override
         public Runnable create() {
-            return () -> new Cart(customerId);
+            return () -> cart = new Cart(customerId);
         }
 
         @Override

@@ -2,25 +2,24 @@ package works.weave.socks.cart.item;
 
 import works.weave.socks.cart.cart.Resource;
 import works.weave.socks.cart.entities.Item;
-import works.weave.socks.cart.repositories.ItemRepository;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ItemResource implements Resource<Item> {
-    private final FoundItem<Item> foundItem;
-    private final ItemRepository itemRepository;
+    private final FoundItem foundItem;
+    private final ItemDAO itemRepository;
     private final Supplier<Item> item;
 
-    public ItemResource(ItemRepository itemRepository, Supplier<Item> item) {
+    public ItemResource(ItemDAO itemRepository, Supplier<Item> item) {
         this.itemRepository = itemRepository;
         this.item = item;
-        foundItem = new FoundItem<>(itemRepository, item.get().itemId);
+        foundItem = new FoundItem(itemRepository, item.get().itemId);
     }
 
     @Override
     public Runnable destroy() {
-        return () -> itemRepository.delete(value().get());
+        return () -> itemRepository.destroy(value().get());
     }
 
     @Override
@@ -31,7 +30,7 @@ public class ItemResource implements Resource<Item> {
     @Override
     public Supplier<Item> value() {
         return () -> Optional
-                .of(foundItem.get())
+                .ofNullable(foundItem.get())
                 .orElseGet(() -> {
                     create().run();
                     return value().get();

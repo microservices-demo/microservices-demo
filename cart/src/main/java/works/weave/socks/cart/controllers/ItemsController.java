@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import works.weave.socks.cart.cart.*;
+import works.weave.socks.cart.cart.CartDAO;
+import works.weave.socks.cart.cart.CartResource;
 import works.weave.socks.cart.entities.Item;
-import works.weave.socks.cart.item.*;
-import works.weave.socks.cart.repositories.ItemRepository;
+import works.weave.socks.cart.item.FoundItem;
+import works.weave.socks.cart.item.GetItem;
+import works.weave.socks.cart.item.ItemDAO;
+import works.weave.socks.cart.item.ItemResource;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -16,18 +19,16 @@ import java.util.function.Supplier;
 @RequestMapping(value = "/carts/{customerId:.*}/items")
 public class ItemsController {
     @Autowired
-    private ItemRepository itemRepository;
-
+    ItemDAO itemDAO;
     @Autowired
     private CartsController cartsController;
-
     @Autowired
     private CartDAO cartDAO;
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/{itemId:.*}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     public Item get(@PathVariable String itemId) {
-        return new FoundItem<>(itemRepository, itemId).get();
+        return new FoundItem(itemDAO, itemId).get();
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -40,7 +41,7 @@ public class ItemsController {
     @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     public void addToCart(@PathVariable String customerId, @RequestBody Item item) {
         // Get stored item. Will add if it doesn't exist.
-        Supplier<Item> storedItem = new ItemResource(itemRepository, new GetItem(this, item)).value();
+        Supplier<Item> storedItem = new ItemResource(itemDAO, new GetItem(this, item)).value();
 
         // Add item to cart. Will increment if it already exists in the cart.
         new CartResource(cartDAO, customerId).contents().get().add(storedItem.get());
@@ -54,7 +55,7 @@ public class ItemsController {
         new CartResource(cartDAO, customerId).contents().get().delete(storedItem.get()).run();
 
         // Remove item from item repository
-        new ItemResource(itemRepository, storedItem).destroy().run();
+        new ItemResource(itemDAO, storedItem).destroy().run();
     }
 
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -62,7 +63,7 @@ public class ItemsController {
     public void updateItem(@PathVariable String customerId, @RequestBody Item item) {
         // Merge old and new items
         Supplier<Item> storedItem = new GetItem(this, item);
-        new ItemResource(itemRepository, storedItem).merge(item);
+        new ItemResource(itemDAO, storedItem).merge(item);
 
         // Save new merged item
         addToCart(customerId, storedItem.get());
