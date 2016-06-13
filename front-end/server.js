@@ -41,22 +41,10 @@ var tagsUrl = catalogueUrl + "/tags";
  * on the swarm to proxy all your requests. The request module will then proxy all traffic for you.
  *
  * _Docker Command_
- * (Assumes that you have eval'ed the --swarm swarm master.)
- * docker $(docker-machine config swarm-master) run -p 8888:8888 -d --hostname=proxy.weave.local paintedfox/tinyproxy; docker network connect weavedemo_front proxy ; docker network connect weavedemo_internal proxy
+ * See the docs
  */
 console.log(app.get('env'));
 if (app.get('env') == "development") {
-    catalogueUrl = "http://192.168.99.101:32770";
-    accountsUrl = "http://192.168.99.101:32768/accounts";
-    cartsUrl = "http://192.168.99.103:32773/carts";
-    itemsUrl = "http://192.168.99.102:32773/items";
-    ordersUrl = "http://192.168.99.101:32770/orders";
-    customersUrl = "http://192.168.99.101:32768/customers";
-    addressUrl = "http://192.168.99.101:32768/addresses";
-    cardsUrl = "http://192.168.99.101:32768/cards";
-    loginUrl = "http://192.168.99.103:32769/login";
-    registerUrl = "http://localhost:8084/register";
-    tagsUrl = catalogueUrl + "/tags";
     request = request.defaults({proxy: "http://192.168.99.101:8888"})
 }
 
