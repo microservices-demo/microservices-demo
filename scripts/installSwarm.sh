@@ -22,7 +22,7 @@ do_create() {
   do_checks
   KEYSTORE_NAME=`docker-machine ls --format="{{.Name}}" --filter="name=swarm-keystore"`
 
-  if ["$DRIVER" -eq "AWS"]; then
+  if [ "$DRIVER" == "AWS" ]; then
     echo "Installing Swarm on AWS..."
     if [ ! `command -v aws` ]; then
       echo "AWS command line tools not found."
