@@ -80,11 +80,11 @@
   },
   {
     "id": "zzz4f044-b040-410d-8ead-4de0446aec7e",
-    "name": "Kemp",
-    "description": "qui fugiat laborum amet dolor non elit ullamco cillum dolor",
+    "name": "Rugby",
+    "description": "These socks will make you instantly better at sports. And life.",
     "imageUrl": [
-      "/catalogue/images/sock.jpeg",
-      "/catalogue/images/sock.jpeg"
+      "/catalogue/images/rugby_socks.jpeg",
+      "/catalogue/images/rugby_socks.jpeg"
     ],
     "price": 12,
     "count": 127,
@@ -95,12 +95,12 @@
     ]
   },
   {
-    "id": "zzzzf044-b040-410d-8ead-4de0446aec7e",
-    "name": "Maynard",
+    "id": "3395a43e-2d88-40de-b95f-e00e1502085b",
+    "name": "Colourful",
     "description": "proident occaecat irure et excepteur labore minim nisi amet irure",
     "imageUrl": [
-      "/catalogue/images/sock.jpeg",
-      "/catalogue/images/sock.jpeg"
+      "/catalogue/images/colourful_socks.jpeg",
+      "/catalogue/images/colourful_socks.jpeg",
     ],
     "price": 18,
     "count": 438,
@@ -111,7 +111,7 @@
     ]
   },
   {
-    "id": "zzzzz044-b040-410d-8ead-4de0446aec7e",
+    "id": "837ab141-399e-4c1f-9abc-bace40296bac",
     "name": "Shepard",
     "description": "consequat amet cupidatat minim laborum tempor elit ex consequat in",
     "imageUrl": [
@@ -127,7 +127,7 @@
     ]
   },
   {
-    "id": "zzzzzz44-b040-410d-8ead-4de0446aec7e",
+    "id": "819e1fbf-8b7e-4f6d-811f-693534916a8b",
     "name": "Figueroa",
     "description": "enim officia aliqua excepteur esse deserunt quis aliquip nostrud anim",
     "imageUrl": [
