@@ -177,14 +177,14 @@ _________________________________________________________ -->
                             <span class="label label-success">Shipped</span>\
                         </td>\
                         <td>\
-                            <a href="#" class="btn btn-primary btn-sm">View</a>\
+                            <a href="customer-order.html?order=/orders/' + id + '" class="btn btn-primary btn-sm">View</a>\
                         </td>\
                     </tr>');
                     });
                 }
         ).error(function() {
             window.location.href="basket.html";
-            alert("You must be logged in to submit an order.");
+            alert("You must be logged in to view your orders.");
         })
     });
 </script>

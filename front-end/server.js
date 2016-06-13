@@ -26,7 +26,7 @@ app.use(function(err, req, res, next) {
 
 var catalogueUrl = "http://catalogue";
 var cartsUrl = "http://cart/carts";
-var ordersUrl = "http://orders/orders";
+var ordersUrl = "http://orders";
 var itemsUrl = "http://cart/items";
 var customersUrl = "http://accounts/customers";
 var addressUrl = "http://accounts/addresses";
@@ -341,7 +341,7 @@ app.get("/orders", function (req, res, next) {
 
     async.waterfall([
             function (callback) {
-                request(ordersUrl + "/search/customerId?sort=date&custId=" + custId, function (error, response, body) {
+                request(ordersUrl + "/orders/search/customerId?sort=date&custId=" + custId, function (error, response, body) {
                     if (error) {
                         return callback(error);
                     }
@@ -356,6 +356,11 @@ app.get("/orders", function (req, res, next) {
             }
             respondStatusBody(res, 201, JSON.stringify(result));
         });
+});
+
+app.get("/orders/*", function (req, res, next) {
+    var url = ordersUrl + req.url.toString();
+    request.get(url).pipe(res);
 });
 
 app.post("/orders", function(req, res, next) {
@@ -456,7 +461,7 @@ app.post("/orders", function(req, res, next) {
             },
             function (order, callback) {
                 var options = {
-                    uri: ordersUrl,
+                    uri: ordersUrl + '/orders',
                     method: 'POST',
                     json: true,
                     body: order
