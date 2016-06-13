@@ -3,18 +3,15 @@ package works.weave.socks.cart.item;
 import works.weave.socks.cart.cart.Resource;
 import works.weave.socks.cart.entities.Item;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ItemResource implements Resource<Item> {
-    private final FoundItem foundItem;
     private final ItemDAO itemRepository;
     private final Supplier<Item> item;
 
     public ItemResource(ItemDAO itemRepository, Supplier<Item> item) {
         this.itemRepository = itemRepository;
         this.item = item;
-        foundItem = new FoundItem(itemRepository, item.get().itemId);
     }
 
     @Override
@@ -23,22 +20,17 @@ public class ItemResource implements Resource<Item> {
     }
 
     @Override
-    public Runnable create() {
+    public Supplier<Item> create() {
         return () -> itemRepository.save(item.get());
     }
 
     @Override
     public Supplier<Item> value() {
-        return () -> Optional
-                .ofNullable(foundItem.get())
-                .orElseGet(() -> {
-                    create().run();
-                    return value().get();
-                });
+        return item;    // Basically a null method. Gets the item from the supplier.
     }
 
     @Override
     public Runnable merge(Item toMerge) {
-        return () -> itemRepository.save(new Item(foundItem.get(), toMerge.quantity));
+        return () -> itemRepository.save(new Item(value().get(), toMerge.quantity()));
     }
 }

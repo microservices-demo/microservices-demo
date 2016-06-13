@@ -20,7 +20,7 @@ public class CartResource implements Resource<Cart>, HasContents<CartContentsRes
     }
 
     @Override
-    public Runnable create() {
+    public Supplier<Cart> create() {
         return () -> cartRepository.save(new Cart(customerId));
     }
 
@@ -29,14 +29,14 @@ public class CartResource implements Resource<Cart>, HasContents<CartContentsRes
         return new FirstResultOrDefault<>(
                 cartRepository.findByCustomerId(customerId),
                 () -> {
-                    create().run();
+                    create().get();
                     return value().get();
                 });
     }
 
     @Override
     public Runnable merge(Cart toMerge) {
-        return () -> toMerge.contents().forEach(item -> contents().get().add(item).run());
+        return () -> toMerge.contents().forEach(item -> contents().get().add(() -> item).run());
     }
 
     @Override

@@ -37,5 +37,6 @@ public class CartsController {
         CartResource sessionCart = new CartResource(cartDAO, sessionId);
         CartResource customerCart = new CartResource(cartDAO, customerId);
         customerCart.merge(sessionCart.value().get()).run();
+        delete(sessionId);
     }
 }

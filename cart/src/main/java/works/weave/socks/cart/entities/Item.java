@@ -11,18 +11,43 @@ public class Item {
     private String id;
 
     @NotNull(message = "Item Id must not be null")
-    public String itemId;
-    public int quantity = 1;
-    public float unitPrice = 0.0F;
+    private String itemId;
+    private int quantity;
+    private float unitPrice;
+
+    public Item(String id, String itemId, int quantity, float unitPrice) {
+        this.id = id;
+        this.itemId = itemId;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+    }
 
     public Item() {
+        this(null, "", 1, 0F);
+    }
+
+    public Item(String itemId) {
+        this(null, itemId, 1, 0F);
+    }
+
+    public Item(Item item, String id) {
+        this(id, item.itemId, item.quantity, item.unitPrice);
     }
 
     public Item(Item item, int quantity) {
-        this.id = item.id;
-        this.itemId = item.itemId;
-        this.quantity = quantity;
-        this.unitPrice = item.unitPrice;
+        this(item.id(), item.itemId, quantity, item.unitPrice);
+    }
+
+    public String id() {
+        return id;
+    }
+
+    public String itemId() {
+        return itemId;
+    }
+
+    public int quantity() {
+        return quantity;
     }
 
     @Override
@@ -43,5 +68,39 @@ public class Item {
         Item item = (Item) o;
 
         return itemId != null ? itemId.equals(item.itemId) : item.itemId == null;
+    }
+
+    // ****** Crappy getter/setters for Jackson JSON invoking ********
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public float getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(float unitPrice) {
+        this.unitPrice = unitPrice;
     }
 }

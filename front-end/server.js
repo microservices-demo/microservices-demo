@@ -98,7 +98,7 @@ app.get("/login", function (req, res, next) {
             console.log("Merging carts for customer id: " + custId + " and session id: " + sessionId);
 
             var options = {
-                uri: cartsUrl + "/merge/" + custId + "?sessionId=" + sessionId,
+                uri: cartsUrl + "/" + custId + "/merge" + "?sessionId=" + sessionId,
                 method: 'GET'
             };
             request(options, function (error, response, body) {
@@ -325,7 +325,7 @@ app.post("/cart", function (req, res, next) {
                 json: true,
                 body: {itemId: item.id, unitPrice: item.price}
             };
-            console.log("POST to carts: " + options.uri + " body: " + options.body);
+            console.log("POST to carts: " + options.uri + " body: " + JSON.stringify(options.body));
             request(options, function (error, response, body) {
                 callback(error, response.statusCode);
             });

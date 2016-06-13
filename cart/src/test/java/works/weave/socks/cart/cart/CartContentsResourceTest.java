@@ -16,8 +16,8 @@ public class CartContentsResourceTest {
     @Test
     public void shouldAddAndReturnContents() {
         CartContentsResource contentsResource = new CartContentsResource(fakeDAO, () -> fakeCartResource);
-        Item item = new Item();
-        contentsResource.add(item).run();
+        Item item = new Item("testId");
+        contentsResource.add(() -> item).run();
         assertThat(contentsResource.contents().get(), IsCollectionWithSize.hasSize(1));
         assertThat(contentsResource.contents().get(), containsInAnyOrder(item));
     }
@@ -31,14 +31,12 @@ public class CartContentsResourceTest {
     @Test
     public void shouldDeleteItemFromCart() {
         CartContentsResource contentsResource = new CartContentsResource(fakeDAO, () -> fakeCartResource);
-        Item item = new Item();
-        item.itemId = "testId";
-        contentsResource.add(item).run();
+        Item item = new Item("testId");
+        contentsResource.add(() -> item).run();
         assertThat(contentsResource.contents().get(), IsCollectionWithSize.hasSize(1));
         assertThat(contentsResource.contents().get(), containsInAnyOrder(item));
-        Item item2 = new Item();
-        item2.itemId = item.itemId;
-        contentsResource.delete(item2).run();
+        Item item2 = new Item(item.itemId());
+        contentsResource.delete(() -> item2).run();
         assertThat(contentsResource.contents().get(), IsCollectionWithSize.hasSize(0));
     }
 }

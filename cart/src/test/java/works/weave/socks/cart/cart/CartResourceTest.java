@@ -7,6 +7,7 @@ import works.weave.socks.cart.entities.Item;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -50,14 +51,14 @@ public class CartResourceTest {
     @Test
     public void whenCreateDoCreate() {
         CartResource cartResource = new CartResource(fake, customerId);
-        cartResource.create().run();
+        cartResource.create().get();
         assertThat(fake.findByCustomerId(customerId), is(not(empty())));
     }
 
     @Test
     public void contentsShouldBeEmptyWhenNew() {
         CartResource cartResource = new CartResource(fake, customerId);
-        cartResource.create().run();
+        cartResource.create().get();
         assertThat(cartResource.contents().get().contents().get(), is(empty()));
     }
 
@@ -65,14 +66,12 @@ public class CartResourceTest {
     public void mergedItemsShouldBeInCart() {
         String person1 = "person1";
         String person2 = "person2";
-        Item person1Item = new Item();
-        person1Item.itemId = "item1";
-        Item person2Item = new Item();
-        person2Item.itemId = "item2";
+        Item person1Item = new Item("item1");
+        Item person2Item = new Item("item2");
         CartResource cartResource = new CartResource(fake, person1);
-        cartResource.contents().get().add(person1Item).run();
+        cartResource.contents().get().add(() -> person1Item).run();
         CartResource cartResourceToMerge = new CartResource(fake, person2);
-        cartResourceToMerge.contents().get().add(person2Item).run();
+        cartResourceToMerge.contents().get().add(() -> person2Item).run();
         cartResource.merge(cartResourceToMerge.value().get()).run();
         assertThat(cartResource.contents().get().contents().get(), hasSize(2));
         assertThat(cartResource.contents().get().contents().get().get(0), anyOf(equalTo(person1Item), equalTo(person2Item)));

@@ -24,8 +24,8 @@ public class BeanConfiguration {
             }
 
             @Override
-            public void save(Cart cart) {
-                cartRepository.save(cart);
+            public Cart save(Cart cart) {
+                return cartRepository.save(cart);
             }
 
             @Override
@@ -40,8 +40,8 @@ public class BeanConfiguration {
     public ItemDAO getItemDao(ItemRepository itemRepository) {
         return new ItemDAO() {
             @Override
-            public void save(Item item) {
-                itemRepository.save(item);
+            public Item save(Item item) {
+                return itemRepository.save(item);
             }
 
             @Override

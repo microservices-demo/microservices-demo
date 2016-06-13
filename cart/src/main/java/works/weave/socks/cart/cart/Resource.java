@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 public interface Resource<T> {
     Runnable destroy();
 
-    Runnable create();
+    Supplier<T> create();
 
     Supplier<T> value();
 
@@ -27,14 +27,14 @@ public interface Resource<T> {
         }
 
         @Override
-        public Runnable create() {
+        public Supplier<Cart> create() {
             return () -> cart = new Cart(customerId);
         }
 
         @Override
         public Supplier<Cart> value() {
             if (cart == null) {
-                create().run();
+                create().get();
             }
             return () -> cart;
         }
