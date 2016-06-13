@@ -62,7 +62,7 @@ Swarm up's are unstable. Pulling and building the project in stages seems to be 
 If you wish to communicate with the cluster using the hostnames from your local machine, you will need to start a proxy. To start a proxy, use the following command (assumes you have eval'ed with `eval $(docker-machine env --swarm swarm-master)`):
 
 ```
-docker $(docker-machine config swarm-master) run -p 8888:8888 -d --name=proxy --hostname=proxy.weave.local paintedfox/tinyproxy; docker network connect weavedemo_front proxy ; docker network connect weavedemo_internal proxy
+docker $(docker-machine config swarm-master) run -p 8888:8888 -d --name=proxy --hostname=proxy.weave.local paintedfox/tinyproxy; docker network connect weavedemo_external proxy ; docker network connect weavedemo_internal proxy ; docker network connect weavedemo_secure proxy ; docker network connect weavedemo_backoffice proxy
 ```
 
 # Uninstalling
