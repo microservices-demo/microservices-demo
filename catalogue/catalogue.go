@@ -13,7 +13,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var catalogue []Sock
+var catalogue []sock
 
 var dev bool
 var port string
@@ -63,21 +63,21 @@ func catalogueHandler(w http.ResponseWriter, r *http.Request) {
 		sortOn = strings.ToLower(sortField)
 	}
 
-	var sorted []Sock = filter(catalogue, tagField)
+	var sorted []sock = filter(catalogue, tagField)
 
 	switch sortOn {
 	case "id":
-		sort.Sort(IdSorter(sorted))
+		sort.Sort(idSorter(sorted))
 	case "name":
-		sort.Sort(NameSorter(sorted))
+		sort.Sort(nameSorter(sorted))
 	case "description":
-		sort.Sort(DescriptionSorter(sorted))
+		sort.Sort(descriptionSorter(sorted))
 	case "price":
-		sort.Sort(PriceSorter(sorted))
+		sort.Sort(priceSorter(sorted))
 	case "count":
-		sort.Sort(CountSorter(sorted))
+		sort.Sort(countSorter(sorted))
 	case "tag":
-		sort.Sort(TagSorter(sorted))
+		sort.Sort(tagSorter(sorted))
 	}
 	end := (pageCount * perPage)
 	if end > len(sorted) {
@@ -138,11 +138,11 @@ func loadCatalogue(file string) {
 	fmt.Printf("Loaded %d items into catalogue.\n", len(catalogue))
 }
 
-func filter(socks []Sock, tagString string) []Sock {
+func filter(socks []sock, tagString string) []sock {
 	if len(tagString) < 1 {
 		return socks[:]
 	}
-	var r []Sock
+	var r []sock
 	tags := strings.Split(tagString, ",")
 	for _, s := range socks {
 		var count []string
@@ -171,7 +171,7 @@ func contains(s []string, e string) bool {
 	return false
 }
 
-type Sock struct {
+type sock struct {
 	Id          string   `json:"id"`
 	Name        string   `json:"name"`
 	Description string   `json:"description"`
@@ -181,38 +181,38 @@ type Sock struct {
 	Tags        []string `json:"tag"`
 }
 
-type IdSorter []Sock
+type idSorter []sock
 
-func (a IdSorter) Len() int           { return len(a) }
-func (a IdSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a IdSorter) Less(i, j int) bool { return a[i].Id < a[j].Id }
+func (a idSorter) Len() int           { return len(a) }
+func (a idSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a idSorter) Less(i, j int) bool { return a[i].Id < a[j].Id }
 
-type NameSorter []Sock
+type nameSorter []sock
 
-func (a NameSorter) Len() int           { return len(a) }
-func (a NameSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a NameSorter) Less(i, j int) bool { return a[i].Name < a[j].Name }
+func (a nameSorter) Len() int           { return len(a) }
+func (a nameSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a nameSorter) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
-type DescriptionSorter []Sock
+type descriptionSorter []sock
 
-func (a DescriptionSorter) Len() int           { return len(a) }
-func (a DescriptionSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a DescriptionSorter) Less(i, j int) bool { return a[i].Description < a[j].Description }
+func (a descriptionSorter) Len() int           { return len(a) }
+func (a descriptionSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a descriptionSorter) Less(i, j int) bool { return a[i].Description < a[j].Description }
 
-type PriceSorter []Sock
+type priceSorter []sock
 
-func (a PriceSorter) Len() int           { return len(a) }
-func (a PriceSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a PriceSorter) Less(i, j int) bool { return a[i].Price < a[j].Price }
+func (a priceSorter) Len() int           { return len(a) }
+func (a priceSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a priceSorter) Less(i, j int) bool { return a[i].Price < a[j].Price }
 
-type CountSorter []Sock
+type countSorter []sock
 
-func (a CountSorter) Len() int           { return len(a) }
-func (a CountSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a CountSorter) Less(i, j int) bool { return a[i].Count < a[j].Count }
+func (a countSorter) Len() int           { return len(a) }
+func (a countSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a countSorter) Less(i, j int) bool { return a[i].Count < a[j].Count }
 
-type TagSorter []Sock
+type tagSorter []sock
 
-func (a TagSorter) Len() int           { return len(a) }
-func (a TagSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a TagSorter) Less(i, j int) bool { return len(a[i].Tags) < len(a[j].Tags) }
+func (a tagSorter) Len() int           { return len(a) }
+func (a tagSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a tagSorter) Less(i, j int) bool { return len(a[i].Tags) < len(a[j].Tags) }
