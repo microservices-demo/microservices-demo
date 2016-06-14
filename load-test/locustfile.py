@@ -100,6 +100,18 @@ class APITasks(TaskSet):
 
 class ErrorTasks(TaskSet):
 
+	# Can we use functions from other classes? should be fine.
+	def addItemToCart(self):
+		cart = self.client.get("/cart")
+		catalogue = self.client.get("/catalogue?size=100")
+		sizeResponse = self.client.get("/catalogue/size")
+		size = sizeResponse.json()["size"]
+		index = randint(0, size-1)
+		catItem = catalogue.json()[index]
+		time.sleep(2.0)
+		self.item_id = catItem["id"]
+		self.client.post("/cart", json={"id": self.item_id, "quantity": 3})
+
 	@task
 	def login_fail(self):
 		base64string = base64.encodestring('%s:%s' % ("wrong_user", "no_pass")).replace('\n', '')
@@ -108,8 +120,9 @@ class ErrorTasks(TaskSet):
 				response.success()
 
 	@task
-	def cart_fail(self):
-		with self.client.get("/cart", catch_response=True) as response:
+	def checkout_fail(self):
+		self.addItemToCart()
+		with self.client.post("/orders", json={}) as response:
 			if response.status_code == 500:
 				response.success()
 
