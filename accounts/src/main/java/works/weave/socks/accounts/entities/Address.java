@@ -16,6 +16,18 @@ public class Address {
     private String country;
     private String postcode;
 
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", street='" + street + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", postcode='" + postcode + '\'' +
+                '}';
+    }
+
     public String getNumber() {
         return number;
     }

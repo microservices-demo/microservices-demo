@@ -25,6 +25,21 @@ public class Customer {
     @DBRef(lazy = true)
     private List<Card> cards = new ArrayList<>();
 
+    public Customer() {
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", username='" + username + '\'' +
+                ", addresses=" + addresses +
+                ", cards=" + cards +
+                '}';
+    }
+
     public BigInteger getId() {
         return id;
     }
