@@ -1,6 +1,5 @@
 FROM golang:1.6-wheezy
 
-#EXPOSE 80
 COPY socks.json /config/socks.json
 RUN go get github.com/gorilla/mux
 

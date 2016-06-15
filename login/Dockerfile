@@ -1,6 +1,5 @@
 FROM golang:1.6-alpine
 
-#EXPOSE 80
 COPY users.json /config/users.json
 
 COPY *.go /go/src/github.com/containersolutions/weave-demo/login/

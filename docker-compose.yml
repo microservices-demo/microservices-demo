@@ -16,8 +16,6 @@ services:
       - internal
   catalogue:
     image: weaveworksdemos/catalogue
-    ports:
-      - "80"
     hostname: catalogue
     domainname: weave.local
     restart: always
@@ -27,8 +25,6 @@ services:
       - external
   accounts:
     image: weaveworksdemos/accounts
-    ports:
-      - "80"
     hostname: accounts
     domainname: weave.local
     restart: always
@@ -38,8 +34,6 @@ services:
       - secure
   accounts-db:
     image: mongo
-    ports:
-      - "27017"
     hostname: accounts-db
     domainname: weave.local
     restart: always
@@ -49,8 +43,6 @@ services:
       - secure
   cart:
     image: weaveworksdemos/cart
-    ports:
-      - "80"
     hostname: cart
     domainname: weave.local
     restart: always
@@ -60,8 +52,6 @@ services:
       - internal
   cart-db:
     image: mongo
-    ports:
-      - "27017"
     hostname: cart-db
     domainname: weave.local
     restart: always
@@ -71,8 +61,6 @@ services:
       - internal
   orders:
     image: weaveworksdemos/orders
-    ports:
-      - "80"
     hostname: orders
     domainname: weave.local
     restart: always
@@ -84,8 +72,6 @@ services:
       - backoffice
   orders-db:
     image: mongo
-    ports:
-      - "27017"
     hostname: orders-db
     domainname: weave.local
     restart: always
@@ -95,8 +81,6 @@ services:
       - internal
   shipping:
     image: weaveworksdemos/shipping
-    ports:
-      - "80"
     hostname: shipping
     domainname: weave.local
     restart: always
@@ -106,8 +90,6 @@ services:
       - backoffice
   queue-master:
     image: weaveworksdemos/queue-master
-    ports:
-      - "80"
     hostname: queue-master
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -119,9 +101,6 @@ services:
       - backoffice
   rabbitmq:
     image: rabbitmq:3
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     hostname: rabbitmq
     domainname: weave.local
     restart: always
@@ -131,8 +110,6 @@ services:
       - backoffice
   payment:
     image: weaveworksdemos/payment
-    ports:
-      - "80"
     hostname: payment
     domainname: weave.local
     restart: always
@@ -142,8 +119,6 @@ services:
       - secure
   login:
     image: weaveworksdemos/login
-    ports:
-      - "80"
     hostname: login
     domainname: weave.local
     restart: always
