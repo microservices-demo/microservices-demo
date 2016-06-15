@@ -54,9 +54,9 @@
                 <ul class="breadcrumb">
                     <li><a href="index.html">Home</a>
                     </li>
-                    <li><a href="#">My orders</a>
+                    <li><a href="customer-orders.html">My orders</a>
                     </li>
-                    <li>Order # 1735</li>
+                    <li>Order</li>
                 </ul>
 
             </div>
@@ -100,9 +100,9 @@ _________________________________________________________ -->
 
             <div class="col-md-9" id="customer-order">
                 <div class="box">
-                    <h1>Order #1735</h1>
+                    <h2>Order #<span id="orderNumber"></span></h2>
 
-                    <p class="lead">Order #<span id="orderNumber"></span> was placed on
+                    <p class="lead">Order was placed on
                         <strong id="orderDate"></strong> and is currently <strong id="orderStatus"></strong>.</p>
                     <p class="text-muted">If you have any questions, please feel
                         free to <a href="#">contact us</a>, our
@@ -128,13 +128,13 @@ _________________________________________________________ -->
                                 <th colspan="5" class="text-right">Order
                                     subtotal
                                 </th>
-                                <th>-</th>
+                                <th id="orderSubtotal"></th>
                             </tr>
                             <tr>
                                 <th colspan="5" class="text-right">Shipping and
                                     handling
                                 </th>
-                                <th>-</th>
+                                <th id="orderShipping"></th>
                             </tr>
                             <tr>
                                 <th colspan="5" class="text-right">Total</th>
@@ -149,21 +149,11 @@ _________________________________________________________ -->
                     <div class="row addresses">
                         <div class="col-md-6">
                             <h2>Invoice address</h2>
-                            <p>John Brown
-                                <br>13/25 New Avenue
-                                <br>New Heaven
-                                <br>45Y 73J
-                                <br>England
-                                <br>Great Britain</p>
+                            <span id="addressInvoice"></span>
                         </div>
                         <div class="col-md-6">
                             <h2>Shipping address</h2>
-                            <p>John Brown
-                                <br>13/25 New Avenue
-                                <br>New Heaven
-                                <br>45Y 73J
-                                <br>England
-                                <br>Great Britain</p>
+                            <span id="addressShipping"></span>
                         </div>
                     </div>
 
@@ -211,37 +201,60 @@ _________________________________________________________ -->
 <script>
     $(document).ready(function () {
         var orderUrl = $.query.get('order') ? $.query.get('order') : "#";
-        console.log("getting " + orderUrl)
+        console.log("getting " + orderUrl);
         $.getJSON(orderUrl, {}, function (data) {
-                    var selfRef = data._links.self.href;
-                    var split = selfRef.split("/");
-                    var id = split[split.length - 1];
-                    $('#orderTotal').text('£' + data.total.toFixed(2));
-                    $('#orderNumber').text(id);
-                    $('#orderDate').text(data.date.split(".")[0].replace("T", " "));
-                    $('#orderStatus').text("shipped");
-                    var selfRef = element._links.self.href;
-                    var split = selfRef.split("/");
-                    var id = split[split.length - 1];
-                    $('#tableOrder').append('\
-                        <tr>\
-                                <td>\
-                                <a href="#">\
-                                <img src="img/detailsquare.jpg" alt="White Blouse Armani">\
-                                </a>\
-                                </td>\
-                                <td><a href="#">White Blouse Armani</a>\
-                        </td>\
-                        <td>2</td>\
-                        <td>$123.00</td>\
-                        <td>$0.00</td>\
-                        <td>$246.00</td>\
-                        </tr>');
-                }
-        ).error(function () {
-            window.location.href = "index.html";
-            alert("You must be logged in to view your orders.");
-        })
+            var selfRef = data._links.self.href;
+            var split = selfRef.split("/");
+            var id = split[split.length - 1];
+            var cartTotal = 0;
+            var numItemsInCart = 0;
+            var shipping = 4.99;
+            //$('#orderTotal').text('£' + data.total.toFixed(2));
+            $('#orderNumber').text(id);
+            $('#orderDate').text(data.date.split(".")[0].replace("T", " "));
+            $('#orderStatus').text("shipped");
+            $.each(data.items, function (index, item) {
+                $.getJSON('/catalogue/' + item.itemId, function (data) {
+                    console.log(JSON.stringify(data));
+                    $('#tableOrder').append(' <tr>\
+                                                <td>\
+                                                    <a href="#">\
+                                                        <img src="' + data.imageUrl[0] + '" alt="' + data.namex + '">\
+                                                    </a>\
+                                                </td>\
+                                                <td>\
+                                                    <a href="#">' + data.name + '</a>\
+                                                </td>\
+                                                <td>' + item.quantity + '</td>\
+                                                <td>£' + data.price.toFixed(2) + '</td>\
+                                                <td>£0.00</td>\
+                                                <td>£' + (item.quantity * data.price).toFixed(2) + '</td>\
+                                            </tr>');
+                    cartTotal = cartTotal + item.quantity * data.price;
+                    console.log("Cur total: " + cartTotal);
+                    numItemsInCart = numItemsInCart + item.quantity;
+                }).always(function () {
+                    console.log("Final counts: £" + cartTotal + ", with " + numItemsInCart + " items.");
+                    $('#orderSubtotal').text('£' + cartTotal.toFixed(2));
+                    $('#orderShipping').text('£' + shipping.toFixed(2));
+                    $('#orderTotal').text('£' + (cartTotal + shipping).toFixed(2));
+                });
+            })
+            $('#addressInvoice').replaceWith('\
+                <p>' + data.customer.firstName + ' ' + data.customer.lastName + '\
+                    <br>' + data.address.number + ' ' + data.address.street + '\
+                    <br>' + data.address.city + '\
+                    <br>' + data.address.country + '\
+                    <br>' + data.address.postcode + '\
+                </p>');
+            $('#addressShipping').replaceWith('\
+                <p>' + data.customer.firstName + ' ' + data.customer.lastName + '\
+                    <br>' + data.address.number + ' ' + data.address.street + '\
+                    <br>' + data.address.city + '\
+                    <br>' + data.address.country + '\
+                    <br>' + data.address.postcode + '\
+                </p>');
+        });
     });
 </script>
 
