@@ -24,8 +24,10 @@ public class DockerSpawner {
 	private DockerClient dc;
 	private ExecutorService dockerPool;
 
-	private String imageName = "alpine";
-	private String imageVersion = "3.1";
+	// private String imageName = "alpine";
+	private String imageName = "weaveworksdemos/worker";
+	// private String imageVersion = "3.1";
+	private String imageVersion = "latest";
 	private String networkId = "weavedemo_backoffice";
 	private int poolSize = 50;
 
@@ -54,7 +56,8 @@ public class DockerSpawner {
 		    public void run() {
 				logger.debug("Spawning new container");
 				try {
-					CreateContainerResponse container = dc.createContainerCmd(imageName + ":" + imageVersion).withNetworkMode(networkId).withCmd("sleep", "30").exec();
+					CreateContainerResponse container = dc.createContainerCmd(imageName + ":" + imageVersion).withNetworkMode(networkId).withCmd("ping", "rabbitmq").exec();
+					// CreateContainerResponse container = dc.createContainerCmd(imageName + ":" + imageVersion).withNetworkMode(networkId).withCmd("sleep", "30").exec();
 					String containerId = container.getId();
 					dc.startContainerCmd(containerId).exec();
 					logger.debug("Spawned container with id: " + container.getId() + " on network: " + networkId);
