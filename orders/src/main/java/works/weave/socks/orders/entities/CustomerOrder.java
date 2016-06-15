@@ -3,6 +3,7 @@ package works.weave.socks.orders.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import works.weave.socks.Shipment;
 import works.weave.socks.accounts.entities.Address;
 import works.weave.socks.accounts.entities.Card;
 import works.weave.socks.accounts.entities.Customer;
@@ -34,18 +35,21 @@ public class CustomerOrder {
 
     private Collection<Item> items;
 
+    private Shipment shipment;
+
     private Date date = Calendar.getInstance().getTime();
 
     public CustomerOrder() {
     }
 
-    public CustomerOrder(String id, String customerId, Customer customer, Address address, Card card, Collection<Item> items, Date date) {
+    public CustomerOrder(String id, String customerId, Customer customer, Address address, Card card, Collection<Item> items, Shipment shipment, Date date) {
         this.id = id;
         this.customerId = customerId;
         this.customer = customer;
         this.address = address;
         this.card = card;
         this.items = items;
+        this.shipment = shipment;
         this.date = date;
     }
 
@@ -114,5 +118,13 @@ public class CustomerOrder {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Shipment getShipment() {
+        return shipment;
+    }
+
+    public void setShipment(Shipment shipment) {
+        this.shipment = shipment;
     }
 }
