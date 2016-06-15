@@ -10,7 +10,7 @@ import (
 )
 
 var dev bool
-var rabbitHost string = "rabbitmq:5672/"
+var rabbitHost string = "rabbitmq/"
 
 func main() {
 
