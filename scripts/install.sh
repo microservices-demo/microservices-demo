@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Install docker-machine cluster, swarm, weave and scope
 #

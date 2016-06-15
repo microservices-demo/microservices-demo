@@ -1,4 +1,4 @@
-#!/bin/sh +x
+#!/bin/bash +x
 #
 # Handy utility for creating a Swarm environment using Docker Machine
 #
