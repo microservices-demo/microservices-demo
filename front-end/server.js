@@ -346,6 +346,10 @@ app.get("/orders", function (req, res, next) {
                         return callback(error);
                     }
                     console.log("Received response: " + JSON.stringify(body));
+                    if (response.statusCode == 404) {
+                        console.log("No orders found for user: " + custId);
+                        return callback(null, []);
+                    }
                     callback(null, JSON.parse(body)._embedded.customerOrders);
                 });
             }
@@ -385,12 +389,10 @@ app.post("/orders", function(req, res, next) {
                     addressLink = jsonBody._links.addresses.href;
                     cardLink = jsonBody._links.cards.href;
                     var order = {
-                        "customerId": custId,
                         "customer": customerlink,
                         "address": null,
                         "card": null,
-                        "items": null,
-                        "total": null
+                        "items": cartsUrl + "/" + custId + "/items"
                     };
                     callback(null, order, addressLink, cardLink);
                 });
@@ -405,9 +407,7 @@ app.post("/orders", function(req, res, next) {
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
-                            // TODO Temp Hack/fix :)
-                            // order.address = jsonBody._embedded.address[0]._links.self.href;
-                            order.address = addressLink
+                            order.address = jsonBody._embedded.address[0]._links.self.href;
                             callback();
                         });
                     },
@@ -419,9 +419,7 @@ app.post("/orders", function(req, res, next) {
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
-                            // TODO Temp Hack/fix :)
-                            // order.card = jsonBody._embedded.card[0]._links.self.href;
-                            order.card = cardLink
+                            order.card = jsonBody._embedded.card[0]._links.self.href;
                             callback();
                         });
                     }
@@ -432,32 +430,6 @@ app.post("/orders", function(req, res, next) {
                     console.log(result);
                     callback(null, order);
                 });
-            },
-            function (order, callback) {
-                async.waterfall([
-                        function (callback) {
-                            request(cartsUrl + "/" + custId + "/items", function (error, response, body) {
-                                if (error) {
-                                    return callback(error);
-                                }
-                                callback(null, cartsUrl + "/" + custId + "/items", JSON.parse(body))
-                            });
-                        }
-                    ],
-                    function (err, currentItemsUrl, itemList) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        console.log("Summing cart. " + JSON.stringify(itemList));
-                        var sum = 0;
-                        for (var i = 0; i < itemList.length; i++) {
-                            console.log("" + itemList[i].quantity + " + " + itemList[i].unitPrice);
-                            sum = sum + itemList[i].quantity * itemList[i].unitPrice;
-                        }
-                        order.items = currentItemsUrl;
-                        order.total = sum;
-                        callback(null, order);
-                    });
             },
             function (order, callback) {
                 var options = {

@@ -1,8 +1,31 @@
 package works.weave.socks;
 
+import java.util.UUID;
+
 public class Shipment {
 	private String id;
 	private String name;
+
+	public Shipment() {
+		this("");
+	}
+
+	public Shipment(String name) {
+		this(UUID.randomUUID().toString(), name);
+	}
+
+	public Shipment(String id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Shipment{" +
+				"id='" + id + '\'' +
+				", name='" + name + '\'' +
+				'}';
+	}
 
 	public String getId() {
 		return id;

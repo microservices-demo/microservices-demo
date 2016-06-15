@@ -13,6 +13,16 @@ public class Card {
     private String expires;
     private String ccv;
 
+    @Override
+    public String toString() {
+        return "Card{" +
+                "id=" + id +
+                ", longNum='" + longNum + '\'' +
+                ", expires='" + expires + '\'' +
+                ", ccv='" + ccv + '\'' +
+                '}';
+    }
+
     public String getLongNum() {
         return longNum;
     }
