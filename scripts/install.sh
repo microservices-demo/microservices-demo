@@ -13,12 +13,12 @@ do_checks() {
   # check for docker-machine
   if [ ! `command -v docker-machine` ]; then
     echo "Docker Machine is not found!"
-    exit 0
+    exit 1
   fi
   # check for docker
   if [ ! `command -v docker` ]; then
     echo "Docker is not found!"
-    exit 0
+    exit 1
   fi
 }
 do_launch() {
@@ -32,6 +32,13 @@ do_launch() {
       echo "Creating docker-machines and installing swarm on AWS"
       $SCRIPT_DIR/installSwarm.sh create 2 amazonec2
   esac
+
+  # Abort launch if swarm create failed
+  if [ $? -ne 0 ]
+  then
+    echo "Error in upstream script"
+    exit 1
+  fi
 
   echo "Installing weave"
   $SCRIPT_DIR/installWeave.sh launch

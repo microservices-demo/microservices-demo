@@ -41,6 +41,19 @@ docker-compose pull
 docker-compose up -d
 ```
 
+### Remote Demo Mode (AWS)
+Make sure the AWS CLI is installed and configured with your credentials, and you have a VPC in which to deploy the instances.
+```
+export AWS_VPC_ID=your-vpc-id
+export AWS_REGION=your-region
+#export AWS_INSTANCE_ZONE=region-zone (defaults to a)
+#export AWS_INSTANCE_TYPE=instance-type (defaults to t2.medium)
+./scripts/install.sh launch-aws
+eval $(docker-machine env --swarm swarm-master)
+docker-compose pull
+docker-compose up -d
+```
+
 ### Remote Demo Mode
 Setup the remote machines with docker, swarm, weave net and scope. Then:
 ```
