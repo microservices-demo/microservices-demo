@@ -1,12 +1,9 @@
 package works.weave.socks;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ShippingController {
@@ -23,11 +20,14 @@ public class ShippingController {
     public String getShippingById(@PathVariable String id) {
         return "GET Shipping Resource with id: " + id;
     }
-    
+
+    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value="/shipping", method=RequestMethod.POST)
-    public String postShipping(@RequestBody Shipment shipment) {
-    	System.out.println("Adding shipment to queue...");
+    public
+    @ResponseBody
+    Shipment postShipping(@RequestBody Shipment shipment) {
+        System.out.println("Adding shipment to queue...");
         rabbitTemplate.convertAndSend("shipping-task", shipment);
-        return "POST Shipping Resource. Name: " + shipment.getName() + " Id: "+ shipment.getId();
+        return shipment;
     }
 }

@@ -3,10 +3,16 @@ package works.weave.socks.orders.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import works.weave.socks.Shipment;
+import works.weave.socks.accounts.entities.Address;
+import works.weave.socks.accounts.entities.Card;
+import works.weave.socks.accounts.entities.Customer;
+import works.weave.socks.cart.entities.Item;
 
-import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 // curl -XPOST -H 'Content-type: application/json' http://localhost:8082/orders -d '{"customer": "http://localhost:8080/customer/1", "address": "http://localhost:8080/address/1", "card": "http://localhost:8080/card/1", "items": "http://localhost:8081/carts/1/items"}'
 
@@ -17,73 +23,93 @@ import java.util.Date;
 public class CustomerOrder {
 
     @Id
-    private BigInteger id;
+    private String id;
 
-    private BigInteger customerId;
+    private String customerId;
 
-    // TODO: These used to be references to the other types. But in mongo, they stopped working.
-    private String customer;
+    private Customer customer;
 
-    private String address;
+    private Address address;
 
-    private String card;
+    private Card card;
 
-    private String items;
+    private Collection<Item> items;
 
-    private float total;
+    private Shipment shipment;
 
     private Date date = Calendar.getInstance().getTime();
 
-    public BigInteger getId() {
+    public CustomerOrder() {
+    }
+
+    public CustomerOrder(String id, String customerId, Customer customer, Address address, Card card, Collection<Item> items, Shipment shipment, Date date) {
+        this.id = id;
+        this.customerId = customerId;
+        this.customer = customer;
+        this.address = address;
+        this.card = card;
+        this.items = items;
+        this.shipment = shipment;
+        this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "CustomerOrder{" +
+                "id='" + id + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", customer=" + customer +
+                ", address=" + address +
+                ", card=" + card +
+                ", items=" + items +
+                ", date=" + date +
+                '}';
+    }
+
+// Crappy getter setters for Jackson
+
+    public String getId() {
         return id;
     }
 
-    public String getCustomer() {
-        return customer;
+    public String getCustomerId() {
+        return this.customerId;
     }
 
-    public void setCustomer(String customer) {
-        this.customer = customer;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCard() {
-        return card;
-    }
-
-    public void setCard(String card) {
-        this.card = card;
-    }
-
-    public String getItems() {
-        return items;
-    }
-
-    public void setItems(String items) {
-        this.items = items;
-    }
-
-    public BigInteger getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(BigInteger customerId) {
+    public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
 
-    public float getTotal() {
-        return total;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setTotal(float total) {
-        this.total = total;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Card getCard() {
+        return card;
+    }
+
+    public void setCard(Card card) {
+        this.card = card;
+    }
+
+    public Collection<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
     public Date getDate() {
@@ -92,5 +118,13 @@ public class CustomerOrder {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Shipment getShipment() {
+        return shipment;
+    }
+
+    public void setShipment(Shipment shipment) {
+        this.shipment = shipment;
     }
 }

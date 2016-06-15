@@ -6,12 +6,11 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import works.weave.socks.orders.entities.CustomerOrder;
 
-import java.math.BigInteger;
 import java.util.List;
 
 @RepositoryRestResource(path = "orders", itemResourceRel = "order")
-public interface CustomerOrderRepository extends MongoRepository<CustomerOrder, BigInteger> {
+public interface CustomerOrderRepository extends MongoRepository<CustomerOrder, String> {
     @RestResource(path = "customerId")
-    List<CustomerOrder> findByCustomerId(@Param("custId") BigInteger id);
+    List<CustomerOrder> findByCustomerId(@Param("custId") String id);
 }
 
