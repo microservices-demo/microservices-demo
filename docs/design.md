@@ -73,7 +73,7 @@ Internal APIs
         - curl -XPATCH -H 'Content-type: application/json' http://localhost:8080/items/5 -d '{"quantity": 100}'
 - Orders
     - Create new order
-        - curl -XPOST -H 'Content-type: application/json' http://orders/orders -d '{"customer": "http://accounts/customers/27017261685533885656544909042", "address": "http://accounts/addresses/27017261685533885656544909040", "card": "http://accounts/cards/27017261685533885656544909041", "items": "http://cart/carts/27017282808012190207258014226/items", "customerId": 27017261685533885656544909042}'
+        - curl -XPOST -H 'Content-type: application/json' http://localhost:8082/orders -d '{"customer": "http://accounts/customers/27039422996077701202249362496", "address": "http://accounts/addresses/27039422996077701202249362494", "card": "http://accounts/cards/27039422996077701202249362495", "items": "http://cart/carts/27038028496012705058490716260/items"}'
     - GET/PATCH/DELETE /orders/{id}
     - Find orders by customer ID:
         - curl http://orders/orders/search/customerId?custId=1
