@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 public class Customer {
 
     @Id
-    private BigInteger id;
+    private String id;
 
     private String firstName;
     private String lastName;
@@ -28,6 +27,19 @@ public class Customer {
     public Customer() {
     }
 
+    public Customer(String id, String firstName, String lastName, String username, List<Address> addresses, List<Card> cards) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.addresses = addresses;
+        this.cards = cards;
+    }
+
+    public Customer(String firstName, String lastName, String username, List<Address> addresses, List<Card> cards) {
+        this(null, firstName, lastName, username, addresses, cards);
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
@@ -40,7 +52,7 @@ public class Customer {
                 '}';
     }
 
-    public BigInteger getId() {
+    public String getId() {
         return id;
     }
 

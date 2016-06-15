@@ -1,87 +1,17 @@
 [
   {
     "id": "",
-    "name": "user",
-    "password": "password"
-  },
-  {
-    "id": "",
     "name": "Eve_Berger",
     "password": "duis"
   },
   {
     "id": "",
-    "name": "Elaine_Erickson",
-    "password": "officia"
+    "name": "user",
+    "password": "password"
   },
   {
     "id": "",
-    "name": "Farmer_Lloyd",
-    "password": "aliqua"
-  },
-  {
-    "id": "",
-    "name": "Richard_Alvarado",
-    "password": "laboris"
-  },
-  {
-    "id": "",
-    "name": "Kathryn_Sawyer",
-    "password": "ipsum"
-  },
-  {
-    "id": "",
-    "name": "Avis_Pitts",
-    "password": "officia"
-  },
-  {
-    "id": "",
-    "name": "Knapp_Ortiz",
-    "password": "ad"
-  },
-  {
-    "id": "",
-    "name": "Patterson_Frazier",
-    "password": "mollit"
-  },
-  {
-    "id": "",
-    "name": "Bianca_Holden",
-    "password": "consequat"
-  },
-  {
-    "id": "",
-    "name": "Julia_Craig",
-    "password": "aute"
-  },
-  {
-    "id": "",
-    "name": "Ford_Hale",
-    "password": "non"
-  },
-  {
-    "id": "",
-    "name": "Leticia_Griffith",
-    "password": "deserunt"
-  },
-  {
-    "id": "",
-    "name": "Hobbs_Jenkins",
-    "password": "cupidatat"
-  },
-  {
-    "id": "",
-    "name": "James_Oneil",
-    "password": "anim"
-  },
-  {
-    "id": "",
-    "name": "Ella_Robertson",
-    "password": "in"
-  },
-  {
-    "id": "",
-    "name": "Ramona_Raymond",
-    "password": "pariatur"
+    "name": "user1",
+    "password": "password1"
   }
 ]

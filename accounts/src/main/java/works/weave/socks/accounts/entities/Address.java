@@ -3,18 +3,32 @@ package works.weave.socks.accounts.entities;
 
 import org.springframework.data.annotation.Id;
 
-import java.math.BigInteger;
-
 public class Address {
 
     @Id
-    private BigInteger id;
+    private String id;
 
     private String number;
     private String street;
     private String city;
-    private String country;
     private String postcode;
+    private String country;
+
+    public Address() {
+    }
+
+    public Address(String id, String number, String street, String city, String postcode, String country) {
+        this.id = id;
+        this.number = number;
+        this.street = street;
+        this.city = city;
+        this.postcode = postcode;
+        this.country = country;
+    }
+
+    public Address(String number, String street, String city, String postcode, String country) {
+        this(null, number, street, city, postcode, country);
+    }
 
     @Override
     public String toString() {

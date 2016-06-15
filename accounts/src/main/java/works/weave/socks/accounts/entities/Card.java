@@ -2,16 +2,28 @@ package works.weave.socks.accounts.entities;
 
 import org.springframework.data.annotation.Id;
 
-import java.math.BigInteger;
-
 public class Card {
 
     @Id
-    private BigInteger id;
+    private String id;
 
     private String longNum;
     private String expires;
     private String ccv;
+
+    public Card() {
+    }
+
+    public Card(String id, String longNum, String expires, String ccv) {
+        this.id = id;
+        this.longNum = longNum;
+        this.expires = expires;
+        this.ccv = ccv;
+    }
+
+    public Card(String longNum, String expires, String ccv) {
+        this(null, longNum, expires, ccv);
+    }
 
     @Override
     public String toString() {
