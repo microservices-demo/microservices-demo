@@ -14,7 +14,7 @@ var rabbitHost string = "rabbitmq:5672/"
 
 func main() {
 
-	fmt.Printf("Starting worker container\n")
+	log.Printf("Starting worker container\n")
 
 	flag.BoolVar(&dev, "dev", false, "Run in development mode")
 
@@ -22,12 +22,16 @@ func main() {
 		rabbitHost = "192.168.99.102:15672/"
 	}
 	// Connect to rabbitmq
-	fmt.Printf("Connecting to rabbitmq at %s\n", rabbitHost)
+	log.Printf("Connecting to rabbitmq at %s\n", rabbitHost)
 
-	conn, _ := amqp.Dial("amqp://guest:" + rabbitHost)
+	conn, err := amqp.Dial("amqp://guest:" + rabbitHost)
+	if err != nil {
+		log.Fatalf("Unable to connect to rabbitmq: %s", err)
+		panic(fmt.Sprintf("Unable to connect to rabbitmq: %s", err))
+	}
 	defer conn.Close()
 
 	// Sleep and die
-	time.Sleep(30 * * time.Second)
-	fmt.Printf("Container run finished.")
+	time.Sleep(30 * time.Second)
+	log.Printf("Container run finished.\n")
 }
