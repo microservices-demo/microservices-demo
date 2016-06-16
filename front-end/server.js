@@ -407,7 +407,9 @@ app.post("/orders", function(req, res, next) {
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
-                            order.address = jsonBody._embedded.address[0]._links.self.href;
+                            if (jsonBody._embedded.address[0] != null) {
+                                order.address = jsonBody._embedded.address[0]._links.self.href;
+                            }
                             callback();
                         });
                     },
@@ -419,7 +421,9 @@ app.post("/orders", function(req, res, next) {
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
-                            order.card = jsonBody._embedded.card[0]._links.self.href;
+                            if (jsonBody._embedded.card[0] != null) {
+                                order.card = jsonBody._embedded.card[0]._links.self.href;
+                            }
                             callback();
                         });
                     }
