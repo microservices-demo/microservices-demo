@@ -1,4 +1,4 @@
-#!/bin/sh +x
+#!/bin/bash +x
 #
 # Handy utility for creating a Swarm environment using Docker Machine
 #
@@ -9,40 +9,56 @@ DRIVER="${3:-virtualbox}"
 do_checks() {
   if [ ! `command -v docker-machine` ]; then
     echo "Docker Machine is not found!"
-    exit 0
+    exit 1
   fi
   # check for docker
   if [ ! `command -v docker` ]; then
     echo "Docker is not found!"
-    exit 0
+    exit 1
   fi
-  return 1
 }
 do_create() {
   do_checks
   KEYSTORE_NAME=`docker-machine ls --format="{{.Name}}" --filter="name=swarm-keystore"`
 
-  if [ "$DRIVER" == "AWS" ]; then
+  if [ "$DRIVER" = "amazonec2" ]; then
+    # shelling out to external bins, make sure we fail the script if one of the commands fails
+    set -e
     echo "Installing Swarm on AWS..."
     if [ ! `command -v aws` ]; then
       echo "AWS command line tools not found."
-      exit 0
+      exit 1
     fi
 
-    #Set up Security Group in AWS
+    if [[ -z $AWS_VPC_ID || -z $AWS_REGION ]]
+    then
+      echo "ERROR: At least one of AWS_VPC_ID or AWS_REGION is missing"
+      echo "Use:" 
+      echo "     export AWS_VPC_ID=your-vpc-id"
+      echo "     export AWS_REGION=your-region"
+      echo ""
+      echo "prior to launching the installation"
+      echo  ""
+      exit 1
+    fi
 
-    group_name="docker-networking"
-    aws ec2 create-security-group --group-name ${group_name} --description "A Security Group for Docker Networking"
-    # Permit SSH, required for Docker Machine
-    aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol tcp --port 22 --cidr 0.0.0.0/0
-    aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol tcp --port 2376 --cidr 0.0.0.0/0
-    # Permit Consul HTTP API
-    aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol tcp --port 8500 --cidr 0.0.0.0/0
-    # Weave 
-    aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol tcp --port 6783 --cidr 0.0.0.0/0
-    aws ec2 authorize-security-group-ingress --group-name ${group_name} --protocol udp --port 6783 --cidr 0.0.0.0/0
+    #Set up Security Group in AWS if not created
+    if [[ -z $(aws ec2 describe-security-groups --filter "Name=group-name,Values=docker-swarm" --output text) ]]
+    then
+      echo "Creating security group \"docker-swarm\"..."
+      group_name=$(aws ec2 create-security-group --group-name docker-swarm --vpc-id $AWS_VPC_ID --description "An Example Security Group for Docker Networking" --output text)
 
-    CREATE_ARGS="--driver amazonec2 --amazonec2-instance-type=t2.medium --amazonec2-vpc-id=vpc-a7d209c0 --amazonec2-zone=d --amazonec2-security-group ${group_name}"
+      # Permit SSH, required for Docker Machine
+      aws ec2 authorize-security-group-ingress --group-id ${group_name} --protocol tcp --port 22 --cidr 0.0.0.0/0
+      aws ec2 authorize-security-group-ingress --group-id ${group_name} --protocol tcp --port 2376 --cidr 0.0.0.0/0
+      # Permit Consul HTTP API
+      aws ec2 authorize-security-group-ingress --group-id ${group_name} --protocol tcp --port 8500 --cidr 0.0.0.0/0
+      # Weave 
+      aws ec2 authorize-security-group-ingress --group-id ${group_name} --protocol tcp --port 6783 --cidr 0.0.0.0/0
+      aws ec2 authorize-security-group-ingress --group-id ${group_name} --protocol udp --port 6783 --cidr 0.0.0.0/0
+    fi
+
+    CREATE_ARGS="--driver amazonec2 --amazonec2-instance-type=${AWS_INSTANCE_TYPE:-t2.medium} --amazonec2-vpc-id=$AWS_VPC_ID --amazonec2-region=$AWS_REGION --amazonec2-zone=${AWS_INSTANCE_ZONE:-a} --amazonec2-security-group docker-swarm"
     ETHERNET="eth0"
   else
     CREATE_ARGS="--driver virtualbox"
@@ -63,7 +79,7 @@ do_create() {
     RET="${RET#Server Version: }"
     if [ -z "$RET" ]; then
       echo "'docker info' returned an error"
-      exit 0
+      exit 1
     fi
   fi
   # Launch an Hashicorp Consul key/value store instance.
@@ -94,7 +110,6 @@ do_create() {
   RET=`docker info | grep -m1 -o 'Server Version: .*' `
   RET="${RET#Server Version: }"
   eval "$(docker-machine env --swarm swarm-master)"
-  exit 1
 }
 do_add() {
   do_checks
@@ -130,7 +145,6 @@ do_add() {
   done
   # Output the current state of the Swarm
   docker-machine ls --filter="swarm=swarm-master"
-  exit 1
 }
 do_destroy() {
   SWARM=`docker-machine ls --filter="swarm=swarm-master" --format="{{.Name}}"`
@@ -141,7 +155,6 @@ do_destroy() {
   done
   echo "Removing swarm-keystore..."
   docker-machine stop swarm-keystore && docker-machine rm -y swarm-keystore
-  exit 0
 }
 do_list() {
   do_checks
@@ -158,7 +171,6 @@ do_list() {
   LIST=`docker run swarm list consul://${KEYSTORE_IP}:8500`
   echo "$LIST"
 
-  exit 1
 }
 do_usage() {
   cat >&2 <<EOF
