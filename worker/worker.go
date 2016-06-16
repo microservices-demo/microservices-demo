@@ -24,14 +24,16 @@ func main() {
 	// Connect to rabbitmq
 	log.Printf("Connecting to rabbitmq at %s\n", rabbitHost)
 
-	conn, err := amqp.Dial("amqp://guest:" + rabbitHost)
+	conn, err := amqp.Dial("amqp://guest:guest@" + rabbitHost)
+
 	if err != nil {
+		panic(err)
 		log.Fatalf("Unable to connect to rabbitmq: %s", err)
 		panic(fmt.Sprintf("Unable to connect to rabbitmq: %s", err))
 	}
 	defer conn.Close()
 
 	// Sleep and die
-	time.Sleep(30 * time.Second)
+	time.Sleep(60 * time.Second)
 	log.Printf("Container run finished.\n")
 }
