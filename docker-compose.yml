@@ -129,25 +129,9 @@ services:
 networks:
   external:
     driver: weave
-    ipam:
-      driver: default
-      config:
-      - subnet: 10.32.1.0/24
   secure:
     driver: weave
-    ipam:
-      driver: default
-      config:
-      - subnet: 10.32.2.0/24
   internal:
     driver: weave
-    ipam:
-      driver: default
-      config:
-      - subnet: 10.32.3.0/24
   backoffice:
     driver: weave
-    ipam:
-      driver: default
-      config:
-      - subnet: 10.32.4.0/24
