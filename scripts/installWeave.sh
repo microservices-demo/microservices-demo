@@ -1,4 +1,4 @@
-#!/bin/sh +x
+#!/bin/bash +x
 #
 # Quickly launch Weave correctly on a Docker Swarm
 #

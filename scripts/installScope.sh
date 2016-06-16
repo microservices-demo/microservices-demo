@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Launch Scope correctly on all Docker Machines in the Swarm
 #
