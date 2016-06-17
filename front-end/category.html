@@ -186,7 +186,7 @@ _________________________________________________________ -->
                 var page = $.query.get('page') ? $.query.get('page') : 1;
                 var tags = $.query.get('tags') ? $.query.get('tags') : "";
 
-                $.getJSON('/catalogue/size', function (data) {
+                $.getJSON('/catalogue/size', {tags: tags}, function (data) {
                     $('#totalProducts').append('Showing <strong>' + size + '</strong> of <strong>' + data.size + '</strong> products');
                     var totalNumPages = Math.ceil(data.size / size);
                     console.log("Total pages: " + totalNumPages);
