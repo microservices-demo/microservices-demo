@@ -141,7 +141,7 @@ func loadCatalogue(file string) {
 }
 
 func filter(socks []sock, tagString string) []sock {
-	if len(tagString) < 1 {
+	if len(tagString) < 1 || tagString == "true" {
 		return socks[:]
 	}
 	var r []sock

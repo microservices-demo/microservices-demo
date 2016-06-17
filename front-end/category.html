@@ -187,6 +187,9 @@ _________________________________________________________ -->
                 var tags = $.query.get('tags') ? $.query.get('tags') : "";
 
                 $.getJSON('/catalogue/size', {tags: tags}, function (data) {
+		    if (data.size <= size) {
+			size = data.size;
+			}
                     $('#totalProducts').append('Showing <strong>' + size + '</strong> of <strong>' + data.size + '</strong> products');
                     var totalNumPages = Math.ceil(data.size / size);
                     console.log("Total pages: " + totalNumPages);
@@ -200,8 +203,11 @@ _________________________________________________________ -->
                     }
                     console.log("Pagination: " + pagination);
                     $('#pagination').append(pagination);
-
-                    var pageSize = [6, 12, data.size];
+		    var pageSize = [];
+                    for (var i = size; i < data.size; i=i+3) {
+                        pageSize.push(i);
+                    }	
+                    pageSize.push(data.size);
                     var pageSizeHtml = "<strong>Show</strong>"
                     pageSize.forEach(function (p) {
                         if (size == p) {
@@ -216,7 +222,7 @@ _________________________________________________________ -->
                 $.getJSON('/tags', function (data) {
                     $.each(data, function (index, element) {
                         console.log("Current tags: " + tags);
-                        if (tags != null && tags != "" && tags.indexOf(element) > -1) {
+                        if (tags != null && tags != "" && tags != true && tags.indexOf(element) > -1) {
                             $('#filters').append('<div class="checkbox"><label><input type="checkbox" checked="true" value="' + element + '">' + element + '</label></div>');
                         } else {
                             $('#filters').append('<div class="checkbox"><label><input type="checkbox" value="' + element + '">' + element + '</label></div>');
