@@ -7,7 +7,7 @@ TAG=latest
 
 if [ -z "$@" ]
   then
-    MODULES="accounts cart catalogue front-end login orders payment queue-master shipping worker"
+    MODULES="accounts cart catalogue front-end login orders payment queue-master shipping worker edge-router"
 else
     MODULES="$@"
 fi
