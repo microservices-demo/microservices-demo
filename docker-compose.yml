@@ -3,8 +3,6 @@ version: '2'
 services:
   front-end:
     image: weaveworksdemos/front-end
-    ports:
-      - "80:8079"
     hostname: front-end
     domainname: weave.local
     restart: always
@@ -14,6 +12,19 @@ services:
       - external
       - secure
       - internal
+  edge-router:
+    image: weaveworksdemos/edge-router
+    ports:
+      - '80:80'
+    hostname: edge-router
+    domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - external
+    environment:
+      - "constraint:node==swarm-master"
   catalogue:
     image: weaveworksdemos/catalogue
     hostname: catalogue
