@@ -17,20 +17,21 @@ var catalogue []sock
 
 var dev bool
 var port string
+var file string
 var tagList []string = []string{"geek", "blue", "brown", "green", "black", "sport", "action", "skin", "smelly", "large", "short", "magic", "toes", "formal"}
 
 func main() {
 
 	flag.BoolVar(&dev, "dev", false, "Run in development mode")
 	flag.StringVar(&port, "port", "8081", "Port on which to run")
+	flag.StringVar(&file, "file", "/config/socks.json", "Socks file")
 	flag.Parse()
 
-	var file string
-	if dev {
+
+	if dev  {
 		file = "./socks.json"
-	} else {
-		file = "/config/socks.json"
 	}
+
 	loadCatalogue(file)
 
 	router := mux.NewRouter().StrictSlash(false)
