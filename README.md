@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ContainerSolutions/weaveDemo.svg?branch=master)](https://travis-ci.org/ContainerSolutions/weaveDemo)
+[![Build Status](https://travis-ci.org/weaveworks/weaveDemo.svg?branch=master)](https://travis-ci.org/weaveworks/weaveDemo)
 
 # weaveDemo
 Demo microservices application for Weave.
