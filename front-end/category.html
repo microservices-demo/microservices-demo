@@ -181,7 +181,7 @@ _________________________________________________________ -->
                 $.ajaxSetup({
                     contentType: "application/json; charset=utf-8"
                 });
-
+		var baseSize = 3;
                 var size = $.query.get('size') ? $.query.get('size') : 6;
                 var page = $.query.get('page') ? $.query.get('page') : 1;
                 var tags = $.query.get('tags') ? $.query.get('tags') : "";
@@ -204,7 +204,7 @@ _________________________________________________________ -->
                     console.log("Pagination: " + pagination);
                     $('#pagination').append(pagination);
 		    var pageSize = [];
-                    for (var i = size; i < data.size; i=i+3) {
+                    for (var i = baseSize; i < data.size; i=i+3) {
                         pageSize.push(i);
                     }	
                     pageSize.push(data.size);
