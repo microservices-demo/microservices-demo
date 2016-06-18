@@ -138,19 +138,19 @@
                             <tbody>
                             <tr>
                                 <td>Order subtotal</td>
-                                <th id="orderSubtotal">£0.00</th>
+                                <th id="orderSubtotal">$0.00</th>
                             </tr>
                             <tr>
                                 <td>Shipping and handling</td>
-                                <th id="orderShipping">£0.00</th>
+                                <th id="orderShipping">$0.00</th>
                             </tr>
                             <tr>
                                 <td>Tax</td>
-                                <th id="orderTax">£0.00</th>
+                                <th id="orderTax">$0.00</th>
                             </tr>
                             <tr class="total">
                                 <td>Total</td>
-                                <th id="orderGrandTotal">£0.00</th>
+                                <th id="orderGrandTotal">$0.00</th>
                             </tr>
                             </tbody>
                         </table>
@@ -262,9 +262,9 @@ _________________________________________________________ -->
                                                 <td>\
                                                     <input type="number" min="0" value="' + element.quantity + '" class="form-control">\
                                                 </td>\
-                                                <td>£' + data.price.toFixed(2) + '</td>\
-                                                <td>£0.00</td>\
-                                                <td>£' + (element.quantity * data.price).toFixed(2) + '</td>\
+                                                <td>$' + data.price.toFixed(2) + '</td>\
+                                                <td>$0.00</td>\
+                                                <td>$' + (element.quantity * data.price).toFixed(2) + '</td>\
                                                 <td>\
                                                     <a href="#" onclick="deleteFromCart(\'' + data.id + '\')"><i class="fa fa-trash-o"></i></a>\
                                                 </td>\
@@ -273,13 +273,13 @@ _________________________________________________________ -->
                             console.log("Cur total: " + cartTotal);
                             numItemsInCart = numItemsInCart + element.quantity;
                         }).always(function () {
-                            console.log("Final counts: £" + cartTotal + ", with " + numItemsInCart + " items.");
+                            console.log("Final counts: $" + cartTotal + ", with " + numItemsInCart + " items.");
                             $('#orderButton').prop('disabled', false);
                             $('#numItemsInCart').text('You currently have ' + numItemsInCart + ' item(s) in your cart.');
-                            $('#cartTotal').text('£' + cartTotal.toFixed(2));
-                            $('#orderSubtotal').text('£' + cartTotal.toFixed(2));
-                            $('#orderShipping').text('£' + shipping.toFixed(2));
-                            $('#orderGrandTotal').text('£' + (cartTotal + shipping).toFixed(2));
+                            $('#cartTotal').text('$' + cartTotal.toFixed(2));
+                            $('#orderSubtotal').text('$' + cartTotal.toFixed(2));
+                            $('#orderShipping').text('$' + shipping.toFixed(2));
+                            $('#orderGrandTotal').text('$' + (cartTotal + shipping).toFixed(2));
                         });
                     }
                 });
@@ -312,7 +312,7 @@ _________________________________________________________ -->
                                     </a>\
                                     <div class="text">\
                                         <h3><a href="detail.html?id=' + element.id + '">' + element.name + '</a></h3>\
-                                        <p class="price">£' + element.price + '</p>\
+                                        <p class="price">$' + element.price + '</p>\
                                     </div>\
                                 </div>\
                             </div>'
