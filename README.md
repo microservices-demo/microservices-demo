@@ -10,7 +10,7 @@ There are two options to run this demo. 1) Run on a single VM or host, 2) Run in
 ## Prerequisites
 Docker Toolbox, which includes docker-machine and docker-compose. I will assume that you have cloned this repo with:
 ```
-git clone https://github.com/ContainerSolutions/weaveDemo.git
+git clone https://github.com/weaveworks/weaveDemo.git
 cd weaveDemo
 ```
 
