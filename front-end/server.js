@@ -127,7 +127,7 @@ app.post("/customers", function(req, res, next) {
         json: true,
         body: req.body
     };
-    console.log("Posting Customer: " + req.body);
+    console.log("Posting Customer: " + JSON.stringify(req.body));
     request(options, function (error, response, body) {
         if (error) {
             return next(error);
@@ -144,7 +144,7 @@ app.post("/addresses", function(req, res, next) {
         json: true,
         body: req.body
     };
-    console.log("Posting Address: " + req.body);
+    console.log("Posting Address: " + JSON.stringify(req.body));
     request(options, function (error, response, body) {
         if (error) {
             return next(error);
@@ -161,7 +161,7 @@ app.post("/cards", function(req, res, next) {
         json: true,
         body: req.body
     };
-    console.log("Posting Card: " + req.body);
+    console.log("Posting Card: " + JSON.stringify(req.body));
     request(options, function (error, response, body) {
         if (error) {
             return next(error);

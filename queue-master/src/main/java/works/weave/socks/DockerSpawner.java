@@ -10,6 +10,7 @@ import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
+import com.github.dockerjava.api.exception.DockerException;
 import org.springframework.stereotype.Component;
 
 import java.lang.Exception;
@@ -24,9 +25,7 @@ public class DockerSpawner {
 	private DockerClient dc;
 	private ExecutorService dockerPool;
 
-	// private String imageName = "alpine";
 	private String imageName = "weaveworksdemos/worker";
-	// private String imageVersion = "3.1";
 	private String imageVersion = "latest";
 	private String networkId = "weavedemo_backoffice";
 	private int poolSize = 50;
@@ -34,12 +33,6 @@ public class DockerSpawner {
 	public void init() {
 		if (dc == null) {
 			DockerClientConfig.DockerClientConfigBuilder builder = DockerClientConfig.createDefaultConfigBuilder();
-
-			// TODO from previous version of dockerjava
-            // String dockerHostEnv = System.getenv("DOCKER_HOST");
-            // if (dockerHostEnv == null || dockerHostEnv.trim() == "") {
-                // builder.withUri("unix:///var/run/docker.sock");
-            // }
 
             DockerClientConfig config = builder.build();
             dc = DockerClientBuilder.getInstance(config).build();
@@ -54,19 +47,24 @@ public class DockerSpawner {
 	public void spawn() {
 		dockerPool.execute(new Runnable() {
 		    public void run() {
-				logger.debug("Spawning new container");
+				logger.info("Spawning new container");
 				try {
 					CreateContainerResponse container = dc.createContainerCmd(imageName + ":" + imageVersion).withNetworkMode(networkId).withCmd("ping", "rabbitmq").exec();
-					// CreateContainerResponse container = dc.createContainerCmd(imageName + ":" + imageVersion).withNetworkMode(networkId).withCmd("sleep", "30").exec();
 					String containerId = container.getId();
 					dc.startContainerCmd(containerId).exec();
-					logger.debug("Spawned container with id: " + container.getId() + " on network: " + networkId);
+					logger.info("Spawned container with id: " + container.getId() + " on network: " + networkId);
 					// TODO instead of just sleeping, call await on the container and remove once it's completed.
-					Thread.sleep(45000);
-					dc.removeContainerCmd(container.getId()).exec();
-					logger.debug("Removed Container:" + container.getId());
+					Thread.sleep(40000);
+					try {
+						dc.stopContainerCmd(containerId).exec();
+					}
+					catch (DockerException e) {
+						logger.info("Container already stopped. (This is expected).");
+					}
+					dc.removeContainerCmd(containerId).exec();
+					logger.info("Removed Container:" + containerId);
 				} catch (Exception e) {
-					logger.error("Exception trying to launch new container. " + e);
+					logger.error("Exception trying to launch/remove worker container. " + e);
 				}
 		    }
 		});

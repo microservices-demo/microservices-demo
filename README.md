@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ContainerSolutions/weaveDemo.svg?branch=master)](https://travis-ci.org/ContainerSolutions/weaveDemo)
+[![Build Status](https://travis-ci.org/weaveworks/weaveDemo.svg?branch=master)](https://travis-ci.org/weaveworks/weaveDemo)
 
 # weaveDemo
 Demo microservices application for Weave.
@@ -44,8 +44,11 @@ docker-compose up -d
 ### Remote Demo Mode (AWS)
 Make sure the AWS CLI is installed and configured with your credentials, and you have a VPC in which to deploy the instances.
 ```
-export AWS_VPC_ID=your-vpc-id
-export AWS_REGION=your-region
+export AWS_VPC_ID=vpc-aaaaaa"
+export AWS_DEFAULT_REGION=us-west-2"
+export AWS_INSTANCE_TYPE=m4.xlarge"
+export AWS_INSTANCE_ZONE=a"
+
 #export AWS_INSTANCE_ZONE=region-zone (defaults to a)
 #export AWS_INSTANCE_TYPE=instance-type (defaults to t2.medium)
 ./scripts/install.sh launch-aws

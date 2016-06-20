@@ -122,7 +122,7 @@ class ErrorTasks(TaskSet):
 	@task
 	def checkout_fail(self):
 		self.addItemToCart()
-		with self.client.post("/orders", json={}) as response:
+		with self.client.post("/orders", json={}, catch_response=True) as response:
 			if response.status_code == 500:
 				response.success()
 
