@@ -11,10 +11,9 @@ after_success:
   - export GROUP=weaveworksdemos
   - cd $TRAVIS_BUILD_DIR
   - echo "Building java services"
-  - echo "Before build, exit code is: $?"
-  - mvn -DskipTests package
-  - MVN_EXIT=$(echo $?)
-  - if [[ "$MVN_EXIT" > 0 ]] ; then
+  - mvn -DskipTests package;
+    MVN_EXIT=$(echo $?);
+    if [[ "$MVN_EXIT" > 0 ]] ; then
       echo "Compilation failed with exit code $MVN_EXIT";
       exit 1;
     fi;
