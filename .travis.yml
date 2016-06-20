@@ -14,9 +14,8 @@ after_success:
   - MVN_EXIT=$(echo $?)
   - if [[ "$MVN_EXIT" > 0 ]] ; then
       echo "Compilation failed with exit code $MVN_EXIT";
-      exit 1
+      exit 1;
     fi;
-
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
   - for module in ${MODULES}; do
       export REPO=${GROUP}/${module};
