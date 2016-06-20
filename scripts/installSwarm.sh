@@ -30,12 +30,14 @@ do_create() {
       exit 1
     fi
 
-    if [[ -z $AWS_VPC_ID || -z $AWS_REGION ]]
+    if [[ -z $AWS_VPC_ID || -z $AWS_DEFAULT_REGION ]]
     then
-      echo "ERROR: At least one of AWS_VPC_ID or AWS_REGION is missing"
+      echo "ERROR: At least one of AWS_VPC_ID or AWS_DEFAULT_REGION is missing"
       echo "Use:" 
-      echo "     export AWS_VPC_ID=your-vpc-id"
-      echo "     export AWS_REGION=your-region"
+      echo "     export AWS_VPC_ID=vpc-4855c52d"
+      echo "     export AWS_DEFAULT_REGION=us-west-2"
+      echo "     export AWS_INSTANCE_TYPE=m4.xlarge"
+      echo "     export AWS_INSTANCE_ZONE=a"
       echo ""
       echo "prior to launching the installation"
       echo  ""
@@ -58,7 +60,7 @@ do_create() {
       aws ec2 authorize-security-group-ingress --group-id ${group_name} --protocol udp --port 6783 --cidr 0.0.0.0/0
     fi
 
-    CREATE_ARGS="--driver amazonec2 --amazonec2-instance-type=${AWS_INSTANCE_TYPE:-t2.medium} --amazonec2-vpc-id=$AWS_VPC_ID --amazonec2-region=$AWS_REGION --amazonec2-zone=${AWS_INSTANCE_ZONE:-a} --amazonec2-security-group docker-swarm"
+    CREATE_ARGS="--driver amazonec2 --amazonec2-instance-type=${AWS_INSTANCE_TYPE:-t2.medium} --amazonec2-vpc-id=$AWS_VPC_ID --amazonec2-region=$AWS_DEFAULT_REGION --amazonec2-zone=${AWS_INSTANCE_ZONE:-a} --amazonec2-security-group docker-swarm"
     ETHERNET="eth0"
   else
     CREATE_ARGS="--driver virtualbox"
