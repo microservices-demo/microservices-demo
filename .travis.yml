@@ -16,6 +16,10 @@ after_success:
       echo "Compilation failed with exit code $MVN_EXIT";
       exit 1;
     fi;
+  - if [ -z "$DOCKER_PASS" ] ; then
+      echo "This is a build triggered by an external PR. Skipping docker push.";
+      exit 0;
+    fi;
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
   - for module in ${MODULES}; do
       export REPO=${GROUP}/${module};
