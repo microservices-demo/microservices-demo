@@ -126,8 +126,10 @@ func tagHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func sizeHandler(w http.ResponseWriter, r *http.Request) {
+	tagField := r.FormValue("tags")
+	cat := filter(catalogue, tagField)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("{\"size\":" + strconv.Itoa(len(catalogue)) + "}"))
+	w.Write([]byte("{\"size\":" + strconv.Itoa(len(cat)) + "}"))
 }
 func loadCatalogue(file string) {
 	f, err := ioutil.ReadFile(file)
@@ -140,7 +142,7 @@ func loadCatalogue(file string) {
 }
 
 func filter(socks []sock, tagString string) []sock {
-	if len(tagString) < 1 {
+	if len(tagString) < 1 || tagString == "true" {
 		return socks[:]
 	}
 	var r []sock
