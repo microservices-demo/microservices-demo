@@ -203,7 +203,7 @@ _________________________________________________________ -->
         $.getJSON('/catalogue/' + id, function (data) {
             $("#title").text(data.name);
             $("#breadcrumb").text(data.name);
-            $("#price").text("£" + data.price.toFixed(2));
+            $("#price").text("$" + data.price.toFixed(2));
             $("#imageMain").attr("src", data.imageUrl[0]);
             $("#buttonCart").attr("onClick", "addToCart(\'" + data.id + "\')");
             var thumbHtml = "";
@@ -242,7 +242,7 @@ _________________________________________________________ -->
                                     </a>\
                                     <div class="text">\
                                         <h3><a href="detail.html?id=' + element.id + '">' + element.name + '</a></h3>\
-                                        <p class="price">£' + element.price + '</p>\
+                                        <p class="price">$' + element.price + '</p>\
                                         <p class="buttons">\
                                             <a href="detail.html?id=' + element.id + '" class="btn btn-default">View detail</a>\
                                             <a href="#" onclick="addToCart(\'' + element.id + '\')" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>\

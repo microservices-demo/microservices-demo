@@ -209,7 +209,7 @@ _________________________________________________________ -->
             var cartTotal = 0;
             var numItemsInCart = 0;
             var shipping = 4.99;
-            //$('#orderTotal').text('£' + data.total.toFixed(2));
+            //$('#orderTotal').text('$' + data.total.toFixed(2));
             $('#orderNumber').text(id);
             $('#orderDate').text(data.date.split(".")[0].replace("T", " "));
             $('#orderStatus').text("shipped");
@@ -226,18 +226,18 @@ _________________________________________________________ -->
                                                     <a href="#">' + data.name + '</a>\
                                                 </td>\
                                                 <td>' + item.quantity + '</td>\
-                                                <td>£' + data.price.toFixed(2) + '</td>\
-                                                <td>£0.00</td>\
-                                                <td>£' + (item.quantity * data.price).toFixed(2) + '</td>\
+                                                <td>$' + data.price.toFixed(2) + '</td>\
+                                                <td>$0.00</td>\
+                                                <td>$' + (item.quantity * data.price).toFixed(2) + '</td>\
                                             </tr>');
                     cartTotal = cartTotal + item.quantity * data.price;
                     console.log("Cur total: " + cartTotal);
                     numItemsInCart = numItemsInCart + item.quantity;
                 }).always(function () {
-                    console.log("Final counts: £" + cartTotal + ", with " + numItemsInCart + " items.");
-                    $('#orderSubtotal').text('£' + cartTotal.toFixed(2));
-                    $('#orderShipping').text('£' + shipping.toFixed(2));
-                    $('#orderTotal').text('£' + (cartTotal + shipping).toFixed(2));
+                    console.log("Final counts: $" + cartTotal + ", with " + numItemsInCart + " items.");
+                    $('#orderSubtotal').text('$' + cartTotal.toFixed(2));
+                    $('#orderShipping').text('$' + shipping.toFixed(2));
+                    $('#orderTotal').text('$' + (cartTotal + shipping).toFixed(2));
                 });
             })
             $('#addressInvoice').replaceWith('\
