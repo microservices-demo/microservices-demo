@@ -33,7 +33,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	// Sleep and die
-	time.Sleep(60 * time.Second)
+	// Sleep and die... a true nihilist container
+	time.Sleep(30 * time.Second)
 	log.Printf("Container run finished.\n")
 }
