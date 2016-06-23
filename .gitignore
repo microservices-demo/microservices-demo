@@ -110,3 +110,6 @@ weave-ecs-demo-key.pem
 
 # Load test generates pyc files
 *.pyc
+
+# Ignore Vagrant cache files
+*.vagrant/
