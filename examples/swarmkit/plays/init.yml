@@ -6,3 +6,4 @@
     - docker_rc: yes
   roles:
     - roles/docker
+    - roles/weave
