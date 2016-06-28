@@ -24,15 +24,39 @@ app.use(function(err, req, res, next) {
     });
 });
 
-var catalogueUrl = "http://catalogue";
-var cartsUrl = "http://cart/carts";
-var ordersUrl = "http://orders";
-var itemsUrl = "http://cart/items";
-var customersUrl = "http://accounts/customers";
-var addressUrl = "http://accounts/addresses";
-var cardsUrl = "http://accounts/cards";
-var loginUrl = "http://login/login";
-var registerUrl = "http://login/register";
+var domain = "";
+process.argv.forEach(function (val, index, array) {
+    var arg = val.split("=");
+    if (arg.length > 1) {
+        if (arg[0] == "--domain") {
+            domain = arg[1];
+            console.log("Setting domain to:", domain);
+        }
+    }
+});
+
+var catalogueHostname = "catalogue";
+var cartsHostname = "cart";
+var ordersHostname = "orders";
+var accountsHostname = "accounts";
+var loginHostname = "login";
+
+function addDomain(hostname) {
+    return hostname + "." + domain;
+}
+
+function wrapHttp(host) {
+    return "http://" + host;
+}
+
+var catalogueUrl = wrapHttp(addDomain(catalogueHostname));
+var cartsUrl = wrapHttp(addDomain(cartsHostname)) + "/carts";
+var ordersUrl = wrapHttp(addDomain(ordersHostname));
+var customersUrl = wrapHttp(addDomain(accountsHostname)) + "/customers";
+var addressUrl = wrapHttp(addDomain(accountsHostname)) + "/addresses";
+var cardsUrl = wrapHttp(addDomain(accountsHostname)) + "/cards";
+var loginUrl = wrapHttp(addDomain(loginHostname)) + "/login";
+var registerUrl = wrapHttp(addDomain(loginHostname)) + "/register";
 var tagsUrl = catalogueUrl + "/tags";
 
 /**
