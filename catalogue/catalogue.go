@@ -1,3 +1,6 @@
+package catalogue
+
+/*
 package main
 
 import (
@@ -219,3 +222,4 @@ type tagSorter []sock
 func (a tagSorter) Len() int           { return len(a) }
 func (a tagSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a tagSorter) Less(i, j int) bool { return len(a[i].Tags) < len(a[j].Tags) }
+*/
