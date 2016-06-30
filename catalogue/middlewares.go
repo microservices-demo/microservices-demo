@@ -1,6 +1,7 @@
 package catalogue
 
 import (
+	"strings"
 	"time"
 
 	"github.com/go-kit/kit/log"
@@ -28,7 +29,7 @@ func (mw loggingMiddleware) List(tags []string, order string, pageNum, pageSize 
 	defer func(begin time.Time) {
 		mw.logger.Log(
 			"method", "List",
-			"tags", tags,
+			"tags", strings.Join(tags, ", "),
 			"order", order,
 			"pageNum", pageNum,
 			"pageSize", pageSize,
@@ -43,7 +44,7 @@ func (mw loggingMiddleware) Count(tags []string) (n int) {
 	defer func(begin time.Time) {
 		mw.logger.Log(
 			"method", "Count",
-			"tags", tags,
+			"tags", strings.Join(tags, ", "),
 			"result", n,
 			"took", time.Since(begin),
 		)

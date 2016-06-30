@@ -9,11 +9,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gorilla/mux"
-	"golang.org/x/net/context"
-
 	"github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
+	"github.com/gorilla/mux"
+	"golang.org/x/net/context"
 )
 
 // MakeHTTPHandler mounts the endpoints into a REST-y HTTP handler.
@@ -47,7 +46,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 		ctx,
 		e.GetEndpoint,
 		decodeGetRequest,
-		encodeResponse,
+		encodeGetResponse, // special case, this one can have an error
 		options...,
 	))
 	r.Methods("GET").Path("/tags").Handler(httptransport.NewServer(
@@ -80,17 +79,25 @@ func encodeError(_ context.Context, err error, w http.ResponseWriter) {
 }
 
 func decodeListRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	pageNum, err := strconv.Atoi(r.FormValue("page"))
-	if err != nil {
-		return struct{}{}, err
+	pageNum := 1
+	if page := r.FormValue("page"); page != "" {
+		pageNum, _ = strconv.Atoi(page)
 	}
-	pageSize, err := strconv.Atoi(r.FormValue("size"))
-	if err != nil {
-		return struct{}{}, err
+	pageSize := 10
+	if size := r.FormValue("size"); size != "" {
+		pageSize, _ = strconv.Atoi(size)
+	}
+	order := "id"
+	if sort := r.FormValue("sort"); sort != "" {
+		order = strings.ToLower(sort)
+	}
+	tags := []string{}
+	if tagsval := r.FormValue("tags"); tagsval != "" {
+		tags = strings.Split(tagsval, ",")
 	}
 	return listRequest{
-		Tags:     strings.Split(r.FormValue("tags"), ","),
-		Order:    strings.ToLower(r.FormValue("sort")),
+		Tags:     tags,
+		Order:    order,
 		PageNum:  pageNum,
 		PageSize: pageSize,
 	}, nil
@@ -108,11 +115,21 @@ func decodeGetRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	}, nil
 }
 
+func encodeGetResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+	resp := response.(getResponse)
+	if resp.Err != nil {
+		encodeError(ctx, resp.Err, w)
+		return nil
+	}
+	return encodeResponse(ctx, w, resp.Sock)
+}
+
 func decodeTagsRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	return struct{}{}, nil
 }
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	// All of our response objects are JSON serializable, so we just do that.
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	return json.NewEncoder(w).Encode(response)
 }

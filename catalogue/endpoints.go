@@ -79,7 +79,7 @@ type countRequest struct {
 }
 
 type countResponse struct {
-	N int
+	N int `json:"size"` // to match original
 }
 
 type getRequest struct {
