@@ -1,0 +1,113 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: front-end
+  # these labels can be applied automatically
+  # from the labels in the pod template if not set
+  # labels:
+  #   app: guestbook
+  #   tier: frontend
+spec:
+  # this replicas value is default
+  # modify it according to your case
+  replicas: 2
+  # selector can be applied automatically
+  # from the labels in the pod template if not set
+  # selector:
+  #   matchLabels:
+  #     app: guestbook
+  #     tier: frontend
+  template:
+    metadata:
+      labels:
+        name: front-end
+    spec:
+      containers:
+      - name: front-end
+        image: weaveworksdemos/front-end
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 8079
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-end
+  labels:
+    name: front-end
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  type: NodePort
+  ports:
+    # the port that this service should serve on
+  - port: 8079
+  selector:
+    name: front-end
+
+
+
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: frontend
+#   labels:
+#     app: weaveDemo
+#     tier: frontend
+# spec:
+#   # if your cluster supports it, uncomment the following to automatically create
+#   # an external load-balanced IP for the frontend service.
+#   # type: LoadBalancer
+#   ports:
+#     # the port that this service should serve on
+#   - port: 80
+#   selector:
+#     app: weaveDemo
+#     tier: frontend
+# ---
+# apiVersion: extensions/v1beta1
+# kind: Deployment
+# metadata:
+#   name: frontend
+#   # these labels can be applied automatically
+#   # from the labels in the pod template if not set
+#   # labels:
+#   #   app: weaveDemo
+#   #   tier: frontend
+# spec:
+#   # this replicas value is default
+#   # modify it according to your case
+#   replicas: 2
+#   # selector can be applied automatically
+#   # from the labels in the pod template if not set
+#   # selector:
+#   #   matchLabels:
+#   #     app: weaveDemo
+#   #     tier: frontend
+#   template:
+#     metadata:
+#       labels:
+#         app: weaveDemo
+#         tier: frontend
+#     spec:
+#       containers:
+#       - name: front-end
+#         image: weaveworksdemos/front-end
+#         resources:
+#           requests:
+#             cpu: 100m
+#             memory: 100Mi
+#         env:
+#         - name: GET_HOSTS_FROM
+#           # value: dns
+#           # If your cluster config does not include a dns service, then to
+#           # instead access environment variables to find service host
+#           # info, comment out the 'value: dns' line above, and uncomment the
+#           # line below.
+#           value: env
+#         ports:
+#         - containerPort: 80
