@@ -6,8 +6,6 @@ metadata:
     name: catalogue
 spec:
   replicas: 2
-  selector:
-    name: catalogue
   template:
     metadata:
       labels:
