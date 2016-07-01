@@ -5,7 +5,7 @@ metadata:
   labels:
     name: cart
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -40,7 +40,7 @@ metadata:
   labels:
     name: cart-db
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
