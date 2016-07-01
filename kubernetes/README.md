@@ -14,21 +14,27 @@ Add AWS credentials to main.tf file
 Run terraform
 #Installation on Kubernetes
 
+(If you already have running k8s cluster skip to [https://github.com/weaveworks/weaveDemo/tree/kubernetes/kubernetes#deploy-app]here)
 
-##Setup up Kubernetes cluster on AWS using kubernetes-anywhere (with Terraform)
+Setup up Kubernetes cluster on AWS using kubernetes-anywhere (with Terraform)
 
-git clone (this)
-
+```
+git clone https://github.com/weaveworks/weaveDemo
 cd kubernetes/terraform
+```
 
-add AWS credentials to main.tf file
+Add AWS credentials to main.tf file
+
+Run terraform
 
 ```
 terraform get
 terraform plan
 terraform apply
 ```
-##Configure CNI
+
+###Configure CNI
+
 On each node 
 
 ```
@@ -36,7 +42,9 @@ mkdir -p /opt/cni/bin
 mkdir -p /etc/cni/net.d
 weave setup
 ```
-# Setup Sky DNS
+
+###Setup Sky DNS
+
 ```
 kubectl create -f kubernetes/definitions/ksNamespace.yaml
 kubectl create -f kubernetes/definitions/skydns-rc.yaml
@@ -49,6 +57,7 @@ kubectl create -f kubernetes/definitions/skydns-svc.yaml
 If using kubernetes-anywhere, log in to one of the nodes and run the toolbox:
 
 
+If using kubernetes-anywhere, log in to one of the nodes and run the toolbox:
 ```
 $ kubernetes-anywhere-toolbox
 toolbox-v1.2: Pulling from weaveworks/kubernetes-anywhere
@@ -124,10 +133,11 @@ Access port 4040 on Master
 
 ## Uninstall demo
 
-### Remove all deployments (will also remove pods)
+Remove all deployments (will also remove pods)
 ```
 kubectl delete deployments --all
 ```
+Remove all services, except kubernetes
 ```
 kubectl delete service $(kubectl get services | cut -d" " -f1 | grep -v NAME | grep -v kubernetes)
 ```
