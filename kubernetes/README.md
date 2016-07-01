@@ -1,13 +1,17 @@
 #Installation on Kubernetes
 
+(If you already have running k8s cluster skip to [https://github.com/weaveworks/weaveDemo/tree/kubernetes/kubernetes#deploy-app]here)
 
-##Setup up Kubernetes cluster on AWS using kubernetes-anywhere (with Terraform)
+Setup up Kubernetes cluster on AWS using kubernetes-anywhere (with Terraform)
 
-git clone (this)
-
+```
+git clone https://github.com/weaveworks/weaveDemo
 cd kubernetes/terraform
+```
 
-add AWS credentials to main.tf file
+Add AWS credentials to main.tf file
+
+Run terraform
 
 ```
 terraform get
@@ -15,7 +19,7 @@ terraform plan
 terraform apply
 ```
 
-##Configure CNI
+###Configure CNI
 On each node 
 
 ```
@@ -24,7 +28,7 @@ mkdir -p /etc/cni/net.d
 weave setup
 ```
 
-# Setup Sky DNS
+###Setup Sky DNS
 ```
 kubectl create -f kubernetes/definitions/ksNamespace.yaml
 kubectl create -f kubernetes/definitions/skydns-rc.yaml
@@ -32,9 +36,9 @@ kubectl create -f kubernetes/definitions/skydns-svc.yaml
 ```
 
 
-##On existing Kubernertes cluster clone repo and create via kubectl:
+##Deploy App:
 
-
+If using kubernetes-anywhere, log in to one of the nodes and run the toolbox:
 ```
 $ kubernetes-anywhere-toolbox
 toolbox-v1.2: Pulling from weaveworks/kubernetes-anywhere
@@ -51,7 +55,10 @@ d2f125e331a0: Already exists
 987137dc1ed6: Already exists
 Digest: sha256:2bb7fe2155bc390f110cbffa532c3b036b18ea2092d6807bab9c22da2a2a99cc
 Status: Image is up to date for 477246929820.dkr.ecr.eu-west-1.amazonaws.com/kubernetes-weave1/node/pki:toolbox
+```
 
+From within the toolbox, launch the app (services can also be run individually):
+```
 [root@35e9a53bd68e resources]#kubectl create -f kubernetes/definitions/wholeWeaveDemo.yaml
 ```
 
@@ -78,30 +85,30 @@ Events:
 
 Connect to "LoadBalancer Ingress" address
 
-## Install Scope
+### Install Scope
 
-###On each node
+On each node
 ```
 sudo wget -O /usr/local/bin/scope https://git.io/scope
 sudo chmod a+x /usr/local/bin/scope
 sudo scope launch --no-app
 ```
-###on Master
+On Master
 ```
 sudo wget -O /usr/local/bin/scope https://git.io/scope
 sudo chmod a+x /usr/local/bin/scope
 sudo scope launch
 ```
 
-Access port 4040 on Master
+Access port 4040 on Master to view Scope App
 
 ## Uninstall demo
 
-### Remove all deployments (will also remove pods)
+Remove all deployments (will also remove pods)
 ```
 kubectl delete deployments --all
 ```
-### Remove all services, except kubernetes
+Remove all services, except kubernetes
 ```
 kubectl delete service $(kubectl get services | cut -d" " -f1 | grep -v NAME | grep -v kubernetes)
 ```
