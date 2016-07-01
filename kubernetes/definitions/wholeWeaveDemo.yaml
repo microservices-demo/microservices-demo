@@ -1,0 +1,460 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: accounts
+  labels:
+    name: accounts
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: accounts
+    spec:
+      containers:
+      - name: accounts
+        image: weaveworksdemos/accounts
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounts
+  labels:
+    name: accounts
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: accounts
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: accounts-db
+  labels:
+    name: accounts-db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: accounts-db
+    spec:
+      containers:
+      - name: accounts-db
+        image: mongo
+        ports:
+        - name: mongo
+          containerPort: 27017
+          hostPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounts-db
+  labels:
+    name: accounts-db
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 27017
+    targetPort: 27017
+  selector:
+    name: accounts-db
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cart
+  labels:
+    name: cart
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: cart
+    spec:
+      containers:
+      - name: cart
+        image: weaveworksdemos/cart
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cart
+  labels:
+    name: cart
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: cart
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cart-db
+  labels:
+    name: cart-db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: cart-db
+    spec:
+      containers:
+      - name: cart-db
+        image: mongo
+        ports:
+        - name: mongo
+          containerPort: 27017
+          hostPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cart-db
+  labels:
+    name: cart-db
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 27017
+    targetPort: 27017
+  selector:
+    name: cart-db
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: catalogue
+  labels:
+    name: catalogue
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: catalogue
+    spec:
+      containers:
+      - name: catalogue
+        image: weaveworksdemos/catalogue
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogue
+  labels:
+    name: catalogue
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: catalogue
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: front-end
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: front-end
+    spec:
+      containers:
+      - name: front-end
+        image: weaveworksdemos/front-end
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 8079
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-end
+  labels:
+    name: front-end
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 8079
+  selector:
+    name: front-end
+---  
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: login
+  labels:
+    name: login
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: login
+    spec:
+      containers:
+      - name: login
+        image: weaveworksdemos/login
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: login
+  labels:
+    name: login
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: login
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: orders
+  labels:
+    name: orders
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: orders
+    spec:
+      containers:
+      - name: orders
+        image: weaveworksdemos/orders
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders
+  labels:
+    name: orders
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: orders
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: orders-db
+  labels:
+    name: orders-db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: orders-db
+    spec:
+      containers:
+      - name: orders-db
+        image: mongo
+        ports:
+        - name: mongo
+          containerPort: 27017
+          hostPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-db
+  labels:
+    name: orders-db
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 27017
+    targetPort: 27017
+  selector:
+    name: orders-db
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: payment
+  labels:
+    name: payment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: payment
+    spec:
+      containers:
+      - name: payment
+        image: weaveworksdemos/payment
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment
+  labels:
+    name: payment
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: payment
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: queue-master
+  labels:
+    name: queue-master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: queue-master
+    spec:
+      containers:
+      - name: queue-master
+        image: weaveworksdemos/queue-master
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: queue-master
+  labels:
+    name: queue-master
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: queue-master
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  labels:
+    name: rabbitmq
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3
+        ports:
+        - containerPort: 5672
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  labels:
+    name: rabbitmq
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 5672
+    targetPort: 5672
+  selector:
+    name: rabbitmq
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shipping
+  labels:
+    name: shipping
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: shipping
+    spec:
+      containers:
+      - name: shipping
+        image: weaveworksdemos/shipping
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shipping
+  labels:
+    name: shipping
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: shipping
