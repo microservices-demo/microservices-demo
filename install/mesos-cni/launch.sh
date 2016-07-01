@@ -48,26 +48,27 @@ SSH_OPTS=-oStrictHostKeyChecking=no
 
 # Usage: launch_service name command image shell
 launch_service() {
-    ssh	$SSH_OPTS	-i	$KEY	$USER@$MASTER	'nohup	sudo	mesos-execute	--networks=weave	$4	--resources=cpus:0.1	--name=$1	$2	--docker_image=$3	--master='$MASTER':5050	</dev/null	>$1.log	2>&1	&'
+    ssh	$SSH_OPTS	-i	$KEY	$USER@$MASTER	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:0.1	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='$MASTER':5050	</dev/null	>'$1'.log	2>&1	&'
 }
 
-TAG="414d978ad87fb10d2b14af0b2c153d5ad8be1ebb"
+TAG="37daea03327cf62801f3eaf4f60c1c3cf95f9395"
+
+launch_service accounts-db  "echo ok"                                       mongo                               --no-shell
+launch_service cart-db      "echo ok"                                       mongo                               --no-shell
+launch_service orders-db    "echo ok"                                       mongo                               --no-shell
+
+sleep 30 # Wait for db's to start and enter the DNS
 
 launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$TAG --shell
-#	Edge	router
+#	TODO: Edge	router
 launch_service catalogue    "echo ok"                                       weaveworksdemos/catalogue:$TAG      --no-shell
-launch_service accounts     "--domain=mesos-executeinstance.weave.local"    weaveworksdemos/accounts:$TAG       --no-shell
-launch_service accounts-db  "echo ok"                                       mongo                               --no-shell
-launch_service cart         "--domain=mesos-executeinstance.weave.local"    weaveworksdemos/cart:$TAG           --no-shell
-launch_service cart-db      "echo ok"                                       mongo                               --no-shell
-launch_service orders       "--domain=mesos-executeinstance.weave.local"    weaveworksdemos/orders:$TAG         --no-shell
-launch_service orders-db    "echo ok"                                       mongo                               --no-shell
-launch_service shipping     "--domain=mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$TAG       --no-shell
+launch_service accounts     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/accounts:$TAG       --shell
+launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/cart:$TAG           --shell
+launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/orders:$TAG         --shell
+launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$TAG       --shell
 launch_service queue-master "echo ok"                                       weaveworksdemos/queue-master:$TAG   --no-shell
 launch_service payment      "echo ok"                                       weaveworksdemos/payment:$TAG        --no-shell
 launch_service login        "echo ok"                                       weaveworksdemos/login:$TAG          --no-shell
-
-
 
 
 
