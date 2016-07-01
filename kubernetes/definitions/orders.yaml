@@ -1,28 +1,28 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: accounts
+  name: orders
   labels:
-    name: accounts
+    name: orders
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
-        name: accounts
+        name: orders
     spec:
       containers:
-      - name: accounts
-        image: weaveworksdemos/accounts
+      - name: orders
+        image: weaveworksdemos/orders
         ports:
         - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: accounts
+  name: orders
   labels:
-    name: accounts
+    name: orders
 spec:
   # if your cluster supports it, uncomment the following to automatically create
   # an external load-balanced IP for the frontend service.
@@ -31,23 +31,23 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: accounts
+    name: orders
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: accounts-db
+  name: orders-db
   labels:
-    name: accounts-db
+    name: orders-db
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
-        name: accounts-db
+        name: orders-db
     spec:
       containers:
-      - name: accounts-db
+      - name: orders-db
         image: mongo
         ports:
         - name: mongo
@@ -57,9 +57,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: accounts-db
+  name: orders-db
   labels:
-    name: accounts-db
+    name: orders-db
 spec:
   # if your cluster supports it, uncomment the following to automatically create
   # an external load-balanced IP for the frontend service.
@@ -68,4 +68,4 @@ spec:
   - port: 27017
     targetPort: 27017
   selector:
-    name: accounts-db
+    name: orders-db
