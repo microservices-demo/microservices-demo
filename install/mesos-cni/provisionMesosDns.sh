@@ -27,11 +27,16 @@ do_provision() {
     IFACE='weave'
     IP=$(ip -4 address show $IFACE | grep 'inet' | sed 's/.*inet \([0-9\.]\+\).*/\1/')
 
-    echo "nameserver $IP" | sudo tee -a /etc/resolvconf/resolv.conf.d/head
-    sudo rm /etc/resolv.conf
-    sudo ln -s ../run/resolvconf/resolv.conf /etc/resolv.conf
-    sudo resolvconf -u
-
+    if grep -q namespace "/etc/resolvconf/resolv.conf.d/head"
+    then
+         echo "/etc/resolvconf/resolv.conf.d/head not empty. Skipping."
+    else
+        echo "/etc/resolvconf/resolv.conf.d/head empty. Writing."
+        echo "nameserver $IP" | sudo tee -a /etc/resolvconf/resolv.conf.d/head
+        sudo rm /etc/resolv.conf
+        sudo ln -s ../run/resolvconf/resolv.conf /etc/resolv.conf
+        sudo resolvconf -u
+    fi
 }
 
 do_launch() {
