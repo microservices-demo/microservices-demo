@@ -1,8 +1,6 @@
 FROM java:openjdk-8-alpine
 
-WORKDIR /usr/src/cart
+WORKDIR /usr/src/app
+COPY ./target/*.jar ./app.jar
 
-COPY . /usr/src/cart
-RUN mv ./target/*.jar ./target/app.jar
-
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","./target/app.jar", "--port=80"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/urandom","-jar","./app.jar", "--port=80"]
