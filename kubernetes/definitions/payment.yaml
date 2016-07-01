@@ -1,28 +1,28 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: catalogue
+  name: payment
   labels:
-    name: catalogue
+    name: payment
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
-        name: catalogue
+        name: payment
     spec:
       containers:
-      - name: catalogue
-        image: weaveworksdemos/catalogue
+      - name: payment
+        image: weaveworksdemos/payment
         ports:
         - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: catalogue
+  name: payment
   labels:
-    name: catalogue
+    name: payment
 spec:
   # if your cluster supports it, uncomment the following to automatically create
   # an external load-balanced IP for the frontend service.
@@ -31,4 +31,4 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: catalogue
+    name: payment
