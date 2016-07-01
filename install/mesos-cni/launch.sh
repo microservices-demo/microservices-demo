@@ -11,53 +11,53 @@ MASTERS=($MASTER)
 AGENTS=($SLAVE0 $SLAVE1 $SLAVE2)
 SSH_OPTS=-oStrictHostKeyChecking=no
 
-## Provision Weave CNI
-#for HOST in ${MASTERS[*]}
-#do
-#    echo "Provisioning Weave CNI on $HOST"
-#    scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionWeaveCNI.sh $USER@$HOST:~;
-#    ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionWeaveCNI.sh;
-#done;
-#
-#for HOST in ${AGENTS[*]}
-#do
-#    echo "Provisioning Weave CNI on $HOST"
-#    scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionWeaveCNI.sh $USER@$HOST:~;
-#    ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionWeaveCNI.sh ${MASTERS[0]};
-#    ssh $SSH_OPTS -i $KEY $USER@$HOST sudo service mesos-slave restart
-#done;
-#
-## Wait for Agents to come back online
-#sleep 30
-#
-#
-## Provision Mesos DNS
-#for HOST in ${AGENTS[*]}
-#do
-#    echo "Provisioning Mesos DNS on $HOST"
-#    scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionMesosDns.sh $USER@$HOST:~;
-#    ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionMesosDns.sh provision ${MASTERS[0]};
-#done;
-#
-#ssh $SSH_OPTS -i $KEY $USER@${AGENTS[0]} ./provisionMesosDns.sh launch ${MASTERS[0]};
-#
-## Wait for DNS to come online
-#sleep 30
+# Provision Weave CNI
+for HOST in ${MASTERS[*]}
+do
+    echo "Provisioning Weave CNI on $HOST"
+    scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionWeaveCNI.sh $USER@$HOST:~;
+    ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionWeaveCNI.sh;
+done;
+
+for HOST in ${AGENTS[*]}
+do
+    echo "Provisioning Weave CNI on $HOST"
+    scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionWeaveCNI.sh $USER@$HOST:~;
+    ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionWeaveCNI.sh ${MASTERS[0]};
+    ssh $SSH_OPTS -i $KEY $USER@$HOST sudo service mesos-slave restart
+done;
+
+# Wait for Agents to come back online
+sleep 30
+
+
+# Provision Mesos DNS
+for HOST in ${AGENTS[*]}
+do
+    echo "Provisioning Mesos DNS on $HOST"
+    scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionMesosDns.sh $USER@$HOST:~;
+    ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionMesosDns.sh provision ${MASTERS[0]};
+done;
+
+ssh $SSH_OPTS -i $KEY $USER@${AGENTS[0]} ./provisionMesosDns.sh launch ${MASTERS[0]};
+
+# Wait for DNS to come online
+sleep 30
 
 
 
 # Usage: launch_service name command image shell
 launch_service() {
-    ssh	$SSH_OPTS	-i	$KEY	$USER@$MASTER	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:0.1	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='$MASTER':5050	</dev/null	>'$1'.log	2>&1	&'
+    ssh	$SSH_OPTS	-i	$KEY	$USER@$MASTER	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:0.4;mem=1024	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='$MASTER':5050	</dev/null	>'$1'.log	2>&1	&'
 }
 
-TAG="37daea03327cf62801f3eaf4f60c1c3cf95f9395"
+TAG="3d8f7d787b370445a2507861eeadcb7888d7ec0c"
 
 launch_service accounts-db  "echo ok"                                       mongo                               --no-shell
 launch_service cart-db      "echo ok"                                       mongo                               --no-shell
 launch_service orders-db    "echo ok"                                       mongo                               --no-shell
 
-sleep 30 # Wait for db's to start and enter the DNS
+sleep 60 # Wait for db's to pull start and enter the DNS. They are large images.
 
 launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$TAG --shell
 #	TODO: Edge	router
