@@ -12,14 +12,23 @@ cd kubernetes/terraform
 Add AWS credentials to main.tf file
 
 Run terraform
+#Installation on Kubernetes
+
+
+##Setup up Kubernetes cluster on AWS using kubernetes-anywhere (with Terraform)
+
+git clone (this)
+
+cd kubernetes/terraform
+
+add AWS credentials to main.tf file
 
 ```
 terraform get
 terraform plan
 terraform apply
 ```
-
-###Configure CNI
+##Configure CNI
 On each node 
 
 ```
@@ -27,8 +36,7 @@ mkdir -p /opt/cni/bin
 mkdir -p /etc/cni/net.d
 weave setup
 ```
-
-###Setup Sky DNS
+# Setup Sky DNS
 ```
 kubectl create -f kubernetes/definitions/ksNamespace.yaml
 kubectl create -f kubernetes/definitions/skydns-rc.yaml
@@ -39,6 +47,8 @@ kubectl create -f kubernetes/definitions/skydns-svc.yaml
 ##Deploy App:
 
 If using kubernetes-anywhere, log in to one of the nodes and run the toolbox:
+
+
 ```
 $ kubernetes-anywhere-toolbox
 toolbox-v1.2: Pulling from weaveworks/kubernetes-anywhere
@@ -88,6 +98,7 @@ Connect to "LoadBalancer Ingress" address
 ### Install Scope
 
 On each node
+
 ```
 sudo wget -O /usr/local/bin/scope https://git.io/scope
 sudo chmod a+x /usr/local/bin/scope
@@ -109,6 +120,14 @@ Remove all deployments (will also remove pods)
 kubectl delete deployments --all
 ```
 Remove all services, except kubernetes
+Access port 4040 on Master
+
+## Uninstall demo
+
+### Remove all deployments (will also remove pods)
+```
+kubectl delete deployments --all
+```
 ```
 kubectl delete service $(kubectl get services | cut -d" " -f1 | grep -v NAME | grep -v kubernetes)
 ```
