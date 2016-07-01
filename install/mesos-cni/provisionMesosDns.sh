@@ -24,7 +24,10 @@ do_provision() {
       "externalon": true
     }' | sudo tee /etc/mesos-dns/config.json
 
-    echo "nameserver 127.0.0.1" | sudo tee -a /etc/resolvconf/resolv.conf.d/head
+    IFACE='weave'
+    IP=$(ip -4 address show $IFACE | grep 'inet' | sed 's/.*inet \([0-9\.]\+\).*/\1/')
+
+    echo "nameserver $IP" | sudo tee -a /etc/resolvconf/resolv.conf.d/head
     sudo rm /etc/resolv.conf
     sudo ln -s ../run/resolvconf/resolv.conf /etc/resolv.conf
     sudo resolvconf -u
