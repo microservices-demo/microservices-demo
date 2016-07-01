@@ -48,19 +48,18 @@ sleep 30
 
 # Usage: launch_service name command image shell
 launch_service() {
-    ssh	$SSH_OPTS	-i	$KEY	$USER@$MASTER	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:0.4;mem=1024	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='$MASTER':5050	</dev/null	>'$1'.log	2>&1	&'
+    ssh	$SSH_OPTS	-i	$KEY	$USER@$MASTER	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:0.4\;mem:1024	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='$MASTER':5050	</dev/null	>'$1'.log	2>&1	&'
 }
 
-TAG="3d8f7d787b370445a2507861eeadcb7888d7ec0c"
+TAG="3ac2d8a4d65abf6b9bddb0e09f4a1ccfb468223c"
 
 launch_service accounts-db  "echo ok"                                       mongo                               --no-shell
 launch_service cart-db      "echo ok"                                       mongo                               --no-shell
 launch_service orders-db    "echo ok"                                       mongo                               --no-shell
 
-sleep 60 # Wait for db's to pull start and enter the DNS. They are large images.
+sleep 60 # Wait for db's to pull start and enter the DNS.
 
 launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$TAG --shell
-#	TODO: Edge	router
 launch_service catalogue    "echo ok"                                       weaveworksdemos/catalogue:$TAG      --no-shell
 launch_service accounts     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/accounts:$TAG       --shell
 launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/cart:$TAG           --shell
@@ -72,6 +71,7 @@ launch_service login        "echo ok"                                       weav
 
 
 
+#	TODO: Edge	router
 # This must start after front-end has been registered in the DNS
 #ssh $SSH_OPTS -i $KEY $USER@$MASTER 'nohup sudo mesos-execute --docker_image=weaveworksdemos/edge-router    --master='$MASTER':5050 --name=edge-router  --networks=weave --resources=cpus:0.1 --no-shell </dev/null >edge-router.log 2>&1 &'
 
