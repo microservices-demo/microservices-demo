@@ -11,41 +11,59 @@ MASTERS=($MASTER)
 AGENTS=($SLAVE0 $SLAVE1 $SLAVE2)
 SSH_OPTS=-oStrictHostKeyChecking=no
 
-# Provision Weave CNI
-for HOST in ${MASTERS[*]}
-do
-    echo "Provisioning Weave CNI on $HOST"
-    scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionWeaveCNI.sh $USER@$HOST:~;
-    ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionWeaveCNI.sh;
-done;
 
-for HOST in ${AGENTS[*]}
-do
-    echo "Provisioning Weave CNI on $HOST"
-    scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionWeaveCNI.sh $USER@$HOST:~;
-    ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionWeaveCNI.sh ${MASTERS[0]};
-    ssh $SSH_OPTS -i $KEY $USER@$HOST sudo service mesos-slave restart
-done;
+# Usage: launch_service name command image shell
+launch_service() {
+    ssh	$SSH_OPTS	-i	$KEY	$USER@${MASTERS[0]}	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:0.3\;mem:1024	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='$MASTER':5050	</dev/null	>'$1'.log	2>&1	&'
+}
 
-# Wait for Agents to come back online
-sleep 30
+TAG="8154a02d5d12011dd1b1af7c6bf4736716d8baf7"
 
 
-# Provision Mesos DNS
-for HOST in ${AGENTS[*]}
-do
-    echo "Provisioning Mesos DNS on $HOST"
-    scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionMesosDns.sh $USER@$HOST:~;
-    ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionMesosDns.sh provision ${MASTERS[0]};
-done;
+WEAVE_CONNECTIONS=$(ssh $SSH_OPTS -i $KEY $USER@${AGENTS[0]} 'weave status connections | wc -l')
+if [ $WEAVE_CONNECTIONS -lt 3 ]; then
+    # Provision Weave CNI
+    for HOST in ${MASTERS[*]}
+    do
+        echo "Provisioning Weave CNI on $HOST"
+        scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionWeaveCNI.sh $USER@$HOST:~;
+        ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionWeaveCNI.sh;
+    done;
 
-ssh $SSH_OPTS -i $KEY $USER@${AGENTS[0]} ./provisionMesosDns.sh launch ${MASTERS[0]};
+    for HOST in ${AGENTS[*]}
+    do
+        echo "Provisioning Weave CNI on $HOST"
+        scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionWeaveCNI.sh $USER@$HOST:~;
+        ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionWeaveCNI.sh ${MASTERS[0]};
+        ssh $SSH_OPTS -i $KEY $USER@$HOST sudo service mesos-slave restart
+    done;
 
-# Wait for DNS to come online
-sleep 30
+    # Wait for Agents to come back online
+    sleep 30
+else
+    echo "Skipping weave provisioning. Already running."
+fi
 
+if [ -n "$(curl -s -X GET -H "Content-type: application/json" $MASTER:8080/v2/apps/mesos-dns | grep "does not exist")" ]; then
+    # Provision Mesos DNS
+    for HOST in ${AGENTS[*]}
+    do
+        echo "Provisioning Mesos DNS on $HOST"
+        scp $SSH_OPTS -i $KEY $SCRIPT_DIR/provisionMesosDns.sh $USER@$HOST:~;
+        ssh $SSH_OPTS -i $KEY $USER@$HOST ./provisionMesosDns.sh provision ${MASTERS[0]};
+    done;
+
+    ssh $SSH_OPTS -i $KEY $USER@${AGENTS[0]} ./provisionMesosDns.sh launch ${MASTERS[0]};
+
+    # Wait for DNS to come online
+    sleep 30
+else
+    echo "Skipping DNS provisioning. Already running."
+fi
 
 # Provision Edge router first, so that it is always on all machines.
+curl -X DELETE -H "Content-type: application/json" $MASTER:8080/v2/apps/edge-router
+sleep 10
 curl -X POST -H "Content-type: application/json" $MASTER:8080/v2/apps -d '{
   "id": "edge-router",
   "cmd": "while ! ping -c1 front-end.mesos-executeinstance.weave.local &>/dev/null; do : echo .; done ; sed -i \"s/.*proxy_pass.*/      proxy_pass      http:\\/\\/front-end.mesos-executeinstance.weave.local:8079;/\" /etc/nginx/nginx.conf ; nginx -g \"daemon off;\"",
@@ -75,28 +93,20 @@ curl -X POST -H "Content-type: application/json" $MASTER:8080/v2/apps -d '{
   "labels": {}
 }'
 
-# Usage: launch_service name command image shell
-launch_service() {
-    ssh	$SSH_OPTS	-i	$KEY	$USER@${MASTERS[0]}	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:0.4\;mem:1024	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='$MASTER':5050	</dev/null	>'$1'.log	2>&1	&'
-}
-
-TAG="9ec2008170d626d8361e701bb1a63ea195901c3a"
-
 launch_service accounts-db  "echo ok"                                       mongo                               --no-shell
 launch_service cart-db      "echo ok"                                       mongo                               --no-shell
 launch_service orders-db    "echo ok"                                       mongo                               --no-shell
 
 sleep 60 # Wait for db's to pull start and enter the DNS.
 
-launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$TAG --shell
+launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$TAG       --shell
+launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$TAG         --shell
 launch_service catalogue    "echo ok"                                       weaveworksdemos/catalogue:$TAG      --no-shell
 launch_service accounts     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/accounts:$TAG       --shell
 launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/cart:$TAG           --shell
-launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/orders:$TAG         --shell
-launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$TAG       --shell
-launch_service queue-master "echo ok"                                       weaveworksdemos/queue-master:$TAG   --no-shell
 launch_service payment      "echo ok"                                       weaveworksdemos/payment:$TAG        --no-shell
-launch_service login        "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/login:$TAG      --shell
+launch_service login        "/go/bin/login -port=80 -domain=mesos-executeinstance.weave.local"   weaveworksdemos/login:$TAG      --shell
+launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$TAG --shell
 
 
 
