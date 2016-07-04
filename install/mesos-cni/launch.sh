@@ -96,7 +96,7 @@ launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./a
 launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$TAG       --shell
 launch_service queue-master "echo ok"                                       weaveworksdemos/queue-master:$TAG   --no-shell
 launch_service payment      "echo ok"                                       weaveworksdemos/payment:$TAG        --no-shell
-launch_service login        "echo ok"                                       weaveworksdemos/login:$TAG          --no-shell
+launch_service login        "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/login:$TAG      --shell
 
 
 
