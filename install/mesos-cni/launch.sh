@@ -45,13 +45,42 @@ ssh $SSH_OPTS -i $KEY $USER@${AGENTS[0]} ./provisionMesosDns.sh launch ${MASTERS
 sleep 30
 
 
+# Provision Edge router first, so that it is always on all machines.
+curl -X POST -H "Content-type: application/json" $MASTER:8080/v2/apps -d '{
+  "id": "edge-router",
+  "cmd": "while ! ping -c1 front-end.mesos-executeinstance.weave.local &>/dev/null; do : echo .; done ; sed -i \"s/.*proxy_pass.*/      proxy_pass      http:\\/\\/front-end.mesos-executeinstance.weave.local:8079;/\" /etc/nginx/nginx.conf ; nginx -g \"daemon off;\"",
+  "cpus": 0.2,
+  "mem": 512,
+  "disk": 0,
+  "instances": 3,
+  "constraints": [["hostname", "UNIQUE"]],
+  "container": {
+    "docker": {
+      "image": "weaveworksdemos/edge-router:",
+      "network": "HOST",
+      "parameters": [],
+      "privileged": true
+    },
+    "type": "DOCKER",
+    "volumes": []
+  },
+  "portDefinitions": [
+    {
+      "port": 80,
+      "protocol": "tcp",
+      "name": "80"
+    }
+  ],
+  "env": {},
+  "labels": {}
+}'
 
 # Usage: launch_service name command image shell
 launch_service() {
-    ssh	$SSH_OPTS	-i	$KEY	$USER@$MASTER	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:0.4\;mem:1024	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='$MASTER':5050	</dev/null	>'$1'.log	2>&1	&'
+    ssh	$SSH_OPTS	-i	$KEY	$USER@${MASTERS[0]}	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:0.4\;mem:1024	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='$MASTER':5050	</dev/null	>'$1'.log	2>&1	&'
 }
 
-TAG="3ac2d8a4d65abf6b9bddb0e09f4a1ccfb468223c"
+TAG="9ec2008170d626d8361e701bb1a63ea195901c3a"
 
 launch_service accounts-db  "echo ok"                                       mongo                               --no-shell
 launch_service cart-db      "echo ok"                                       mongo                               --no-shell
@@ -70,14 +99,6 @@ launch_service payment      "echo ok"                                       weav
 launch_service login        "echo ok"                                       weaveworksdemos/login:$TAG          --no-shell
 
 
-
-#	TODO: Edge	router
-# This must start after front-end has been registered in the DNS
-#ssh $SSH_OPTS -i $KEY $USER@$MASTER 'nohup sudo mesos-execute --docker_image=weaveworksdemos/edge-router    --master='$MASTER':5050 --name=edge-router  --networks=weave --resources=cpus:0.1 --no-shell </dev/null >edge-router.log 2>&1 &'
-
-
-
-#  --command="--logging.level.works.weave=DEBUG"
 
 # NC example to verify web services will work
 #ssh -i $KEY ubuntu@$MASTER 'nohup sudo mesos-execute --command="ifconfig; dig catalogue.mesos-executeinstance.weave.local ; curl http://catalogue.mesos-executeinstance.weave.local/catalogue ; cat /etc/resolv.conf" --docker_image=amouat/network-utils      --master='$MASTER':5050 --name=dns-check    --networks=weave --resources=cpus:0.1 --shell </dev/null >port-check.log 2>&1 &'

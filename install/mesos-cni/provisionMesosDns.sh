@@ -36,6 +36,8 @@ do_provision() {
         sudo rm /etc/resolv.conf
         sudo ln -s ../run/resolvconf/resolv.conf /etc/resolv.conf
         sudo resolvconf -u
+        # Workaround to fix strange localhost hostname issue
+        echo "127.0.0.1 $(hostname)" | sudo tee -a /etc/hosts
     fi
 }
 
