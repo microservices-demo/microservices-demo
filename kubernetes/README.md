@@ -14,9 +14,9 @@ Add AWS credentials to main.tf file
 Run terraform
 #Installation on Kubernetes
 
-(If you already have running k8s cluster skip to [here](https://github.com/weaveworks/weaveDemo/tree/kubernetes/kubernetes#deploy-app)
+(If you already have running k8s cluster skip to [here](https://github.com/weaveworks/weaveDemo/tree/kubernetes/kubernetes#deploy-app))
 
-Setup up Kubernetes cluster on AWS using kubernetes-anywhere (with Terraform)
+Setup up Kubernetes cluster on AWS using [kubernetes-anywhere](https://github.com/kubernetes/kubernetes-anywhere) (with Terraform)
 
 ```
 git clone https://github.com/weaveworks/weaveDemo
