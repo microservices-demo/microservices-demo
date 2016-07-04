@@ -1,8 +1,8 @@
-#Installation on Kubernetes
+#Setup and Installation on Kubernetes
 
-(If you already have running k8s cluster skip to [here](https://github.com/weaveworks/weaveDemo/tree/kubernetes/kubernetes#deploy-app)
+(If you already have running k8s cluster skip to [here](https://github.com/weaveworks/weaveDemo/tree/kubernetes/kubernetes#deploy-app))
 
-Setup up Kubernetes cluster on AWS using kubernetes-anywhere (with Terraform)
+Setup up Kubernetes cluster on AWS using [kubernetes-anywhere](https://github.com/kubernetes/kubernetes-anywhere) (with Terraform)
 
 ```
 git clone https://github.com/weaveworks/weaveDemo
@@ -102,7 +102,7 @@ sudo scope launch
 
 Access port 4040 on Master to view Scope App
 
-## Uninstall demo
+## Uninstall App
 
 Remove all deployments (will also remove pods)
 ```
