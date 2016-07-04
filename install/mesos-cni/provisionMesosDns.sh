@@ -27,7 +27,7 @@ do_provision() {
     IFACE='weave'
     IP=$(ip -4 address show $IFACE | grep 'inet' | sed 's/.*inet \([0-9\.]\+\).*/\1/')
 
-    if grep -q namespace "/etc/resolvconf/resolv.conf.d/head"
+    if grep -q nameserver "/etc/resolvconf/resolv.conf.d/head"
     then
          echo "/etc/resolvconf/resolv.conf.d/head not empty. Skipping."
     else
@@ -36,17 +36,24 @@ do_provision() {
         sudo rm /etc/resolv.conf
         sudo ln -s ../run/resolvconf/resolv.conf /etc/resolv.conf
         sudo resolvconf -u
+    fi
+
+    if grep -q $(hostname) "/etc/hosts"
+    then
+         echo "/etc/hosts not empty. Skipping."
+    else
         # Workaround to fix strange localhost hostname issue
-        echo "127.0.0.1 $(hostname)" | sudo tee -a /etc/hosts
+        echo "$(ifconfig eth0 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}') $(hostname)" | sudo tee -a /etc/hosts
     fi
 }
 
 do_launch() {
-    curl -X POST -H "Content-type: application/json" $ADDRESS:8080/v2/apps?force=true -d '{ "id": "'$APP_NAME'", "user": "root", "cpus": 0.1, "mem": 256, "uris": [ "https://github.com/mesosphere/mesos-dns/releases/download/v0.5.2/mesos-dns-v0.5.2-linux-amd64" ], "cmd": "mv mesos-dns-v* mesos-dns ; chmod +x mesos-dns ; ./mesos-dns -v=2 -config=/etc/mesos-dns/config.json", "instances": 3, "constraints": [["hostname", "UNIQUE"]] }'
+    curl -X POST -H "Content-type: application/json" $ADDRESS:8080/v2/apps -d '{ "id": "'$APP_NAME'", "user": "root", "cpus": 0.1, "mem": 256, "uris": [ "https://github.com/mesosphere/mesos-dns/releases/download/v0.5.2/mesos-dns-v0.5.2-linux-amd64" ], "cmd": "mv mesos-dns-v* mesos-dns ; chmod +x mesos-dns ; ./mesos-dns -v=2 -config=/etc/mesos-dns/config.json", "instances": 3, "constraints": [["hostname", "UNIQUE"]] }'
 }
 
 do_stop() {
     curl -X DELETE -H "Content-type: application/json" $ADDRESS:8080/v2/apps/$APP_NAME
+    sleep 10
 }
 
 do_usage() {

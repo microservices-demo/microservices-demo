@@ -30,3 +30,4 @@ docker run --rm --privileged --net=host -v /var/run/docker.sock:/var/run/docker.
  -e CNI_IFNAME -e CNI_ARGS -e CNI_PATH -v /etc/cni:/etc/cni -v /opt/cni:/opt/cni \
  -v /run/mesos/isolators/network/cni:/run/mesos/isolators/network/cni \
  weaveworks/plugin:1.6.0  --cni-net' | sudo tee /opt/cni/bin/weave-net
+
