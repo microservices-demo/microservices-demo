@@ -4,6 +4,8 @@
 #
 #####################################################################
 
+set -ox
+
 ARGS="$@"
 COMMAND="${1}"
 SCRIPT_NAME=`basename "$0"`
@@ -37,7 +39,7 @@ do_checks() {
 
 do_init() {
   # get the swarm masters
-  SWARM_MASTER_NAME=`docker-machine ls | grep '(master)' | awk '{ print $1}'`
+  SWARM_MASTER_NAME=`docker-machine ls --filter="state=running" | grep '(master)' | awk '{ print $1}'`
   # echo SWARM_MASTER_NAME=$SWARM_MASTER_NAME
 
   SWARM_MASTER_IP=`docker-machine ip $SWARM_MASTER_NAME`
