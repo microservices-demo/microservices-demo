@@ -30,7 +30,7 @@ public class OrdersConfigurationProperties {
         @Override
         public String toString() {
             if (hostname != null && !hostname.equals("")) {
-                return domain;
+                return hostname;
             } else {
                 return "";
             }
