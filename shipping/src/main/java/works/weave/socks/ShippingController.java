@@ -27,7 +27,11 @@ public class ShippingController {
     @ResponseBody
     Shipment postShipping(@RequestBody Shipment shipment) {
         System.out.println("Adding shipment to queue...");
-        rabbitTemplate.convertAndSend("shipping-task", shipment);
+        try {
+            rabbitTemplate.convertAndSend("shipping-task", shipment);
+        } catch (Exception e) {
+            System.out.println("Unable to add to queue (the queue is probably down). Accepting anyway. Don't do this for real!");
+        }
         return shipment;
     }
 }
