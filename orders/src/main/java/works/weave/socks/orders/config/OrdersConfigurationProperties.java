@@ -47,7 +47,7 @@ public class OrdersConfigurationProperties {
         @Override
         public String toString() {
             if (domain != null && !domain.equals("")) {
-                return domain;
+                return "." + domain;
             } else {
                 return "";
             }
