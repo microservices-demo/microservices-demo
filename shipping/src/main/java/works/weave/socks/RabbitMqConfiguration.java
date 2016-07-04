@@ -4,21 +4,23 @@ import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.support.converter.DefaultClassMapper;
-import org.springframework.amqp.support.converter.JsonMessageConverter;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 @Configuration
 public class RabbitMqConfiguration
 {
+    @Value("${queue.address:rabbitmq")
+    private String queueAddress;
+
     @Bean
     public ConnectionFactory connectionFactory()
     {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("rabbitmq");
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(queueAddress);
         // CachingConnectionFactory connectionFactory = new CachingConnectionFactory("192.168.99.104");
         connectionFactory.setUsername("guest");
         connectionFactory.setPassword("guest");
