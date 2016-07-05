@@ -8,29 +8,32 @@ import (
 	"errors"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 // Service is the login service, providing operations for users to login and register.
 type Service interface {
-	Login(username, password string) (User, error)   // GET /login
+	Login(username, password string) (User, error) // GET /login
 	// Only used for testing at the moment
-	Register(username, password string) bool	// GET /register?username=[username]&password=[password]
+	Register(username, password string) bool // GET /register?username=[username]&password=[password]
 }
 
 // User describes the logged in user.
 type User struct {
-	Id       string `json:"id"`
+	ID       string `json:"id"`
 	Name     string `json:"name"`
 	Password string `json:"password"`
 	Link     string `json:"link"`
 }
 
-// ErrNotAuthorized is returned when there the supplied credentials are not valid.
-var ErrNotAuthorized = errors.New("invalid credendtials")
+// ErrUnauthorized is returned when there the supplied credentials are not valid.
+var ErrUnauthorized = errors.New("Unauthorized")
 
 // For Customer Lookup
-var customerHost = "accounts"
-var customerLookupPath = "/customers/search/findByUsername"
+const (
+	customerHost       = "accounts"
+	customerLookupPath = "/customers/search/findByUsername"
+)
 
 // NewFixedService returns a simple implementation of the Service interface,
 // fixed over a predefined set of users. Replace with db integration?
@@ -41,25 +44,28 @@ func NewFixedService(users []User) Service {
 }
 
 type fixedService struct {
+	mtx   sync.RWMutex
 	users []User
 }
 
 func (s *fixedService) Login(username, password string) (User, error) {
 	found := false
+	s.mtx.RLock()
 	for _, user := range s.users {
 		if user.Name == username && user.Password == password {
 			found = true
 		}
 	}
+	s.mtx.RUnlock()
 
 	if !found {
-		return User{}, ErrNotAuthorized
+		return User{}, ErrUnauthorized
 	}
 
 	c, err := lookupCustomer(username, password)
 
 	if err != nil || len(c.Embedded.Customers) < 1 {
-		return User{}, ErrNotAuthorized
+		return User{}, ErrUnauthorized
 	}
 
 	cust := c.Embedded.Customers[0]
@@ -68,19 +74,21 @@ func (s *fixedService) Login(username, password string) (User, error) {
 	idSplit := strings.Split(custLink, "/")
 	id := idSplit[len(idSplit)-1]
 
-	var user User
-	user.Name = cust.Username
-	user.Link = custLink
-	user.Id = id
-
-	return user, nil
+	return User{
+		Name: cust.Username,
+		Link: custLink,
+		ID:   id,
+	}, nil
 }
 
 func (s *fixedService) Register(username, password string) bool {
 
+	s.mtx.Lock()
+	defer s.mtx.Unlock()
+
 	// To integrate with Accounts service
-	s.users = append(s.users, User{Id: "", Name: username, Password: password})
-	
+	s.users = append(s.users, User{ID: "", Name: username, Password: password})
+
 	return true
 }
 
@@ -113,6 +121,6 @@ type customerResponse struct {
 					Href string `json:"href"`
 				} `json:"customer"`
 			} `json:"_links"`
-			} `json:"customer"`
+		} `json:"customer"`
 	} `json:"_embedded"`
 }

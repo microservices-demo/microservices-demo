@@ -45,10 +45,11 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, logger log.Logger) http.H
 func encodeError(_ context.Context, err error, w http.ResponseWriter) {
 	code := http.StatusInternalServerError
 	switch err {
-	case ErrNotAuthorized:
+	case ErrUnauthorized:
 		code = http.StatusUnauthorized
 	}
 	w.WriteHeader(code)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"error":       err.Error(),
 		"status_code": code,
@@ -59,12 +60,12 @@ func encodeError(_ context.Context, err error, w http.ResponseWriter) {
 func decodeLoginRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	u, p, ok := r.BasicAuth()
 	if !ok {
-		return nil, ErrNotAuthorized
+		return nil, ErrUnauthorized
 	}
 
 	return loginRequest{
-		Username:     u,
-		Password:    p,
+		Username: u,
+		Password: p,
 	}, nil
 }
 
@@ -73,8 +74,8 @@ func decodeRegisterRequest(_ context.Context, r *http.Request) (interface{}, err
 	p := r.FormValue("password")
 
 	return registerRequest{
-		Username:     u,
-		Password:    p,
+		Username: u,
+		Password: p,
 	}, nil
 }
 

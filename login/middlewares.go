@@ -1,4 +1,3 @@
-
 package login
 
 import (
@@ -33,7 +32,7 @@ func (mw loggingMiddleware) Login(username, password string) (user User, err err
 			"method", "Login",
 			"username", username,
 			"password", password,
-			"result", user.Id,
+			"result", user.ID,
 			"took", time.Since(begin),
 		)
 	}(time.Now())
