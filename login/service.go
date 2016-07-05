@@ -51,6 +51,7 @@ type fixedService struct {
 func (s *fixedService) Login(username, password string) (User, error) {
 	found := false
 	s.mtx.RLock()
+
 	for _, user := range s.users {
 		if user.Name == username && user.Password == password {
 			found = true
