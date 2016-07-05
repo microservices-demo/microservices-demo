@@ -13,12 +13,14 @@ import (
 var customerUrl = "http://accounts/customers/search/findByUsername"
 var dev bool
 var port string
+var domain string
 var users []User
 
 func main() {
 
 	flag.StringVar(&port, "port", "8084", "Port on which to run")
 	flag.BoolVar(&dev, "dev", false, "Run in development mode")
+	flag.StringVar(&domain, "domain", "", "Domain for the accounts service")
 	flag.Parse()
 
 	var file string
@@ -28,6 +30,13 @@ func main() {
 		file = "/config/users.json"
 	}
 	loadUsers(file)
+
+	if domain != "" {
+	    customerUrl = "http://accounts." + domain + "/customers/search/findByUsername"
+	    fmt.Printf("Using custom domain: %s\n", customerUrl)
+	} else {
+	    fmt.Printf("Not using domain. Defaulting to: %s\n", customerUrl)
+	}
 
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/register", registerHandler)
@@ -126,7 +135,7 @@ func loadUsers(file string) {
 		panic(err)
 	}
 	json.Unmarshal(f, &users)
-	fmt.Printf("Loaded %d users.", len(users))
+	fmt.Printf("Loaded %d users.\n", len(users))
 }
 
 type User struct {
