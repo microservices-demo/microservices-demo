@@ -42,6 +42,7 @@ Caveats: This is using a RC version of Mesos, and may not work in the future. Th
   --force           Skip all user interaction.  Implied 'Yes' to all actions.
   -c, --cpu         Individual task CPUs
   -m, --mem         Individual task Mem
+  -t, --tag         Sets the tag of the docker images
   -q, --quiet       Quiet (no output)
   -l, --log         Print log to file
   -s, --strict      Exit script with null variables.  i.e 'set -o nounset'

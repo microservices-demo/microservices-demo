@@ -4,7 +4,6 @@ version="1.0.0"
 
 SCRIPT_DIR=`dirname "$0"`
 SCRIPT_NAME=`basename "$0"`
-TAG="8154a02d5d12011dd1b1af7c6bf4736716d8baf7"
 USER=ubuntu
 MASTERS=($MASTER)
 AGENTS=($SLAVE0 $SLAVE1 $SLAVE2)
@@ -51,6 +50,7 @@ debug=false
 args=()
 cpu=0.3
 mem=1024
+tag="latest"
 
 # Logging
 # -----------------------------------
@@ -83,6 +83,7 @@ Caveats: This is using a RC version of Mesos, and may not work in the future. Th
   --force           Skip all user interaction.  Implied 'Yes' to all actions.
   -c, --cpu         Individual task CPUs
   -m, --mem         Individual task Mem
+  -t, --tag         Sets the tag of the docker images
   -q, --quiet       Quiet (no output)
   -l, --log         Print log to file
   -s, --strict      Exit script with null variables.  i.e 'set -o nounset'
@@ -141,6 +142,7 @@ while [[ $1 = -?* ]]; do
     --version) echo "$(basename $0) ${version}"; safeExit ;;
     -c|--cpu) shift; cpu=${1} ;;
     -m|--mem) shift; mem=${1} ;;
+    -t|--tag) shift; tag=${1} ;;
     -v|--verbose) verbose=true ;;
     -l|--log) printLog=true ;;
     -q|--quiet) quiet=true ;;
@@ -413,14 +415,14 @@ do_start() {
     launch_service cart-db      "echo ok"                                       mongo                               --no-shell
     launch_service orders-db    "echo ok"                                       mongo                               --no-shell
 
-    launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$TAG       --shell
-    launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$TAG         --shell
-    launch_service catalogue    "echo ok"                                       weaveworksdemos/catalogue:$TAG      --no-shell
-    launch_service accounts     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/accounts:$TAG       --shell
-    launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/cart:$TAG           --shell
-    launch_service payment      "echo ok"                                       weaveworksdemos/payment:$TAG        --no-shell
-    launch_service login        "/go/bin/login -port=80 -domain=mesos-executeinstance.weave.local"   weaveworksdemos/login:$TAG      --shell
-    launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$TAG --shell
+    launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$tag       --shell
+    launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$tag         --shell
+    launch_service catalogue    "echo ok"                                       weaveworksdemos/catalogue:$tag      --no-shell
+    launch_service accounts     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/accounts:$tag       --shell
+    launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/cart:$tag           --shell
+    launch_service payment      "echo ok"                                       weaveworksdemos/payment:$tag        --no-shell
+    launch_service login        "/go/bin/login -port=80 -domain=mesos-executeinstance.weave.local"   weaveworksdemos/login:$tag      --shell
+    launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$tag --shell
 }
 
 do_stop() {
