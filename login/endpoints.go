@@ -11,7 +11,7 @@ import (
 
 // Endpoints collects the endpoints that comprise the Service.
 type Endpoints struct {
-	LoginEndpoint  endpoint.Endpoint
+	LoginEndpoint    endpoint.Endpoint
 	RegisterEndpoint endpoint.Endpoint
 }
 
@@ -19,7 +19,7 @@ type Endpoints struct {
 // backed by the given service.
 func MakeEndpoints(s Service) Endpoints {
 	return Endpoints{
-		LoginEndpoint:  MakeLoginEndpoint(s),
+		LoginEndpoint:    MakeLoginEndpoint(s),
 		RegisterEndpoint: MakeRegisterEndpoint(s),
 	}
 }
@@ -43,9 +43,8 @@ func MakeRegisterEndpoint(s Service) endpoint.Endpoint {
 }
 
 type loginRequest struct {
- 	Username    string
-	Password    string
-
+	Username string
+	Password string
 }
 
 type loginResponse struct {
@@ -53,8 +52,8 @@ type loginResponse struct {
 }
 
 type registerRequest struct {
- 	Username    string
-	Password    string
+	Username string
+	Password string
 }
 
 type registerResponse struct {
