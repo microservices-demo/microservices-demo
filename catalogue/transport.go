@@ -32,7 +32,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 		ctx,
 		e.ListEndpoint,
 		decodeListRequest,
-		encodeResponse,
+		encodeListResponse,
 		options...,
 	))
 	r.Methods("GET").Path("/catalogue/size").Handler(httptransport.NewServer(
@@ -71,6 +71,7 @@ func encodeError(_ context.Context, err error, w http.ResponseWriter) {
 		code = http.StatusNotFound
 	}
 	w.WriteHeader(code)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"error":       err.Error(),
 		"status_code": code,
@@ -103,9 +104,21 @@ func decodeListRequest(_ context.Context, r *http.Request) (interface{}, error) 
 	}, nil
 }
 
+// encodeListResponse is distinct from the generic encodeResponse because our
+// clients expect that we will encode the slice (array) of socks directly,
+// without the wrapping response object.
+func encodeListResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+	resp := response.(listResponse)
+	return encodeResponse(ctx, w, resp.Socks)
+}
+
 func decodeCountRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	tags := []string{}
+	if tagsval := r.FormValue("tags"); tagsval != "" {
+		tags = strings.Split(tagsval, ",")
+	}
 	return countRequest{
-		Tags: strings.Split(r.FormValue("tags"), ","),
+		Tags: tags,
 	}, nil
 }
 
@@ -115,6 +128,8 @@ func decodeGetRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	}, nil
 }
 
+// encodeGetResponse is distinct from the generic encodeResponse because we need
+// to special-case when the getResponse object contains a non-nil error.
 func encodeGetResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
 	resp := response.(getResponse)
 	if resp.Err != nil {

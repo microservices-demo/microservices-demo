@@ -60,7 +60,7 @@ func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) 
 func (s *fixedService) Count(tags []string) int {
 	var socks []Sock
 	{
-		socks = s.socks[:]
+		socks = s.socks
 		socks = filter(socks, tags)
 	}
 	return len(socks)
