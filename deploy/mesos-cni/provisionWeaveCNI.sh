@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -x
 
 if [ -z "$1" ]; then
     echo "Warn: No Master IP passed. Assuming this is master"
