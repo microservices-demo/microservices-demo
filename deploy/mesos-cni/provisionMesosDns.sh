@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -x
 
 ARGS="$@"
 COMMAND="${1}"
@@ -48,12 +47,11 @@ do_provision() {
 }
 
 do_launch() {
-    curl -X POST -H "Content-type: application/json" $ADDRESS:8080/v2/apps -d '{ "id": "'$APP_NAME'", "user": "root", "cpus": 0.1, "mem": 256, "uris": [ "https://github.com/mesosphere/mesos-dns/releases/download/v0.5.2/mesos-dns-v0.5.2-linux-amd64" ], "cmd": "mv mesos-dns-v* mesos-dns ; chmod +x mesos-dns ; ./mesos-dns -v=2 -config=/etc/mesos-dns/config.json", "instances": 3, "constraints": [["hostname", "UNIQUE"]] }'
+    curl -s -X POST -H "Content-type: application/json" $ADDRESS:8080/v2/apps -d '{ "id": "'$APP_NAME'", "user": "root", "cpus": 0.1, "mem": 256, "uris": [ "https://github.com/mesosphere/mesos-dns/releases/download/v0.5.2/mesos-dns-v0.5.2-linux-amd64" ], "cmd": "mv mesos-dns-v* mesos-dns ; chmod +x mesos-dns ; ./mesos-dns -v=2 -config=/etc/mesos-dns/config.json", "instances": 3, "constraints": [["hostname", "UNIQUE"]] }'
 }
 
 do_stop() {
-    curl -X DELETE -H "Content-type: application/json" $ADDRESS:8080/v2/apps/$APP_NAME
-    sleep 10
+    curl -s -X DELETE -H "Content-type: application/json" $ADDRESS:8080/v2/apps/$APP_NAME
 }
 
 do_usage() {
