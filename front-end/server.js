@@ -339,7 +339,11 @@ app.post("/cart", function (req, res, next) {
             };
             console.log("POST to carts: " + options.uri + " body: " + JSON.stringify(options.body));
             request(options, function (error, response, body) {
-                callback(error, response.statusCode);
+                if (error) {
+                    callback(error)
+                } else {
+                    callback(null, response.statusCode);
+                }
             });
         }
     ], function (err, statusCode) {
