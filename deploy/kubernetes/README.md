@@ -12,20 +12,6 @@ cd kubernetes/terraform
 Add AWS credentials to main.tf file
 
 Run terraform
-#Installation on Kubernetes
-
-(If you already have running k8s cluster skip to [here](https://github.com/weaveworks/weaveDemo/tree/kubernetes/kubernetes#deploy-app))
-
-Setup up Kubernetes cluster on AWS using [kubernetes-anywhere](https://github.com/kubernetes/kubernetes-anywhere) (with Terraform)
-
-```
-git clone https://github.com/weaveworks/weaveDemo
-cd kubernetes/terraform
-```
-
-Add AWS credentials to main.tf file
-
-Run terraform
 
 ```
 terraform get
@@ -34,7 +20,6 @@ terraform apply
 ```
 
 ###Configure CNI
-
 On each node 
 
 ```
@@ -44,7 +29,6 @@ weave setup
 ```
 
 ###Setup Sky DNS
-
 ```
 kubectl create -f kubernetes/definitions/ksNamespace.yaml
 kubectl create -f kubernetes/definitions/skydns-rc.yaml
@@ -53,9 +37,6 @@ kubectl create -f kubernetes/definitions/skydns-svc.yaml
 
 
 ##Deploy App:
-
-If using kubernetes-anywhere, log in to one of the nodes and run the toolbox:
-
 
 If using kubernetes-anywhere, log in to one of the nodes and run the toolbox:
 ```
@@ -107,7 +88,6 @@ Connect to "LoadBalancer Ingress" address
 ### Install Scope
 
 On each node
-
 ```
 sudo wget -O /usr/local/bin/scope https://git.io/scope
 sudo chmod a+x /usr/local/bin/scope
@@ -123,15 +103,6 @@ sudo scope launch
 Access port 4040 on Master to view Scope App
 
 ## Uninstall App
-
-Remove all deployments (will also remove pods)
-```
-kubectl delete deployments --all
-```
-Remove all services, except kubernetes
-Access port 4040 on Master
-
-## Uninstall demo
 
 Remove all deployments (will also remove pods)
 ```
