@@ -1,0 +1,71 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: accounts
+  labels:
+    name: accounts
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: accounts
+    spec:
+      containers:
+      - name: accounts
+        image: weaveworksdemos/accounts
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounts
+  labels:
+    name: accounts
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: accounts
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: accounts-db
+  labels:
+    name: accounts-db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: accounts-db
+    spec:
+      containers:
+      - name: accounts-db
+        image: mongo
+        ports:
+        - name: mongo
+          containerPort: 27017
+          hostPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounts-db
+  labels:
+    name: accounts-db
+spec:
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the frontend service.
+  ports:
+    # the port that this service should serve on
+  - port: 27017
+    targetPort: 27017
+  selector:
+    name: accounts-db
