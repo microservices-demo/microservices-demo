@@ -37,15 +37,17 @@ const (
 
 // NewFixedService returns a simple implementation of the Service interface,
 // fixed over a predefined set of users. Replace with db integration?
-func NewFixedService(users []User) Service {
+func NewFixedService(users []User, domain string) Service {
 	return &fixedService{
-		users: users,
+		users:  users,
+		domain: domain,
 	}
 }
 
 type fixedService struct {
-	mtx   sync.RWMutex
-	users []User
+	mtx    sync.RWMutex
+	users  []User
+	domain string
 }
 
 func (s *fixedService) Login(username, password string) (User, error) {
@@ -62,7 +64,7 @@ func (s *fixedService) Login(username, password string) (User, error) {
 		return User{}, ErrUnauthorized
 	}
 
-	c, err := lookupCustomer(username, password)
+	c, err := lookupCustomer(username, password, s.domain)
 
 	if err != nil || len(c.Embedded.Customers) < 1 {
 		return User{}, ErrUnauthorized
@@ -92,10 +94,15 @@ func (s *fixedService) Register(username, password string) bool {
 	return true
 }
 
-func lookupCustomer(u, p string) (customerResponse, error) {
+func lookupCustomer(u, p, domain string) (customerResponse, error) {
 	var c customerResponse
-
-	reqUrl := "http://" + customerHost + customerLookupPath + "?username=" + u
+	var host string
+	if domain != "" {
+		host = customerHost + "." + domain
+	} else {
+		host = customerHost
+	}
+	reqUrl := "http://" + host + customerLookupPath + "?username=" + u
 
 	res, err := http.Get(reqUrl)
 	if err != nil {

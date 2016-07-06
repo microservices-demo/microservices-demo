@@ -21,6 +21,7 @@ func main() {
 		dev    = flag.Bool("dev", false, "Dev mode.")
 		port   = flag.String("port", "8081", "Port to bind HTTP listener") // TODO(pb): should be -addr, default ":8081"
 		file   = flag.String("file", "/config/users.json", "Users file")
+		domain = flag.String("domain", "", "Domain for the accounts service")
 	)
 	flag.Parse()
 
@@ -49,7 +50,7 @@ func main() {
 	// Service domain.
 	var service login.Service
 	{
-		service = login.NewFixedService(users)
+		service = login.NewFixedService(users, *domain)
 		service = login.LoggingMiddleware(logger)(service)
 	}
 
