@@ -16,13 +16,13 @@ import works.weave.socks.accounts.entities.Address;
 import works.weave.socks.accounts.entities.Card;
 import works.weave.socks.accounts.entities.Customer;
 import works.weave.socks.cart.entities.Item;
+import works.weave.socks.orders.config.OrdersConfigurationProperties;
 import works.weave.socks.orders.entities.CustomerOrder;
 import works.weave.socks.orders.repositories.CustomerOrderRepository;
 import works.weave.socks.orders.resources.NewOrderResource;
 import works.weave.socks.orders.services.AsyncGetService;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -36,8 +36,8 @@ import java.util.regex.Pattern;
 public class OrdersController {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-    private final URI paymentUri = URI.create("http://payment/paymentAuth");
-    private final URI shippingUri = URI.create("http://shipping/shipping");
+    @Autowired
+    private OrdersConfigurationProperties config;
 
     @Autowired
     private AsyncGetService asyncGetService;
@@ -66,12 +66,12 @@ public class OrdersController {
             LOG.debug("End of calls.");
 
             // Call payment service to make sure they've paid
-            asyncGetService.postResource(paymentUri, "{}", new ParameterizedTypeReference<String>() {
+            asyncGetService.postResource(config.getPaymentUri(), "{}", new ParameterizedTypeReference<String>() {
             }).get(timeout, TimeUnit.SECONDS);
 
             // Ship
             String customerId = parseId(customerFuture.get(timeout, TimeUnit.SECONDS).getId().getHref());
-            Future<Shipment> shipmentFuture = asyncGetService.postResource(shippingUri, new Shipment(customerId), new ParameterizedTypeReference<Shipment>() {
+            Future<Shipment> shipmentFuture = asyncGetService.postResource(config.getShippingUri(), new Shipment(customerId), new ParameterizedTypeReference<Shipment>() {
             });
 
             CustomerOrder order = new CustomerOrder(
