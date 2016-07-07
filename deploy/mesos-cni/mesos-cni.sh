@@ -416,10 +416,10 @@ do_start() {
     launch_service orders-db    "echo ok"                                       mongo                               --no-shell
 
     launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$tag       --shell
-    launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$tag         --shell
+    launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$tag         --shell
     launch_service catalogue    "echo ok"                                       weaveworksdemos/catalogue:$tag      --no-shell
-    launch_service accounts     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/accounts:$tag       --shell
-    launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --domain=mesos-executeinstance.weave.local"    weaveworksdemos/cart:$tag           --shell
+    launch_service accounts     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=accounts-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/accounts:$tag       --shell
+    launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=cart-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/cart:$tag           --shell
     launch_service payment      "echo ok"                                       weaveworksdemos/payment:$tag        --no-shell
     launch_service login        "/go/bin/login -port=80 -domain=mesos-executeinstance.weave.local"   weaveworksdemos/login:$tag      --shell
     launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$tag --shell
