@@ -93,16 +93,17 @@ app.get("/login", function (req, res, next) {
             request(options, function (error, response, body) {
                 if (error) {
                     callback(error);
+                    return;
                 }
                 if (response.statusCode == 200 && body != null && body != "") {
                     console.log(body);
                     customerId = JSON.parse(body).id;
                     console.log(customerId);
                     callback(null, customerId);
-                } else {
-                    console.log(response.statusCode);
-                    callback(true);
+                    return;
                 }
+                console.log(response.statusCode);
+                callback(true);
             });
         },
         function (custId, callback) {
@@ -339,7 +340,11 @@ app.post("/cart", function (req, res, next) {
             };
             console.log("POST to carts: " + options.uri + " body: " + JSON.stringify(options.body));
             request(options, function (error, response, body) {
-                callback(error, response.statusCode);
+                if (error) {
+                    callback(error)
+                    return;
+                }
+                callback(null, response.statusCode);
             });
         }
     ], function (err, statusCode) {
@@ -428,6 +433,7 @@ app.post("/orders", function(req, res, next) {
                         request.get(addressLink, function (error, response, body) {
                             if (error) {
                                 callback(error);
+                                return;
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
@@ -442,6 +448,7 @@ app.post("/orders", function(req, res, next) {
                         request.get(cardLink, function (error, response, body) {
                             if (error) {
                                 callback(error);
+                                return;
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
@@ -454,6 +461,7 @@ app.post("/orders", function(req, res, next) {
                 ], function (err, result) {
                     if (err) {
                         callback(err);
+                        return;
                     }
                     console.log(result);
                     callback(null, order);
@@ -583,11 +591,11 @@ function getCartUrlForCustomerId(custId, callback) {
                         if (response.statusCode == 201) {
                             cartList.push(body);
                             console.log('New cart created for customerId: ' + custId + ': ' + JSON.stringify(body));
-                            callback(null, cartList)
-                        } else {
-                            callback("Unable to create new cart. Body: " + JSON.stringify(body));
+                            callback(null, cartList);
                             return;
                         }
+                        callback("Unable to create new cart. Body: " + JSON.stringify(body));
+                        return;
                     });
                 } else {
                     callback(null, cartList)
