@@ -479,17 +479,17 @@ app.post("/orders", function(req, res, next) {
                     if (error) {
                         return callback(error);
                     }
+                    console.log("Order response: " + JSON.stringify(response));
                     console.log("Order response: " + JSON.stringify(body));
-                    // Check for error code
-                    callback(null, body);
+                    callback(null, response.statusCode, body);
                 });
             }
         ],
-        function (err, result) {
+        function (err, status, result) {
             if (err) {
                 return next(err);
             }
-            respondStatusBody(res, 201, JSON.stringify(result));
+            respondStatusBody(res, status, JSON.stringify(result));
         });
 });
 

@@ -21,15 +21,17 @@ func MakeEndpoints(s Service) Endpoints {
 // MakeListEndpoint returns an endpoint via the given service.
 func MakeAuthoriseEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		_ = request.(authoriseRequest)
-		authorisation := s.Authorise()
-		return authoriseResponse{Authorisation: authorisation}, nil
+		req := request.(authoriseRequest)
+		authorisation, err := s.Authorise(req.Amount)
+		return authoriseResponse{Authorisation: authorisation, Err: err}, nil
 	}
 }
 
 type authoriseRequest struct {
+	Amount float32 `json:"amount"`
 }
 
 type authoriseResponse struct {
 	Authorisation Authorisation
+	Err           error
 }

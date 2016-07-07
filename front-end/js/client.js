@@ -43,28 +43,37 @@ function resetTags() {
     location.search = $.query.remove("tags");
 }
 
-function order(event) {
+function order() {
     if (!$.cookie('logged_in')) {
         alert("You must be logged in to place an order.");
         return false;
     }
 
+    var success = false;
     $.ajax({
         url: "orders",
         type: "POST",
         async: false,
         success: function (data, textStatus, jqXHR) {
-            console.log("Order placed.");
-            alert("Order placed!");
-            deleteCart();
+            console.log('Headers: ' + JSON.stringify(jqXHR));
+            console.log('Headers: ' + jqXHR);
+            if (jqXHR.status == 201) {
+                console.log("Order placed.");
+                alert("Order placed!");
+                deleteCart();
+                success = true;
+            }
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log('error: ' + JSON.stringify(jqXHR));
             console.log('error: ' + textStatus);
             console.log('error: ' + errorThrown);
+            if (jqXHR.status == 406) {
+                alert("Error placing order. Payment declined.");
+            }
         }
     });
-    return true;
+    return success;
 }
 
 function deleteCart() {

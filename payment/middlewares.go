@@ -23,7 +23,7 @@ type loggingMiddleware struct {
 	logger log.Logger
 }
 
-func (mw loggingMiddleware) Authorise() (auth Authorisation) {
+func (mw loggingMiddleware) Authorise(amount float32) (auth Authorisation, err error) {
 	defer func(begin time.Time) {
 		mw.logger.Log(
 			"method", "Authorise",
@@ -31,5 +31,5 @@ func (mw loggingMiddleware) Authorise() (auth Authorisation) {
 			"took", time.Since(begin),
 		)
 	}(time.Now())
-	return mw.next.Authorise()
+	return mw.next.Authorise(amount)
 }

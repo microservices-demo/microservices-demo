@@ -79,8 +79,9 @@ public class AsyncGetService {
     }
 
     @Async
-    public <T> Future<T> postResource(URI uri, T body, ParameterizedTypeReference<T> returnType) {
-        RequestEntity<T> request = RequestEntity.post(uri).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).body(body);
+    public <T, B> Future<T> postResource(URI uri, B body, ParameterizedTypeReference<T> returnType) {
+        RequestEntity<B> request = RequestEntity.post(uri).contentType(MediaType.APPLICATION_JSON).accept(MediaType
+                .APPLICATION_JSON).body(body);
         LOG.debug("Requesting: " + request.toString());
         T responseBody = restProxyTemplate.getRestTemplate().exchange(request, returnType).getBody();
         LOG.debug("Received: " + responseBody);
