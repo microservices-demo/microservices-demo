@@ -97,7 +97,7 @@ app.get("/login", function (req, res, next) {
                 }
                 if (response.statusCode == 200 && body != null && body != "") {
                     console.log(body);
-                    customerId = JSON.parse(body).id;
+                    customerId = JSON.parse(body).user.id;
                     console.log(customerId);
                     callback(null, customerId);
                     return;
