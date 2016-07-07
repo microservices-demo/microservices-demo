@@ -48,7 +48,7 @@ type loginRequest struct {
 }
 
 type loginResponse struct {
-	User User
+	User User `json:"user"`
 }
 
 type registerRequest struct {
@@ -57,5 +57,5 @@ type registerRequest struct {
 }
 
 type registerResponse struct {
-	Status bool
+	Status bool `json:"status"`
 }
