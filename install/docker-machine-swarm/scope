@@ -14,7 +14,7 @@ usage() {
     exit 1
 }
 
-SCRIPT_VERSION="0.15.0"
+SCRIPT_VERSION="0.16.0"
 if [ "$SCRIPT_VERSION" = "(unreleased version)" ] ; then
     IMAGE_VERSION=latest
 else
