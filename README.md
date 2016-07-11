@@ -21,6 +21,7 @@ cd weaveDemo
 ## Non-swarm mode, local virtual machine
 Note that this pulls all images from docker-hub. Because of the variety of microservices, this will take a while.
 ```
+cd deploy/docker-single
 docker-machine create default -d virtualbox
 eval $(docker-machine env default)
 docker-compose pull
