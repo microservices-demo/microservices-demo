@@ -12,11 +12,13 @@ There are two options to run this demo.
 
 
 ## Prerequisites
-Docker Toolbox, which includes docker-machine and docker-compose. I will assume that you have cloned this repo with:
+Docker Toolbox, which includes docker-machine and docker-compose. Clone this repository:
 ```
 git clone https://github.com/weaveworks/weaveDemo.git
 cd weaveDemo
 ```
+
+Make sure [weave plugin](https://www.weave.works/guides/part-1-launching-weave-net-with-docker-machine/) is running.
 
 ## Non-swarm mode, local virtual machine
 Note that this pulls all images from docker-hub. Because of the variety of microservices, this will take a while.
@@ -27,6 +29,8 @@ eval $(docker-machine env default)
 docker-compose pull
 docker-compose up -d
 ```
+
+Navigate to http://localhost to verify that the app is running.
 
 ## Non-swarm mode, remote host
 Setup the remote machines with docker, swarm, weave net and scope. Then:
