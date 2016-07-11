@@ -25,10 +25,10 @@ type service struct {
 
 func (s *service) Authorise(amount float32) (Authorisation, error) {
 	if amount == 0 {
-		return Authorisation{}, ErrZeroPayment
+		return Authorisation{}, ErrInvalidPaymentAmount
 	}
 	if amount < 0 {
-		return Authorisation{}, ErrNegativePayment
+		return Authorisation{}, ErrInvalidPaymentAmount
 	}
 	authorised := false
 	if amount <= s.declineOverAmount {
@@ -39,5 +39,4 @@ func (s *service) Authorise(amount float32) (Authorisation, error) {
 	}, nil
 }
 
-var ErrZeroPayment = errors.New("Zero payment")
-var ErrNegativePayment = errors.New("Negative payment")
+var ErrInvalidPaymentAmount = errors.New("Invalid payment amount")

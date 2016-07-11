@@ -55,8 +55,6 @@ function order() {
         type: "POST",
         async: false,
         success: function (data, textStatus, jqXHR) {
-            console.log('Headers: ' + JSON.stringify(jqXHR));
-            console.log('Headers: ' + jqXHR);
             if (jqXHR.status == 201) {
                 console.log("Order placed.");
                 alert("Order placed!");

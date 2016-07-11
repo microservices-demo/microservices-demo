@@ -46,7 +46,11 @@ func decodeAuthoriseRequest(_ context.Context, r *http.Request) (interface{}, er
 	// Read the content
 	var bodyBytes []byte
 	if r.Body != nil {
-		bodyBytes, _ = ioutil.ReadAll(r.Body)
+		var err error
+		bodyBytes, err = ioutil.ReadAll(r.Body)
+		if err != nil {
+			return nil, err
+		}
 	}
 	// Save the content
 	bodyString := string(bodyBytes)
