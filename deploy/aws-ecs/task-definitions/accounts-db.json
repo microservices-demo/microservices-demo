@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-acounts-db",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "mongo",
+            "memory": 300,
+            "name": "accounts-db"
+        }
+    ]
+}

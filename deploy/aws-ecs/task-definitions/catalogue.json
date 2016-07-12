@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-catalogue",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/catalogue",
+            "memory": 300,
+            "name": "catalogue"
+        }
+    ]
+}

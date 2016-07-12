@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-rabbitmq",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "rabbitmq:3",
+            "memory": 300,
+            "name": "rabbitmq"
+        }
+    ]
+}
