@@ -1,0 +1,43 @@
+[
+    {
+        "name": "dataproducer",
+        "entryPoint": [
+            "sh",
+            "-c"
+        ],
+        "command": [
+            "while true; do echo 'Hi, this is the data producer in' `hostname -i | awk '{ print $1 }'` | nc -q 0 -l -p 4540; done"
+        ],
+        "essential": true,
+        "memory": 300,
+        "cpu": 10,
+        "image": "2opremio\/weaveecsdemo"
+    },
+    {
+        "name": "httpserver",
+        "environment": [
+            {
+                "name": "DATA_PRODUCER_NAME",
+                "value": "dataproducer"
+            }
+        ],
+        "portMappings": [
+            {
+                "hostPort": 80,
+                "containerPort": 80,
+                "protocol": "tcp"
+            }
+        ],
+        "entryPoint": [
+            "bash",
+            "-c"
+        ],
+        "command": [
+            "set -x; sleep 7; while true; do DATA_PRODUCER_MESSAGE=`nc ${DATA_PRODUCER_NAME} 4540`; HTML=\"<html> <head> <link rel=\\\"icon\\\" href=\\\"data:;base64,iVBORw0KGgo=\\\"> <title>Weaveworks Amazon ECS Sample App<\/title> <style>body {margin-top: 40px; background-color: #333;} <\/style> <\/head><body> <div style=color:white;text-align:center><h1>Chosen data producer message:<\/h1> <h2>${DATA_PRODUCER_MESSAGE}<\/h2> <\/div>\"; echo -e \"HTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\nConnection: close\\r\\nContent-Length: $(echo $HTML | wc -c)\\r\\n\\r\\n$HTML\" | nc -q 0 -l -p 80; done"
+        ],
+        "essential": true,
+        "memory": 300,
+        "cpu": 10,
+        "image": "2opremio\/weaveecsdemo"
+    }
+]
