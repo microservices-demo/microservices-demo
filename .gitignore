@@ -104,3 +104,4 @@ fabric.properties
 
 # Maven builds
 /*/target/
+weave-ecs-demo-key.pem
