@@ -5,5 +5,6 @@ for i in "${arr[@]}"
 do
  cd $i
  vagrant up
+ vagrant provision
  cd ..
 done
