@@ -10,26 +10,6 @@ TARGET_HOST="$HOST"
 CLIENTS=2
 REQUESTS=10
 
-while getopts ":h:c:r:" o; do
-  case "${o}" in
-    h)
-        TARGET_HOST=${OPTARG}
-        #echo $TARGET_HOST
-        ;;
-    c)
-        CLIENTS=${OPTARG:-2}
-        #echo $CLIENTS
-        ;;
-    r)
-        REQUESTS=${OPTARG:-10}
-        #echo $REQUESTS
-        ;;
-    *)
-        do_usage
-        ;;
-  esac
-done
-
 
 do_check() {
 
@@ -76,6 +56,29 @@ Description:
 EOF
   exit 1
 }
+
+
+
+while getopts ":h:c:r:" o; do
+  case "${o}" in
+    h)
+        TARGET_HOST=${OPTARG}
+        #echo $TARGET_HOST
+        ;;
+    c)
+        CLIENTS=${OPTARG:-2}
+        #echo $CLIENTS
+        ;;
+    r)
+        REQUESTS=${OPTARG:-10}
+        #echo $REQUESTS
+        ;;
+    *)
+        do_usage
+        ;;
+  esac
+done
+
 
 do_check
 do_exec

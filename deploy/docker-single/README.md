@@ -1,12 +1,12 @@
 # Weave Demo on Docker (single-host)
 
-The Weave Demo application is packaged using a [Docker Compose](https://docs.docker.com/compose/).
+The Weave Demo application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.
 
 ## Pre-requisites
 
-- Docker
-- [Weave Net](https://www.weave.works/products/install-weave-net/)
-- [Weave Scope](https://www.weave.works/products/install-weave-scope/)
+- Install Docker
+- Install [Weave Net](https://www.weave.works/products/install-weave-net/)
+- Install [Weave Scope](https://www.weave.works/products/install-weave-scope/)
 
 ## Install & run
 
@@ -29,4 +29,7 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 There's a load test provided to simulate user traffic to the application.
 
     docker run weaveworksdemos/load-test -h http://localhost/ -r 100 -c 2
+
+This will send some traffic to the application, which will form the connection graph that you view in Scope or Weave Cloud.
+
 
