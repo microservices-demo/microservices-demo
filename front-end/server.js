@@ -42,7 +42,7 @@ var accountsHostname = "accounts";
 var loginHostname = "login";
 
 function addDomain(hostname) {
-    return hostname + "." + domain;
+    return domain != null && domain != "" ? hostname + "." + domain : hostname;
 }
 
 function wrapHttp(host) {
