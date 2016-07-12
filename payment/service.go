@@ -1,7 +1,9 @@
 package payment
 
+import "errors"
+
 type Service interface {
-	Authorise() Authorisation // GET /paymentAuth
+	Authorise(total float32) (Authorisation, error) // GET /paymentAuth
 }
 
 type Authorisation struct {
@@ -11,15 +13,30 @@ type Authorisation struct {
 // NewFixedService returns a simple implementation of the Service interface,
 // fixed over a predefined set of socks and tags. In a real service you'd
 // probably construct this with a database handle to your socks DB, etc.
-func NewAuthorisationService() Service {
-	return &service{}
+func NewAuthorisationService(declineOverAmount float32) Service {
+	return &service{
+		declineOverAmount: declineOverAmount,
+	}
 }
 
 type service struct {
+	declineOverAmount float32
 }
 
-func (s *service) Authorise() Authorisation {
-	return Authorisation{
-		Authorised: true,
+func (s *service) Authorise(amount float32) (Authorisation, error) {
+	if amount == 0 {
+		return Authorisation{}, ErrInvalidPaymentAmount
 	}
+	if amount < 0 {
+		return Authorisation{}, ErrInvalidPaymentAmount
+	}
+	authorised := false
+	if amount <= s.declineOverAmount {
+		authorised = true
+	}
+	return Authorisation{
+		Authorised: authorised,
+	}, nil
 }
+
+var ErrInvalidPaymentAmount = errors.New("Invalid payment amount")

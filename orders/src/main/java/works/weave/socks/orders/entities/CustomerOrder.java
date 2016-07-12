@@ -39,10 +39,13 @@ public class CustomerOrder {
 
     private Date date = Calendar.getInstance().getTime();
 
+    private float total;
+
     public CustomerOrder() {
     }
 
-    public CustomerOrder(String id, String customerId, Customer customer, Address address, Card card, Collection<Item> items, Shipment shipment, Date date) {
+    public CustomerOrder(String id, String customerId, Customer customer, Address address, Card card,
+                         Collection<Item> items, Shipment shipment, Date date, float total) {
         this.id = id;
         this.customerId = customerId;
         this.customer = customer;
@@ -51,6 +54,7 @@ public class CustomerOrder {
         this.items = items;
         this.shipment = shipment;
         this.date = date;
+        this.total = total;
     }
 
     @Override
@@ -126,5 +130,13 @@ public class CustomerOrder {
 
     public void setShipment(Shipment shipment) {
         this.shipment = shipment;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
     }
 }

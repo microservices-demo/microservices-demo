@@ -14,7 +14,8 @@ import (
 
 func main() {
 	var (
-		port = flag.String("port", "8080", "Port to bind HTTP listener")
+		port          = flag.String("port", "8080", "Port to bind HTTP listener")
+		declineAmount = flag.Float64("decline", 100, "Decline payments over certain amount")
 	)
 	flag.Parse()
 
@@ -33,7 +34,7 @@ func main() {
 	// Service domain.
 	var service payment.Service
 	{
-		service = payment.NewAuthorisationService()
+		service = payment.NewAuthorisationService(float32(*declineAmount))
 		service = payment.LoggingMiddleware(logger)(service)
 	}
 
