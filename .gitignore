@@ -102,5 +102,10 @@ crashlytics-build.properties
 fabric.properties
 # Created by .ignore support plugin (hsz.mobi)
 
+
 # Ignore Vagrant cache files
 *.vagrant/
+
+# Maven builds
+/*/target/
+

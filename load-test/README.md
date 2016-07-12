@@ -9,5 +9,5 @@
 Clients and Requests arguments are optional and default to 2 and 10.
 
 # Running in Docker Container
-* Build `docker build -t load-tset .`
+* Build `docker build -t load-test .`
 * Run `docker run -e "TARGET_HOST=[HOST]" load-test`

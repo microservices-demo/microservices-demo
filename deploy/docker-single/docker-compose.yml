@@ -1,0 +1,162 @@
+version: '2'
+
+services:
+  front-end:
+    image: weaveworksdemos/front-end
+    hostname: front-end
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - external
+      - secure
+      - internal
+  edge-router:
+    image: weaveworksdemos/edge-router
+    ports:
+      - '80:80'
+    hostname: edge-router
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - external
+    environment:
+      - "constraint:node==swarm-master"
+  catalogue:
+    image: weaveworksdemos/catalogue
+    hostname: catalogue
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - external
+  accounts:
+    image: weaveworksdemos/accounts
+    hostname: accounts
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - secure
+  accounts-db:
+    image: mongo
+    hostname: accounts-db
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - secure
+  cart:
+    image: weaveworksdemos/cart
+    hostname: cart
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - internal
+  cart-db:
+    image: mongo
+    hostname: cart-db
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - internal
+  orders:
+    image: weaveworksdemos/orders
+    hostname: orders
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - internal
+      - secure
+      - backoffice
+  orders-db:
+    image: mongo
+    hostname: orders-db
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - internal
+  shipping:
+    image: weaveworksdemos/shipping
+    hostname: shipping
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - backoffice
+  queue-master:
+    image: weaveworksdemos/queue-master
+    hostname: queue-master
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - backoffice
+  rabbitmq:
+    image: rabbitmq:3
+    hostname: rabbitmq
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - backoffice
+  payment:
+    image: weaveworksdemos/payment
+    hostname: payment
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - secure
+  login:
+    image: weaveworksdemos/login
+    hostname: login
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - secure
+networks:
+  external:
+    driver: weavemesh
+  secure:
+    driver: weavemesh
+  internal:
+    driver: weavemesh
+  backoffice:
+    driver: weavemesh

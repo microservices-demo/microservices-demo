@@ -24,15 +24,39 @@ app.use(function(err, req, res, next) {
     });
 });
 
-var catalogueUrl = "http://catalogue";
-var cartsUrl = "http://cart/carts";
-var ordersUrl = "http://orders";
-var itemsUrl = "http://cart/items";
-var customersUrl = "http://accounts/customers";
-var addressUrl = "http://accounts/addresses";
-var cardsUrl = "http://accounts/cards";
-var loginUrl = "http://login/login";
-var registerUrl = "http://login/register";
+var domain = "";
+process.argv.forEach(function (val, index, array) {
+    var arg = val.split("=");
+    if (arg.length > 1) {
+        if (arg[0] == "--domain") {
+            domain = arg[1];
+            console.log("Setting domain to:", domain);
+        }
+    }
+});
+
+var catalogueHostname = "catalogue";
+var cartsHostname = "cart";
+var ordersHostname = "orders";
+var accountsHostname = "accounts";
+var loginHostname = "login";
+
+function addDomain(hostname) {
+    return hostname + "." + domain;
+}
+
+function wrapHttp(host) {
+    return "http://" + host;
+}
+
+var catalogueUrl = wrapHttp(addDomain(catalogueHostname));
+var cartsUrl = wrapHttp(addDomain(cartsHostname)) + "/carts";
+var ordersUrl = wrapHttp(addDomain(ordersHostname));
+var customersUrl = wrapHttp(addDomain(accountsHostname)) + "/customers";
+var addressUrl = wrapHttp(addDomain(accountsHostname)) + "/addresses";
+var cardsUrl = wrapHttp(addDomain(accountsHostname)) + "/cards";
+var loginUrl = wrapHttp(addDomain(loginHostname)) + "/login";
+var registerUrl = wrapHttp(addDomain(loginHostname)) + "/register";
 var tagsUrl = catalogueUrl + "/tags";
 
 /**
@@ -69,16 +93,17 @@ app.get("/login", function (req, res, next) {
             request(options, function (error, response, body) {
                 if (error) {
                     callback(error);
+                    return;
                 }
                 if (response.statusCode == 200 && body != null && body != "") {
                     console.log(body);
-                    customerId = JSON.parse(body).id;
+                    customerId = JSON.parse(body).user.id;
                     console.log(customerId);
                     callback(null, customerId);
-                } else {
-                    console.log(response.statusCode);
-                    callback(true);
+                    return;
                 }
+                console.log(response.statusCode);
+                callback(true);
             });
         },
         function (custId, callback) {
@@ -315,7 +340,11 @@ app.post("/cart", function (req, res, next) {
             };
             console.log("POST to carts: " + options.uri + " body: " + JSON.stringify(options.body));
             request(options, function (error, response, body) {
-                callback(error, response.statusCode);
+                if (error) {
+                    callback(error)
+                    return;
+                }
+                callback(null, response.statusCode);
             });
         }
     ], function (err, statusCode) {
@@ -404,6 +433,7 @@ app.post("/orders", function(req, res, next) {
                         request.get(addressLink, function (error, response, body) {
                             if (error) {
                                 callback(error);
+                                return;
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
@@ -418,6 +448,7 @@ app.post("/orders", function(req, res, next) {
                         request.get(cardLink, function (error, response, body) {
                             if (error) {
                                 callback(error);
+                                return;
                             }
                             console.log("Received response: " + JSON.stringify(body));
                             jsonBody = JSON.parse(body);
@@ -430,6 +461,7 @@ app.post("/orders", function(req, res, next) {
                 ], function (err, result) {
                     if (err) {
                         callback(err);
+                        return;
                     }
                     console.log(result);
                     callback(null, order);
@@ -559,11 +591,11 @@ function getCartUrlForCustomerId(custId, callback) {
                         if (response.statusCode == 201) {
                             cartList.push(body);
                             console.log('New cart created for customerId: ' + custId + ': ' + JSON.stringify(body));
-                            callback(null, cartList)
-                        } else {
-                            callback("Unable to create new cart. Body: " + JSON.stringify(body));
+                            callback(null, cartList);
                             return;
                         }
+                        callback("Unable to create new cart. Body: " + JSON.stringify(body));
+                        return;
                     });
                 } else {
                     callback(null, cartList)
