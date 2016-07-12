@@ -1,0 +1,6 @@
+---
+- name: ensure weave is present
+  get_url: url=https://git.io/weave dest={{ weave_bin }}
+
+- name: ensure weave script is executable
+  file: path={{ weave_bin }} mode="a+x"

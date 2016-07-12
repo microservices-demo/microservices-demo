@@ -1,0 +1,23 @@
+---
+- name: ensure docker repo is present
+  copy: src=files/docker.repo dest=/etc/yum.repos.d/docker.repo
+  when: not docker_rc
+
+- name: ensure docker testing repo is present
+  copy: src=files/docker-testing.repo dest=/etc/yum.repos.d/docker-testing.repo
+  when: docker_rc
+
+- name: ensure docker is installed
+  yum: name=docker-engine state=present
+
+- name: ensure unit file is present & up to date
+  copy: src=files/docker.service dest=/usr/lib/systemd/system/docker.service
+  notify:
+    - reload unit
+    - restart docker
+
+- name: ensure starts on system boot
+  service: name=docker enabled=yes
+
+- name: ensure vagrant user can run docker commands
+  user: name=vagrant groups=docker append=yes
