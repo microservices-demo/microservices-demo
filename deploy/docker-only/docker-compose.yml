@@ -1,0 +1,93 @@
+version: '2'
+
+services:
+  front-end:
+    image: weaveworksdemos/front-end
+    hostname: front-end
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  edge-router:
+    image: weaveworksdemos/edge-router
+    ports:
+      - '80:80'
+    hostname: edge-router
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    environment:
+      - "constraint:node==swarm-master"
+  catalogue:
+    image: weaveworksdemos/catalogue
+    hostname: catalogue
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  accounts:
+    image: weaveworksdemos/accounts
+    hostname: accounts
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  accounts-db:
+    image: mongo
+    hostname: accounts-db
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  cart:
+    image: weaveworksdemos/cart
+    hostname: cart
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  cart-db:
+    image: mongo
+    hostname: cart-db
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  orders:
+    image: weaveworksdemos/orders
+    hostname: orders
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  orders-db:
+    image: mongo
+    hostname: orders-db
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  shipping:
+    image: weaveworksdemos/shipping
+    hostname: shipping
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  queue-master:
+    image: weaveworksdemos/queue-master
+    hostname: queue-master
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  rabbitmq:
+    image: rabbitmq:3
+    hostname: rabbitmq
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  payment:
+    image: weaveworksdemos/payment
+    hostname: payment
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+  login:
+    image: weaveworksdemos/login
+    hostname: login
+    restart: always
+    environment:
+      - reschedule:on-node-failure
