@@ -18,6 +18,8 @@ git clone https://github.com/weaveworks/weaveDemo.git
 cd weaveDemo
 ```
 
+Install Weave Net by following [the instructions](https://www.weave.works/install-weave-net/).
+
 ## Non-swarm mode, local virtual machine
 Note that this pulls all images from docker-hub. Because of the variety of microservices, this will take a while.
 ```
