@@ -62,7 +62,7 @@ class APITasks(TaskSet):
 		# print catItem
 		time.sleep(2.0)
 		self.item_id = catItem["id"]
-		self.client.post("/cart", json={"id": self.item_id, "quantity": 3})
+		self.client.post("/cart", json={"id": self.item_id, "quantity": 1})
 
 	def buy(self):
 		self.client.post("/orders", json={"customer": self.cust_id})
