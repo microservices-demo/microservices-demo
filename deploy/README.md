@@ -8,10 +8,10 @@ So far, deployment targets include:
 - [Docker Swarm](./docker-swarm/)
 - [Kubernetes](./kubernetes/)
 - [Mesos (CNI)](./mesos-cni/)
+- [Amazon ECS](./aws-ecs/)
 
 Future targets include:
 
-- Amazon ECS
 - Mesosphere DC/OS
 - Docker Swarmkit
 - Docker Cloud
