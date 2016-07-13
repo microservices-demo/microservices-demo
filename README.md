@@ -5,7 +5,11 @@ Demo microservices application for Weave.
 
 
 # Installing
-There are two options to run this demo. 1) Run on a single VM or host, 2) Run inside a Docker Swarm. The first option is best for beginners and swarm can introduce some complexity.
+There are two options to run this demo. 
+
+1. Run on a single VM or host, 
+2. Run inside a Docker Swarm. The first option is best for beginners and swarm can introduce some complexity.
+
 
 ## Prerequisites
 Docker Toolbox, which includes docker-machine and docker-compose. I will assume that you have cloned this repo with:
@@ -35,8 +39,9 @@ You have two options. Allow docker compose to pull all the latest images from do
 
 ### Local Demo mode
 ```
-./scripts/install.sh launch
+[./install/docker-machine-swarm/install.sh] launch
 eval $(docker-machine env --swarm swarm-master)
+cd deploy/docker-swarm
 docker-compose pull
 docker-compose up -d
 ```
@@ -66,9 +71,10 @@ docker-compose up -d
 
 ### Dev mode
 ```
-./scripts/install.sh launch
+./install/docker-machine-swarm/install.sh launch
 ./build.sh
 eval $(docker-machine env --swarm swarm-master)
+cd deploy/docker-swarm
 docker-compose up -d
 ```
 Swarm up's are unstable. Pulling and building the project in stages seems to be more stable.
@@ -83,6 +89,7 @@ docker $(docker-machine config swarm-master) run -p 8888:8888 -d --name=proxy --
 
 # Uninstalling
 This will remove all docker-machines.
+
 ## Swarm
 ```
 ./scripts/install.sh destroy
