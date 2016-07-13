@@ -18,7 +18,7 @@ exit_on_failure() {
 
 cleanup_services() {
     docker service rm front-end
-    docker service rm edge-router
+    # docker service rm edge-router
     docker service rm catalogue
     docker service rm accounts
     docker service rm accounts-db
@@ -48,18 +48,19 @@ fi
 echo "Creating front-end service"
 docker service create \
        --network ingress \
+       --publish 8097:80 \
        --name front-end --env "reschedule=on-node-failure" weaveworksdemos/front-end:latest
 
 exit_on_failure
 
-echo "Creating edge-router service"
-docker service create \
-       --name edge-router \
-       --network ingress \
-       --publish 80 \
-       --env "reschedule=on-node-failure" weaveworksdemos/edge-router:latest
+# echo "Creating edge-router service"
+# docker service create \
+#        --name edge-router \
+#        --network ingress \
+#        --publish 80 \
+#        --env "reschedule=on-node-failure" weaveworksdemos/edge-router:latest
 
-exit_on_failure
+# exit_on_failure
 
 echo "Creating catalogue service"
 docker service create \
