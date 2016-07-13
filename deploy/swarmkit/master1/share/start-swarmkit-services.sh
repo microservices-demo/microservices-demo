@@ -27,8 +27,8 @@ cleanup_services() {
     docker service rm orders
     docker service rm orders-db
     docker service rm shipping
-    docker service rm queue-master
-    docker service rm rabbitmq
+    # docker service rm queue-master
+    # docker service rm rabbitmq
     docker service rm payment
     docker service rm login
     #docker service rm weave-scope
@@ -121,21 +121,21 @@ docker service create \
        --env "reschedule=on-node-failure" weaveworksdemos/shipping:latest
 exit_on_failure
 
-echo "Creating shipping service"
-docker service create \
-       --name queue-master \
-       --network ingress \
-       --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-       --env "reschedule=on-node-failure" weaveworksdemos/queue-master:latest
-exit_on_failure
+# echo "Creating queue-master service"
+# docker service create \
+#        --name queue-master \
+#        --network ingress \
+#        --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+#        --env "reschedule=on-node-failure" weaveworksdemos/queue-master:latest
+# exit_on_failure
 
 
-echo "Creating rabbitmq service"
-docker service create \
-       --name rabbitmq \
-       --network ingress \
-       --env "reschedule=on-node-failure" rabbitmq:3
-exit_on_failure
+# echo "Creating rabbitmq service"
+# docker service create \
+#        --name rabbitmq \
+#        --network ingress \
+#        --env "reschedule=on-node-failure" rabbitmq:3
+# exit_on_failure
 
 echo "Creating payment service"
 docker service create \
