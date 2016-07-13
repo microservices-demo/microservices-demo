@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Check that we have everything we need
 
 if [ -z "$(which aws)" ]; then
@@ -18,14 +19,27 @@ if [ -n "$(aws ecs describe-clusters --clusters weave-ecs-demo-cluster --query '
     exit 1
 fi
 
-# Delete service
-echo -n "Deleting ECS Service (weave-ecs-demo-service) .. "
-aws ecs update-service --cluster weave-ecs-demo-cluster --service  weave-ecs-demo-service --desired-count 0 > /dev/null
-aws ecs delete-service --cluster weave-ecs-demo-cluster --service  weave-ecs-demo-service > /dev/null
+# Delete services
+echo -n "Deleting ECS Services..."
+for td in task-definitions/*.json
+do
+    td_name=$(jq .family $td | tr -d '"')
+    aws ecs update-service --cluster weave-ecs-demo-cluster --service ${td_name}-service --desired-count 0 >/dev/null
+    aws ecs delete-service --cluster weave-ecs-demo-cluster --service ${td_name}-service >/dev/null
+done
 echo "done"
 
-# Task definition
-echo -n "De-registering ECS Task Definition (weave-ecs-demo-task) .. "
-REVISION=$(aws ecs describe-task-definition --task-definition weave-ecs-demo-task --query 'taskDefinition.revision' --output text)
-aws ecs deregister-task-definition --task-definition "weave-ecs-demo-task:${REVISION}" > /dev/null
+# Delete task definitions
+echo -n "De-registering ECS Task Definitions..."
+for td in task-definitions/*.json
+do
+    td_name=$(jq .family $td | tr -d '"')
+    revision=$(aws ecs describe-task-definition --task-definition $td_name --query 'taskDefinition.revision' --output text)
+    while [ $revision -ge 1 ]
+    do
+        aws ecs deregister-task-definition --task-definition "${td_name}:${revision}" > /dev/null
+        revision=$(expr $revision - 1)
+        if [ $revision -eq 0 ]; then break; fi
+    done
+done
 echo "done"

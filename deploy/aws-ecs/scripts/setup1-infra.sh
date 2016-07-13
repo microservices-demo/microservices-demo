@@ -154,12 +154,13 @@ cp data/set-ecs-cluster-name.sh $TMP_USER_DATA_FILE
 if [ -n "$SCOPE_AAS_PROBE_TOKEN" ]; then
     echo "echo SERVICE_TOKEN=$SCOPE_AAS_PROBE_TOKEN >> /etc/weave/scope.config" >> $TMP_USER_DATA_FILE
 fi
-aws autoscaling create-launch-configuration --image-id $AMI --launch-configuration-name weave-ecs-launch-configuration --key-name weave-ecs-demo-key --security-groups $SECURITY_GROUP_ID --instance-type t2.micro --user-data file://$TMP_USER_DATA_FILE  --iam-instance-profile weave-ecs-instance-profile --associate-public-ip-address --instance-monitoring Enabled=false
+aws autoscaling create-launch-configuration --image-id $AMI --launch-configuration-name weave-ecs-launch-configuration --key-name weave-ecs-demo-key --security-groups $SECURITY_GROUP_ID --instance-type t2.small --user-data file://$TMP_USER_DATA_FILE  --iam-instance-profile weave-ecs-instance-profile --associate-public-ip-address --instance-monitoring Enabled=false
 echo "done"
 
 # Auto Scaling Group
-echo -n "Creating Auto Scaling Group (weave-ecs-demo-group) with 3 instances .. "
-aws autoscaling create-auto-scaling-group --auto-scaling-group-name weave-ecs-demo-group --launch-configuration-name weave-ecs-launch-configuration --min-size 3 --max-size 3 --desired-capacity 3 --vpc-zone-identifier $SUBNET_ID
+scale=3
+echo -n "Creating Auto Scaling Group (weave-ecs-demo-group) with $scale instances .. "
+aws autoscaling create-auto-scaling-group --auto-scaling-group-name weave-ecs-demo-group --launch-configuration-name weave-ecs-launch-configuration --min-size $scale --max-size $scale --desired-capacity $scale --vpc-zone-identifier $SUBNET_ID
 
 # Useful to test peer-discovery using the weave:peerGroupName tag instead of Autoscaling-group-membership.
 #aws autoscaling create-or-update-tags --tags "ResourceId=weave-ecs-demo-group,ResourceType=auto-scaling-group,Key=weave:peerGroupName,Value=test,PropagateAtLaunch=true"
@@ -167,7 +168,7 @@ echo "done"
 
 # Wait for instances to join the cluster
 echo -n "Waiting for instances to join the cluster (this may take a few minutes) .. "
-while [ "$(aws ecs describe-clusters --clusters weave-ecs-demo-cluster --query 'clusters[0].registeredContainerInstancesCount' --output text)" != 3 ]; do
+while [ "$(aws ecs describe-clusters --clusters weave-ecs-demo-cluster --query 'clusters[0].registeredContainerInstancesCount' --output text)" != $scale ]; do
     sleep 2
 done
 echo "done"
