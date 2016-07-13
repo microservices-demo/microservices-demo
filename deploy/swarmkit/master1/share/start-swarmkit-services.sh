@@ -37,7 +37,6 @@ fi
 echo "Creating front-end service"
 docker service create \
        --network ingress \
-       #       --publish 8079 \
        --name front-end --env "reschedule=on-node-failure" weaveworksdemos/front-end:latest
 
 exit_on_failure
@@ -45,7 +44,6 @@ exit_on_failure
 echo "Creating edge-router service"
 docker service create \
        --name edge-router \
-       #       --publish 80 \
        --network ingress \
        --env "reschedule=on-node-failure" weaveworksdemos/edge-router:latest
 
@@ -61,8 +59,7 @@ exit_on_failure
 echo "Creating weave scope service"
 docker service create \
        --name weave-scope \
-       #       --publish 4040 \
-       --network ingress weaveworks/scope:0.15 "--probe.docker" "true"
+       --network ingress weaveworks/scope:0.15
 exit_on_failure
 
 echo "Done"
