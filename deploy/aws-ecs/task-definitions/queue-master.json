@@ -4,7 +4,7 @@
         {
             "essential": true,
             "image": "weaveworksdemos/queue-master",
-            "memory": 300,
+            "memory": 256,
             "mountPoints": [
                 {
                     "containerPath": "/var/run/docker.sock",
