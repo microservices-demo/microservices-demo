@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-shipping",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/shipping",
+            "memory": 256,
+            "name": "shipping"
+        }
+    ]
+}

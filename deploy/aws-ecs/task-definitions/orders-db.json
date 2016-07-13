@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-orders-db",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "mongo",
+            "memory": 256,
+            "name": "orders-db"
+        }
+    ]
+}

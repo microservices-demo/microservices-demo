@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-cart-db",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "mongo",
+            "memory": 256,
+            "name": "cart-db"
+        }
+    ]
+}

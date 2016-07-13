@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-login",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/login",
+            "memory": 256,
+            "name": "login"
+        }
+    ]
+}

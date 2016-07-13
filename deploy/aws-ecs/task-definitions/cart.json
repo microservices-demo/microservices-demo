@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-cart",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/cart",
+            "memory": 256,
+            "name": "cart"
+        }
+    ]
+}

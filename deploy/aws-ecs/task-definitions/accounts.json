@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-accounts",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/accounts",
+            "memory": 256,
+            "name": "accounts"
+        }
+    ]
+}

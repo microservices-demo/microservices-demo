@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-payment",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/payment",
+            "memory": 256,
+            "name": "payment"
+        }
+    ]
+}
