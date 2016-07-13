@@ -47,8 +47,8 @@ fi
 
 echo "Creating front-end service"
 docker service create \
-       --network ingress \
-       --publish 8097:80 \
+       --publish 8079 \
+       --mode global \
        --name front-end --env "reschedule=on-node-failure" weaveworksdemos/front-end:latest
 
 exit_on_failure

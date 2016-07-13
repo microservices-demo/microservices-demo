@@ -33,7 +33,7 @@ SSH into the master node ```vagrant ssh```
 
 Launch docker swarm manager
 ```
-docker swarm init --listen-addr 192.168.11.10:2377
+docker swarm init --secret "" --listen-addr 192.168.11.10:2377
 ```
 
 SSH into node1 and join the swarm
@@ -53,4 +53,5 @@ Now, on the master1 node execute the following script:
 /vagrant/start-swarmkit-services.sh
 ```
 
-This will spawn all the services composing weave-socks app and expose the application on port 3000
+This will spawn all the services composing weave-socks app and expose the application on 192.168.11.10:3000
+Since the front-end is run in ```--mode global``` it will be available on all nodes.
