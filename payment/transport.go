@@ -27,7 +27,13 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, logger log.Logger) http.H
 		encodeAuthoriseResponse,
 		options...,
 	))
-
+	r.Methods("GET").PathPrefix("/health").Handler(httptransport.NewServer(
+		ctx,
+		e.HealthEndpoint,
+		decodeHealthRequest,
+		encodeHealthResponse,
+		options...,
+	))
 	return r
 }
 
@@ -89,6 +95,14 @@ func encodeAuthoriseResponse(ctx context.Context, w http.ResponseWriter, respons
 		return nil
 	}
 	return encodeResponse(ctx, w, resp.Authorisation)
+}
+
+func decodeHealthRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	return struct{}{}, nil
+}
+
+func encodeHealthResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+	return encodeResponse(ctx, w, response.(healthResponse))
 }
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
