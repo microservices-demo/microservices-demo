@@ -92,5 +92,5 @@ services:
   user-sim:
     image: weaveworksdemos/load-test
     hostname: user-simulator
-    command: "-d 60 -r 200 -c 2 -h 172.17.0.1"
+    command: "-d 60 -r 200 -c 2 -h edge-router"
 
