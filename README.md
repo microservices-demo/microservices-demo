@@ -10,7 +10,7 @@ You can read more about the [application design](./docs/design.md).
 
 ## Deployment Platforms
 
-The application is designed to be deployed to multiple platforms.
+This repo includes configuration and scripts that deploy the application to the following platforms:
 
 - [Amazon ECS](./aws-ecs/)
 - [Docker](./docker-single/) (single host, e.g. Docker For Mac)
