@@ -27,6 +27,7 @@ cd deploy/docker-single
 docker-machine create default -d virtualbox
 eval $(docker-machine env default)
 docker-compose pull
+weave launch
 docker-compose up -d
 ```
 
