@@ -20,11 +20,10 @@ services:
     domainname: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - "reschedule:on-node-failure"
+      - "constraint:node==swarm-master"
     networks:
       - external
-    environment:
-      - "constraint:node==swarm-master"
   catalogue:
     image: weaveworksdemos/catalogue
     hostname: catalogue
