@@ -12,11 +12,12 @@ You can read more about the [application design](./docs/design.md).
 
 The application is designed to be deployed to multiple platforms.
 
+- [Amazon ECS](./aws-ecs/)
 - [Docker](./docker-single/) (single host, e.g. Docker For Mac)
 - [Docker Swarm](./docker-swarm/)
 - [Kubernetes](./kubernetes/)
 - [Mesos (CNI)](./mesos-cni/)
-- [Amazon ECS](./aws-ecs/)
+- [Mesos + Marathon](./mesos-marathon/)
 
 We're planning to add more platform deployment targets, but preferences or suggestions are welcome.
 

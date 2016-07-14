@@ -4,11 +4,12 @@ Sub directories contain scripts and configuration for deployment target platform
 
 So far, deployment targets include:
 
+- [Amazon ECS](./aws-ecs/)
 - [Docker](./docker-single/) (single host, e.g. Docker For Mac)
 - [Docker Swarm](./docker-swarm/)
 - [Kubernetes](./kubernetes/)
 - [Mesos (CNI)](./mesos-cni/)
-- [Amazon ECS](./aws-ecs/)
+- [Mesos + Marathon](./mesos-marathon/)
 
 Future targets include:
 
