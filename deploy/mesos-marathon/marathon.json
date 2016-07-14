@@ -6,7 +6,7 @@
       "apps": [
         {
           "id": "/weave-demo/database/accounts-db",
-          "cpus": 0.3,
+          "cpus": 0.1,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
@@ -24,7 +24,7 @@
         },
         {
           "id": "/weave-demo/database/cart-db",
-          "cpus": 0.3,
+          "cpus": 0.1,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
@@ -42,7 +42,7 @@
         },
         {
           "id": "/weave-demo/database/orders-db",
-          "cpus": 0.3,
+          "cpus": 0.1,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
@@ -68,7 +68,7 @@
       "apps": [
         {
           "id": "/weave-demo/service/accounts",
-          "cpus": 0.3,
+          "cpus": 0.5,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
@@ -86,7 +86,7 @@
         },
         {
           "id": "/weave-demo/service/cart",
-          "cpus": 0.3,
+          "cpus": 0.5,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
@@ -104,7 +104,7 @@
         },
         {
           "id": "/weave-demo/service/orders",
-          "cpus": 0.3,
+          "cpus": 0.5,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
@@ -122,8 +122,8 @@
         },
         {
           "id": "/weave-demo/service/payment",
-          "cpus": 0.3,
-          "mem": 1024.0,
+          "cpus": 0.1,
+          "mem": 128.0,
           "container": {
             "type": "DOCKER",
             "docker": {
@@ -140,8 +140,8 @@
         },
         {
           "id": "/weave-demo/service/login",
-          "cpus": 0.3,
-          "mem": 1024.0,
+          "cpus": 0.1,
+          "mem": 128.0,
           "container": {
             "type": "DOCKER",
             "docker": {
@@ -158,7 +158,7 @@
         },
         {
           "id": "/weave-demo/service/shipping",
-          "cpus": 0.3,
+          "cpus": 0.5,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
@@ -176,8 +176,8 @@
         },
         {
           "id": "/weave-demo/service/catalogue",
-          "cpus": 0.3,
-          "mem": 1024.0,
+          "cpus": 0.1,
+          "mem": 256.0,
           "container": {
             "type": "DOCKER",
             "docker": {
@@ -203,7 +203,7 @@
         {
           "id": "/weave-demo/ui/front-end",
           "cmd": "PORT=8079 ; npm start -- ",
-          "cpus": 0.3,
+          "cpus": 0.5,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
@@ -233,7 +233,7 @@
           "cpus": 0.2,
           "mem": 512,
           "disk": 0,
-          "instances": 3,
+          "instances": 1,
           "constraints": [
             [
               "hostname",
