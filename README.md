@@ -6,6 +6,8 @@ The application is the user-facing part of an online shop that sells socks. It i
 
 It is built using [Spring Boot](http://projects.spring.io/spring-boot/), [Go kit](http://gokit.io) and [Node.js](https://nodejs.org/) and is packaged in Docker containers.
 
+You can read more about the [application design](./docs/design.md).
+
 ## Deployment Platforms
 
 The application is designed to be deployed to multiple platforms.
@@ -16,13 +18,16 @@ The application is designed to be deployed to multiple platforms.
 - [Mesos (CNI)](./mesos-cni/)
 - [Amazon ECS](./aws-ecs/)
 
-### Screenshot
+We're planning to add more platform deployment targets, but preferences or suggestions are welcome.
+
+## Screenshot
 
 ![Sock Shop frontend](./docs/images/sockshop-frontend.png)
 
-### Visualizing the application in Scope
+## Visualizing the application
 
 Use [Weave Scope](http://weave.works/products/weave-scope/) or [Weave Cloud](http://cloud.weave.works/) to visualize the application once it's running in the selected [target platform](./deploy/).
 
 ![Sock Shop in Weave Scope](./docs/images/sockshop-scope.png)
 
+## 
