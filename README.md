@@ -12,12 +12,12 @@ You can read more about the [application design](./docs/design.md).
 
 This repo includes configuration and scripts that deploy the application to the following platforms:
 
-- [Amazon ECS](./aws-ecs/)
-- [Docker](./docker-single/) (single host, e.g. Docker For Mac)
-- [Docker Swarm](./docker-swarm/)
-- [Kubernetes](./kubernetes/)
-- [Mesos (CNI)](./mesos-cni/)
-- [Mesos + Marathon](./mesos-marathon/)
+- [Amazon ECS](./deploy/aws-ecs/)
+- [Docker](./deploy/docker-single/) (single host, e.g. Docker For Mac)
+- [Docker Swarm](./deploy/docker-swarm/)
+- [Kubernetes](./deploy/kubernetes/)
+- [Mesos (CNI)](./deploy/mesos-cni/)
+- [Mesos + Marathon](./deploy/mesos-marathon/)
 
 We're planning to add more platform deployment targets, but preferences or suggestions are welcome.
 
