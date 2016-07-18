@@ -103,7 +103,8 @@ fabric.properties
 # Created by .ignore support plugin (hsz.mobi)
 
 # Maven builds
-/*/target/
+*/target
+*/*/target
 
 # AWS ECS install scripts generates an SSH key file
 weave-ecs-demo-key.pem
