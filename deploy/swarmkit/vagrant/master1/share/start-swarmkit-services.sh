@@ -1,0 +1,1 @@
+/Users/sashka/Sites/weaveDemo/deploy/swarmkit/start-swarmkit-services.sh
