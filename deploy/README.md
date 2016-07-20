@@ -9,7 +9,8 @@ So far, deployment targets include:
 - [Docker Swarm](./docker-swarm/)
 - [Kubernetes](./kubernetes/)
 - [Mesos (CNI)](./mesos-cni/)
-- [Mesos + Marathon](./mesos-marathon/)
+- [Mesos (Marathon)](./mesos-marathon/)
+- [minimesos](./minimesos-marathon/)
 
 Future targets include:
 
