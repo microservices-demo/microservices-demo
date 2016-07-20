@@ -1,0 +1,7 @@
+FROM scratch
+
+EXPOSE 80
+COPY socks.json /config/socks.json
+COPY app /
+
+CMD ["/app", "-port=80"]

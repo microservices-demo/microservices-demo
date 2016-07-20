@@ -1,14 +1,12 @@
-FROM golang:1.6-alpine
+FROM golang:1.6
 
-RUN apk add --update --no-cache bash \
-                                bash-completion \
-                                git
+RUN mkdir /app
+COPY . /go/src/github.com/weaveworks/weaveDemo/payment/
 
-RUN go get -v github.com/gorilla/mux github.com/go-kit/kit/...
+RUN go get -v github.com/gorilla/mux github.com/go-kit/kit/log github.com/go-kit/kit/endpoint github.com/go-kit/kit/transport/http
 
-COPY *.go /go/src/github.com/weaveworks/weaveDemo/payment/
-COPY cmd/paymentsvc/*.go /go/src/github.com/weaveworks/weaveDemo/payment/cmd/paymentsvc/
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/main github.com/weaveworks/weaveDemo/payment/cmd/paymentsvc
 
-RUN go install github.com/weaveworks/weaveDemo/payment/cmd/paymentsvc
+CMD ["/app/main", "-port=80"]
 
-ENTRYPOINT ["/go/bin/paymentsvc", "-port=80"]
+EXPOSE 80
