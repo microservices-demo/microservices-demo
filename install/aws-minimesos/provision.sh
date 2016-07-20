@@ -23,10 +23,8 @@ sudo chmod +x /usr/local/bin/weave
 # Clone repo to get deployment scripts
 git clone https://github.com/weaveworks/weaveDemo.git
 cd weaveDemo
-git checkout deploy/minimesos-marathon
 
 cd deploy/minimesos-marathon
-
 ./minimesos-marathon.sh start
 
 # Expose marathon and mesos. NOT FOR PRODUCTION!

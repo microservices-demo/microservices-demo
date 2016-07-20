@@ -367,7 +367,7 @@ do_start() {
     info "Starting services"
     curl -q -XPOST -H 'Content-Type:application/json' -d @$MARATHON_FILE $MINIMESOS_MARATHON/v2/groups
 
-    if [ $(aws_instance) ] ; then
+    if [ $(aws_instance) == 0 ] ; then
         UI=$(curl -q http://instance-data/latest/meta-data/public-ipv4)
     elif [[ "$OSTYPE" == "linux-gnu" ]]; then
         UI=$(ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}' | head -n 1)
