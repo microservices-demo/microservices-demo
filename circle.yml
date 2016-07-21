@@ -1,0 +1,20 @@
+machine:
+    environment:
+          IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+          
+checkout:
+  post:
+    - mkdir -p /home/ubuntu/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/
+    - cp -R . /home/ubuntu/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+
+dependencies:
+  override:
+     - mkdir -p "$GOPATH/src/$IMPORT_PATH"
+     - rsync -azC --delete ./ "$GOPATH/src/$IMPORT_PATH/"
+     - cd $GOPATH/src/$IMPORT_PATH
+     - go get -d ./...
+
+test:
+  override:
+    - cd $GOPATH/src/$IMPORT_PATH/catalogue && go test .
+    - cd $GOPATH/src/$IMPORT_PATH/login && go test .
