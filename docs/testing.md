@@ -23,7 +23,6 @@ Test service as a container, with their external dependencies. Only test specifi
 - Failure state: What happens when dependencies are not available (e.g. no db)?
 - API
 - Use-case
-- 
 
 ### Services integration
 
