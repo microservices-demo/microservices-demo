@@ -1,4 +1,4 @@
-FROM node:4.4.4
+FROM mhart/alpine-node:6.3
 
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
