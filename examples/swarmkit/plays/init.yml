@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+  vars:
+    - docker_rc: yes
+  roles:
+    - roles/docker
+    - roles/weave
