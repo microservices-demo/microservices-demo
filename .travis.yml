@@ -5,7 +5,7 @@ services:
 jdk:
   - oraclejdk8
 script:
-  - ./sockshop/mvnw test
+  - ./sockshop/mvnw test -f ./sockshop
 
 after_success:
   - export MODULES="accounts cart catalogue front-end login orders payment queue-master shipping edge-router"
