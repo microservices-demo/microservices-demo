@@ -64,18 +64,18 @@ func MakeTagsEndpoint(s Service) endpoint.Endpoint {
 }
 
 type listRequest struct {
-	Tags     []string
-	Order    string
-	PageNum  int
-	PageSize int
+	Tags     []string `json:"tags"`
+	Order    string `json:"order"`
+	PageNum  int `json:"pageNum"`
+	PageSize int `json:"pageSize"`
 }
 
 type listResponse struct {
-	Socks []Sock
+	Socks []Sock `json:"sock"`
 }
 
 type countRequest struct {
-	Tags []string
+	Tags []string `json:"tags"`
 }
 
 type countResponse struct {
@@ -83,12 +83,12 @@ type countResponse struct {
 }
 
 type getRequest struct {
-	ID string
+	ID string `json:"id"`
 }
 
 type getResponse struct {
-	Sock Sock
-	Err  error
+	Sock Sock `json:"sock"`
+	Err  error `json:"err"`
 }
 
 type tagsRequest struct {
@@ -96,5 +96,5 @@ type tagsRequest struct {
 }
 
 type tagsResponse struct {
-	Tags []string
+	Tags []string `json:"tags"`
 }
