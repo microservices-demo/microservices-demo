@@ -24,18 +24,26 @@ after_success:
   - for module in ${MODULES}; do
       export REPO=${GROUP}/${module};
       echo "Building ${REPO}:$TRAVIS_COMMIT";
-      docker build -t ${REPO}:$TRAVIS_COMMIT ./${module};
+      if [[ "${module}" == "payment" ]] || [[ "${module}" == "catalogue" ]] || [[ "${module}" == "login" ]] ; then
+        docker build -t ${REPO}-dev ./${module};
+        docker create --name ${module} ${REPO}-dev;
+        docker cp ${module}:/app/main ./${module}/app;
+        docker rm ${module};
+        docker build -t ${REPO}:$TRAVIS_COMMIT -f ./${module}/Dockerfile-release ./${module};
+      else
+        docker build -t ${REPO}:$TRAVIS_COMMIT ./${module};
+      fi;
       DOCKER_EXIT=$(echo $?);
       if [[ "$DOCKER_EXIT" > 0 ]] ; then
         echo "Docker build failed with exit code $DOCKER_EXIT";
         exit 1;
       fi;
-      DOCKER_PUSH=1
-      while [ $DOCKER_PUSH > 0 ] ; do
+      DOCKER_PUSH=1;
+      while [ $DOCKER_PUSH -gt 0 ] ; do
         echo "Pushing $REPO:$TRAVIS_COMMIT";
         docker push $REPO:$TRAVIS_COMMIT;
         DOCKER_PUSH=$(echo $?);
-        if [[ "$DOCKER_PUSH" > 0 ]] ; then
+        if [[ "$DOCKER_PUSH" -gt 0 ]] ; then
           echo "Docker push failed with exit code $DOCKER_PUSH";
         fi;
       done;
