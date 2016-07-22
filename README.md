@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/weaveworks/weaveDemo.svg?branch=master)](https://travis-ci.org/weaveworks/weaveDemo)
+[![Build Status](https://travis-ci.org/weaveworks/microservices-demo.svg?branch=master)](https://travis-ci.org/weaveworks/microservices-demo)
 
 # Sock Shop : A Microservice Demo Application
 
