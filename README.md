@@ -21,6 +21,10 @@ This repo includes configuration and scripts that deploy the application to the 
 
 We're planning to add more platform deployment targets, but preferences or suggestions are welcome.
 
+## Bugs, Feature Requests and Contributing
+
+We'd love to see community contributions. We like to keep it simple and use Github issues to track bugs and feature requests and pull requests to manage contributions. See the [contribution information](./docs/contributing.md) for more information.
+
 ## Screenshot
 
 ![Sock Shop frontend](./docs/images/sockshop-frontend.png)
