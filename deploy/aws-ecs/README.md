@@ -2,7 +2,7 @@
 
 ## Goal
 
-This directory contains the necessary tools to install an instance of the weaveDemo application on [AWS ECS](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html).
+This directory contains the necessary tools to install an instance of the microservice demo application on [AWS ECS](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html).
 
 ## Installation
 
@@ -11,6 +11,10 @@ To deploy, you will need an [Amazon Web Services (AWS)](http://aws.amazon.com) a
 ### Using CloudFormation
 
 [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https:%2F%2Fs3.amazonaws.com%2Fweaveworks-cfn-public%2Fintegrations%2Fecs-microservices-referrence-app.json)
+
+By clicking "Launch Stack" button above, you will get redirected to AWS CloudFormation console. You will be asked to set cluster size (***`Scale`***) and instance type (***`EcsInstanceType`***).
+
+As this app is fairly large, you should set ***`Scale`*** to 4 and select `m3.xlarge` for ***`EcsInstanceType`***.
 
 ### Using CLI
 
@@ -35,7 +39,7 @@ To tear down the containers and their associated AWS objects, run the cleanup sc
 
 This flow is based on the Weaveworks guide ["The Fastest Path to Docker on ECS: Microservice Deployment on Amazon EC2 Container Service with Weave Net"](https://www.weave.works/guides/service-discovery-and-load-balancing-with-weave-on-amazon-ecs-2/). The guide is accompanied by a sample project with installation scripts, found at [github.com/weaveworks/guides/aws-ecs](https://github.com/weaveworks/guides/tree/master/aws-ecs).
 
-The `setup.sh` and `cleanup.sh` scripts were taken from that repository and modified for the weaveDemo application.
+The `setup.sh` and `cleanup.sh` scripts were taken from that repository and modified for the microservice demo application.
 This involved several steps, as detailed below.
 
 #### AWS ECS Task Definitions
