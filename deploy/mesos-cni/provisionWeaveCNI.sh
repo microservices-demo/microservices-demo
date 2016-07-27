@@ -6,16 +6,20 @@ fi
 
 sudo curl -sL git.io/weave -o /usr/local/bin/weave
 sudo chmod a+x /usr/local/bin/weave
-sudo mkdir -p /opt/cni/bin
-sudo mkdir -p /etc/cni/net.d
-sudo weave stop # Just in case it's already running.
-sudo weave setup
-sudo weave launch --no-dns $1
-sudo weave expose
 
 # Make dirs if they don't exist
-sudo mkdir -p /opt/cni/bin
-sudo mkdir -p /etc/cni/net.d
+if [ -d /opt/cni/bin ]; then
+  sudo mkdir -p /opt/cni/bin
+fi
+if [ -d /etc/cni/net.d ]; then
+  sudo mkdir -p /etc/cni/net.d
+fi
+
+sudo weave stop # Just in case it's already running.
+sudo weave setup
+sudo weave launch-router --no-dns $1
+sudo weave launch-plugin
+sudo weave expose
 
 # Add location of binary and conf directories for CNI.
 echo '/opt/cni/bin' | sudo tee /etc/mesos-slave/network_cni_plugins_dir
