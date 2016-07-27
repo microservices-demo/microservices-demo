@@ -2,7 +2,7 @@
 set -x
 
 SCRIPT_DIR=`dirname "$0"`
-CODE_DIR=$(cd $PWD/$SCRIPT_DIR/../..; pwd)
+CODE_DIR=$(cd $SCRIPT_DIR/../../sockshop; pwd)
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     VM_STATUS=$(docker-machine status $DOCKER_MACHINE_NAME)
