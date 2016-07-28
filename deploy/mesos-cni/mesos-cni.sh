@@ -50,7 +50,7 @@ debug=false
 args=()
 cpu=0.3
 mem=1024
-tag="latest"
+tag="05614ae5523257ab04a1bf767e3ec8ff74c08e3e"
 
 # Logging
 # -----------------------------------
@@ -235,7 +235,7 @@ set -o pipefail
 # Usage: launch_service name command image shell
 launch_service() {
     verbose "Starting $1"
-    ssh	$SSH_OPTS	-i	$KEY	$USER@${MASTERS[0]}	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:'$cpus'\;mem:'$mem'	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='$MASTER':5050	</dev/null	>'$1'.log	2>&1	&'
+    ssh	$SSH_OPTS	-i	$KEY	$USER@${MASTERS[0]}	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:'$cpu'\;mem:'$mem'	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='${MASTERS[0]}':5050	</dev/null	>'$1'.log	2>&1	&'
     wait_task_running $1
 }
 
@@ -254,6 +254,7 @@ wait_task_running() {
         warning "This is taking too long. Consider Ctrl-C'ing"
      fi
      STATUS=$(task_status $1)
+     verbose "Status is $STATUS"
     done
 }
 
@@ -380,7 +381,7 @@ do_start() {
     info "Starting services"
     verbose "Starting edge-router"
     # Provision Edge router first, so that it is always on all machines.
-    curl -s -X POST -H "Content-type: application/json" $MASTER:8080/v2/apps -d '{
+    curl -s -X POST -H "Content-type: application/json" ${MASTERS[0]}:8080/v2/apps -d '{
       "id": "edge-router",
       "cmd": "while ! ping -c1 front-end.mesos-executeinstance.weave.local &>/dev/null; do : echo .; done ; sed -i \"s/.*proxy_pass.*/      proxy_pass      http:\\/\\/front-end.mesos-executeinstance.weave.local:8079;/\" /etc/nginx/nginx.conf ; nginx -g \"daemon off;\"",
       "cpus": 0.2,
@@ -390,7 +391,7 @@ do_start() {
       "constraints": [["hostname", "UNIQUE"]],
       "container": {
         "docker": {
-          "image": "weaveworksdemos/edge-router:",
+          "image": "weaveworksdemos/edge-router:'$tag'",
           "network": "HOST",
           "parameters": [],
           "privileged": true
@@ -417,11 +418,11 @@ do_start() {
 
     launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$tag       --shell
     launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$tag         --shell
-    launch_service catalogue    "echo ok"                                       weaveworksdemos/catalogue:$tag      --no-shell
+    launch_service catalogue    "/app -port=80"                                       weaveworksdemos/catalogue:$tag      --no-shell
     launch_service accounts     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=accounts-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/accounts:$tag       --shell
     launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=cart-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/cart:$tag           --shell
-    launch_service payment      "echo ok"                                       weaveworksdemos/payment:$tag        --no-shell
-    launch_service login        "/go/bin/login -port=80 -domain=mesos-executeinstance.weave.local"   weaveworksdemos/login:$tag      --shell
+    launch_service payment      "/app -port=80"                                       weaveworksdemos/payment:$tag        --no-shell
+    launch_service login        "/app -port=80 -domain=mesos-executeinstance.weave.local"   weaveworksdemos/login:$tag      --shell
     launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$tag --shell
 }
 
@@ -430,7 +431,7 @@ do_stop() {
     id=$(get_id "edge-router")
     if [ -n "$id" ] ; then
         verbose "Stopping edge router"
-        curl -X DELETE -H "Content-type: application/json" $MASTER:8080/v2/apps/edge-router
+        curl -X DELETE -H "Content-type: application/json" ${MASTERS[0]}:8080/v2/apps/edge-router
     fi
     for SERVICE in ${SERVICES[*]} ; do
         id=$(get_id $SERVICE)
