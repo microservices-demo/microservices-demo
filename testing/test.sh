@@ -226,12 +226,16 @@ verbose "Adding assertion methods"
 if ${verbose}; then DEBUG=1 ; fi
 STOP=1
 
+verbose "Building test container"
+docker build -t test-container $SCRIPT_DIR > /dev/null
+
 info "Running tests for \"$@\""
 for dir in $@ ; do
-    FILES=$(find $SCRIPT_DIR/$dir -iname "*.sh" | grep -v util.sh)
+    FILES=$(find $SCRIPT_DIR/$dir -iname "*.py")
     for f in $FILES ; do
         info "Testing $f"
-        assert_raises "( exec $f )"
+        CODE_DIR=$(cd $SCRIPT_DIR/..; pwd)
+        assert_raises "docker run --rm --name $dir-test -v /var/run/docker.sock:/var/run/docker.sock -v $CODE_DIR:$CODE_DIR -w $CODE_DIR test-container sh -c 'export PYTHONPATH=\$PYTHONPATH:\$PWD/testing ; python $f'"
     done
 
     assert_end $SCRIPT_DIR
