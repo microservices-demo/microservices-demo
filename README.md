@@ -15,6 +15,7 @@ This repo includes configuration and scripts that deploy the application to the 
 - [Amazon ECS](./deploy/aws-ecs/)
 - [Docker](./deploy/docker-single/) (single host, e.g. Docker For Mac)
 - [Docker Swarm](./deploy/docker-swarm/)
+- [Docker Only (WeaveNet not required)] (./deploy/docker-only/)
 - [Kubernetes](./deploy/kubernetes/)
 - [Mesos (CNI)](./deploy/mesos-cni/)
 - [Mesos + Marathon](./deploy/mesos-marathon/)
