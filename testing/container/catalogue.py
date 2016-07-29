@@ -1,3 +1,5 @@
+import argparse
+import sys
 import unittest
 
 import requests
@@ -5,24 +7,25 @@ import requests
 from util.Docker import Docker
 
 
-class Catalogue(unittest.TestCase):
+class CatalogueContainerTest(unittest.TestCase):
+    TAG = "latest"
     container_name = 'catalogue'
 
     def __init__(self, methodName='runTest'):
-        super(Catalogue, self).__init__(methodName)
+        super(CatalogueContainerTest, self).__init__(methodName)
         self.ip = ""
 
     def setUp(self):
         command = ['docker', 'run',
                    '-d',
-                   '--name', Catalogue.container_name,
-                   '-h', Catalogue.container_name,
-                   'weaveworksdemos/catalogue']
+                   '--name', CatalogueContainerTest.container_name,
+                   '-h', CatalogueContainerTest.container_name,
+                   'weaveworksdemos/catalogue:' + self.TAG]
         Docker().execute(command)
-        self.ip = Docker().get_container_ip(Catalogue.container_name)
+        self.ip = Docker().get_container_ip(CatalogueContainerTest.container_name)
 
     def tearDown(self):
-        Docker().kill_and_remove(Catalogue.container_name)
+        Docker().kill_and_remove(CatalogueContainerTest.container_name)
 
     def test_catalogue_has_item_id(self):
         r = requests.get('http://' + self.ip + '/catalogue', timeout=5)
@@ -42,4 +45,11 @@ class Catalogue(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--tag', default="latest", help='The tag of the image to use. (default: latest)')
+    parser.add_argument('unittest_args', nargs='*')
+    args = parser.parse_args()
+    CatalogueContainerTest.TAG = args.tag
+    # Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
+    sys.argv[1:] = args.unittest_args
     unittest.main()

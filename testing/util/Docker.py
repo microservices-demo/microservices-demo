@@ -19,10 +19,11 @@ class Docker:
         print("Running: " + ' '.join(command))
         p = Popen(command, stdout=PIPE, stderr=PIPE)
         out = p.stdout.read()
+        stderr = p.stderr.read()
         if p.wait() != 0:
             p.stdout.close()
             p.stderr.close()
-            raise RuntimeError(str(out, 'utf-8'))
+            raise RuntimeError(str(stderr, 'utf-8'))
         p.stdout.close()
         p.stderr.close()
         return str(out, 'utf-8')
