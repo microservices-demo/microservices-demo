@@ -1,0 +1,2 @@
+{"_id":{"$oid":"579f21de98689ebf2bf1cd2f"},"_class":"works.weave.socks.cart.entities.Cart","customerId":"579f21ae98684924944651bf","items":[{"$ref":"item","$id":{"$oid":"579f227698689ebf2bf1cd31"}},{"$ref":"item","$id":{"$oid":"579f22ac98689ebf2bf1cd32"}}]}
+{"_id":{"$oid":"579f21e298689ebf2bf1cd30"},"_class":"works.weave.socks.cart.entities.Cart","customerId":"579f21ae98684924944651bfaa","items":[]}
