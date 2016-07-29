@@ -1,5 +1,7 @@
 import unittest
+
 import requests
+
 from util.Docker import Docker
 
 
@@ -26,6 +28,17 @@ class Catalogue(unittest.TestCase):
         r = requests.get('http://' + self.ip + '/catalogue', timeout=5)
         data = r.json()
         self.assertIsNotNone(data[0]['id'])
+
+    def test_catalogue_has_image(self):
+        r = requests.get('http://' + self.ip + '/catalogue', timeout=5)
+        data = r.json()
+        for item in data:
+            for imageUrl in item['imageUrl']:
+                r = requests.get('http://' + self.ip + '/' + imageUrl, timeout=5)
+                self.assertGreater(int(r.headers.get("Content-Length")), 0,
+                                   msg="Issue with: " + imageUrl + ": " + r.headers.get("Content-Length"))
+                self.assertEqual("image/jpeg", r.headers.get("Content-Type"),
+                                 msg="Issue with: " + imageUrl + ": " + r.headers.get("Content-Type"))
 
 
 if __name__ == '__main__':
