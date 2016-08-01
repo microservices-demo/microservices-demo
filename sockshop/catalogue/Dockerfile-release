@@ -1,5 +1,6 @@
 FROM scratch
 
+WORKDIR /
 EXPOSE 80
 COPY socks.json /config/socks.json
 COPY app /
