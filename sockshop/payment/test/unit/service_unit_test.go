@@ -1,6 +1,7 @@
-package payment
+package payment_unit_test
 
 import (
+	. "github.com/weaveworks/microservices-demo/sockshop/payment"
 	"testing"
 )
 

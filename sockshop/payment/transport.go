@@ -56,7 +56,7 @@ func decodeAuthoriseRequest(_ context.Context, r *http.Request) (interface{}, er
 	bodyString := string(bodyBytes)
 
 	// Decode auth request
-	var request authoriseRequest
+	var request AuthoriseRequest
 	if err := json.Unmarshal(bodyBytes, &request); err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func (e *UnmarshalKeyError) Error() string {
 var ErrInvalidJson = errors.New("Invalid json")
 
 func encodeAuthoriseResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
-	resp := response.(authoriseResponse)
+	resp := response.(AuthoriseResponse)
 	if resp.Err != nil {
 		encodeError(ctx, resp.Err, w)
 		return nil
