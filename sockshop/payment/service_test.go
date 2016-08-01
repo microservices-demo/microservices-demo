@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestUnitAuthorise(t *testing.T) {
+func TestAuthorise(t *testing.T) {
 	result, _ := NewAuthorisationService(100).Authorise(10)
 	expected := true
 	if result.Authorised != expected {
@@ -13,7 +13,7 @@ func TestUnitAuthorise(t *testing.T) {
 	}
 }
 
-func TestUnitFailOverCertainAmount(t *testing.T) {
+func TestFailOverCertainAmount(t *testing.T) {
 	result, _ := NewAuthorisationService(10).Authorise(100)
 	expected := false
 	if result.Authorised != expected {
@@ -22,7 +22,7 @@ func TestUnitFailOverCertainAmount(t *testing.T) {
 	}
 }
 
-func TestUnitFailIfAmountIsZero(t *testing.T) {
+func TestFailIfAmountIsZero(t *testing.T) {
 	_, err := NewAuthorisationService(10).Authorise(0)
 	_, ok := err.(error)
 	if !ok {
@@ -31,7 +31,7 @@ func TestUnitFailIfAmountIsZero(t *testing.T) {
 	}
 }
 
-func TestUnitFailIfAmountNegative(t *testing.T) {
+func TestFailIfAmountNegative(t *testing.T) {
 	_, err := NewAuthorisationService(10).Authorise(-1)
 	_, ok := err.(error)
 	if !ok {

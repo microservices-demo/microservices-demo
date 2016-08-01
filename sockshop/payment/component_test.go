@@ -23,17 +23,17 @@ func TestComponent(t *testing.T) {
 	request.Amount = 9.99
 	requestBytes, err := json.Marshal(request)
 	if err != nil {
-		logger.Log("ERROR", err)
+		t.Fatal("ERROR", err)
 	}
 
 	res, err := http.Post(ts.URL+"/paymentAuth", "application/json", bytes.NewReader(requestBytes))
 	if err != nil {
-		logger.Log("ERROR", err)
+		t.Fatal("ERROR", err)
 	}
 	greeting, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		logger.Log("ERROR", err)
+		t.Fatal("ERROR", err)
 	}
 	var response Authorisation
 	json.Unmarshal(greeting, &response)
