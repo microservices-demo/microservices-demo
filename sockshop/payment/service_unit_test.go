@@ -1,11 +1,10 @@
-package payment_unit_test
+package payment
 
 import (
-	. "github.com/weaveworks/microservices-demo/sockshop/payment"
 	"testing"
 )
 
-func TestAuthorise(t *testing.T) {
+func TestUnitAuthorise(t *testing.T) {
 	result, _ := NewAuthorisationService(100).Authorise(10)
 	expected := true
 	if result.Authorised != expected {
@@ -14,7 +13,7 @@ func TestAuthorise(t *testing.T) {
 	}
 }
 
-func TestFailOverCertainAmount(t *testing.T) {
+func TestUnitFailOverCertainAmount(t *testing.T) {
 	result, _ := NewAuthorisationService(10).Authorise(100)
 	expected := false
 	if result.Authorised != expected {
@@ -23,7 +22,7 @@ func TestFailOverCertainAmount(t *testing.T) {
 	}
 }
 
-func TestFailIfAmountIsZero(t *testing.T) {
+func TestUnitFailIfAmountIsZero(t *testing.T) {
 	_, err := NewAuthorisationService(10).Authorise(0)
 	_, ok := err.(error)
 	if !ok {
@@ -32,7 +31,7 @@ func TestFailIfAmountIsZero(t *testing.T) {
 	}
 }
 
-func TestFailIfAmountNegative(t *testing.T) {
+func TestUnitFailIfAmountNegative(t *testing.T) {
 	_, err := NewAuthorisationService(10).Authorise(-1)
 	_, ok := err.(error)
 	if !ok {

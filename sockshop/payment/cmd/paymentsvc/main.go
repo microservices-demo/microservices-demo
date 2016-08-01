@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/go-kit/kit/log"
 	"github.com/weaveworks/microservices-demo/sockshop/payment"
 	"golang.org/x/net/context"
 	"net/http"
@@ -23,7 +22,7 @@ func main() {
 	errc := make(chan error)
 	ctx := context.Background()
 
-	handler, logger := Handler(ctx, float32(*declineAmount))
+	handler, logger := payment.WireUp(ctx, float32(*declineAmount))
 
 	// Create and launch the HTTP server.
 	go func() {
@@ -39,27 +38,4 @@ func main() {
 	}()
 
 	logger.Log("exit", <-errc)
-}
-
-func Handler(ctx context.Context, declineAmount float32) (http.Handler, log.Logger) {
-	// Log domain.
-	var logger log.Logger
-	{
-		logger = log.NewLogfmtLogger(os.Stderr)
-		logger = log.NewContext(logger).With("ts", log.DefaultTimestampUTC)
-		logger = log.NewContext(logger).With("caller", log.DefaultCaller)
-	}
-
-	// Service domain.
-	var service payment.Service
-	{
-		service = payment.NewAuthorisationService(declineAmount)
-		service = payment.LoggingMiddleware(logger)(service)
-	}
-
-	// Endpoint domain.
-	endpoints := payment.MakeEndpoints(service)
-
-	handler := payment.MakeHTTPHandler(ctx, endpoints, logger)
-	return handler, logger
 }

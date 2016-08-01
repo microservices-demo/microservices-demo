@@ -27,10 +27,13 @@ func MakeAuthoriseEndpoint(s Service) endpoint.Endpoint {
 	}
 }
 
+// AuthoriseRequest represents a request for payment authorisation.
+// The Amount is the total amount of the transaction
 type AuthoriseRequest struct {
 	Amount float32 `json:"amount"`
 }
 
+// AuthoriseResponse returns a response of type Authorisation and an error, Err.
 type AuthoriseResponse struct {
 	Authorisation Authorisation
 	Err           error
