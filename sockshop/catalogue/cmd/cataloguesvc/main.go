@@ -16,6 +16,7 @@ import (
 
 	"github.com/weaveworks/weaveDemo/catalogue"
 	"golang.org/x/net/context"
+	"path/filepath"
 )
 
 func main() {
@@ -26,6 +27,14 @@ func main() {
 		images = flag.String("images", "./images/", "Image path")
 	)
 	flag.Parse()
+
+	fmt.Fprintf(os.Stderr, "images: %q\n", *images)
+	abs, err := filepath.Abs(*images)
+	fmt.Fprintf(os.Stderr, "Abs(images): %q (%v)\n", abs, err)
+	pwd, err := os.Getwd()
+	fmt.Fprintf(os.Stderr, "Getwd: %q (%v)\n", pwd, err)
+	files, _ := filepath.Glob(*images + "/*")
+	fmt.Fprintf(os.Stderr, "ls: %q\n", files) // contains a list of all files in the current directory
 
 	// Mechanical stuff.
 	errc := make(chan error)
