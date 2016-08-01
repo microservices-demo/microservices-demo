@@ -2,8 +2,11 @@
 
 These scripts will install the microservices demo on Apache Mesos using the CNI plugin.
 
+*For testing only* Because CNI support is so new, it is not supported in Marathon and some features are missing from Weave. The containers are not orchestrated, so if they crash, they will not be restarted.
+
 ## Caveates
 - Tested with Mesos 1.0.0
+- These scripts start containers using mesos-execute. Not marathon (due to lack of marathon support). Hence, they are not orchestrated. If they crash, they will not be restarted.
 - Sometimes Docker hub can respond with 500's. It might take few tries to get it running.
 - Mesos only supports CNI from version 1.0.0+
 - Mesos only supports CNI on the Mesos containerizer
