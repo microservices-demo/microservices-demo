@@ -8,7 +8,7 @@ script:
   - ./sockshop/mvnw test -f ./sockshop
 
 after_success:
-  - export MODULES="accounts cart catalogue front-end login orders payment queue-master shipping edge-router"
+  - export MODULES="accounts cart catalogue front-end login orders payment queue-master shipping edge-router load-test"
   - export GROUP=weaveworksdemos
   - cd $TRAVIS_BUILD_DIR/sockshop
   - echo "Building java services"
