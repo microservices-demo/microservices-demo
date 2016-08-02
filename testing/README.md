@@ -10,13 +10,8 @@ Each folder contains shell scripts that (roughly, e.g. java unit tests all run a
 
 ### OSX / docker-machine Users
 
-You must first copy the code to the docker-machine VM, otherwise you
-won't be able to mount code. Make sure you've cd'ed to the root repo
-directory then run:
-
-```
-docker-machine ssh default sudo rm -rf $PWD ; docker-machine ssh default sudo mkdir -p $PWD ; docker-machine ssh default sudo chown docker: $PWD ;  docker-machine scp -r $PWD default:$PWD/.. ;
-```
+If you're not working out of the `/Users` directory, you must first copy the code to the docker-machine VM, otherwise you
+won't be able to mount correctly.
 
 ### Running the tests
 
