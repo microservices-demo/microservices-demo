@@ -16,10 +16,13 @@
         "http"
     ],
     "consumes": [
-        "application/json"
+        "application/json;charset=UTF-8",
+	"text/plain"
     ],
     "produces": [
-        "application/json"
+        "application/json;charset=UTF-8",
+	"text/plain"
+        
     ],
     "paths": {
         "/carts/{customerId}": {
@@ -27,14 +30,15 @@
                 "description": "",
                 "operationId": "Get cart",
                 "produces": [
-                    "application/json"
+                    "application/json;charset=UTF-8"
                 ],
                 "parameters": [
                     {
                         "name": "customerId",
                         "in": "path",
                         "required": true,
-                        "type": "string"
+                        "type": "string",
+                        "x-example": "1"
                     }
                 ],
                 "responses": {
@@ -50,18 +54,19 @@
                 "description": "",
                 "operationId": "Delete cart",
                 "produces": [
-                    "application/json"
+                    "application/json;charset=UTF-8"
                 ],
                 "parameters": [
                     {
                         "name": "customerId",
                         "in": "path",
                         "required": true,
-                        "type": "string"
+                        "type": "string",
+			"x-example": "1"
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "202": {
                         "description": ""
                     }
                 }
@@ -72,27 +77,36 @@
                 "description": "",
                 "operationId": "Add an item to the cart",
                 "produces": [
-                    "application/json"
-                ],
+		    "application/json;charset=UTF-8"
+		],
                 "parameters": [
-                    {
-                        "name": "customerId",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/CartItem"
-                        }
-                    }
-                ],
+		    {
+			"name": "customerId",
+			"in": "path",
+			"required": true,
+			"type": "string",
+			"x-example": "579f21ae98684924944651bf"
+		    },
+		    {
+			"name": "body",
+			"in": "body",
+			"required": true,
+			"schema": {                            
+			    "$ref": "#/definitions/CartItem",			    
+			    "example": {
+				"itemId":"819e1fbf-8b7e-4f6d-811f-693534916a8b",
+				"quantity": 20,
+				"unitPrice" : 99.0
+			    }
+			}
+		    }
+		],
                 "responses": {
-                    "200": {
-                        "description": ""
+                    "201": {
+                        "description": "",
+			"schema": {
+			    "$ref": "#/definitions/CartItem"
+			}
                     }
                 }
             },
@@ -100,14 +114,15 @@
                 "description": "Update an item",
                 "operationId": "Update item",
                 "produces": [
-                    "application/json"
+                    "application/json;charset=UTF-8"
                 ],
                 "parameters": [
                     {
                         "name": "customerId",
                         "in": "path",
                         "required": true,
-                        "type": "string"
+                        "type": "string",
+			"x-example": "579f21ae98684924944651bf"
                     },
                     {
                         "name": "body",
@@ -129,25 +144,25 @@
             "delete": {
                 "description": "Delete cart item",
                 "operationId": "delete",
-                "produces": [
-                    "application/json"
-                ],
+                
                 "parameters": [
                     {
                         "name": "itemId",
                         "in": "path",
                         "required": true,
-                        "type": "string"
+                        "type": "string",
+			"x-example": "819e1fbf-8b7e-4f6d-811f-693534916a8b"
                     },
                     {
                         "name": "customerId",
                         "in": "path",
                         "required": true,
-                        "type": "string"
+                        "type": "string",
+			"x-example": "579f21ae98684924944651bf"
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "202": {
                         "description": "Delete response"
                     }
                 }
@@ -160,8 +175,7 @@
             "type": "object",
             "properties": {
                 "customerId": {
-                    "type": "integer",
-                    "format": "int32"
+                    "type": "string"
                 }
             },
             "required": [
@@ -181,7 +195,7 @@
                 "unitPrice": {
                     "type": "number"
                 }
-            },
+            },           
             "required": [
                 "itemId",
                 "quantity",
