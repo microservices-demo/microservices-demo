@@ -20,21 +20,21 @@ This isn't meant to be used for real and little care has been taken to get it wo
 The pipeline has been intenionally simplified to this:
 
 ```
------------------------------------------------------
+----------------------------------------------------------------
 Local: 
 
-|Build|-->|Test|-->|Unit|-->|Component|    |Deploy|
----------------------------------|------------|------
-Remote:                          |            |
-                                 |            |
-                           |Application|-->|User|
------------------------------------------------------
+|Build|-->|Test|-->|Unit|-->|Component|-->|Push|    |Deploy|
+--------------------------------------------|------------|------
+Remote:                                     |            |
+                                            |            |
+                                       |Application|-->|User|
+----------------------------------------------------------------
 ```
 
 If any of the stages fail, it will quit and produce an exit value > 0.
 
 ## Implementation
-To get going I scripted everything in bash. See [the pipeline script](./pipline.sh). It's a bit hacky, but I think it's pretty simple to understand. Basically we're sequentially running each testing step, and theres a helper to help me create a testing environment.
+To get going I scripted everything in bash. See [the pipeline script](./pipeline.sh). It's a bit hacky, but I think it's pretty simple to understand. Basically we're sequentially running each testing step, and theres a helper to help me create a testing environment.
  
 Other than the general hackiness, the main drawback is the amount of time it takes to provision the AWS EC2 instance. This turns tests that can be run in a matter of seconds (excluding build/pull time) into 10 minutes.
 
