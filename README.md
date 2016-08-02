@@ -10,17 +10,9 @@ You can read more about the [application design](./docs/design.md).
 
 ## Deployment Platforms
 
-This repo includes configuration and scripts that deploy the application to the following platforms:
+The [deploy folder](./deploy/) contains scripts and instructions to provision the application onto your favourite platform. 
 
-- [Amazon ECS](./deploy/aws-ecs/)
-- [Docker](./deploy/docker-single/) (single host, e.g. Docker For Mac)
-- [Docker Swarm](./deploy/docker-swarm/)
-- [Docker Only (WeaveNet not required)] (./deploy/docker-only/)
-- [Kubernetes](./deploy/kubernetes/)
-- [Mesos (CNI)](./deploy/mesos-cni/)
-- [Mesos + Marathon](./deploy/mesos-marathon/)
-
-We're planning to add more platform deployment targets, but preferences or suggestions are welcome.
+Please let us know if there is a platform that you would like to see supported.
 
 ## Bugs, Feature Requests and Contributing
 
