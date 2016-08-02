@@ -119,11 +119,7 @@ assert_raises() {
     (( tests_ran++ )) || :
     [[ -z "$DISCOVERONLY" ]] || return
     status=0
-    if [[ -z "$DEBUG" ]] ; then
-        (eval $1 <<< ${3:-}) > /dev/null 2>&1 || status=$?
-    else
-        (eval $1 <<< ${3:-}) || status=$?
-    fi
+    (eval $1 <<< ${3:-}) > /dev/null 2>&1 || status=$?
     expected=${2:-0}
     if [[ "$status" -eq "$expected" ]]; then
         [[ -z "$DEBUG" ]] || echo -n .
