@@ -20,15 +20,15 @@ This isn't meant to be used for real and little care has been taken to get it wo
 The pipeline has been intenionally simplified to this:
 
 ```
-----------------------------------------------------------------
+----------------------------------------------------------
 Local: 
 
-|Build|-->|Test|-->|Unit|-->|Component|-->|Push|    |Deploy|
---------------------------------------------|------------|------
-Remote:                                     |            |
-                                            |            |
-                                       |Application|-->|User|
-----------------------------------------------------------------
+|Build|-->|Unit|-->|Component|-->|Push|    |Deploy|
+-----------------------------------|------------|---------
+Remote:                            |            |
+                                   |            |
+                              |Application|-->|User|
+----------------------------------------------------------
 ```
 
 If any of the stages fail, it will quit and produce an exit value > 0.
