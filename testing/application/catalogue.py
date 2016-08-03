@@ -2,19 +2,10 @@ import argparse
 import sys
 import unittest
 from time import sleep
-
+from util.Api import Api
 import requests
 
 from util.Docker import Docker
-
-
-def noResponse(url):
-    try:
-        r = requests.get(url, timeout=5)
-    except requests.exceptions.ConnectionError:
-        return True
-    return r.status_code > 299
-
 
 class CatalogueApplicationTest(unittest.TestCase):
     TAG = "latest"
@@ -42,7 +33,7 @@ class CatalogueApplicationTest(unittest.TestCase):
                    'weaveworksdemos/front-end:' + self.TAG]
         self.docker.execute(command)
         self.front_end_ip = self.docker.get_container_ip("front-end")
-        while noResponse('http://' + self.front_end_ip + ':8079'):
+        while Api.noResponse('http://' + self.front_end_ip + ':8079'):
             sleep(1)
 
     def tearDown(self):

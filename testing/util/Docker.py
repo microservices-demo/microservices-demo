@@ -1,13 +1,11 @@
 import re
 from subprocess import Popen, PIPE
 
-
 # From http://blog.bordage.pro/avoid-docker-py/
 class Docker:
     def kill_and_remove(self, ctr_name):
-        for action in ('kill', 'rm'):
-            command = ['docker', action, ctr_name]
-            self.execute(command)
+        command = ['docker', 'rm', '-f', ctr_name]
+        self.execute(command)
 
     def get_container_ip(self, ctr_name):
         command = ['docker', 'inspect',
@@ -27,3 +25,7 @@ class Docker:
         p.stdout.close()
         p.stderr.close()
         return str(out, 'utf-8')
+
+    def start_container(self, container_name="", image="", cmd=""):
+        command = ['docker', 'run', '-d', '-h', container_name, '--name', container_name, image]
+        return self.execute(command)
