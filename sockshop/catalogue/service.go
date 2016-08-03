@@ -4,17 +4,18 @@ package catalogue
 // catalogue service. Everything here is agnostic to the transport (HTTP).
 
 import (
+	"database/sql"
 	"errors"
-	"sort"
+	"strings"
 )
 
 // Service is the catalogue service, providing read operations on a saleable
 // catalogue of sock products.
 type Service interface {
-	List(tags []string, order string, pageNum, pageSize int) []Sock // GET /catalogue
-	Count(tags []string) int                                        // GET /catalogue/size
-	Get(id string) (Sock, error)                                    // GET /catalogue/{id}
-	Tags() []string                                                 // GET /tags
+	List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) // GET /catalogue
+	Count(tags []string) (int, error)                                        // GET /catalogue/size
+	Get(id string) (Sock, error)                                             // GET /catalogue/{id}
+	Tags() ([]string, error)                                                 // GET /tags
 }
 
 // Sock describes the thing on offer in the catalogue.
@@ -31,95 +32,130 @@ type Sock struct {
 // ErrNotFound is returned when there is no sock for a given ID.
 var ErrNotFound = errors.New("not found")
 
+// ErrDBConnection is returned when connection with the database fails.
+var ErrDBConnection = errors.New("database connection error")
+
+var baseQuery = "SELECT Sock.SockID AS id, Sock.name, Sock.description, Sock.price, Sock.count, Sock.ImageUrl_1, Sock.ImageUrl_2, GROUP_CONCAT(Tag.name) AS TagName FROM Sock JOIN SockTag ON Sock.SockID=SockTag.SockID JOIN Tag ON SockTag.TagID=Tag.TagID"
+
 // NewFixedService returns a simple implementation of the Service interface,
 // fixed over a predefined set of socks and tags. In a real service you'd
 // probably construct this with a database handle to your socks DB, etc.
-func NewFixedService(socks []Sock, tags []string) Service {
+func NewFixedService(db *sql.DB) Service {
 	return &fixedService{
-		socks: socks,
-		tags:  tags,
+		db: db,
 	}
 }
 
 type fixedService struct {
-	socks []Sock
-	tags  []string
+	db *sql.DB
 }
 
-func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) []Sock {
+func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) {
 	var socks []Sock
-	{
-		socks = s.socks
-		socks = filter(socks, tags)
-		socks = sortBy(socks, order)
-		socks = cut(socks, pageNum, pageSize)
+	query := baseQuery
+
+	for i, t := range tags {
+		if i == 0 {
+			query += " WHERE Tag.name='" + t + "'"
+		} else {
+			query += " OR Tag.name='" + t + "'"
+		}
 	}
-	return socks
+
+	query += " GROUP BY id"
+
+	if order != "" {
+		query += " ORDER BY " + order
+	}
+
+	query += ";"
+
+	sel, err := s.db.Prepare(query)
+
+	if err != nil {
+		// Handle
+		panic(err)
+	}
+	defer sel.Close()
+
+	rows, err := sel.Query()
+	if err != nil {
+		panic(err)
+	}
+
+	for rows.Next() {
+		sock := rowToSock(rows)
+		socks = append(socks, sock)
+	}
+
+	socks = cut(socks, pageNum, pageSize)
+
+	return socks, nil
 }
 
-func (s *fixedService) Count(tags []string) int {
-	var socks []Sock
-	{
-		socks = s.socks
-		socks = filter(socks, tags)
+func (s *fixedService) Count(tags []string) (int, error) {
+	rows, err := s.db.Query("SELECT COUNT(*) FROM Sock;")
+	if err != nil {
+		return 0, ErrDBConnection
 	}
-	return len(socks)
+	var count int
+	rows.Next()
+	err = rows.Scan(&count)
+	if err != nil {
+		return 0, ErrDBConnection
+	}
+	return count, nil
 }
 
 func (s *fixedService) Get(id string) (Sock, error) {
-	for _, sock := range s.socks {
-		if sock.ID == id {
-			return sock, nil
-		}
+	query := baseQuery + " WHERE Sock.SockID = '" + id + "' GROUP BY Sock.SockID;"
+
+	sel, err := s.db.Prepare(query)
+	if err != nil {
+		return Sock{}, ErrDBConnection
 	}
-	return Sock{}, ErrNotFound
+	defer sel.Close()
+
+	rows, err := sel.Query()
+	if err != nil {
+		return Sock{}, ErrDBConnection
+	}
+
+	if !rows.Next() {
+		return Sock{}, ErrNotFound
+	}
+
+	sock := rowToSock(rows)
+
+	return sock, nil
 }
 
-func (s *fixedService) Tags() []string {
-	return s.tags
+func (s *fixedService) Tags() ([]string, error) {
+	var tags []string
+	query := "SELECT name FROM Tag;"
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return []string{}, ErrDBConnection
+	}
+	var tag string
+	for rows.Next() {
+		rows.Scan(&tag)
+		tags = append(tags, tag)
+	}
+	return tags, nil
 }
 
-func filter(socks []Sock, tags []string) []Sock {
-	if len(tags) == 0 || len(tags) == 1 && tags[0] == "true" {
-		return socks[:]
+func rowToSock(rows *sql.Rows) Sock {
+	var sock Sock
+	var url1, url2, tagName string
+	err := rows.Scan(&sock.ID, &sock.Name, &sock.Description, &sock.Price, &sock.Count, &url1, &url2, &tagName)
+	if err != nil {
+		// logger.Log("Error:", "Unable to read data")
+		return Sock{}
 	}
-	r := []Sock{}
-	for _, s := range socks {
-		var count []string
-		for _, m := range tags {
-		TAGLABEL:
-			for _, t := range s.Tags {
-				if t == m && !contains(count, t) {
-					count = append(count, t)
-					break TAGLABEL
-				}
-			}
-		}
-		if len(count) == len(tags) {
-			r = append(r, s)
-		}
-	}
-	return r
-}
-
-func sortBy(socks []Sock, order string) []Sock {
-	cp := make(sockz, len(socks))
-	copy(cp, socks) // sort will mutate, so we make a copy
-	switch order {
-	case "id":
-		sort.Sort(byID{cp})
-	case "name":
-		sort.Sort(byName{cp})
-	case "description":
-		sort.Sort(byDescription{cp})
-	case "price":
-		sort.Sort(byPrice{cp})
-	case "count":
-		sort.Sort(byCount{cp})
-	case "tag":
-		sort.Sort(byTag{cp})
-	}
-	return cp
+	sock.Tags = strings.Split(tagName, ",")
+	sock.ImageURL = []string{url1, url2}
+	return sock
 }
 
 func cut(socks []Sock, pageNum, pageSize int) []Sock {
@@ -145,24 +181,3 @@ func contains(s []string, e string) bool {
 	}
 	return false
 }
-
-// https://talks.golang.org/2014/go4gophers.slide#14
-
-type sockz []Sock
-
-func (s sockz) Len() int      { return len(s) }
-func (s sockz) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
-
-type byID struct{ sockz }
-type byName struct{ sockz }
-type byDescription struct{ sockz }
-type byPrice struct{ sockz }
-type byCount struct{ sockz }
-type byTag struct{ sockz }
-
-func (s byID) Less(i, j int) bool          { return s.sockz[i].ID < s.sockz[j].ID }
-func (s byName) Less(i, j int) bool        { return s.sockz[i].Name < s.sockz[j].Name }
-func (s byDescription) Less(i, j int) bool { return s.sockz[i].Description < s.sockz[j].Description }
-func (s byPrice) Less(i, j int) bool       { return s.sockz[i].Price < s.sockz[j].Price }
-func (s byCount) Less(i, j int) bool       { return s.sockz[i].Count < s.sockz[j].Count }
-func (s byTag) Less(i, j int) bool         { return len(s.sockz[i].Tags) < len(s.sockz[j].Tags) }

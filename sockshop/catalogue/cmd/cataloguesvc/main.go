@@ -1,7 +1,8 @@
 package main
 
 import (
-	"encoding/json"
+	"database/sql"
+	// "encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -12,27 +13,24 @@ import (
 
 	"net/http"
 
-	"sort"
+	// "sort"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/weaveworks/weaveDemo/catalogue"
 	"golang.org/x/net/context"
 )
 
 func main() {
 	var (
-		dev    = flag.Bool("dev", false, "Shortcut for -file=./socks.json")
 		port   = flag.String("port", "8081", "Port to bind HTTP listener") // TODO(pb): should be -addr, default ":8081"
-		file   = flag.String("file", "/config/socks.json", "Socks file")
 		images = flag.String("images", "./images/", "Image path")
+		dbName = flag.String("db", "socksdb", "Database name")
 	)
 	flag.Parse()
 
 	// Mechanical stuff.
 	errc := make(chan error)
 	ctx := context.Background()
-	if *dev {
-		*file = "./socks.json"
-	}
 
 	// Log domain.
 	var logger log.Logger
@@ -43,16 +41,25 @@ func main() {
 	}
 
 	// Data domain.
-	socks, tags, err := readFile(*file)
+	// TODO pull user/password from env?
+	db, err := sql.Open("mysql", "user:password@tcp(catalogue-db:3306)/"+*dbName)
 	if err != nil {
 		logger.Log("err", err)
+		// TODO should we exit if not DB?
 		os.Exit(1)
+	}
+	defer db.Close()
+
+	// Check if DB connection can be made, only for logging purposes, should not fail/exit
+	err = db.Ping()
+	if err != nil {
+		logger.Log("DB", dbName, "Error", "Unable to connect to Database")
 	}
 
 	// Service domain.
 	var service catalogue.Service
 	{
-		service = catalogue.NewFixedService(socks, tags)
+		service = catalogue.NewFixedService(db)
 		service = catalogue.LoggingMiddleware(logger)(service)
 	}
 
@@ -74,31 +81,4 @@ func main() {
 	}()
 
 	logger.Log("exit", <-errc)
-}
-
-func readFile(filename string) ([]catalogue.Sock, []string, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer f.Close()
-
-	var socks []catalogue.Sock
-	if err := json.NewDecoder(f).Decode(&socks); err != nil {
-		return nil, nil, err
-	}
-
-	tagMap := map[string]struct{}{}
-	for _, sock := range socks {
-		for _, tag := range sock.Tags {
-			tagMap[tag] = struct{}{}
-		}
-	}
-	tags := make([]string, 0, len(tagMap))
-	for tag := range tagMap {
-		tags = append(tags, tag)
-	}
-	sort.Sort(sort.StringSlice(tags))
-
-	return socks, tags, nil
 }

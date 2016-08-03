@@ -32,8 +32,8 @@ func MakeEndpoints(s Service) Endpoints {
 func MakeListEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(listRequest)
-		socks := s.List(req.Tags, req.Order, req.PageNum, req.PageSize)
-		return listResponse{Socks: socks}, nil
+		socks, err := s.List(req.Tags, req.Order, req.PageNum, req.PageSize)
+		return listResponse{Socks: socks, Err: err}, nil
 	}
 }
 
@@ -41,8 +41,8 @@ func MakeListEndpoint(s Service) endpoint.Endpoint {
 func MakeCountEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(countRequest)
-		n := s.Count(req.Tags)
-		return countResponse{N: n}, nil
+		n, err := s.Count(req.Tags)
+		return countResponse{N: n, Err: err}, nil
 	}
 }
 
@@ -58,20 +58,21 @@ func MakeGetEndpoint(s Service) endpoint.Endpoint {
 // MakeTagsEndpoint returns an endpoint via the given service.
 func MakeTagsEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		tags := s.Tags()
-		return tagsResponse{Tags: tags}, nil
+		tags, err := s.Tags()
+		return tagsResponse{Tags: tags, Err: err}, nil
 	}
 }
 
 type listRequest struct {
 	Tags     []string `json:"tags"`
-	Order    string `json:"order"`
-	PageNum  int `json:"pageNum"`
-	PageSize int `json:"pageSize"`
+	Order    string   `json:"order"`
+	PageNum  int      `json:"pageNum"`
+	PageSize int      `json:"pageSize"`
 }
 
 type listResponse struct {
 	Socks []Sock `json:"sock"`
+	Err   error  `json:"err"`
 }
 
 type countRequest struct {
@@ -79,7 +80,8 @@ type countRequest struct {
 }
 
 type countResponse struct {
-	N int `json:"size"` // to match original
+	N   int   `json:"size"` // to match original
+	Err error `json:"err"`
 }
 
 type getRequest struct {
@@ -87,7 +89,7 @@ type getRequest struct {
 }
 
 type getResponse struct {
-	Sock Sock `json:"sock"`
+	Sock Sock  `json:"sock"`
 	Err  error `json:"err"`
 }
 
@@ -97,4 +99,5 @@ type tagsRequest struct {
 
 type tagsResponse struct {
 	Tags []string `json:"tags"`
+	Err  error    `json:"err"`
 }
