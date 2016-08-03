@@ -38,18 +38,20 @@ complete: Tests took 792ms
 
 
 # Run with docker
+Start microservices demo app with docker compose:
+```
+cd /path/to/microservices-demo/deploy/docker-only/
+docker-compose up -d
+```
+
 Build included docker image with:
 ```
 docker build -t "openapi-testing" .
 ```
 
-Start mongodb container:
-```
-docker run --name mongo-db -d mongo
-```
 Run the openapi testing container:
 ```
-docker run --rm --link mongo-db --env MONGO_ENDPOINT=mongodb://mongo-db:27017 -v $PWD:/app openapi-testing /app/<spec-json> <api-endpoint-url> -f /app/hooks.js
+docker run --rm --net dockeronly_default --link dockeronly_accounts-db_1 --link dockeronly_accounts_1 --env MONGO_ENDPOINT=mongodb://accounts-db:27017/data openapi-testing /usr/src/app/accounts/accounts.json http://accounts -f /usr/src/app/hooks.js
 ```
 
 # Docker-compose

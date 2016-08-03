@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  mongo-db:
+    image: mongo
+    hostname: mongo-db
+
+  openapi-testing:
+    build: .
+    image: openapi-testing
+    volumes:
+      - ${PWD}:/app
+    environment:
+      - MONGO_ENDPOINT=mongodb://mongo-db:27017
+    command: /app/${JSON_SPEC} ${API_ENDPOINT} -f /app/hooks.js
+    depends_on:
+      - mongo-db
