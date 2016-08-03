@@ -1,6 +1,5 @@
 FROM golang:1.6
 
-COPY socks.json /config/socks.json
 RUN mkdir /app
 COPY . /go/src/github.com/weaveworks/weaveDemo/catalogue/
 COPY images/ /app/images/
