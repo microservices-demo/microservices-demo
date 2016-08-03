@@ -73,14 +73,13 @@ func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) 
 	sel, err := s.db.Prepare(query)
 
 	if err != nil {
-		// Handle
-		panic(err)
+		return []Sock{}, ErrDBConnection
 	}
 	defer sel.Close()
 
 	rows, err := sel.Query()
 	if err != nil {
-		panic(err)
+		return []Sock{}, ErrDBConnection
 	}
 
 	for rows.Next() {

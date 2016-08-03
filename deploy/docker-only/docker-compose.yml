@@ -21,6 +21,18 @@ services:
     restart: always
     environment:
       - reschedule:on-node-failure
+  catalogue-db:
+    image: mysql
+    hostname: catalogue-db
+    restart: always
+    volumes:
+      - ./data:/docker-entrypoint-initdb.d
+    environment:
+      - reschedule:on-node-failure
+      - MYSQL_ROOT_PASSWORD=root_pass
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=socksdb
   accounts:
     image: weaveworksdemos/accounts
     hostname: accounts
