@@ -1,0 +1,206 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "",
+        "title": "Carts and items",
+        "description": "Carts and items resources",
+        "license": {
+	    "name": "MIT",
+	    "url": "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
+	}
+    },
+    "host": "carts",
+    "basePath": "/",
+    "securityDefinitions": {},
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json;charset=UTF-8",
+	"text/plain"
+    ],
+    "produces": [
+        "application/json;charset=UTF-8",
+	"text/plain"
+
+    ],
+    "paths": {
+        "/carts/{customerId}": {
+	    "get": {
+	        "description": "",
+	        "operationId": "Get cart",
+	        "produces": [
+		    "application/json;charset=UTF-8"
+		],
+	        "parameters": [
+		    {
+		        "name": "customerId",
+		        "in": "path",
+		        "required": true,
+		        "type": "string",
+		        "x-example": "1"
+		    }
+		],
+	        "responses": {
+		    "200": {
+		        "description": "Returns cart",
+		        "schema": {
+			    "$ref": "#/definitions/Getcartresponse"
+			}
+		    }
+		}
+	    },
+	    "delete": {
+	        "description": "",
+	        "operationId": "Delete cart",
+	        "produces": [
+		    "application/json;charset=UTF-8"
+		],
+	        "parameters": [
+		    {
+		        "name": "customerId",
+		        "in": "path",
+		        "required": true,
+		        "type": "string",
+			"x-example": "1"
+		    }
+		],
+	        "responses": {
+		    "202": {
+		        "description": ""
+		    }
+		}
+	    }
+	},
+        "/carts/{customerId}/items": {
+	    "post": {
+	        "description": "",
+	        "operationId": "Add an item to the cart",
+	        "produces": [
+		    "application/json;charset=UTF-8"
+		],
+	        "parameters": [
+		    {
+			"name": "customerId",
+			"in": "path",
+			"required": true,
+			"type": "string",
+			"x-example": "579f21ae98684924944651bf"
+		    },
+		    {
+			"name": "body",
+			"in": "body",
+			"required": true,
+			"schema": {
+			    "$ref": "#/definitions/CartItem",
+			    "example": {
+				"itemId":"819e1fbf-8b7e-4f6d-811f-693534916a8b",
+				"quantity": 20,
+				"unitPrice" : 99.0
+			    }
+			}
+		    }
+		],
+	        "responses": {
+		    "201": {
+		        "description": "",
+			"schema": {
+			    "$ref": "#/definitions/CartItem"
+			}
+		    }
+		}
+	    },
+	    "patch": {
+	        "description": "Update an item",
+	        "operationId": "Update item",
+	        "produces": [
+		    "application/json;charset=UTF-8"
+		],
+	        "parameters": [
+		    {
+			"name": "customerId",
+		        "in": "path",
+		        "required": true,
+		        "type": "string",
+			"x-example": "579f21ae98684924944651bf"
+		    },
+		    {
+		        "name": "body",
+		        "in": "body",
+		        "required": true,
+		        "schema": {
+			    "type": "object"
+			}
+		    }
+		],
+	        "responses": {
+		    "200": {
+		        "description": ""
+		    }
+		}
+	    }
+	},
+        "/carts/{customerId}/items/{itemId}": {
+	    "delete": {
+	        "description": "Delete cart item",
+	        "operationId": "delete",
+
+	        "parameters": [
+		    {
+		        "name": "itemId",
+		        "in": "path",
+		        "required": true,
+		        "type": "string",
+			"x-example": "819e1fbf-8b7e-4f6d-811f-693534916a8b"
+		    },
+		    {
+		        "name": "customerId",
+		        "in": "path",
+		        "required": true,
+		        "type": "string",
+			"x-example": "579f21ae98684924944651bf"
+		    }
+		],
+	        "responses": {
+		    "202": {
+		        "description": "Delete response"
+		    }
+		}
+	    }
+	}
+    },
+    "definitions": {
+        "Getcartresponse": {
+	    "title": "Get cart response",
+	    "type": "object",
+	    "properties": {
+	        "customerId": {
+		    "type": "string"
+		}
+	    },
+	    "required": [
+	        "customerId"
+	    ]
+	},
+        "CartItem": {
+	    "title": "Cart item",
+	    "type": "object",
+	    "properties": {
+	        "itemId": {
+		    "type": "string"
+		},
+	        "quantity": {
+		    "type": "integer"
+		},
+	        "unitPrice": {
+		    "type": "number"
+		}
+	    },
+	    "required": [
+	        "itemId",
+	        "quantity",
+	        "unitPrice"
+	    ]
+	}
+    }
+}
