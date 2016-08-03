@@ -6,7 +6,7 @@ events {
 }
 
 http {
-  resolver 127.0.0.11 valid=5s;
+  resolver $NAMESERVER valid=5s;
   server { # simple load balancing
     listen          80;
     set $endpoint "front-end:8079"; # This forces nginx to reload the address from the DNS
