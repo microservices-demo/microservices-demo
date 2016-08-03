@@ -23,6 +23,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, logger log.Logger) http.H
 
 	// GET /login       Login
 	// GET /register    Register
+	// GET /health      Health Check
 
 	r.Methods("GET").Path("/login").Handler(httptransport.NewServer(
 		ctx,
@@ -38,7 +39,13 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, logger log.Logger) http.H
 		encodeResponse,
 		options...,
 	))
-
+	r.Methods("GET").PathPrefix("/health").Handler(httptransport.NewServer(
+		ctx,
+		e.HealthEndpoint,
+		decodeHealthRequest,
+		encodeHealthResponse,
+		options...,
+	))
 	return r
 }
 
@@ -77,6 +84,14 @@ func decodeRegisterRequest(_ context.Context, r *http.Request) (interface{}, err
 		Username: u,
 		Password: p,
 	}, nil
+}
+
+func decodeHealthRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	return struct{}{}, nil
+}
+
+func encodeHealthResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+	return encodeResponse(ctx, w, response.(healthResponse))
 }
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {

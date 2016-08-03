@@ -5,26 +5,30 @@ package catalogue
 // transport.
 
 import (
+	"time"
+
 	"github.com/go-kit/kit/endpoint"
 	"golang.org/x/net/context"
 )
 
 // Endpoints collects the endpoints that comprise the Service.
 type Endpoints struct {
-	ListEndpoint  endpoint.Endpoint
-	CountEndpoint endpoint.Endpoint
-	GetEndpoint   endpoint.Endpoint
-	TagsEndpoint  endpoint.Endpoint
+	ListEndpoint   endpoint.Endpoint
+	CountEndpoint  endpoint.Endpoint
+	GetEndpoint    endpoint.Endpoint
+	TagsEndpoint   endpoint.Endpoint
+	HealthEndpoint endpoint.Endpoint
 }
 
 // MakeEndpoints returns an Endpoints structure, where each endpoint is
 // backed by the given service.
 func MakeEndpoints(s Service) Endpoints {
 	return Endpoints{
-		ListEndpoint:  MakeListEndpoint(s),
-		CountEndpoint: MakeCountEndpoint(s),
-		GetEndpoint:   MakeGetEndpoint(s),
-		TagsEndpoint:  MakeTagsEndpoint(s),
+		ListEndpoint:   MakeListEndpoint(s),
+		CountEndpoint:  MakeCountEndpoint(s),
+		GetEndpoint:    MakeGetEndpoint(s),
+		TagsEndpoint:   MakeTagsEndpoint(s),
+		HealthEndpoint: MakeHealthEndpoint(s),
 	}
 }
 
@@ -63,6 +67,13 @@ func MakeTagsEndpoint(s Service) endpoint.Endpoint {
 	}
 }
 
+// MakeHealthEndpoint returns current health of the given service.
+func MakeHealthEndpoint(s Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		return healthResponse{Status: "OK", Time: time.Now().String()}, nil
+	}
+}
+
 type listRequest struct {
 	Tags     []string `json:"tags"`
 	Order    string `json:"order"`
@@ -97,4 +108,13 @@ type tagsRequest struct {
 
 type tagsResponse struct {
 	Tags []string `json:"tags"`
+}
+
+type healthRequest struct {
+	//
+}
+
+type healthResponse struct {
+	Status string `json:"status"`
+	Time   string `json:"time"`
 }
