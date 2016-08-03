@@ -1,0 +1,269 @@
+{
+  "id": "/weave-demo",
+  "groups": [
+    {
+      "id": "/weave-demo/database",
+      "apps": [
+        {
+          "id": "/weave-demo/database/accounts-db",
+          "cpus": 0.1,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "mongo",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "accounts-db.weave.local"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "/weave-demo/database/cart-db",
+          "cpus": 0.1,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "mongo",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "cart-db.weave.local"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "/weave-demo/database/orders-db",
+          "cpus": 0.1,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "mongo",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "orders-db.weave.local"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "/weave-demo/service",
+      "dependencies": [
+        "/weave-demo/database"
+      ],
+      "apps": [
+        {
+          "id": "/weave-demo/service/accounts",
+          "cpus": 0.5,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "weaveworksdemos/accounts:snapshot",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "accounts.weave.local"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "/weave-demo/service/cart",
+          "cpus": 0.5,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "weaveworksdemos/cart:snapshot",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "cart.weave.local"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "/weave-demo/service/orders",
+          "cpus": 0.5,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "weaveworksdemos/orders:snapshot",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "orders.weave.local"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "/weave-demo/service/payment",
+          "cpus": 0.1,
+          "mem": 128.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "weaveworksdemos/payment:snapshot",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "payment.weave.local"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "/weave-demo/service/login",
+          "cpus": 0.1,
+          "mem": 128.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "weaveworksdemos/login:snapshot",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "login.weave.local"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "/weave-demo/service/shipping",
+          "cpus": 0.5,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "weaveworksdemos/shipping:snapshot",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "shipping.weave.local"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "/weave-demo/service/catalogue",
+          "cpus": 0.1,
+          "mem": 256.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "weaveworksdemos/catalogue:snapshot",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "catalogue.weave.local"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "/weave-demo/ui",
+      "dependencies": [
+        "/weave-demo/service"
+      ],
+      "apps": [
+        {
+          "id": "/weave-demo/ui/front-end",
+          "cmd": "PORT=8079 ; npm start -- ",
+          "cpus": 0.5,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "weaveworksdemos/front-end:snapshot",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "front-end.weave.local"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "/weave-demo/external",
+      "dependencies": [
+        "/weave-demo/ui"
+      ],
+      "apps": [
+        {
+          "id": "/weave-demo/external/edge-router",
+          "cmd": "while ! ping -c1 front-end ; do echo .; done ; echo \"worker_processes  5; worker_rlimit_nofile 8192; events { worker_connections  4096; } http { resolver 172.17.0.1 valid=5s; server { listen 80; set \\$endpoint front-end:8079; location / { proxy_pass http://\\$endpoint; }}}\" | tee /etc/nginx/nginx.conf ; cat /etc/nginx/nginx.conf ; nginx -g \"daemon off;\"",
+          "cpus": 0.2,
+          "mem": 512,
+          "disk": 0,
+          "instances": 1,
+          "constraints": [
+            [
+              "hostname",
+              "UNIQUE"
+            ]
+          ],
+          "container": {
+            "docker": {
+              "image": "weaveworksdemos/edge-router:snapshot",
+              "network": "BRIDGE",
+              "portMappings": [
+                {
+                  "containerPort": 80,
+                  "hostPort": 80
+                }
+              ],
+              "privileged": true
+            },
+            "type": "DOCKER",
+            "volumes": []
+          },
+          "portDefinitions": [
+            {
+              "port": 80,
+              "protocol": "tcp",
+              "name": "80"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

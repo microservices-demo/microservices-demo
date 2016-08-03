@@ -1,0 +1,327 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "",
+        "title": "Accounts",
+        "description": "TODO: Add a description",
+        "license": {
+            "name": "MIT",
+            "url": "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
+        }
+    },
+    "host": "payment",
+    "basePath": "/",
+    "securityDefinitions": {},
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/customers": {
+            "get": {
+                "description": "",
+                "operationId": "Get customers",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Getcustomersresponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/cards": {
+            "get": {
+                "description": "",
+                "operationId": "Get cards",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Getcardsresponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/addresses": {
+            "get": {
+                "description": "",
+                "operationId": "List",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Listresponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Getcustomersresponse": {
+            "title": "Get customers response",
+            "type": "object",
+            "properties": {
+                "_embedded": {
+                    "$ref": "#/definitions/Customer"
+                },
+                "_links": {
+                    "type": "object"
+                },
+                "page": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "_embedded",
+                "_links",
+                "page"
+            ]
+        },
+        "Getcardsresponse": {
+            "title": "Get cards response",
+            "type": "object",
+            "properties": {
+                "_embedded": {
+                    "$ref": "#/definitions/Card"
+                },
+                "_links": {
+                    "type": "object"
+                },
+                "page": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "_embedded",
+                "_links",
+                "page"
+            ]
+        },
+        "Customer": {
+            "type": "object",
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "_links": {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "customer": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "addresses": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "cards": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "self",
+                        "customer",
+                        "addresses",
+                        "cards"
+                    ]
+                }
+            },
+            "required": [
+                "firstName",
+                "lastName",
+                "username",
+                "_links"
+            ]
+        },
+        "Card": {
+            "type": "object",
+            "properties": {
+                "longNum": {
+                    "type": "string"
+                },
+                "expires": {
+                    "type": "string"
+                },
+                "ccv": {
+                    "type": "string"
+                },
+                "_links": {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "card": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "self",
+                        "card"
+                    ]
+                }
+            },
+            "required": [
+                "longNum",
+                "expires",
+                "ccv",
+                "_links"
+            ]
+        },
+        "Address": {
+            "type": "object",
+            "properties": {
+                "number": {
+                    "type": "string"
+                },
+                "street": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "postcode": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "_links": {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "address": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "self",
+                        "address"
+                    ]
+                }
+            },
+            "required": [
+                "number",
+                "street",
+                "city",
+                "postcode",
+                "country",
+                "_links"
+            ]
+        },
+        "Listresponse": {
+            "title": "List response",
+            "type": "object",
+            "properties": {
+                "_embedded": {
+                    "$ref": "#/definitions/Address"
+                },
+                "_links": {
+                    "type": "object"
+                },
+                "page": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "_embedded",
+                "_links",
+                "page"
+            ]
+        }
+    }
+}

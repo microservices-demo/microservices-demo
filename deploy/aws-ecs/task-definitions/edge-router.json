@@ -1,0 +1,17 @@
+{
+    "family": "weavedemo-edge-router",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/edge-router",
+            "memory": 256,
+            "name": "edge-router",
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80
+                }
+            ]
+        }
+    ]
+}

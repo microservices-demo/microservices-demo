@@ -1,0 +1,25 @@
+{
+    "family": "weavedemo-queue-master",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/queue-master",
+            "memory": 256,
+            "mountPoints": [
+                {
+                    "containerPath": "/var/run/docker.sock",
+                    "sourceVolume": "VarRunDocker_Sock"
+                }
+            ],
+            "name": "queue-master"
+        }
+    ],
+    "volumes": [
+        {
+            "host": {
+                "sourcePath": "/var/run/docker.sock"
+            },
+            "name": "VarRunDocker_Sock"
+        }
+    ]
+}

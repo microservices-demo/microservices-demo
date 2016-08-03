@@ -6,6 +6,7 @@
 ARGS="$@"
 HOST="${1}"
 SCRIPT_NAME=`basename "$0"`
+INITIAL_DELAY=1
 TARGET_HOST="$HOST"
 CLIENTS=2
 REQUESTS=10
@@ -15,7 +16,7 @@ do_check() {
 
   # check hostname is not empty
   if [ "${TARGET_HOST}x" == "x" ]; then
-    echo "TARGET_HOST is not set; use '-h http://hostname:port/'"
+    echo "TARGET_HOST is not set; use '-h hostname:port'"
     exit 0
   fi
 
@@ -35,6 +36,7 @@ do_check() {
 }
 
 do_exec() {
+  sleep $INITIAL_DELAY
   echo "Will run $LOCUST_FILE against $TARGET_HOST. Spawning $CLIENTS clients and $REQUESTS total requests."
   locust --host=http://$TARGET_HOST -f $LOCUST_FILE --clients=$CLIENTS --hatch-rate=1 --num-request=$REQUESTS --no-web
   echo "done"
@@ -46,6 +48,7 @@ Usage:
   ${SCRIPT_NAME} [ http://hostname/ ] OPTIONS
 
 Options:
+  -d  Delay before starting
   -h  Target host url, e.g. http://localhost/
   -c  Number of clients (default 2)
   -r  Number of requests (default 10)
@@ -59,8 +62,12 @@ EOF
 
 
 
-while getopts ":h:c:r:" o; do
+while getopts ":d:h:c:r:" o; do
   case "${o}" in
+    d)
+        INITIAL_DELAY=${OPTARG}
+        #echo $INITIAL_DELAY
+        ;;
     h)
         TARGET_HOST=${OPTARG}
         #echo $TARGET_HOST

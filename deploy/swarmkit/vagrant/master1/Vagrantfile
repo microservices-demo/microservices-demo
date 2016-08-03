@@ -1,0 +1,21 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "centos/7"
+
+  config.vm.network "private_network", ip: "192.168.11.10"
+  config.vm.hostname = "master1"
+  config.vm.synced_folder "./share", "/vagrant"
+  config.vm.synced_folder "../../../../load-test", "/load-test"
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "plays/init.yml"
+  end
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "1024"
+  end
+  
+
+end

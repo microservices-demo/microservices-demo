@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-orders",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/orders",
+            "memory": 256,
+            "name": "orders"
+        }
+    ]
+}

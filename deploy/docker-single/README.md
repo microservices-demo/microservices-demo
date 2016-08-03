@@ -1,12 +1,12 @@
 # Weave Demo on Docker (single-host)
 
-The Weave Demo application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.
+The Weave Demo application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file. This version creates several isolated networks using the weave docker plugin driver.
 
 ## Pre-requisites
 
 - Install Docker
-- Install [Weave Net](https://www.weave.works/products/install-weave-net/)
-- Install [Weave Scope](https://www.weave.works/products/install-weave-scope/)
+- Install [Weave Net](https://www.weave.works/install-weave-net/)
+- Install [Weave Scope](https://www.weave.works/install-weave-scope/)
 
 ## Install & run
 

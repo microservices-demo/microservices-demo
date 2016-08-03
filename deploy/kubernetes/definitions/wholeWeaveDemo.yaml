@@ -205,7 +205,7 @@ metadata:
   labels:
     name: front-end
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 80
     targetPort: 8079

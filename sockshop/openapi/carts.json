@@ -1,0 +1,192 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "",
+        "title": "Carts and items",
+        "description": "Carts and items resources",
+        "license": {
+            "name": "MIT",
+            "url": "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
+        }
+    },
+    "host": "carts",
+    "basePath": "/",
+    "securityDefinitions": {},
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/carts/{customerId}": {
+            "get": {
+                "description": "",
+                "operationId": "Get cart",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "customerId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns cart",
+                        "schema": {
+                            "$ref": "#/definitions/Getcartresponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "",
+                "operationId": "Delete cart",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "customerId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/carts/{customerId}/items": {
+            "post": {
+                "description": "",
+                "operationId": "Add an item to the cart",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "customerId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CartItem"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update an item",
+                "operationId": "Update item",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "customerId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/carts/{customerId}/items/{itemId}": {
+            "delete": {
+                "description": "Delete cart item",
+                "operationId": "delete",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "itemId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "customerId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete response"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Getcartresponse": {
+            "title": "Get cart response",
+            "type": "object",
+            "properties": {
+                "customerId": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "required": [
+                "customerId"
+            ]
+        },
+        "CartItem": {
+            "title": "Cart item",
+            "type": "object",
+            "properties": {
+                "itemId": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "unitPrice": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "itemId",
+                "quantity",
+                "unitPrice"
+            ]
+        }
+    }
+}

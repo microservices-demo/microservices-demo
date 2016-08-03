@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-front-end",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/front-end",
+            "memory": 256,
+            "name": "front-end"
+        }
+    ]
+}

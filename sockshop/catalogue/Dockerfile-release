@@ -1,0 +1,9 @@
+FROM busybox:1
+
+WORKDIR /
+EXPOSE 80
+COPY socks.json /config/socks.json
+COPY app /
+COPY images/ /images/
+
+CMD ["/app", "-port=80"]

@@ -15,8 +15,6 @@ services:
     restart: always
     environment:
       - reschedule:on-node-failure
-    environment:
-      - "constraint:node==swarm-master"
   catalogue:
     image: weaveworksdemos/catalogue
     hostname: catalogue
@@ -91,3 +89,8 @@ services:
     restart: always
     environment:
       - reschedule:on-node-failure
+  user-sim:
+    image: weaveworksdemos/load-test
+    hostname: user-simulator
+    command: "-d 60 -r 200 -c 2 -h edge-router"
+

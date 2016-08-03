@@ -1,0 +1,112 @@
+
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "",
+    "title": "Orders",
+    "description": "",
+    "license": {
+      "name": "MIT",
+      "url": "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
+    }
+  },
+  "host": "orders",
+  "basePath": "/",
+  "securityDefinitions": {},
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/orders": {
+      "get": {
+        "description": "Catalogue API",
+        "operationId": "List catalogue",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubmitOrder"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Orders"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create an order",
+        "operationId": "Order create",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Created order",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SubmitOrder": {
+      "type": "object",
+      "properties": {
+        "customer": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "card": {
+          "type": "string"
+        },
+        "items": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "customer",
+        "address",
+        "card",
+        "items"
+      ]
+    },
+    "Orders": {
+      "type": "object",
+      "properties": {
+        "_embedded": {
+          "type": "object",
+          "properties": {
+            "customerOrders": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          "required": [
+            "customerOrders"
+          ]
+        }
+      }
+    }
+  }
+}
