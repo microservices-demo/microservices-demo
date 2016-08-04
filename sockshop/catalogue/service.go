@@ -6,7 +6,6 @@ package catalogue
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"strings"
 )
 
@@ -75,23 +74,19 @@ func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) 
 	}
 
 	query += ";"
-	// fmt.Println("Query: " + query)
 	sel, err := s.db.Prepare(query)
 
 	if err != nil {
-		fmt.Println("here: " + err.Error())
 		return []Sock{}, ErrDBConnection
 	}
 	defer sel.Close()
 
 	rows, err := sel.Query(args...)
 	if err != nil {
-		fmt.Println("there: " + err.Error())
 		return []Sock{}, ErrDBConnection
 	}
-	// fmt.Println("before")
+
 	for rows.Next() {
-		// fmt.Println("next...")
 		sock := rowToSock(rows)
 		socks = append(socks, sock)
 	}
@@ -118,11 +113,9 @@ func (s *fixedService) Count(tags []string) (int, error) {
 
 	query += " GROUP BY Sock.SockID;"
 
-	// fmt.Println("Query: " + query)
 	sel, err := s.db.Prepare(query)
 
 	if err != nil {
-		fmt.Println("here: " + err.Error())
 		return 0, ErrDBConnection
 	}
 	defer sel.Close()
