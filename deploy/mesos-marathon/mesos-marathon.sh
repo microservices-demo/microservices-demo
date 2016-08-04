@@ -246,9 +246,12 @@ do_init_check() {
 ############## Start Commands ###################
 
 do_install() {
-    WEAVE_BINARY=$(ssh -i $KEY ubuntu@$MASTER 'which weave')
+    verbose "Checking whether already installed"
+    WEAVE_BINARY=$(ssh -i $KEY ubuntu@${MASTERS[0]} 'which weave') || true
+    verbose "Weave binary: $WEAVE_BINARY"
     if [[ -n $WEAVE_BINARY ]]; then
         WEAVE_CONNECTIONS=$(ssh $SSH_OPTS -i $KEY $USER@${AGENTS[0]} 'weave status connections | wc -l')
+        verbose "Weave connections: $WEAVE_CONNECTIONS"
     fi
     if [[ -z $WEAVE_BINARY ]] || [ $WEAVE_CONNECTIONS -lt 3 ]; then
         info "Installing Weave"

@@ -6,11 +6,12 @@ events {
 }
 
 http {
+  resolver $NAMESERVER valid=5s;
   server { # simple load balancing
     listen          80;
-
+    set $endpoint "$SERVICE"; # This forces nginx to reload the address from the DNS
     location / {
-      proxy_pass      http://front-end:8079;
+      proxy_pass      http://$endpoint;
     }
   }
 }
