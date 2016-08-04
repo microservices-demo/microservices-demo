@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	// "encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -12,8 +11,6 @@ import (
 	"github.com/go-kit/kit/log"
 
 	"net/http"
-
-	// "sort"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/weaveworks/weaveDemo/catalogue"
@@ -45,7 +42,6 @@ func main() {
 	db, err := sql.Open("mysql", "catalogue_user:default_password@tcp(catalogue-db:3306)/"+*dbName)
 	if err != nil {
 		logger.Log("err", err)
-		// TODO should we exit if not DB?
 		os.Exit(1)
 	}
 	defer db.Close()
