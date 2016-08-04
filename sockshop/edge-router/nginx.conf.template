@@ -9,7 +9,7 @@ http {
   resolver $NAMESERVER valid=5s;
   server { # simple load balancing
     listen          80;
-    set $endpoint "front-end:8079"; # This forces nginx to reload the address from the DNS
+    set $endpoint "$SERVICE"; # This forces nginx to reload the address from the DNS
     location / {
       proxy_pass      http://$endpoint;
     }
