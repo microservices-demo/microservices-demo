@@ -1,3 +1,7 @@
+CREATE USER IF NOT EXISTS 'catalogue_user' IDENTIFIED BY 'default_password';
+
+GRANT ALL ON socksdb.* TO 'catalogue_user';
+
 CREATE TABLE IF NOT EXISTS Sock (
 	SockID varchar(40) NOT NULL, 
 	name varchar(20), 

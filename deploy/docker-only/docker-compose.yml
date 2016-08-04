@@ -30,8 +30,6 @@ services:
     environment:
       - reschedule:on-node-failure
       - MYSQL_ROOT_PASSWORD=root_pass
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
       - MYSQL_DATABASE=socksdb
   accounts:
     image: weaveworksdemos/accounts

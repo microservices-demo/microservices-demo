@@ -54,18 +54,23 @@ func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) 
 	var socks []Sock
 	query := baseQuery
 
+	var args []interface{}
+
 	for i, t := range tags {
 		if i == 0 {
-			query += " WHERE Tag.name='" + t + "'"
+			query += " WHERE Tag.name=?"
+			args = append(args, t)
 		} else {
-			query += " OR Tag.name='" + t + "'"
+			query += " OR Tag.name=?"
+			args = append(args, t)
 		}
 	}
 
 	query += " GROUP BY id"
 
 	if order != "" {
-		query += " ORDER BY " + order
+		query += " ORDER BY ?"
+		args = append(args, order)
 	}
 
 	query += ";"
@@ -77,7 +82,7 @@ func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) 
 	}
 	defer sel.Close()
 
-	rows, err := sel.Query()
+	rows, err := sel.Query(args...)
 	if err != nil {
 		return []Sock{}, ErrDBConnection
 	}
@@ -107,7 +112,7 @@ func (s *fixedService) Count(tags []string) (int, error) {
 }
 
 func (s *fixedService) Get(id string) (Sock, error) {
-	query := baseQuery + " WHERE Sock.SockID = '" + id + "' GROUP BY Sock.SockID;"
+	query := baseQuery + " WHERE Sock.SockID =? GROUP BY Sock.SockID;"
 
 	sel, err := s.db.Prepare(query)
 	if err != nil {
@@ -115,7 +120,7 @@ func (s *fixedService) Get(id string) (Sock, error) {
 	}
 	defer sel.Close()
 
-	rows, err := sel.Query()
+	rows, err := sel.Query(id)
 	if err != nil {
 		return Sock{}, ErrDBConnection
 	}

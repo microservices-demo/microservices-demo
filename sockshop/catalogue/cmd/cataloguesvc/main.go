@@ -42,7 +42,7 @@ func main() {
 
 	// Data domain.
 	// TODO pull user/password from env?
-	db, err := sql.Open("mysql", "user:password@tcp(catalogue-db:3306)/"+*dbName)
+	db, err := sql.Open("mysql", "catalogue_user:default_password@tcp(catalogue-db:3306)/"+*dbName)
 	if err != nil {
 		logger.Log("err", err)
 		// TODO should we exit if not DB?
@@ -53,7 +53,7 @@ func main() {
 	// Check if DB connection can be made, only for logging purposes, should not fail/exit
 	err = db.Ping()
 	if err != nil {
-		logger.Log("DB", dbName, "Error", "Unable to connect to Database")
+		logger.Log("Error", "Unable to connect to Database", "DB", dbName)
 	}
 
 	// Service domain.
