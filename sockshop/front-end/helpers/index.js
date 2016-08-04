@@ -4,6 +4,15 @@
   var request = require("request");
   var helpers = {};
 
+  helpers.errorHandler = function(err, req, res, next) {
+    console.error(err.stack);
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  };
+
   /* Responds with the given body and status 200 OK  */
   helpers.respondSuccessBody = function(res, body) {
     helpers.respondStatusBody(res, 200, body);

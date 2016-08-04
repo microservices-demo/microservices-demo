@@ -5,33 +5,20 @@ var request      = require("request")
   , async        = require("async")
   , cookieParser = require("cookie-parser")
   , session      = require("express-session")
+  , config       = require("./config")
   , helpers      = require("./helpers")
   , login        = require("./api/login")
   , cart         = require("./api/cart")
   , accounts     = require("./api/accounts")
   , catalogue    = require("./api/catalogue")
   , orders       = require("./api/orders")
+  , app          = express()
 
-var app = express(),
-    env = app.get("env");
-
-app.use(session({
-  secret: 'sooper secret',
-  resave: false,
-  saveUninitialized: true
-}));
-
+app.use(session(config.session));
 app.use(express.static(__dirname + "/"));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(function(err, req, res, next) {
-  console.error(err.stack);
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: err
-  });
-});
+app.use(helpers.errorHandler);
 
 var domain = "";
 process.argv.forEach(function (val, index, array) {
