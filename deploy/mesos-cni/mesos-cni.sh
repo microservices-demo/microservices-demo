@@ -234,9 +234,17 @@ set -o pipefail
 
 # Usage: launch_service name command image shell
 launch_service() {
-    verbose "Starting $1"
-    ssh	$SSH_OPTS	-i	$KEY	$USER@${MASTERS[0]}	'nohup	sudo	mesos-execute	--networks=weave    --env={\"LC_ALL\":\"C\"}	'$4'	--resources=cpus:'$cpu'\;mem:'$mem'	--name='$1'	--command="'$2'"	--docker_image='$3'	--master='${MASTERS[0]}':5050	</dev/null	>'$1'.log	2>&1	&'
-    wait_task_running $1
+    info "Starting $1"
+    STATUS=STARTING
+    while [  "$STATUS" != "TASK_RUNNING" ]; do
+        if [ -z "$STATUS" ] ; then
+            verbose "Retrying $1"
+        fi
+        ssh	$SSH_OPTS -i $KEY $USER@${MASTERS[0]} 'nohup sudo mesos-execute --networks=weave --env={\"LC_ALL\":\"C\"} '$4' --resources=cpus:'$cpu'\;mem:'$mem' --name='$1' --command="'$2'" --docker_image='$3' --master='${MASTERS[0]}':5050 </dev/null >'$1'.log 2>&1 &'
+        sleep 1 # Give it a second to register in mesos
+        wait_task_running $1
+        STATUS=$(task_status $1)
+    done
 }
 
 task_status() {
@@ -247,14 +255,14 @@ wait_task_running() {
     COUNTER=0
     STATUS=$(task_status $1)
     verbose "Wating for $1"
-    while [  "$STATUS" != "TASK_RUNNING" ]; do
+    while [ "$STATUS" != "TASK_RUNNING" ] && [ -n "$STATUS" ]; do
      let COUNTER=COUNTER+1
      sleep 1
      if [ $COUNTER -gt 60 ] ; then
         warning "This is taking too long. Consider Ctrl-C'ing"
      fi
      STATUS=$(task_status $1)
-     verbose "Status is $STATUS"
+     verbose "Status is '$STATUS'"
     done
 }
 
@@ -338,6 +346,7 @@ do_uninstall() {
             verbose "Stopping Weave CNI on $HOST"
             ssh $SSH_OPTS -i $KEY $USER@$HOST rm -f provisionWeaveCNI.sh
             ssh $SSH_OPTS -i $KEY $USER@$HOST sudo weave stop
+            ssh $SSH_OPTS -i $KEY $USER@$HOST sudo weave reset --force
             ssh $SSH_OPTS -i $KEY $USER@$HOST sudo rm -f /usr/local/bin/weave
         else
             verbose "Not running on $HOST"
@@ -383,7 +392,7 @@ do_start() {
     # Provision Edge router first, so that it is always on all machines.
     curl -s -X POST -H "Content-type: application/json" ${MASTERS[0]}:8080/v2/apps -d '{
       "id": "edge-router",
-      "cmd": "while ! ping -c1 front-end.mesos-executeinstance.weave.local &>/dev/null; do : echo .; done ; sed -i \"s/.*proxy_pass.*/      proxy_pass      http:\\/\\/front-end.mesos-executeinstance.weave.local:8079;/\" /etc/nginx/nginx.conf ; nginx -g \"daemon off;\"",
+      "cmd": "while ! ping -c1 front-end.mesos-executeinstance.weave.local &>/dev/null; do : sleep 5; echo .; done ; sleep 10 ; echo \"Starting nginx\" ; sed -i \"s/.*proxy_pass.*/      proxy_pass      http:\\/\\/front-end.mesos-executeinstance.weave.local:8079;/\" /etc/nginx/nginx.conf ; nginx -g \"daemon off;\"",
       "cpus": 0.2,
       "mem": 512,
       "disk": 0,

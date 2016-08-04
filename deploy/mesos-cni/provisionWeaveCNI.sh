@@ -8,7 +8,7 @@ sudo curl -sL git.io/weave -o /usr/local/bin/weave
 sudo chmod a+x /usr/local/bin/weave
 sudo mkdir -p /opt/cni/bin
 sudo mkdir -p /etc/cni/net.d
-sudo weave stop # Just in case it's already running.
+sudo weave reset --force # Precautionary
 sudo weave setup
 sudo weave launch --no-dns $1
 sudo weave expose
