@@ -19,16 +19,16 @@ clean:
 	@if [ $$(docker images -q dev/frontend | wc -l) -ge 1 ]; then docker rmi dev/frontend; fi
 
 test:
-	@$$(npm bin)/istanbul cover $$(npm bin)/_mocha -- -R nyan
+	@$$(npm bin)/istanbul cover $$(npm bin)/_mocha -- --recursive
 
 test-w:
-	@$$(npm bin)/mocha -R nyan -w
+	@$$(npm bin)/mocha -w --recursive
 
 coverage:
 	@open coverage/lcov-report/index.html
 
 browser:
-	@open $$(docker-machine ip):8080
+	@open http://$$(docker-machine ip):8080
 
 logs:
 	@docker logs -f devfrontend
