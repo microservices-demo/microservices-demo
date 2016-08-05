@@ -29,7 +29,7 @@ services:
       - ./data:/docker-entrypoint-initdb.d
     environment:
       - reschedule:on-node-failure
-      - MYSQL_ROOT_PASSWORD=root_pass
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=socksdb
   accounts:
     image: weaveworksdemos/accounts
