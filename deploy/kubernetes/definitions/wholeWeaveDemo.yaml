@@ -24,8 +24,6 @@ metadata:
   labels:
     name: accounts
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 80
@@ -52,7 +50,6 @@ spec:
         ports:
         - name: mongo
           containerPort: 27017
-          hostPort: 27017
 ---
 apiVersion: v1
 kind: Service
@@ -61,8 +58,6 @@ metadata:
   labels:
     name: accounts-db
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 27017
@@ -96,8 +91,6 @@ metadata:
   labels:
     name: cart
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 80
@@ -124,7 +117,6 @@ spec:
         ports:
         - name: mongo
           containerPort: 27017
-          hostPort: 27017
 ---
 apiVersion: v1
 kind: Service
@@ -133,8 +125,6 @@ metadata:
   labels:
     name: cart-db
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 27017
@@ -168,8 +158,6 @@ metadata:
   labels:
     name: catalogue
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 80
@@ -238,8 +226,6 @@ metadata:
   labels:
     name: login
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 80
@@ -273,8 +259,6 @@ metadata:
   labels:
     name: orders
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 80
@@ -301,7 +285,6 @@ spec:
         ports:
         - name: mongo
           containerPort: 27017
-          hostPort: 27017
 ---
 apiVersion: v1
 kind: Service
@@ -310,8 +293,6 @@ metadata:
   labels:
     name: orders-db
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 27017
@@ -345,8 +326,6 @@ metadata:
   labels:
     name: payment
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 80
@@ -380,8 +359,6 @@ metadata:
   labels:
     name: queue-master
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 80
@@ -415,8 +392,6 @@ metadata:
   labels:
     name: rabbitmq
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 5672
@@ -450,8 +425,6 @@ metadata:
   labels:
     name: shipping
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 80
