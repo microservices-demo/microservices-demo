@@ -9,7 +9,7 @@ The Weave Demo application is packaged using a [Docker Compose](https://docs.doc
 
 ## Install & run
 
-    curl -L https://raw.githubusercontent.com/weaveworks/weaveDemo/master/deploy/docker-only/docker-compose.yml -o docker-compose.yml
+    curl -L https://raw.githubusercontent.com/microservices-demo/microservices-demo/master/deploy/docker-only/docker-compose.yml -o docker-compose.yml
     docker-compose up -d
 
 ## Launch Weave Scope or Weave Cloud

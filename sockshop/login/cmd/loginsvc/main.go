@@ -12,7 +12,7 @@ import (
 
 	"net/http"
 
-	"github.com/weaveworks/weaveDemo/login"
+	"github.com/microservices-demo/microservices-demo/sockshop/login"
 	"golang.org/x/net/context"
 )
 

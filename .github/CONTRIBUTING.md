@@ -14,7 +14,7 @@ Please open an issue if you have found an issue or have an idea for a new featur
 
 ## New Contributors
 
-We have a list of issues on Github with "HelpWanted" labels attributed to them. These represent tasks that we don't have time to do, are self-contained and relatively easy to implement. If you'd like to contribute, but don't know where to start, [look here](https://github.com/weaveworks/microservices-demo/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen%20label%3AHelpWanted).
+We have a list of issues on Github with "HelpWanted" labels attributed to them. These represent tasks that we don't have time to do, are self-contained and relatively easy to implement. If you'd like to contribute, but don't know where to start, [look here](https://github.com/microservices-demo/microservices-demo/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen%20label%3AHelpWanted).
 
 ## Direction
 
