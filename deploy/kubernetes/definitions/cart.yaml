@@ -24,8 +24,6 @@ metadata:
   labels:
     name: cart
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 80
@@ -52,7 +50,6 @@ spec:
         ports:
         - name: mongo
           containerPort: 27017
-          hostPort: 27017
 ---
 apiVersion: v1
 kind: Service
@@ -61,8 +58,6 @@ metadata:
   labels:
     name: cart-db
 spec:
-  # if your cluster supports it, uncomment the following to automatically create
-  # an external load-balanced IP for the frontend service.
   ports:
     # the port that this service should serve on
   - port: 27017
