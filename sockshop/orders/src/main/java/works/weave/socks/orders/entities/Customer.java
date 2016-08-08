@@ -1,4 +1,4 @@
-package works.weave.socks.accounts.entities;
+package works.weave.socks.orders.entities;
 
 
 import org.springframework.data.annotation.Id;
@@ -27,7 +27,8 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(String id, String firstName, String lastName, String username, List<Address> addresses, List<Card> cards) {
+    public Customer(String id, String firstName, String lastName, String username, List<Address> addresses,
+                    List<Card> cards) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,6 +51,25 @@ public class Customer {
                 ", addresses=" + addresses +
                 ", cards=" + cards +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Customer customer = (Customer) o;
+
+        if (!getId().equals(customer.getId())) return false;
+        return getUsername() != null ? getUsername().equals(customer.getUsername()) : customer.getUsername() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId().hashCode();
+        result = 31 * result + (getUsername() != null ? getUsername().hashCode() : 0);
+        return result;
     }
 
     public String getId() {
