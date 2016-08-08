@@ -2,7 +2,7 @@ FROM golang:1.6
 
 COPY users.json /config/users.json
 RUN mkdir /app
-COPY . /go/src/github.com/microservices-demo/microservices-demo/login/
+COPY . /go/src/github.com/microservices-demo/microservices-demo/sockshop/login/
 
 RUN go get github.com/gorilla/mux github.com/go-kit/kit/log github.com/go-kit/kit/endpoint github.com/go-kit/kit/transport/http
 
