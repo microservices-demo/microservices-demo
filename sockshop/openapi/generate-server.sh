@@ -16,7 +16,7 @@ if [[ "$module" == "" ]] || [[ "$output" == "" ]] ; then
     exit 1
 fi
 
-fileUrl=https://raw.githubusercontent.com/weaveworks/microservices-demo/"$(git rev-parse HEAD)"/sockshop/openapi/"$module"
+fileUrl=https://raw.githubusercontent.com/microservices-demo/microservices-demo/"$(git rev-parse HEAD)"/sockshop/openapi/"$module"
 
 if ! out=$(curl -sf $fileUrl); then
     echo "Couldn't get the file at $fileUrl"

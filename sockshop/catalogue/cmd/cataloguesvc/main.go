@@ -14,7 +14,7 @@ import (
 
 	"sort"
 
-	"github.com/weaveworks/weaveDemo/catalogue"
+	"github.com/microservices-demo/microservices-demo/sockshop/catalogue"
 	"golang.org/x/net/context"
 	"path/filepath"
 )

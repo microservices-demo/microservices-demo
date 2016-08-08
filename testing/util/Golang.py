@@ -15,4 +15,4 @@ class Golang():
         docker = Docker()
         docker.execute(['docker', 'build', '-t', test_container_name, code_dir])
         docker.execute(['docker', 'run', '--rm', test_container_name, 'go', 'test',
-                        'github.com/weaveworks/weaveDemo/' + self.container_dir])
+                        'github.com/microservices-demo/microservices-demo/' + self.container_dir])

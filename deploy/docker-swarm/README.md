@@ -12,7 +12,7 @@ The Weave Demo application is packaged using a [Docker Compose](https://docs.doc
 
 Launch Weave Net on each host. There are [instructions for preparing a Swarm](../../install/docker-machine-swarm) specific to this demo.
 
-    curl -L https://raw.githubusercontent.com/weaveworks/weaveDemo/master/deploy/docker-swarm/docker-compose.yml -o docker-compose.yml
+    curl -L https://raw.githubusercontent.com/microservices-demo/microservices-demo/master/deploy/docker-swarm/docker-compose.yml -o docker-compose.yml
     docker-compose up -d
 
 ## Launch Weave Cloud
