@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import works.weave.socks.Shipment;
-import works.weave.socks.accounts.entities.Address;
-import works.weave.socks.accounts.entities.Card;
-import works.weave.socks.accounts.entities.Customer;
 import works.weave.socks.cart.entities.Item;
 
 import java.util.Calendar;
