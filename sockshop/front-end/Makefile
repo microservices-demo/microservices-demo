@@ -34,4 +34,4 @@ logs:
 	@docker logs -f devfrontend
 
 e2e:
-	@$$(npm bin)/casperjs test test/e2e/*_test.js
+	@./test/e2e/runner.sh
