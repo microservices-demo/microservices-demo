@@ -6,7 +6,7 @@ COPY . /go/src/github.com/microservices-demo/microservices-demo/sockshop/login/
 
 RUN go get github.com/gorilla/mux github.com/go-kit/kit/log github.com/go-kit/kit/endpoint github.com/go-kit/kit/transport/http
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/main github.com/microservices-demo/microservices-demo/login/cmd/loginsvc
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/main github.com/microservices-demo/microservices-demo/sockshop/login/cmd/loginsvc
 
 CMD ["/app/main", "-port=80"]
 
