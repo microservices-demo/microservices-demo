@@ -237,7 +237,9 @@ for dir in $@ ; do
     for f in $FILES ; do
         info "Testing $f"
         CODE_DIR=$(cd $SCRIPT_DIR/..; pwd)
-        assert_raises "docker run --rm --name $dir-test -v /var/run/docker.sock:/var/run/docker.sock -v $CODE_DIR:$CODE_DIR -w $CODE_DIR test-container sh -c 'export PYTHONPATH=\$PYTHONPATH:\$PWD/testing ; python $f --tag $tag'"
+	# Removing --tag, fails for 'unit' tests
+	# assert_raises "docker run --rm --name $dir-test -v /var/run/docker.sock:/var/run/docker.sock -v $CODE_DIR:$CODE_DIR -w $CODE_DIR/testing test-container sh -c 'export PYTHONPATH=\$PYTHONPATH:\$PWD/testing ; python $f --tag=latest'"
+	assert_raises "docker run --rm --name $dir-test -v /var/run/docker.sock:/var/run/docker.sock -v $CODE_DIR:$CODE_DIR -w $CODE_DIR/testing test-container sh -c 'export PYTHONPATH=\$PYTHONPATH:\$PWD/testing ; python $f'"
     done
 
     assert_end $SCRIPT_DIR

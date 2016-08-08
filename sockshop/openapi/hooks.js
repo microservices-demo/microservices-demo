@@ -1,6 +1,6 @@
 const hooks = require('hooks');
 const {MongoClient} = require('mongodb');
-const ObjectID = require('mongodb').ObjectID
+const ObjectID = require('mongodb').ObjectID;
 
 let db;
 
@@ -39,7 +39,7 @@ const customer = [
 // Setup database connection before Dredd starts testing
 hooks.beforeAll((transactions, done) => {
     var MongoEndpoint = process.env.MONGO_ENDPOINT ||  'mongodb://localhost:32769/data';
-    console.info('MongoEndpoint: ' + MongoEndpoint);
+    // console.info('MongoEndpoint: ' + MongoEndpoint);
     MongoClient.connect(MongoEndpoint, function(err, conn) {
 	db = conn;
 	db.dropDatabase();
