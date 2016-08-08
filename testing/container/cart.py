@@ -9,18 +9,18 @@ from util.Dredd import Dredd
 
 class CartContainerTest(unittest.TestCase):
     TAG = "latest"
-    container_name = 'cart'
-    mongo_container_name = 'cart-db'
+    container_name = Docker().random_container_name('cart')
+    mongo_container_name = Docker().random_container_name('cart-db')
     def __init__(self, methodName='runTest'):
         super(CartContainerTest, self).__init__(methodName)
         self.ip = ""
         
     def setUp(self):
-        Docker().start_container(container_name=self.mongo_container_name, image="mongo")
+        Docker().start_container(container_name=self.mongo_container_name, image="mongo", host="cart-db")
         command = ['docker', 'run',
                    '-d',
                    '--name', CartContainerTest.container_name,
-                   '-h', CartContainerTest.container_name,
+                   '-h', 'cart',
                    '--link',
                    CartContainerTest.mongo_container_name,
                    'weaveworksdemos/cart:' + self.TAG]
@@ -32,7 +32,7 @@ class CartContainerTest(unittest.TestCase):
         Docker().kill_and_remove(CartContainerTest.mongo_container_name)
 
     def test_api_validated(self):
-        limit = 30
+        limit = 60
         while Api.noResponse('http://'+ self.ip +':80/carts/579f21ae98684924944651bf'):
             if limit == 0:
                 self.fail("Couldn't get the API running")

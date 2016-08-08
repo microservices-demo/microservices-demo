@@ -9,20 +9,21 @@ from util.Dredd import Dredd
 
 class AccountsContainerTest(unittest.TestCase):
     TAG = "latest"
-    container_name = 'accounts'
-    mongo_container_name = 'accounts-db'
+    container_name = Docker().random_container_name('accounts')
+    mongo_container_name = Docker().random_container_name('accounts-db')
+    
     def __init__(self, methodName='runTest'):
         super(AccountsContainerTest, self).__init__(methodName)
         self.ip = ""
 
     def setUp(self):
-        Docker().start_container(container_name=self.mongo_container_name, image="mongo")
+        Docker().start_container(container_name=self.mongo_container_name, image="mongo", host="accounts-db")
         command = ['docker', 'run',
                    '-d',
                    '--name', AccountsContainerTest.container_name,
-                   '-h', AccountsContainerTest.container_name,
+                   '-h', 'accounts',
                    '--link',
-                   AccountsContainerTest.mongo_container_name,
+                   self.mongo_container_name,
                    'weaveworksdemos/accounts:' + self.TAG]
         Docker().execute(command)
         self.ip = Docker().get_container_ip(AccountsContainerTest.container_name)
@@ -32,7 +33,7 @@ class AccountsContainerTest(unittest.TestCase):
         Docker().kill_and_remove(AccountsContainerTest.mongo_container_name)
 
     def test_api_validated(self):
-        limit = 15
+        limit = 60
         while Api.noResponse('http://'+ self.ip +':80/addresses'):
             if limit == 0:
                 self.fail("Couldn't get the API running")

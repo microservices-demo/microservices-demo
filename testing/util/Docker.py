@@ -1,11 +1,18 @@
 import re
 from subprocess import Popen, PIPE
+from random import random
 
 # From http://blog.bordage.pro/avoid-docker-py/
 class Docker:
     def kill_and_remove(self, ctr_name):
         command = ['docker', 'rm', '-f', ctr_name]
         self.execute(command)
+
+    def random_container_name(self, prefix):
+        retstr = prefix + '-'
+        for i in range(5):
+            retstr += chr(int(round(random() * (122-97) + 97)))
+        return retstr
 
     def get_container_ip(self, ctr_name):
         command = ['docker', 'inspect',
@@ -26,6 +33,6 @@ class Docker:
         p.stderr.close()
         return str(out, 'utf-8')
 
-    def start_container(self, container_name="", image="", cmd=""):
-        command = ['docker', 'run', '-d', '-h', container_name, '--name', container_name, image]
-        return self.execute(command)
+    def start_container(self, container_name="", image="", cmd="", host=""):
+        command = ['docker', 'run', '-d', '-h', host, '--name', container_name, image]
+        self.execute(command)
