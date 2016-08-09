@@ -220,7 +220,7 @@ _________________________________________________________ -->
                 });
 
                 $.getJSON('/tags', function (data) {
-                    $.each(data, function (index, element) {
+                    $.each(data.tags, function (index, element) {
                         console.log("Current tags: " + tags);
                         if (tags != null && tags != "" && tags != true && tags.indexOf(element) > -1) {
                             $('#filters').append('<div class="checkbox"><label><input type="checkbox" checked="true" value="' + element + '">' + element + '</label></div>');
