@@ -25,8 +25,6 @@ services:
     image: mysql
     hostname: catalogue-db
     restart: always
-    volumes:
-      - ./data:/docker-entrypoint-initdb.d
     environment:
       - reschedule:on-node-failure
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}

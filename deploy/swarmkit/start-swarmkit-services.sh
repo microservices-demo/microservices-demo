@@ -19,6 +19,7 @@ exit_on_failure() {
 cleanup_services() {
     docker service rm front-end
     docker service rm catalogue
+    docker service rm catalogue-db
     docker service rm accounts
     docker service rm accounts-db
     docker service rm cart
@@ -61,6 +62,12 @@ docker service create \
        --env "reschedule=on-node-failure" weaveworksdemos/catalogue:latest
 exit_on_failure
 
+echo "Creating catalogue-db service"
+docker service create \
+       --name catalogue-db \
+       --network ingress \
+       --env "reschedule=on-node-failure" mysql
+exit_on_failure
 
 echo "Creating accounts service"
 docker service create \

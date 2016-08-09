@@ -35,6 +35,18 @@ services:
       - reschedule:on-node-failure
     networks:
       - external
+  catalogue-db:
+    image: mysql
+    hostname: catalogue-db
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=socksdb
+    networks:
+      - external
   accounts:
     image: weaveworksdemos/accounts
     hostname: accounts

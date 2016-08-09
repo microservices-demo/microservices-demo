@@ -8,7 +8,7 @@ USER=ubuntu
 MASTERS=($MASTER)
 AGENTS=($SLAVE0 $SLAVE1 $SLAVE2)
 SSH_OPTS=-oStrictHostKeyChecking=no
-SERVICES=("accounts-db" "cart-db" "orders-db" "shipping" "orders" "catalogue" "accounts" "cart" "payment" "login" "front-end")
+SERVICES=("accounts-db" "cart-db" "orders-db" "shipping" "orders" "catalogue" "catalogue-db" "accounts" "cart" "payment" "login" "front-end")
 
 
 ############## Begin Utilities ###################
@@ -424,6 +424,7 @@ do_start() {
     launch_service accounts-db  "echo ok"                                       mongo                               --no-shell
     launch_service cart-db      "echo ok"                                       mongo                               --no-shell
     launch_service orders-db    "echo ok"                                       mongo                               --no-shell
+    launch_service catalogue-db "echo ok"                                       mysql                               --no-shell
 
     launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$tag       --shell
     launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$tag         --shell

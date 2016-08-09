@@ -57,6 +57,24 @@
               ]
             }
           }
+        },
+        {
+          "id": "/weave-demo/database/catalogue-db",
+          "cpus": 0.1,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "mysql",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "catalogue-db-db.weave.local"
+                }
+              ]
+            }
+          }
         }
       ]
     },
