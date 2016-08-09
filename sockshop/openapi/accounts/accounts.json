@@ -16,10 +16,10 @@
         "http"
     ],
     "consumes": [
-        "application/json"
+        "application/json;charset=UTF-8"
     ],
     "produces": [
-        "application/json"
+        "application/json;charset=UTF-8"
     ],
     "paths": {
         "/customers": {
@@ -27,7 +27,7 @@
                 "description": "",
                 "operationId": "Get customers",
                 "produces": [
-                    "application/json"
+                    "application/json;charset=UTF-8"
                 ],
                 "parameters": [],
                 "responses": {
@@ -45,7 +45,7 @@
                 "description": "",
                 "operationId": "Get cards",
                 "produces": [
-                    "application/json"
+                    "application/json;charset=UTF-8"
                 ],
                 "parameters": [],
                 "responses": {
@@ -63,7 +63,7 @@
                 "description": "",
                 "operationId": "List",
                 "produces": [
-                    "application/json"
+                    "application/json;charset=UTF-8"
                 ],
                 "parameters": [],
                 "responses": {
@@ -83,7 +83,15 @@
             "type": "object",
             "properties": {
                 "_embedded": {
-                    "$ref": "#/definitions/Customer"
+		    "type": "object",
+		    "properties": {
+			"customer": {
+			    "type": "array",
+			    "items": {
+		                "$ref": "#/definitions/Customer"		
+			    }
+			}
+		    }
                 },
                 "_links": {
                     "type": "object"
@@ -103,7 +111,15 @@
             "type": "object",
             "properties": {
                 "_embedded": {
-                    "$ref": "#/definitions/Card"
+		    "type": "object",
+		    "properties": {
+			"cards": {
+			    "type": "array",
+			    "items": {
+				"$ref": "#/definitions/Card"
+			    }
+			}
+		    }                    
                 },
                 "_links": {
                     "type": "object"
@@ -308,7 +324,15 @@
             "type": "object",
             "properties": {
                 "_embedded": {
-                    "$ref": "#/definitions/Address"
+		    "type": "object",
+		    "properties": {
+			"address": {
+			    "type": "array",
+			    "items": {
+				"$ref": "#/definitions/Address"
+			    }
+			}
+		    }
                 },
                 "_links": {
                     "type": "object"

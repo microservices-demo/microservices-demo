@@ -3,8 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/go-kit/kit/log"
-	"github.com/weaveworks/weaveDemo/payment"
+	"github.com/microservices-demo/microservices-demo/sockshop/payment"
 	"golang.org/x/net/context"
 	"net/http"
 	"os"
@@ -23,28 +22,11 @@ func main() {
 	errc := make(chan error)
 	ctx := context.Background()
 
-	// Log domain.
-	var logger log.Logger
-	{
-		logger = log.NewLogfmtLogger(os.Stderr)
-		logger = log.NewContext(logger).With("ts", log.DefaultTimestampUTC)
-		logger = log.NewContext(logger).With("caller", log.DefaultCaller)
-	}
-
-	// Service domain.
-	var service payment.Service
-	{
-		service = payment.NewAuthorisationService(float32(*declineAmount))
-		service = payment.LoggingMiddleware(logger)(service)
-	}
-
-	// Endpoint domain.
-	endpoints := payment.MakeEndpoints(service)
+	handler, logger := payment.WireUp(ctx, float32(*declineAmount))
 
 	// Create and launch the HTTP server.
 	go func() {
 		logger.Log("transport", "HTTP", "port", *port)
-		handler := payment.MakeHTTPHandler(ctx, endpoints, logger)
 		errc <- http.ListenAndServe(":"+*port, handler)
 	}()
 

@@ -30,7 +30,7 @@ public class ItemsController {
     private CartDAO cartDAO;
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/{id:.*}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @RequestMapping(value = "/{itemId:.*}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     public Item get(@PathVariable String customerId, @PathVariable String itemId) {
         return new FoundItem(() -> getItems(customerId), () -> new Item(itemId)).get();
     }
@@ -43,17 +43,19 @@ public class ItemsController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public void addToCart(@PathVariable String customerId, @RequestBody Item item) {
+    public Item addToCart(@PathVariable String customerId, @RequestBody Item item) {
         // If the item does not exist in the cart, create new one in the repository.
         FoundItem foundItem = new FoundItem(() -> cartsController.get(customerId).contents(), () -> item);
         if (!foundItem.hasItem()) {
             Supplier<Item> newItem = new ItemResource(itemDAO, () -> item).create();
             LOG.debug("Did not find item. Creating item for user: " + customerId + ", " + newItem.get());
             new CartResource(cartDAO, customerId).contents().get().add(newItem).run();
+            return item;
         } else {
             Item newItem = new Item(foundItem.get(), foundItem.get().quantity() + 1);
             LOG.debug("Found item in cart. Incrementing for user: " + customerId + ", " + newItem);
             updateItem(customerId, newItem);
+            return newItem;
         }
     }
 

@@ -1,0 +1,3 @@
+- Read the contribution guidelines
+- Include a reference to a related issue in this repository
+- A description of the changes proposed in the pull request

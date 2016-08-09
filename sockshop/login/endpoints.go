@@ -5,6 +5,8 @@ package login
 // transport.
 
 import (
+	"time"
+
 	"github.com/go-kit/kit/endpoint"
 	"golang.org/x/net/context"
 )
@@ -13,6 +15,7 @@ import (
 type Endpoints struct {
 	LoginEndpoint    endpoint.Endpoint
 	RegisterEndpoint endpoint.Endpoint
+	HealthEndpoint   endpoint.Endpoint
 }
 
 // MakeEndpoints returns an Endpoints structure, where each endpoint is
@@ -21,6 +24,7 @@ func MakeEndpoints(s Service) Endpoints {
 	return Endpoints{
 		LoginEndpoint:    MakeLoginEndpoint(s),
 		RegisterEndpoint: MakeRegisterEndpoint(s),
+		HealthEndpoint:   MakeHealthEndpoint(s),
 	}
 }
 
@@ -42,6 +46,13 @@ func MakeRegisterEndpoint(s Service) endpoint.Endpoint {
 	}
 }
 
+// MakeHealthEndpoint returns current health of the given service.
+func MakeHealthEndpoint(s Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		return healthResponse{Status: "OK", Time: time.Now().String()}, nil
+	}
+}
+
 type loginRequest struct {
 	Username string
 	Password string
@@ -58,4 +69,13 @@ type registerRequest struct {
 
 type registerResponse struct {
 	Status bool `json:"status"`
+}
+
+type healthRequest struct {
+	//
+}
+
+type healthResponse struct {
+	Status string `json:"status"`
+	Time   string `json:"time"`
 }

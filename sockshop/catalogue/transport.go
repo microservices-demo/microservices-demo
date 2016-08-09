@@ -27,6 +27,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 	// GET /catalogue/size  Count
 	// GET /catalogue/{id}  Get
 	// GET /tags            Tags
+	// GET /health			Health Check
 
 	r.Methods("GET").Path("/catalogue").Handler(httptransport.NewServer(
 		ctx,
@@ -60,7 +61,13 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 		"/catalogue/images/",
 		http.FileServer(http.Dir(imagePath)),
 	))
-
+	r.Methods("GET").PathPrefix("/health").Handler(httptransport.NewServer(
+		ctx,
+		e.HealthEndpoint,
+		decodeHealthRequest,
+		encodeHealthResponse,
+		options...,
+	))
 	return r
 }
 
@@ -141,6 +148,14 @@ func encodeGetResponse(ctx context.Context, w http.ResponseWriter, response inte
 
 func decodeTagsRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	return struct{}{}, nil
+}
+
+func decodeHealthRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	return struct{}{}, nil
+}
+
+func encodeHealthResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+	return encodeResponse(ctx, w, response.(healthResponse))
 }
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {

@@ -13,8 +13,9 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"github.com/weaveworks/weaveDemo/catalogue"
+	"github.com/microservices-demo/microservices-demo/sockshop/catalogue"
 	"golang.org/x/net/context"
+	"path/filepath"
 )
 
 func main() {
@@ -24,6 +25,14 @@ func main() {
 		dsn    = flag.String("DSN", "catalogue_user:default_password@tcp(catalogue-db:3306)/socksdb", "Data Source Name: [username[:password]@][protocol[(address)]]/dbname")
 	)
 	flag.Parse()
+
+	fmt.Fprintf(os.Stderr, "images: %q\n", *images)
+	abs, err := filepath.Abs(*images)
+	fmt.Fprintf(os.Stderr, "Abs(images): %q (%v)\n", abs, err)
+	pwd, err := os.Getwd()
+	fmt.Fprintf(os.Stderr, "Getwd: %q (%v)\n", pwd, err)
+	files, _ := filepath.Glob(*images + "/*")
+	fmt.Fprintf(os.Stderr, "ls: %q\n", files) // contains a list of all files in the current directory
 
 	// Mechanical stuff.
 	errc := make(chan error)

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/weaveworks/microservices-demo.svg?branch=master)](https://travis-ci.org/weaveworks/microservices-demo)
+[![Build Status](https://travis-ci.org/microservices-demo/microservices-demo.svg?branch=master)](https://travis-ci.org/microservices-demo/microservices-demo)
 
 # Sock Shop : A Microservice Demo Application
 
@@ -10,20 +10,13 @@ You can read more about the [application design](./docs/design.md).
 
 ## Deployment Platforms
 
-This repo includes configuration and scripts that deploy the application to the following platforms:
+The [deploy folder](./deploy/) contains scripts and instructions to provision the application onto your favourite platform. 
 
-- [Amazon ECS](./deploy/aws-ecs/)
-- [Docker](./deploy/docker-single/) (single host, e.g. Docker For Mac)
-- [Docker Swarm](./deploy/docker-swarm/)
-- [Kubernetes](./deploy/kubernetes/)
-- [Mesos (CNI)](./deploy/mesos-cni/)
-- [Mesos + Marathon](./deploy/mesos-marathon/)
-
-We're planning to add more platform deployment targets, but preferences or suggestions are welcome.
+Please let us know if there is a platform that you would like to see supported.
 
 ## Bugs, Feature Requests and Contributing
 
-We'd love to see community contributions. We like to keep it simple and use Github issues to track bugs and feature requests and pull requests to manage contributions. See the [contribution information](./docs/contributing.md) for more information.
+We'd love to see community contributions. We like to keep it simple and use Github issues to track bugs and feature requests and pull requests to manage contributions. See the [contribution information](.github/CONTRIBUTING.md) for more information.
 
 ## Screenshot
 

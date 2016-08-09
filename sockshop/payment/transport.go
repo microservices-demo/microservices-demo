@@ -27,7 +27,13 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, logger log.Logger) http.H
 		encodeAuthoriseResponse,
 		options...,
 	))
-
+	r.Methods("GET").PathPrefix("/health").Handler(httptransport.NewServer(
+		ctx,
+		e.HealthEndpoint,
+		decodeHealthRequest,
+		encodeHealthResponse,
+		options...,
+	))
 	return r
 }
 
@@ -56,7 +62,7 @@ func decodeAuthoriseRequest(_ context.Context, r *http.Request) (interface{}, er
 	bodyString := string(bodyBytes)
 
 	// Decode auth request
-	var request authoriseRequest
+	var request AuthoriseRequest
 	if err := json.Unmarshal(bodyBytes, &request); err != nil {
 		return nil, err
 	}
@@ -83,12 +89,20 @@ func (e *UnmarshalKeyError) Error() string {
 var ErrInvalidJson = errors.New("Invalid json")
 
 func encodeAuthoriseResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
-	resp := response.(authoriseResponse)
+	resp := response.(AuthoriseResponse)
 	if resp.Err != nil {
 		encodeError(ctx, resp.Err, w)
 		return nil
 	}
 	return encodeResponse(ctx, w, resp.Authorisation)
+}
+
+func decodeHealthRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	return struct{}{}, nil
+}
+
+func encodeHealthResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+	return encodeResponse(ctx, w, response.(healthResponse))
 }
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {

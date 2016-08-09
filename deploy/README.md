@@ -1,19 +1,9 @@
 # Deployment Configurations
 
-Sub directories contain scripts and configuration for deployment target platforms.
+Sub directories contain scripts and configuration for deployment target platforms. Please see the repository listing for an up to date list of deployments.
 
-So far, deployment targets include:
+The intention was to also support the following, but have been held up by technical issues:
 
-- [Amazon ECS](./aws-ecs/)
-- [Docker](./docker-single/) (single host, e.g. Docker For Mac)
-- [Docker Swarm](./docker-swarm/)
-- [Kubernetes](./kubernetes/)
-- [Mesos (CNI)](./mesos-cni/)
-- [Mesos (Marathon)](./mesos-marathon/)
-- [minimesos](./minimesos-marathon/)
-
-Future targets include:
-
-- Mesosphere DC/OS
-- Docker Swarmkit
-- Docker Cloud
+- Mesosphere DC/OS (No support in DCOS universe for mutli-container packages)
+- Docker Swarmkit (see [the swarmkit readme](./swarmkit)
+- Docker Cloud (Does not suit our use case)
