@@ -19,10 +19,10 @@ clean:
 	@if [ $$(docker images -q dev/frontend | wc -l) -ge 1 ]; then docker rmi dev/frontend; fi
 
 test:
-	@$$(npm bin)/istanbul cover $$(npm bin)/_mocha -- --recursive
+	@$$(npm bin)/istanbul cover $$(npm bin)/_mocha -- test/*_test.js test/api/*_test.js
 
 test-w:
-	@$$(npm bin)/mocha -w --recursive
+	@$$(npm bin)/mocha -w test/*_test.js test/api/*_test.js
 
 coverage:
 	@open coverage/lcov-report/index.html
