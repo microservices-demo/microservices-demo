@@ -11,6 +11,11 @@
   },
   {
     "id": "",
+    "name": "demo",
+    "password": "demo"
+  },
+  {
+    "id": "",
     "name": "user1",
     "password": "password1"
   }
