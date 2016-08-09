@@ -11,7 +11,7 @@
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "mongo",
+              "image": "weaveworksdemos/accounts-db-test",
               "network": "BRIDGE",
               "parameters": [
                 {
