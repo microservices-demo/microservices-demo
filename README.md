@@ -16,7 +16,7 @@ Please let us know if there is a platform that you would like to see supported.
 
 ## Bugs, Feature Requests and Contributing
 
-We'd love to see community contributions. We like to keep it simple and use Github issues to track bugs and feature requests and pull requests to manage contributions. See the [contribution information](./.github/contributing.md) for more information.
+We'd love to see community contributions. We like to keep it simple and use Github issues to track bugs and feature requests and pull requests to manage contributions. See the [contribution information](.github/CONTRIBUTING.md) for more information.
 
 ## Screenshot
 
