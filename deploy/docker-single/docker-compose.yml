@@ -46,7 +46,7 @@ services:
     networks:
       - secure
   accounts-db:
-    image: mongo
+    image: weaveworksdemos/accounts-db-test
     hostname: accounts-db
     dns: 172.17.0.1
     dns_search: weave.local

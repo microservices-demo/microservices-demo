@@ -421,7 +421,7 @@ do_start() {
 
     wait_task_running "edge-router"
 
-    launch_service accounts-db  "echo ok"                                       mongo                               --no-shell
+    launch_service accounts-db  "echo ok"                                       weaveworksdemos/accounts-db-test:$tag   --no-shell
     launch_service cart-db      "echo ok"                                       mongo                               --no-shell
     launch_service orders-db    "echo ok"                                       mongo                               --no-shell
 

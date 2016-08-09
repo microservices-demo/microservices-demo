@@ -28,7 +28,7 @@ services:
     environment:
       - reschedule:on-node-failure
   accounts-db:
-    image: mongo
+    image: weaveworksdemos/accounts-db-test
     hostname: accounts-db
     restart: always
     environment:

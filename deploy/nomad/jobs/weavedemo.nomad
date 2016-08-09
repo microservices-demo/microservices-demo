@@ -128,7 +128,7 @@ job "weavedemo" {
       driver = "docker"
 
       config {
-        image = "mongo"
+        image = "weaveworksdemos/accounts-db-test"
         hostname = "accounts-db.weave.local"
         network_mode = "secure"
       }

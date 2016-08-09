@@ -43,7 +43,7 @@ services:
     networks:
       - secure
   accounts-db:
-    image: mongo
+    image: weaveworksdemos/accounts-db-test
     hostname: accounts-db
     domainname: weave.local
     restart: always

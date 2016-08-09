@@ -73,7 +73,7 @@ echo "Creating accounts-db service"
 docker service create \
        --name accounts-db \
        --network ingress \
-       --env "reschedule=on-node-failure" mongo
+       --env "reschedule=on-node-failure" weaveworksdemos/accounts-db-test:latest
 exit_on_failure
 
 
