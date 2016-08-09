@@ -158,7 +158,11 @@ func (s *catalogueService) Tags() ([]string, error) {
 	}
 	var tag string
 	for rows.Next() {
-		rows.Scan(&tag)
+		err = rows.Scan(&tag)
+		if err != nil {
+			s.logger.Log("database error", err)
+			continue
+		}
 		tags = append(tags, tag)
 	}
 	return tags, nil
