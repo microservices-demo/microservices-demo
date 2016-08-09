@@ -192,7 +192,7 @@ job "weavedemo" {
       config {
         image = "mysql"
         hostname = "catalogue-db.weave.local"
-        network_mode = "secure"
+        network_mode = "external"
       }
 
       service {
