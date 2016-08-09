@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"os"
@@ -13,6 +12,7 @@ import (
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"github.com/weaveworks/weaveDemo/catalogue"
 	"golang.org/x/net/context"
 )
@@ -21,7 +21,7 @@ func main() {
 	var (
 		port   = flag.String("port", "8081", "Port to bind HTTP listener") // TODO(pb): should be -addr, default ":8081"
 		images = flag.String("images", "./images/", "Image path")
-		dbName = flag.String("db", "socksdb", "Database name")
+		dsn    = flag.String("DSN", "catalogue_user:default_password@tcp(catalogue-db:3306)/socksdb", "Data Source Name: [username[:password]@][protocol[(address)]]/dbname")
 	)
 	flag.Parse()
 
@@ -38,8 +38,7 @@ func main() {
 	}
 
 	// Data domain.
-	// TODO pull user/password from env?
-	db, err := sql.Open("mysql", "catalogue_user:default_password@tcp(catalogue-db:3306)/"+*dbName)
+	db, err := sqlx.Open("mysql", *dsn)
 	if err != nil {
 		logger.Log("err", err)
 		os.Exit(1)
@@ -49,13 +48,13 @@ func main() {
 	// Check if DB connection can be made, only for logging purposes, should not fail/exit
 	err = db.Ping()
 	if err != nil {
-		logger.Log("Error", "Unable to connect to Database", "DB", dbName)
+		logger.Log("Error", "Unable to connect to Database", "DSN", dsn)
 	}
 
 	// Service domain.
 	var service catalogue.Service
 	{
-		service = catalogue.NewFixedService(db)
+		service = catalogue.NewCatalogueService(db, logger)
 		service = catalogue.LoggingMiddleware(logger)(service)
 	}
 

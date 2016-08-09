@@ -4,9 +4,11 @@ package catalogue
 // catalogue service. Everything here is agnostic to the transport (HTTP).
 
 import (
-	"database/sql"
 	"errors"
 	"strings"
+
+	"github.com/go-kit/kit/log"
+	"github.com/jmoiron/sqlx"
 )
 
 // Service is the catalogue service, providing read operations on a saleable
@@ -20,13 +22,16 @@ type Service interface {
 
 // Sock describes the thing on offer in the catalogue.
 type Sock struct {
-	ID          string   `json:"id"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	ImageURL    []string `json:"imageUrl"`
-	Price       float32  `json:"price"`
-	Count       int      `json:"count"`
-	Tags        []string `json:"tag"`
+	ID          string   `json:"id" db:"id"`
+	Name        string   `json:"name" db:"name"`
+	Description string   `json:"description" db:"description"`
+	ImageURL    []string `json:"imageUrl" db:"-"`
+	ImageURL_1  string   `json:"-" db:"image_url_1"`
+	ImageURL_2  string   `json:"-" db:"image_url_2"`
+	Price       float32  `json:"price" db:"price"`
+	Count       int      `json:"count" db:"count"`
+	Tags        []string `json:"tag" db:"-"`
+	TagString   string   `json:"-" db:"tag_name"`
 }
 
 // ErrNotFound is returned when there is no sock for a given ID.
@@ -35,22 +40,23 @@ var ErrNotFound = errors.New("not found")
 // ErrDBConnection is returned when connection with the database fails.
 var ErrDBConnection = errors.New("database connection error")
 
-var baseQuery = "SELECT Sock.SockID AS id, Sock.name, Sock.description, Sock.price, Sock.count, Sock.ImageUrl_1, Sock.ImageUrl_2, GROUP_CONCAT(Tag.name) AS TagName FROM Sock JOIN SockTag ON Sock.SockID=SockTag.SockID JOIN Tag ON SockTag.TagID=Tag.TagID"
+var baseQuery = "SELECT sock.sock_id AS id, sock.name, sock.description, sock.price, sock.count, sock.image_url_1, sock.image_url_2, GROUP_CONCAT(tag.name) AS tag_name FROM sock JOIN sock_tag ON sock.sock_id=sock_tag.sock_id JOIN tag ON sock_tag.tag_id=tag.tag_id"
 
-// NewFixedService returns a simple implementation of the Service interface,
-// fixed over a predefined set of socks and tags. In a real service you'd
-// probably construct this with a database handle to your socks DB, etc.
-func NewFixedService(db *sql.DB) Service {
-	return &fixedService{
+// NewCatalogueService returns an implementation of the Service interface,
+// with connection to an SQL database.
+func NewCatalogueService(db *sqlx.DB, logger log.Logger) Service {
+	return &catalogueService{
 		db: db,
+		logger: logger,
 	}
 }
 
-type fixedService struct {
-	db *sql.DB
+type catalogueService struct {
+	db *sqlx.DB
+	logger log.Logger
 }
 
-func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) {
+func (s *catalogueService) List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) {
 	var socks []Sock
 	query := baseQuery
 
@@ -58,10 +64,10 @@ func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) 
 
 	for i, t := range tags {
 		if i == 0 {
-			query += " WHERE Tag.name=?"
+			query += " WHERE tag.name=?"
 			args = append(args, t)
 		} else {
-			query += " OR Tag.name=?"
+			query += " OR tag.name=?"
 			args = append(args, t)
 		}
 	}
@@ -74,21 +80,15 @@ func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) 
 	}
 
 	query += ";"
-	sel, err := s.db.Prepare(query)
 
+	err := s.db.Select(&socks, query, args...)
 	if err != nil {
+		s.logger.Log("database error", err)
 		return []Sock{}, ErrDBConnection
 	}
-	defer sel.Close()
-
-	rows, err := sel.Query(args...)
-	if err != nil {
-		return []Sock{}, ErrDBConnection
-	}
-
-	for rows.Next() {
-		sock := rowToSock(rows)
-		socks = append(socks, sock)
+	for i, s := range socks {
+		socks[i].ImageURL = []string{s.ImageURL_1, s.ImageURL_2}
+		socks[i].Tags = strings.Split(s.TagString, ",")
 	}
 
 	socks = cut(socks, pageNum, pageSize)
@@ -96,72 +96,64 @@ func (s *fixedService) List(tags []string, order string, pageNum, pageSize int) 
 	return socks, nil
 }
 
-func (s *fixedService) Count(tags []string) (int, error) {
-	query := "SELECT COUNT(*) FROM Sock JOIN SockTag ON Sock.SockID=SockTag.SockID JOIN Tag ON SockTag.TagID=Tag.TagID"
+func (s *catalogueService) Count(tags []string) (int, error) {
+	query := "SELECT COUNT(DISTINCT sock.sock_id) FROM sock JOIN sock_tag ON sock.sock_id=sock_tag.sock_id JOIN tag ON sock_tag.tag_id=tag.tag_id"
 
 	var args []interface{}
 
 	for i, t := range tags {
 		if i == 0 {
-			query += " WHERE Tag.name=?"
+			query += " WHERE tag.name=?"
 			args = append(args, t)
 		} else {
-			query += " OR Tag.name=?"
+			query += " OR tag.name=?"
 			args = append(args, t)
 		}
 	}
 
-	query += " GROUP BY Sock.SockID;"
+	query += ";"
 
 	sel, err := s.db.Prepare(query)
 
 	if err != nil {
+		s.logger.Log("database error", err)
 		return 0, ErrDBConnection
 	}
 	defer sel.Close()
 
-	rows, err := sel.Query(args...)
+	var count int
+	err = sel.QueryRow(args...).Scan(&count)
 
 	if err != nil {
+		s.logger.Log("database error", err)
 		return 0, ErrDBConnection
 	}
-	var count int
-	rows.Next()
-	err = rows.Scan(&count)
-	if err != nil {
-		return 0, ErrDBConnection
-	}
+
 	return count, nil
 }
 
-func (s *fixedService) Get(id string) (Sock, error) {
-	query := baseQuery + " WHERE Sock.SockID =? GROUP BY Sock.SockID;"
+func (s *catalogueService) Get(id string) (Sock, error) {
+	query := baseQuery + " WHERE sock.sock_id =? GROUP BY sock.sock_id;"
 
-	sel, err := s.db.Prepare(query)
+	var sock Sock
+	err := s.db.Get(&sock, query, id)
 	if err != nil {
-		return Sock{}, ErrDBConnection
-	}
-	defer sel.Close()
-
-	rows, err := sel.Query(id)
-	if err != nil {
-		return Sock{}, ErrDBConnection
-	}
-
-	if !rows.Next() {
+		s.logger.Log("database error", err)
 		return Sock{}, ErrNotFound
 	}
 
-	sock := rowToSock(rows)
+	sock.ImageURL = []string{sock.ImageURL_1, sock.ImageURL_2}
+	sock.Tags = strings.Split(sock.TagString, ",")
 
 	return sock, nil
 }
 
-func (s *fixedService) Tags() ([]string, error) {
+func (s *catalogueService) Tags() ([]string, error) {
 	var tags []string
-	query := "SELECT name FROM Tag;"
+	query := "SELECT name FROM tag;"
 	rows, err := s.db.Query(query)
 	if err != nil {
+		s.logger.Log("database error", err)
 		return []string{}, ErrDBConnection
 	}
 	var tag string
@@ -170,19 +162,6 @@ func (s *fixedService) Tags() ([]string, error) {
 		tags = append(tags, tag)
 	}
 	return tags, nil
-}
-
-func rowToSock(rows *sql.Rows) Sock {
-	var sock Sock
-	var url1, url2, tagName string
-	err := rows.Scan(&sock.ID, &sock.Name, &sock.Description, &sock.Price, &sock.Count, &url1, &url2, &tagName)
-	if err != nil {
-		// logger.Log("Error:", "Unable to read data")
-		return Sock{}
-	}
-	sock.Tags = strings.Split(tagName, ",")
-	sock.ImageURL = []string{url1, url2}
-	return sock
 }
 
 func cut(socks []Sock, pageNum, pageSize int) []Sock {

@@ -34,6 +34,7 @@ func (mw loggingMiddleware) List(tags []string, order string, pageNum, pageSize 
 			"pageNum", pageNum,
 			"pageSize", pageSize,
 			"result", len(socks),
+			"err", err,
 			"took", time.Since(begin),
 		)
 	}(time.Now())
@@ -46,6 +47,7 @@ func (mw loggingMiddleware) Count(tags []string) (n int, err error) {
 			"method", "Count",
 			"tags", strings.Join(tags, ", "),
 			"result", n,
+			"err", err,
 			"took", time.Since(begin),
 		)
 	}(time.Now())
@@ -70,6 +72,7 @@ func (mw loggingMiddleware) Tags() (tags []string, err error) {
 		mw.logger.Log(
 			"method", "Tags",
 			"result", len(tags),
+			"err", err,
 			"took", time.Since(begin),
 		)
 	}(time.Now())

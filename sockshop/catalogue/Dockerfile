@@ -4,7 +4,7 @@ RUN mkdir /app
 COPY . /go/src/github.com/weaveworks/weaveDemo/catalogue/
 COPY images/ /app/images/
 
-RUN go get github.com/gorilla/mux github.com/go-kit/kit/log github.com/go-kit/kit/endpoint github.com/go-kit/kit/transport/http github.com/go-sql-driver/mysql
+RUN go get github.com/gorilla/mux github.com/go-kit/kit/log github.com/go-kit/kit/endpoint github.com/go-kit/kit/transport/http github.com/go-sql-driver/mysql github.com/jmoiron/sqlx
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/main github.com/weaveworks/weaveDemo/catalogue/cmd/cataloguesvc
 
