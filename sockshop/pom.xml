@@ -13,7 +13,6 @@
     <description>Weave Socks eCommerce application</description>
 
     <modules>
-        <module>cart</module>
         <module>orders</module>
         <module>shipping</module>
         <module>queue-master</module>

@@ -1,4 +1,4 @@
-package works.weave.socks.cart.entities;
+package works.weave.socks.orders.entities;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
