@@ -21,6 +21,14 @@ services:
     restart: always
     environment:
       - reschedule:on-node-failure
+  catalogue-db:
+    image: mysql
+    hostname: catalogue-db
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=socksdb
   accounts:
     image: weaveworksdemos/accounts
     hostname: accounts

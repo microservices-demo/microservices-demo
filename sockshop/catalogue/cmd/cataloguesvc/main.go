@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -12,8 +11,8 @@ import (
 
 	"net/http"
 
-	"sort"
-
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"github.com/microservices-demo/microservices-demo/sockshop/catalogue"
 	"golang.org/x/net/context"
 	"path/filepath"
@@ -21,10 +20,9 @@ import (
 
 func main() {
 	var (
-		dev    = flag.Bool("dev", false, "Shortcut for -file=./socks.json")
 		port   = flag.String("port", "8081", "Port to bind HTTP listener") // TODO(pb): should be -addr, default ":8081"
-		file   = flag.String("file", "/config/socks.json", "Socks file")
 		images = flag.String("images", "./images/", "Image path")
+		dsn    = flag.String("DSN", "catalogue_user:default_password@tcp(catalogue-db:3306)/socksdb", "Data Source Name: [username[:password]@][protocol[(address)]]/dbname")
 	)
 	flag.Parse()
 
@@ -39,9 +37,6 @@ func main() {
 	// Mechanical stuff.
 	errc := make(chan error)
 	ctx := context.Background()
-	if *dev {
-		*file = "./socks.json"
-	}
 
 	// Log domain.
 	var logger log.Logger
@@ -52,16 +47,23 @@ func main() {
 	}
 
 	// Data domain.
-	socks, tags, err := readFile(*file)
+	db, err := sqlx.Open("mysql", *dsn)
 	if err != nil {
 		logger.Log("err", err)
 		os.Exit(1)
+	}
+	defer db.Close()
+
+	// Check if DB connection can be made, only for logging purposes, should not fail/exit
+	err = db.Ping()
+	if err != nil {
+		logger.Log("Error", "Unable to connect to Database", "DSN", dsn)
 	}
 
 	// Service domain.
 	var service catalogue.Service
 	{
-		service = catalogue.NewFixedService(socks, tags)
+		service = catalogue.NewCatalogueService(db, logger)
 		service = catalogue.LoggingMiddleware(logger)(service)
 	}
 
@@ -83,31 +85,4 @@ func main() {
 	}()
 
 	logger.Log("exit", <-errc)
-}
-
-func readFile(filename string) ([]catalogue.Sock, []string, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return nil, nil, err
-	}
-	defer f.Close()
-
-	var socks []catalogue.Sock
-	if err := json.NewDecoder(f).Decode(&socks); err != nil {
-		return nil, nil, err
-	}
-
-	tagMap := map[string]struct{}{}
-	for _, sock := range socks {
-		for _, tag := range sock.Tags {
-			tagMap[tag] = struct{}{}
-		}
-	}
-	tags := make([]string, 0, len(tagMap))
-	for tag := range tagMap {
-		tags = append(tags, tag)
-	}
-	sort.Sort(sort.StringSlice(tags))
-
-	return socks, tags, nil
 }

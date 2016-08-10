@@ -184,6 +184,30 @@ job "weavedemo" {
         }
       }
     } # - end app - #
+
+    # - db - #
+    task "cataloguedb" {
+      driver = "docker"
+
+      config {
+        image = "mysql"
+        hostname = "catalogue-db.weave.local"
+        network_mode = "external"
+      }
+
+      service {
+        name = "${TASKGROUP}-cataloguedb"
+        tags = ["db", "catalogue", "cataloguedb"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 96 # 96MB
+        network {
+          mbits = 10
+        }
+      }
+    } # - end db - #
   } # - end catalogue - #
 
   # - cart - #
