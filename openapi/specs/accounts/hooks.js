@@ -17,17 +17,6 @@ const card = [
     {"_id":ObjectID("579f21ae98684924944651c4"),"_class":"works.weave.socks.accounts.entities.Card","longNum":"6426429851404909","expires":"08/19","ccv":"381"}
 ];
 
-const cart = [
-    {"_id":ObjectID("579f21de98689ebf2bf1cd2f"),"_class":"works.weave.socks.cart.entities.Cart","customerId":"579f21ae98684924944651bf","items":[{"$ref":"item","$id":ObjectID("579f227698689ebf2bf1cd31")},{"$ref":"item","$id":ObjectID("579f22ac98689ebf2bf1cd32")}]},
-    {"_id":ObjectID("579f21e298689ebf2bf1cd30"),"_class":"works.weave.socks.cart.entities.Cart","customerId":"579f21ae98684924944651bfaa","items":[]}
-];
-
-
-const item = [
-    {"_id":ObjectID("579f227698689ebf2bf1cd31"),"_class":"works.weave.socks.cart.entities.Item","itemId":"819e1fbf-8b7e-4f6d-811f-693534916a8b","quantity":20,"unitPrice":99.0}
-];
-
-
 const customer = [
     {"_id":"579f21ae98684924944651bf","_class":"works.weave.socks.accounts.entities.Customer","firstName":"Eve","lastName":"Berger","username":"Eve_Berger","addresses":[{"$ref":"address","$id":ObjectID("579f21ae98684924944651bd")}],"cards":[{"$ref":"card","$id":ObjectID("579f21ae98684924944651be")}]
     },
@@ -61,12 +50,8 @@ hooks.beforeEach((transaction, done) => {
 	db.collection('customer').insertMany(customer),
 	db.collection('card').remove({}),
 	db.collection('card').insertMany(card),
-	db.collection('cart').remove({}),
-	db.collection('cart').insertMany(cart),
 	db.collection('address').remove({}),
 	db.collection('address').insertMany(address),
-	db.collection('item').remove({}),
-	db.collection('item').insertMany(item)
     ];
     Promise.all(promisesToKeep).then(function(vls) {
 	console.info(vls);
@@ -89,17 +74,5 @@ hooks.before("/carts/{customerId}/items > POST", function(transaction, done) {
 	}
     );
 
-    done();
-});
-
-// TODO: Can't make POST and PUT work, skipping for now 
-
-// hooks.before("/carts/{customerId}/items > POST", function(transaction, done) {
-//     transaction.skip = true;
-//     done();
-// });
-
-hooks.before("/carts/{customerId}/items > PATCH", function(transaction, done) {
-    transaction.skip = true;
     done();
 });
