@@ -1,4 +1,4 @@
-package works.weave.socks.accounts.entities;
+package works.weave.socks.orders.entities;
 
 import org.springframework.data.annotation.Id;
 
@@ -33,6 +33,26 @@ public class Card {
                 ", expires='" + expires + '\'' +
                 ", ccv='" + ccv + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Card card = (Card) o;
+
+        return getId().equals(card.getId());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getLongNum() {

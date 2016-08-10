@@ -1,8 +1,6 @@
 package works.weave.socks.orders.resources;
 
-import works.weave.socks.accounts.entities.Address;
-import works.weave.socks.accounts.entities.Card;
-import works.weave.socks.accounts.entities.Customer;
+import works.weave.socks.orders.entities.*;
 
 public class PaymentRequest {
     private Address address;

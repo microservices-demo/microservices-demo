@@ -20,11 +20,6 @@
     <dependencies>
         <dependency>
             <groupId>works.weave.socks</groupId>
-            <artifactId>accounts</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>works.weave.socks</groupId>
             <artifactId>cart</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
