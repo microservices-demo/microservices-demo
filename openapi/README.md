@@ -51,7 +51,7 @@ docker build -t "openapi-testing" .
 
 Run the openapi testing container:
 ```
-docker run --rm --net dockeronly_default --link dockeronly_accounts-db_1 --link dockeronly_accounts_1 --env MONGO_ENDPOINT=mongodb://accounts-db:27017/data openapi-testing /usr/src/app/accounts/accounts.json http://accounts -f /usr/src/app/hooks.js
+docker run --rm --net dockeronly_default --link dockeronly_accounts-db_1 --link dockeronly_accounts_1 --env MONGO_ENDPOINT=mongodb://accounts-db:27017/data openapi-testing /tmp/data/accounts/accounts.json http://accounts -f /tmp/data/accounts/hooks.js
 ```
 
 # Docker-compose
