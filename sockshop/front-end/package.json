@@ -4,14 +4,17 @@
   "description": "Front end for weave demo application.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ContainerSolutions/weaveDemo/frontEnd"
+    "url": "https://github.com/weaveworks/microservices-demo"
   },
-  "author": "Ian Crosby",
+  "contributors": [
+    "Ian Crosby <ian.daniel.crosby@gmail.com>",
+    "Carlos León <mail@carlosleon.info> (carlosleon.info)"
+  ],
   "license": "MIT",
   "dependencies": {
     "async": "^1.5.2",
@@ -22,5 +25,13 @@
     "finalhandler": "^0.4.1",
     "request": "^2.72.0",
     "serve-static": "^1.10.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.0.0",
+    "istanbul": "^0.4.4",
+    "supertest": "^2.0.0",
+    "phantomjs": "^2.1.7",
+    "casperjs": "^1.1.3"
   }
 }
