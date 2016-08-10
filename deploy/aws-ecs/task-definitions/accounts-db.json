@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "essential": true,
-            "image": "mongo",
+            "image": "weaveworksdemos/accounts-db-test",
             "memory": 256,
             "name": "accounts-db"
         }
