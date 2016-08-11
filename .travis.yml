@@ -1,54 +1,37 @@
 language: java
 sudo: required
 services:
-  - docker
+- docker
 jdk:
-  - oraclejdk8
+- oraclejdk8
 script:
-  - ./sockshop/mvnw test -f ./sockshop
-
+- "./sockshop/mvnw test -f ./sockshop"
 after_success:
-  - export MODULES="catalogue front-end login orders payment queue-master shipping edge-router openapi"
-  - export GROUP=weaveworksdemos
-  - cd $TRAVIS_BUILD_DIR/sockshop
-  - echo "Building java services"
-  - mvn -DskipTests package;
-    MVN_EXIT=$(echo $?);
-    if [[ "$MVN_EXIT" > 0 ]] ; then
-      echo "Compilation failed with exit code $MVN_EXIT";
-      exit 1;
-    fi;
-  - if [ -z "$DOCKER_PASS" ] ; then
-      echo "This is a build triggered by an external PR. Skipping docker push.";
-      exit 0;
-    fi;
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - for module in ${MODULES}; do
-      export REPO=${GROUP}/$(basename ${module});
-      echo "Building ${REPO}:$TRAVIS_COMMIT";
-      if [[ "${module}" == "payment" ]] || [[ "${module}" == "catalogue" ]] || [[ "${module}" == "login" ]] ; then
-        docker build -t ${REPO}-dev ./${module};
-        docker create --name ${module} ${REPO}-dev;
-        docker cp ${module}:/app/main ./${module}/app;
-        docker rm ${module};
-        docker build -t ${REPO}:$TRAVIS_COMMIT -f ./${module}/Dockerfile-release ./${module};
-      else
-        docker build -t ${REPO}:$TRAVIS_COMMIT ./${module};
-      fi;
-      DOCKER_EXIT=$(echo $?);
-      if [[ "$DOCKER_EXIT" > 0 ]] ; then
-        echo "Docker build failed with exit code $DOCKER_EXIT";
-        exit 1;
-      fi;
-      DOCKER_PUSH=1;
-      while [ $DOCKER_PUSH -gt 0 ] ; do
-        echo "Pushing $REPO:$TRAVIS_COMMIT";
-        docker push $REPO:$TRAVIS_COMMIT;
-        DOCKER_PUSH=$(echo $?);
-        if [[ "$DOCKER_PUSH" -gt 0 ]] ; then
-          echo "Docker push failed with exit code $DOCKER_PUSH";
-        fi;
-      done;
-      if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:snapshot; echo "Pushing $REPO:snapshot"; docker push $REPO:snapshot; fi;
-      if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; docker tag $REPO:$TRAVIS_COMMIT $REPO:latest; docker push $REPO:latest; fi;
-    done;
+- export MODULES="catalogue front-end login orders payment queue-master shipping edge-router
+  openapi"
+- export GROUP=weaveworksdemos
+- cd $TRAVIS_BUILD_DIR/sockshop
+- echo "Building java services"
+- mvn -DskipTests package; MVN_EXIT=$(echo $?); if [[ "$MVN_EXIT" > 0 ]] ; then echo
+  "Compilation failed with exit code $MVN_EXIT"; exit 1; fi;
+- if [ -z "$DOCKER_PASS" ] ; then echo "This is a build triggered by an external PR.
+  Skipping docker push."; exit 0; fi;
+- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+- for module in ${MODULES}; do export REPO=${GROUP}/$(basename ${module}); echo "Building
+  ${REPO}:$TRAVIS_COMMIT"; if [[ "${module}" == "payment" ]] || [[ "${module}" ==
+  "catalogue" ]] || [[ "${module}" == "login" ]] ; then docker build -t ${REPO}-dev
+  ./${module}; docker create --name ${module} ${REPO}-dev; docker cp ${module}:/app/main
+  ./${module}/app; docker rm ${module}; docker build -t ${REPO}:$TRAVIS_COMMIT -f
+  ./${module}/Dockerfile-release ./${module}; else docker build -t ${REPO}:$TRAVIS_COMMIT
+  ./${module}; fi; DOCKER_EXIT=$(echo $?); if [[ "$DOCKER_EXIT" > 0 ]] ; then echo
+  "Docker build failed with exit code $DOCKER_EXIT"; exit 1; fi; DOCKER_PUSH=1; while
+  [ $DOCKER_PUSH -gt 0 ] ; do echo "Pushing $REPO:$TRAVIS_COMMIT"; docker push $REPO:$TRAVIS_COMMIT;
+  DOCKER_PUSH=$(echo $?); if [[ "$DOCKER_PUSH" -gt 0 ]] ; then echo "Docker push failed
+  with exit code $DOCKER_PUSH"; fi; done; if [ "$TRAVIS_BRANCH" == "master" ]; then
+  docker tag $REPO:$TRAVIS_COMMIT $REPO:snapshot; echo "Pushing $REPO:snapshot"; docker
+  push $REPO:snapshot; fi; if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$TRAVIS_COMMIT
+  $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; docker tag $REPO:$TRAVIS_COMMIT
+  $REPO:latest; docker push $REPO:latest; fi; done;
+notifications:
+  slack:
+    secure: dGdpvdFHTUtZf2P/hw3tNqy4vBhDJAiqtUVI2+PwCjtTM7Gt9l0SfyL6swLTBQfMD+JEAt4iyGIQTu87GzJDFXyIKqNGixWQ8ltJHJdTmKhwhoMm2yAs5xsiV4rsiLJxDljH3xP+z5kE7ZZ7SmmaernKHrpF18NlrS4asLq67Wmft31rwVTpfCp9SQvNLpX+uJ5r5OFBHIlhdQmB37C/PP4zrzTgXPEN+82bGVfhrZBViUm0c+p5DAYMCzFMYU9q65mKE97Vg95FVo4Y+QoyYZwsM4PYrLjwwkV5m/aMa3Cig8lJALxgZNgIUY6D6fduDkppkeX+DQSpVQN59TBfdbh8Mnb3z54PsGLhKgc1tcYcUQVV0wR4VDpAg+FPhgtPA/XF6d5yHW1Dez+BdoFEAatmAAmWYHga8A+QqyWIUjv5XGwKT9RigcWnLpYxZxaVNpusGgNl+kFOfn9rPyoK3daMzRlCpg0UNdq1xIwh1HFAJ7he7u+TnpsJ0H7xXESdgZDXn5WBWL0ukNevO/94H4CFeBg+wd1lyBYpMLfBToQ6sxKBYlDgkzLOLwZzlab8EADmo7HiHW1aneVXH1l+rh4m3aG26KxDQElmOhang2YgZroUfm/ysc7VNxVHvjQG18h+9LY9hugFGiI8v9FT8ARBas+4c7Mene+SyL51iOI=
