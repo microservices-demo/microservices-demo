@@ -69,35 +69,26 @@ hooks.beforeEach((transaction, done) => {
 	db.collection('item').insertMany(item)
     ];
     Promise.all(promisesToKeep).then(function(vls) {
-
+	done();
     }, function(vls) {
-
-    });
-
+	console.error(vls);
+	done();
+    });   
 });
 
 
-hooks.before("/carts/{customerId}/items > POST", function(transaction, done) {
+hooks.before("/orders > POST", function(transaction, done) {
+    transaction.skip = true;
     transaction.request.headers['Content-Type'] = 'application/json';
     transaction.request.body = JSON.stringify(
 	{
-	    "itemId":"819e1fbf-8b7e-4f6d-811f-693534916a8b",
-	    "quantity": 20,
-	    "unitPrice" : 99.0
+	    "customer":"http://accounts/customers/579f21ae98684924944651bd",
+	    "address": "http://accounts/addresses/579f21ae98684924944651bd",
+	    "card" : "http://accounts/cards/579f21ae98684924944651bf",
+	    "items": "http://accounts/items/"
 	}
     );
 
-    done();
-});
+    done()
 
-// TODO: Can't make POST and PUT work, skipping for now 
-
-// hooks.before("/carts/{customerId}/items > POST", function(transaction, done) {
-//     transaction.skip = true;
-//     done();
-// });
-
-hooks.before("/carts/{customerId}/items > PATCH", function(transaction, done) {
-    transaction.skip = true;
-    done();
 });
