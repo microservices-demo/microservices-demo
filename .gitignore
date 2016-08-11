@@ -117,3 +117,6 @@ weave-ecs-demo-key.pem
 
 # Ignore coverage reports
 coverage/
+
+# Tern
+.tern-port
