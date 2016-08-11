@@ -6,7 +6,7 @@ let db;
 
 const address = [
     {"_id":ObjectID("579f21ae98684924944651bd"),"_class":"works.weave.socks.accounts.entities.Address","number":"69","street":"Wilson Street","city":"Hartlepool","postcode":"TS26 8JU","country":"United Kingdom"},
-    {"_id":ObjectID("579f21ae98684924944651c0"),"_class":"works.weave.socks.accounts.entities.Address","number":"3","street":"Radstone Way","city":"Northampton","postcode":"NN2 8NT","country":"United Kingdom"},
+    {"_id":ObjectID("579f21ae98684924944651c0"),"_class":"works.weave.socks.accounts.entities.Address","number":"122","street":"Radstone WayNet","city":"Northampton","postcode":"NN2 8NT","country":"United Kingdom"},
     {"_id":ObjectID("579f21ae98684924944651c3"),"_class":"works.weave.socks.accounts.entities.Address","number":"3","street":"Radstone Way","city":"Northampton","postcode":"NN2 8NT","country":"United Kingdom"}
 ];
 
@@ -39,62 +39,56 @@ const customer = [
 // Setup database connection before Dredd starts testing
 hooks.beforeAll((transactions, done) => {
     var MongoEndpoint = process.env.MONGO_ENDPOINT ||  'mongodb://localhost:32769/data';
-    // console.info('MongoEndpoint: ' + MongoEndpoint);
     MongoClient.connect(MongoEndpoint, function(err, conn) {
+	if (err) {
+	    console.error(err);
+	}
 	db = conn;
-	db.dropDatabase();
 	done(err);
     });
-
 });
 
 // Close database connection after Dredd finishes testing
 hooks.afterAll((transactions, done) => {
-    db.close();
-    done();
-});
-
-
-
-// After each test clear contents of the database (we want isolated tests)
-hooks.afterEach((transaction, done) => {
     db.dropDatabase();
     done();
-    
+
 });
 
 hooks.beforeEach((transaction, done) => {
     var promisesToKeep = [
+	db.collection('customer').remove({}),
 	db.collection('customer').insertMany(customer),
+	db.collection('card').remove({}),
 	db.collection('card').insertMany(card),
+	db.collection('cart').remove({}),
 	db.collection('cart').insertMany(cart),
+	db.collection('address').remove({}),
 	db.collection('address').insertMany(address),
+	db.collection('item').remove({}),
 	db.collection('item').insertMany(item)
     ];
-    Promise.all(promisesToKeep).then(() => { done(); });
+    Promise.all(promisesToKeep).then(function(vls) {
+	done();
+    }, function(vls) {
+	console.error(vls);
+	done();
+    });   
 });
 
 
-hooks.before("/carts/{customerId}/items > POST", function(transaction, done) {
+hooks.before("/orders > POST", function(transaction, done) {
+    transaction.skip = true;
     transaction.request.headers['Content-Type'] = 'application/json';
     transaction.request.body = JSON.stringify(
 	{
-	    "itemId":"819e1fbf-8b7e-4f6d-811f-693534916a8b",
-	    "quantity": 20,
-	    "unitPrice" : 99.0
+	    "customer":"http://accounts/customers/579f21ae98684924944651bd",
+	    "address": "http://accounts/addresses/579f21ae98684924944651bd",
+	    "card" : "http://accounts/cards/579f21ae98684924944651bf",
+	    "items": "http://accounts/items/"
 	}
     );
-    done();
-});
 
-// TODO: Can't make POST and PUT work, skipping for now 
+    done()
 
-// hooks.before("/carts/{customerId}/items > POST", function(transaction, done) {
-//     transaction.skip = true;
-//     done();
-// });
-
-hooks.before("/carts/{customerId}/items > PATCH", function(transaction, done) {
-    transaction.skip = true;
-    done();
 });

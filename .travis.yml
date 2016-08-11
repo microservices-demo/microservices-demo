@@ -7,7 +7,7 @@ jdk:
 script:
 - "./sockshop/mvnw test -f ./sockshop"
 after_success:
-  - export MODULES="catalogue front-end login orders payment queue-master openapi"
+  - export MODULES="catalogue front-end login orders payment queue-master ../openapi"
   - export GROUP=weaveworksdemos
   - cd $TRAVIS_BUILD_DIR/sockshop
   - echo "Building java services"
