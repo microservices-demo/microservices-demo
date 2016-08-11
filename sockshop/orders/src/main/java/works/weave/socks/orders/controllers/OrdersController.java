@@ -11,7 +11,6 @@ import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import works.weave.socks.Shipment;
 import works.weave.socks.orders.config.OrdersConfigurationProperties;
 import works.weave.socks.orders.entities.*;
 import works.weave.socks.orders.repositories.CustomerOrderRepository;
