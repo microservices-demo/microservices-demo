@@ -46,12 +46,12 @@ docker-compose up -d
 
 Build included docker image with:
 ```
-docker build -t "openapi-testing" .
+docker build -t "weaveworksdemos/openapi:latest" .
 ```
 
 Run the openapi testing container:
 ```
-docker run --rm --net dockeronly_default --link dockeronly_accounts-db_1 --link dockeronly_accounts_1 --env MONGO_ENDPOINT=mongodb://accounts-db:27017/data openapi-testing /tmp/data/accounts/accounts.json http://accounts -f /tmp/data/accounts/hooks.js
+docker run --rm --net dockeronly_default --link dockeronly_accounts-db_1 --link dockeronly_accounts_1 --env MONGO_ENDPOINT=mongodb://accounts-db:27017/data weaveworksdemos/openapi /tmp/specs/accounts/accounts.json http://accounts -f /tmp/specs/accounts/hooks.js
 ```
 
 # Docker-compose
