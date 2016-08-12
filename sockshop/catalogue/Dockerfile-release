@@ -1,8 +1,0 @@
-FROM busybox:1
-
-WORKDIR /
-EXPOSE 80
-COPY app /
-COPY images/ /images/
-
-CMD ["/app", "-port=80"]
