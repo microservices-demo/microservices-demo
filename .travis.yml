@@ -5,18 +5,11 @@ services:
 jdk:
 - oraclejdk8
 script:
-- "./sockshop/mvnw test -f ./sockshop"
+- "echo skip"
 after_success:
-  - export MODULES="catalogue front-end login queue-master ../openapi"
+  - export MODULES="catalogue front-end login ../openapi"
   - export GROUP=weaveworksdemos
   - cd $TRAVIS_BUILD_DIR/sockshop
-  - echo "Building java services"
-  - mvn -DskipTests package;
-    MVN_EXIT=$(echo $?);
-    if [[ "$MVN_EXIT" > 0 ]] ; then
-      echo "Compilation failed with exit code $MVN_EXIT";
-      exit 1;
-    fi;
   - if [ -z "$DOCKER_PASS" ] ; then
       echo "This is a build triggered by an external PR. Skipping docker push.";
       exit 0;
