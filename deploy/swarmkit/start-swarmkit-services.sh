@@ -66,7 +66,10 @@ echo "Creating catalogue-db service"
 docker service create \
        --name catalogue-db \
        --network ingress \
-       --env "reschedule=on-node-failure" mysql
+        --env "reschedule=on-node-failure" \
+        --env "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}" \
+        --env "MYSQL_DATABASE=socksdb" \
+       mysql
 exit_on_failure
 
 echo "Creating accounts service"
