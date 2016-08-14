@@ -46,7 +46,7 @@ spec:
     spec:
       containers:
       - name: accounts-db
-        image: mongo
+        image: weaveworksdemos/accounts-db-test
         ports:
         - name: mongo
           containerPort: 27017
