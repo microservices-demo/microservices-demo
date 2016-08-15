@@ -7,7 +7,7 @@ jdk:
 script:
 - "echo skip"
 after_success:
-  - export MODULES="front-end login ../openapi"
+  - export MODULES="front-end ../openapi"
   - export GROUP=weaveworksdemos
   - cd $TRAVIS_BUILD_DIR/sockshop
   - if [ -z "$DOCKER_PASS" ] ; then
@@ -18,15 +18,7 @@ after_success:
   - for module in ${MODULES}; do
       export REPO=${GROUP}/$(basename ${module});
       echo "Building ${REPO}:$TRAVIS_COMMIT";
-      if [[ "${module}" == "login" ]] ; then
-        docker build -t ${REPO}-dev ./${module};
-        docker create --name ${module} ${REPO}-dev;
-        docker cp ${module}:/app/main ./${module}/app;
-        docker rm ${module};
-        docker build -t ${REPO}:$TRAVIS_COMMIT -f ./${module}/Dockerfile-release ./${module};
-      else
-        docker build -t ${REPO}:$TRAVIS_COMMIT ./${module};
-      fi;
+      docker build -t ${REPO}:$TRAVIS_COMMIT ./${module};
       DOCKER_EXIT=$(echo $?);
       if [[ "$DOCKER_EXIT" > 0 ]] ; then
         echo "Docker build failed with exit code $DOCKER_EXIT";
