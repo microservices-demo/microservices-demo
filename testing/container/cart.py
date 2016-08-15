@@ -39,7 +39,7 @@ class CartContainerTest(unittest.TestCase):
             limit = limit - 1
             sleep(1)
         
-        out = Dredd().test_against_endpoint("carts", CartContainerTest.container_name, "http://cart/", "mongodb://cart-db:27017/data", self.mongo_container_name)
+        out = Dredd().test_against_endpoint("carts", "http://cart/", links=[self.mongo_container_name, self.container_name], env=[("MONGO_ENDPOINT", "mongodb://cart-db:27017/data")])
         self.assertGreater(out.find("0 failing"), -1)
         self.assertGreater(out.find("0 errors"), -1)
 
