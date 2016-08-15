@@ -30,14 +30,14 @@
                     "application/json;charset=UTF-8"
                 ],
                 "parameters": [
-									{
-										"name": "username and password",
-                  	"in": "httAuth",
-            				"description": "Username and password via http auth",
-            				"required": true,
-            				"type": "string"
-									}
-								],
+                  {
+                    "name": "username and password",
+                    "in": "httAuth",
+                    "description": "Username and password via http auth",
+                    "required": true,
+                    "type": "string"
+                  }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -56,28 +56,28 @@
                     "application/json;charset=UTF-8"
                 ],
                 "parameters": [
-									{
-										"name": "username",
-                  	"in": "body",
-            				"description": "Username",
-            				"required": true,
-            				"type": "string"
-									},
-									{
-										"name": "password",
-                  	"in": "body",
-            				"description": "Password",
-            				"required": true,
-            				"type": "string"
-									},
-									{
-										"name": "email",
-                  	"in": "body",
-            				"description": "Email",
-            				"required": true,
-            				"type": "string"
-									}
-								],
+                  {
+                    "name": "username",
+                    "in": "body",
+                    "description": "Username",
+                    "required": true,
+                    "type": "string"
+                  },
+                  {
+                    "name": "password",
+                    "in": "body",
+                    "description": "Password",
+                    "required": true,
+                    "type": "string"
+                  },
+                  {
+                    "name": "email",
+                    "in": "body",
+                    "description": "Email",
+                    "required": true,
+                    "type": "string"
+                  }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -114,14 +114,14 @@
                     "application/json;charset=UTF-8"
                 ],
                 "parameters": [
-									{
-										"name": "id",
-                  	"in": "path",
-            				"description": "ID of customer to fetch",
-            				"required": true,
-            				"type": "string"
-          				}
-								],
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "description": "ID of customer to fetch",
+                    "required": true,
+                    "type": "string"
+                  }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -158,14 +158,14 @@
                     "application/json;charset=UTF-8"
                 ],
                 "parameters": [
-									{
-										"name": "id",
-                  	"in": "path",
-            				"description": "ID of card to fetch",
-            				"required": true,
-            				"type": "string"
-          				}
-								],
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "description": "ID of card to fetch",
+                    "required": true,
+                    "type": "string"
+                  }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -175,7 +175,7 @@
                     }
                 }
             }
-				},
+        },
         "/cards": {
             "post": {
                 "description": "Create new card",
@@ -184,44 +184,44 @@
                     "application/json;charset=UTF-8"
                 ],
                 "parameters": [
-									{
-										"name": "card",
-                  	"in": "body",
-            				"description": "Credit card",
-            				"required": true,
-            				"type": "array",
-										"items": [
-													{
-														"name": "longNum",
-														"in": "body",
-														"description": "Credit card number",
-														"required": true,
-														"type": "string"
-													},
-													{
-														"name": "expires",
-														"in": "body",
-														"description": "Card expiration",
-														"required": true,
-														"type": "string"
-													},
-													{
-														"name": "ccv",
-														"in": "body",
-														"description": "Card ccv",
-														"required": true,
-														"type": "string"
-													}
-										]
-									},
-									{
-										"name": "userID",
-                  	"in": "body",
-            				"description": "User to attach this card to.",
-            				"required": false,
-            				"type": "string"
-									}
-								],
+                  {
+                    "name": "card",
+                    "in": "body",
+                    "description": "Credit card",
+                    "required": true,
+                    "type": "array",
+                    "items": [
+                          {
+                            "name": "longNum",
+                            "in": "body",
+                            "description": "Credit card number",
+                            "required": true,
+                            "type": "string"
+                          },
+                          {
+                            "name": "expires",
+                            "in": "body",
+                            "description": "Card expiration",
+                            "required": true,
+                            "type": "string"
+                          },
+                          {
+                            "name": "ccv",
+                            "in": "body",
+                            "description": "Card ccv",
+                            "required": true,
+                            "type": "string"
+                          }
+                    ]
+                  },
+                  {
+                    "name": "userID",
+                    "in": "body",
+                    "description": "User to attach this card to.",
+                    "required": false,
+                    "type": "string"
+                  }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -258,14 +258,14 @@
                     "application/json;charset=UTF-8"
                 ],
                 "parameters": [
-									{
-										"name": "id",
-                  	"in": "path",
-            				"description": "ID of address to fetch",
-            				"required": true,
-            				"type": "string"
-          				}
-								],
+                  {
+                    "name": "id",
+                    "in": "path",
+                    "description": "ID of address to fetch",
+                    "required": true,
+                    "type": "string"
+                  }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -275,7 +275,7 @@
                     }
                 }
             }
-				},
+        },
         "/addresses": {
             "post": {
                 "description": "Create new address",
@@ -284,58 +284,58 @@
                     "application/json;charset=UTF-8"
                 ],
                 "parameters": [
-									{ 
-										"name": "address",
-                  	"in": "body",
-            				"description": "Address",
-            				"required": true,
-            				"type": "array",
-										"items": [
-													{
-														"name": "street",
-														"in": "body",
-														"description": "Street",
-														"required": true,
-														"type": "string"
-													},
-													{
-														"name": "number",
-														"in": "body",
-														"description": "streen number",
-														"required": true,
-														"type": "string"
-													},
-													{
-														"name": "country",
-														"in": "body",
-														"description": "Country",
-														"required": true,
-														"type": "string"
-													},
-													{
-														"name": "city",
-														"in": "body",
-														"description": "City",
-														"required": true,
-														"type": "string"
-													},
-													{
-														"name": "postcode",
-														"in": "body",
-														"description": "Post Code",
-														"required": true,
-														"type": "string"
-													}
-										]
-									},
-									{
-										"name": "userID",
-                  	"in": "body",
-            				"description": "User to attach this card to.",
-            				"required": false,
-            				"type": "string"
-									}
-								],
+                  { 
+                    "name": "address",
+                    "in": "body",
+                    "description": "Address",
+                    "required": true,
+                    "type": "array",
+                    "items": [
+                          {
+                            "name": "street",
+                            "in": "body",
+                            "description": "Street",
+                            "required": true,
+                            "type": "string"
+                          },
+                          {
+                            "name": "number",
+                            "in": "body",
+                            "description": "streen number",
+                            "required": true,
+                            "type": "string"
+                          },
+                          {
+                            "name": "country",
+                            "in": "body",
+                            "description": "Country",
+                            "required": true,
+                            "type": "string"
+                          },
+                          {
+                            "name": "city",
+                            "in": "body",
+                            "description": "City",
+                            "required": true,
+                            "type": "string"
+                          },
+                          {
+                            "name": "postcode",
+                            "in": "body",
+                            "description": "Post Code",
+                            "required": true,
+                            "type": "string"
+                          }
+                    ]
+                  },
+                  {
+                    "name": "userID",
+                    "in": "body",
+                    "description": "User to attach this card to.",
+                    "required": false,
+                    "type": "string"
+                  }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -353,15 +353,15 @@
             "type": "object",
             "properties": {
                 "_embedded": {
-				"type": "object",
-				"properties": {
-			"customer": {
-					"type": "array",
-					"items": {
-										"$ref": "#/definitions/Customer"		
-					}
-			}
-				}
+        "type": "object",
+        "properties": {
+      "customer": {
+          "type": "array",
+          "items": {
+                    "$ref": "#/definitions/Customer"    
+          }
+      }
+        }
                 },
                 "_links": {
                     "type": "object"
@@ -381,15 +381,15 @@
             "type": "object",
             "properties": {
                 "_embedded": {
-				"type": "object",
-				"properties": {
-			"cards": {
-					"type": "array",
-					"items": {
-				"$ref": "#/definitions/Card"
-					}
-			}
-				}                    
+        "type": "object",
+        "properties": {
+      "cards": {
+          "type": "array",
+          "items": {
+        "$ref": "#/definitions/Card"
+          }
+      }
+        }                    
                 },
                 "_links": {
                     "type": "object"
@@ -594,15 +594,15 @@
             "type": "object",
             "properties": {
                 "_embedded": {
-				"type": "object",
-				"properties": {
-			"address": {
-					"type": "array",
-					"items": {
-				"$ref": "#/definitions/Address"
-					}
-			}
-				}
+        "type": "object",
+        "properties": {
+      "address": {
+          "type": "array",
+          "items": {
+        "$ref": "#/definitions/Address"
+          }
+      }
+        }
                 },
                 "_links": {
                     "type": "object"
