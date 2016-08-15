@@ -1,0 +1,621 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "",
+        "title": "User",
+        "description": "Provide Customer login, register, retrieval, as well as card and address retrieval",
+        "license": {
+            "name": "MIT",
+            "url": "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
+        }
+    },
+    "host": "user",
+    "basePath": "/",
+    "securityDefinitions": {},
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json;charset=UTF-8"
+    ],
+    "produces": [
+        "application/json;charset=UTF-8"
+    ],
+    "paths": {
+        "/login": {
+            "get": {
+                "description": "Return logged in user",
+                "operationId": "Get Login",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+									{
+										"name": "username and password",
+                  	"in": "httAuth",
+            				"description": "Username and password via http auth",
+            				"required": true,
+            				"type": "string"
+									}
+								],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Getcustomersresponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Register new user",
+                "operationId": "Set User",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+									{
+										"name": "username",
+                  	"in": "body",
+            				"description": "Username",
+            				"required": true,
+            				"type": "string"
+									},
+									{
+										"name": "password",
+                  	"in": "body",
+            				"description": "Password",
+            				"required": true,
+            				"type": "string"
+									},
+									{
+										"name": "email",
+                  	"in": "body",
+            				"description": "Email",
+            				"required": true,
+            				"type": "string"
+									}
+								],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Postregisterresponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers": {
+            "get": {
+                "description": "Returns all customers",
+                "operationId": "Get customers",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Getcustomersresponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}": {
+            "get": {
+                "description": "Returns a customer",
+                "operationId": "Get customer",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+									{
+										"name": "id",
+                  	"in": "path",
+            				"description": "ID of customer to fetch",
+            				"required": true,
+            				"type": "string"
+          				}
+								],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Getcustomersresponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/cards": {
+            "get": {
+                "description": "Return all cards",
+                "operationId": "Get cards",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Getcardsresponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/cards/{id}": {
+            "get": {
+                "description": "Returns a card",
+                "operationId": "Get card",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+									{
+										"name": "id",
+                  	"in": "path",
+            				"description": "ID of card to fetch",
+            				"required": true,
+            				"type": "string"
+          				}
+								],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Getcardsresponse"
+                        }
+                    }
+                }
+            }
+				},
+        "/cards": {
+            "post": {
+                "description": "Create new card",
+                "operationId": "Set Card",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+									{
+										"name": "card",
+                  	"in": "body",
+            				"description": "Credit card",
+            				"required": true,
+            				"type": "array",
+										"items": [
+													{
+														"name": "longNum",
+														"in": "body",
+														"description": "Credit card number",
+														"required": true,
+														"type": "string"
+													},
+													{
+														"name": "expires",
+														"in": "body",
+														"description": "Card expiration",
+														"required": true,
+														"type": "string"
+													},
+													{
+														"name": "ccv",
+														"in": "body",
+														"description": "Card ccv",
+														"required": true,
+														"type": "string"
+													}
+										]
+									},
+									{
+										"name": "userID",
+                  	"in": "body",
+            				"description": "User to attach this card to.",
+            				"required": false,
+            				"type": "string"
+									}
+								],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Cardpostresponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/addresses": {
+            "get": {
+                "description": "Returns all addresses",
+                "operationId": "Get addresses",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Getaddresssresponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/addresses/{id}": {
+            "get": {
+                "description": "Returns an address",
+                "operationId": "Get address",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+									{
+										"name": "id",
+                  	"in": "path",
+            				"description": "ID of address to fetch",
+            				"required": true,
+            				"type": "string"
+          				}
+								],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Getaddressresponse"
+                        }
+                    }
+                }
+            }
+				},
+        "/addresses": {
+            "post": {
+                "description": "Create new address",
+                "operationId": "Set Address",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+									{ 
+										"name": "address",
+                  	"in": "body",
+            				"description": "Address",
+            				"required": true,
+            				"type": "array",
+										"items": [
+													{
+														"name": "street",
+														"in": "body",
+														"description": "Street",
+														"required": true,
+														"type": "string"
+													},
+													{
+														"name": "number",
+														"in": "body",
+														"description": "streen number",
+														"required": true,
+														"type": "string"
+													},
+													{
+														"name": "country",
+														"in": "body",
+														"description": "Country",
+														"required": true,
+														"type": "string"
+													},
+													{
+														"name": "city",
+														"in": "body",
+														"description": "City",
+														"required": true,
+														"type": "string"
+													},
+													{
+														"name": "postcode",
+														"in": "body",
+														"description": "Post Code",
+														"required": true,
+														"type": "string"
+													}
+										]
+									},
+									{
+										"name": "userID",
+                  	"in": "body",
+            				"description": "User to attach this card to.",
+            				"required": false,
+            				"type": "string"
+									}
+								],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Addresspostresponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Getcustomersresponse": {
+            "title": "Get customers response",
+            "type": "object",
+            "properties": {
+                "_embedded": {
+				"type": "object",
+				"properties": {
+			"customer": {
+					"type": "array",
+					"items": {
+										"$ref": "#/definitions/Customer"		
+					}
+			}
+				}
+                },
+                "_links": {
+                    "type": "object"
+                },
+                "page": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "_embedded",
+                "_links",
+                "page"
+            ]
+        },
+        "Getcardsresponse": {
+            "title": "Get cards response",
+            "type": "object",
+            "properties": {
+                "_embedded": {
+				"type": "object",
+				"properties": {
+			"cards": {
+					"type": "array",
+					"items": {
+				"$ref": "#/definitions/Card"
+					}
+			}
+				}                    
+                },
+                "_links": {
+                    "type": "object"
+                },
+                "page": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "_embedded",
+                "_links",
+                "page"
+            ]
+        },
+        "Customer": {
+            "type": "object",
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "_links": {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "customer": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "addresses": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "cards": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "self",
+                        "customer",
+                        "addresses",
+                        "cards"
+                    ]
+                }
+            },
+            "required": [
+                "firstName",
+                "lastName",
+                "username",
+                "_links"
+            ]
+        },
+        "Card": {
+            "type": "object",
+            "properties": {
+                "longNum": {
+                    "type": "string"
+                },
+                "expires": {
+                    "type": "string"
+                },
+                "ccv": {
+                    "type": "string"
+                },
+                "_links": {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "card": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "self",
+                        "card"
+                    ]
+                }
+            },
+            "required": [
+                "longNum",
+                "expires",
+                "ccv",
+                "_links"
+            ]
+        },
+        "Address": {
+            "type": "object",
+            "properties": {
+                "number": {
+                    "type": "string"
+                },
+                "street": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "postcode": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "_links": {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "address": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "self",
+                        "address"
+                    ]
+                }
+            },
+            "required": [
+                "number",
+                "street",
+                "city",
+                "postcode",
+                "country",
+                "_links"
+            ]
+        },
+        "Listresponse": {
+            "title": "List response",
+            "type": "object",
+            "properties": {
+                "_embedded": {
+				"type": "object",
+				"properties": {
+			"address": {
+					"type": "array",
+					"items": {
+				"$ref": "#/definitions/Address"
+					}
+			}
+				}
+                },
+                "_links": {
+                    "type": "object"
+                },
+                "page": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "_embedded",
+                "_links",
+                "page"
+            ]
+        }
+    }
+}
