@@ -33,6 +33,20 @@ class Docker:
         p.stderr.close()
         return str(out, 'utf-8')
 
-    def start_container(self, container_name="", image="", cmd="", host=""):
-        command = ['docker', 'run', '-d', '-h', host, '--name', container_name, image]
+    def start_container(self, container_name="", image="", cmd="", host="", env=[]):
+        command = ['docker', 'run', '-d']
+        if image == "":
+            raise RuntimeError(str("Image can't be empty", 'utf-8'))
+        
+        command.extend(["--name", container_name]) if container_name != "" else 0
+        command.extend(["-h", host]) if host != "" else 0
+
+        if env != "":
+            [command.extend(["--env", "{}={}".format(x[0], x[1])]) for x in env]
+            
+        command.append(image)
+        
+        if cmd != "":
+            command.append(cmd)
+        
         self.execute(command)
