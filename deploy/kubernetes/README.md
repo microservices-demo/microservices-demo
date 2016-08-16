@@ -9,7 +9,7 @@ git clone https://github.com/microservices-demo/microservices-demo
 cd deploy/kubernetes/terraform
 ```
 
-Add AWS credentials to main.tf file
+Add AWS credentials to main.tf file, or set them via environmental variables. For example: `export TF_VAR_aws_access_key="YOURACCESSKEY"`.
 
 Run terraform
 
