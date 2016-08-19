@@ -529,7 +529,7 @@
             "_embedded":{  
                "type":"object",
                "properties":{  
-                  "address":{  
+                  "addresses":{  
                      "type":"array",
                      "items":{  
                         "$ref":"#/definitions/Address"
@@ -545,9 +545,7 @@
             }
          },
          "required":[  
-            "_embedded",
-            "_links",
-            "page"
+            "_embedded"
          ]
       },
       "Register":{  
