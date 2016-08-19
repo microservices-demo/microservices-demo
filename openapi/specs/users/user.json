@@ -330,7 +330,7 @@
          "type":"object",
          "properties":{  
             "status":{  
-               "type":"object"
+               "type":"boolean"
             }
          },
          "required":[  
