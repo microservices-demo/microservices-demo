@@ -107,7 +107,8 @@
                   "in":"path",
                   "description":"ID of customer to fetch",
                   "required":true,
-                  "type":"string"
+                  "type":"string",
+                  "default":"57a98d98e4b00679b4a830af"
                }
             ],
             "responses":{  
@@ -179,7 +180,8 @@
                   "in":"path",
                   "description":"ID of card to fetch",
                   "required":true,
-                  "type":"string"
+                  "type":"string",
+                  "default":"57a98d98e4b00679b4a830ae"
                }
             ],
             "responses":{  
@@ -251,7 +253,8 @@
                   "in":"path",
                   "description":"ID of address to fetch",
                   "required":true,
-                  "type":"string"
+                  "type":"string",
+                  "default":"57a98d98e4b00679b4a830ad"
                }
             ],
             "responses":{  
@@ -327,7 +330,7 @@
          "type":"object",
          "properties":{  
             "status":{  
-               "type":"object"
+               "type":"boolean"
             }
          },
          "required":[  
@@ -526,7 +529,7 @@
             "_embedded":{  
                "type":"object",
                "properties":{  
-                  "address":{  
+                  "addresses":{  
                      "type":"array",
                      "items":{  
                         "$ref":"#/definitions/Address"
@@ -542,9 +545,7 @@
             }
          },
          "required":[  
-            "_embedded",
-            "_links",
-            "page"
+            "_embedded"
          ]
       },
       "Register":{  
