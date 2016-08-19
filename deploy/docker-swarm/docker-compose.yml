@@ -2,7 +2,7 @@ version: '2'
 
 services:
   front-end:
-    image: weaveworksdemos/front-end
+    image: weaveworksdemos/front-end:37a9f346cca128d7829eca6f07261a391e14fee7
     hostname: front-end
     domainname: weave.local
     restart: always
@@ -141,6 +141,25 @@ services:
   login:
     image: weaveworksdemos/login
     hostname: login
+    domainname: weave.local
+    restart: always
+    environment:
+      - reschedule:on-node-failure
+    networks:
+      - secure
+ user:
+    image: weaveworksdemos/user:snapshot
+    hostname: user
+    domainname: weave.local
+    restart: always
+    environment:
+      - MONGO_HOST=user-db:27017
+      - reschedule:on-node-failure
+    networks:
+      - secure
+  user-db:
+    image: mongo:3
+    hostname: user-db
     domainname: weave.local
     restart: always
     environment:
