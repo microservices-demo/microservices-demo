@@ -2,7 +2,7 @@ version: '2'
 
 services:
   front-end:
-    image: weaveworksdemos/front-end:a84e170d950e7222c3f6918c4e984b35c658acf6
+    image: local-front-end
     hostname: front-end
     dns: 172.17.0.1
     dns_search: weave.local
@@ -47,26 +47,6 @@ services:
       - MYSQL_DATABASE=socksdb
     networks:
       - external
-  accounts:
-    image: weaveworksdemos/accounts
-    hostname: accounts
-    dns: 172.17.0.1
-    dns_search: weave.local
-    restart: always
-    environment:
-      - reschedule:on-node-failure
-    networks:
-      - secure
-  accounts-db:
-    image: weaveworksdemos/accounts-db-test
-    hostname: accounts-db
-    dns: 172.17.0.1
-    dns_search: weave.local
-    restart: always
-    environment:
-      - reschedule:on-node-failure
-    networks:
-      - secure
   cart:
     image: weaveworksdemos/cart
     hostname: cart
@@ -151,18 +131,8 @@ services:
       - reschedule:on-node-failure
     networks:
       - secure
-  login:
-    image: weaveworksdemos/login
-    hostname: login
-    dns: 172.17.0.1
-    dns_search: weave.local
-    restart: always
-    environment:
-      - reschedule:on-node-failure
-    networks:
-      - secure
   user:
-    image: weaveworksdemos/user:snapshot
+    image: user-local
     hostname: user
     dns: 172.17.0.1
     dns_search: weave.local
@@ -173,7 +143,7 @@ services:
     networks:
       - secure
   user-db:
-    image: mongo:3
+    image: weaveworksdemos/user-db:snapshot
     hostname: user-db
     dns: 172.17.0.1
     dns_search: weave.local
