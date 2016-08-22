@@ -87,3 +87,16 @@ Generally, you can proceed to the following step when:
 | Testing    | After successful build                              |
 | Build      | After successful unit and component test and new PR |
 
+# Application urls
+
+## Staging
+
+Keys and/or passwords are available from the maintainer.
+
+| Stage | Description | URL | Maintainer |
+|:------|:------------|:----|:------|
+| Staging | Bastion host | 52.209.82.220 | Phil |
+| Staging | App | http://a6b0a65fc651111e69a2f0a688e86a8f-4906602.eu-west-1.elb.amazonaws.com/ | Phil |
+| Staging | K8s UI | https://52.209.23.12/ui | Phil |
+| Staging | Scope UI | http://af2df0595685b11e69a2f0a688e86a8f-1558437012.eu-west-1.elb.amazonaws.com/ | Phil |
+
