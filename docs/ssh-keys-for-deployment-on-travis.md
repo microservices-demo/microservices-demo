@@ -13,7 +13,8 @@ travis login
 Replace repo with your service name. We do this on a per-service basis so we can easily revoke if compromised.
 
 ```
-ssh-keygen -t rsa -b 4096 -C '$REPO@travis-ci.org' -f ./$REPO_deploy_rsa
+export REPO=<name of repo>
+ssh-keygen -t rsa -b 4096 -N "" -C ${REPO}@travis-ci.org -f ./${REPO}_deploy_rsa
 ```
 
 # Encrypyt key
@@ -22,7 +23,7 @@ First, cd to the directory with the `.travis.yml` file in. It will automatically
 
 ```
 cd /path/to/your/repo
-travis encrypt-file $REPO_deploy_rsa --add
+travis encrypt-file ${REPO}_deploy_rsa --add
 ```
 
 # Add to bastion's known keys
@@ -30,20 +31,20 @@ travis encrypt-file $REPO_deploy_rsa --add
 (Contact whomever created the bastion for master $KEY).
 
 ```
-cat $REPO_deploy_rsa.pub | ssh -i $KEY $BASTION_USER@$BASTION 'cat >> .ssh/authorized_keys && echo "Key copied"'
+cat ${REPO}_deploy_rsa.pub | ssh -i $KEY ${BASTION_USER}@${BASTION} 'cat >> .ssh/authorized_keys && echo "Key copied"'
 ```
 
 # DELETE THE KEYS (IMPORTANT!)
 
 ```
-rm -f deploy_rsa deploy_rsa.pub
+rm -f ${REPO}_deploy_rsa ${REPO}_deploy_rsa.pub
 ```
 
 # Check the edited travis file for formatting and commit
 
 ```
 open .travis.yml
-git add deploy_rsa.enc .travis.yml
+git add ${REPO}_deploy_rsa.enc .travis.yml
 git commit -m "Added encrypted deploy keys"
 ```
 
@@ -57,7 +58,7 @@ addons:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh -o StrictHostKeyChecking=no $BASTION_USER@$BASTION ./deploy.sh accounts $COMMIT
+  script: ssh -o StrictHostKeyChecking=no ${BASTION_USER}@${BASTION} ./deploy.sh accounts $COMMIT
   on:
     branch: master
 ```    
