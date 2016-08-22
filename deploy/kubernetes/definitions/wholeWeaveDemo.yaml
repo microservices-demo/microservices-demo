@@ -181,6 +181,9 @@ spec:
       containers:
       - name: catalogue-db
         image: mysql
+        env: 
+          - name: MYSQL_ROOT_PASSWORD
+            value: fake_password
         ports:
         - name: mysql
           containerPort: 3306
