@@ -1,11 +1,11 @@
 {
-    "family": "weavedemo-accounts",
+    "family": "weavedemo-user-db",
     "containerDefinitions": [
         {
             "essential": true,
-            "image": "weaveworksdemos/accounts",
+            "image": "weaveworksdemos/user-db",
             "memory": 256,
-            "name": "accounts"
+            "name": "user-db"
         }
     ]
 }
