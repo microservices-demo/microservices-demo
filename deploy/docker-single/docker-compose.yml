@@ -2,7 +2,7 @@ version: '2'
 
 services:
   front-end:
-    image: local-front-end
+    image: weaveworksdemos/front-end:f04afb3199a5ef77f15b3fd33f3564b8828f6a04
     hostname: front-end
     dns: 172.17.0.1
     dns_search: weave.local
@@ -132,7 +132,7 @@ services:
     networks:
       - secure
   user:
-    image: user-local
+    image: weaveworksdemos/user
     hostname: user
     dns: 172.17.0.1
     dns_search: weave.local
@@ -143,7 +143,7 @@ services:
     networks:
       - secure
   user-db:
-    image: weaveworksdemos/user-db:snapshot
+    image: weaveworksdemos/user-db
     hostname: user-db
     dns: 172.17.0.1
     dns_search: weave.local
