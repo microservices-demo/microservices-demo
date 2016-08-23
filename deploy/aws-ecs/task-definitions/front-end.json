@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "essential": true,
-            "image": "weaveworksdemos/front-end:f04afb3199a5ef77f15b3fd33f3564b8828f6a04",
+            "image": "weaveworksdemos/front-end",
             "memory": 256,
             "name": "front-end"
         }

@@ -2,7 +2,7 @@ version: '2'
 
 services:
   front-end:
-    image: weaveworksdemos/front-end:f04afb3199a5ef77f15b3fd33f3564b8828f6a04
+    image: weaveworksdemos/front-end
     hostname: front-end
     dns: 172.17.0.1
     dns_search: weave.local

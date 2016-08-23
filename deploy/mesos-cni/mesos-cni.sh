@@ -8,7 +8,7 @@ USER=ubuntu
 MASTERS=($MASTER)
 AGENTS=($SLAVE0 $SLAVE1 $SLAVE2)
 SSH_OPTS=-oStrictHostKeyChecking=no
-SERVICES=("accounts-db" "cart-db" "orders-db" "shipping" "orders" "catalogue" "catalogue-db" "accounts" "cart" "payment" "login" "front-end")
+SERVICES=("user-db" "cart-db" "orders-db" "shipping" "orders" "catalogue" "catalogue-db" "user" "cart" "payment" "front-end")
 
 
 ############## Begin Utilities ###################
