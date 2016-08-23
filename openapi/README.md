@@ -51,13 +51,5 @@ docker build -t "weaveworksdemos/openapi:latest" .
 
 Run the openapi testing container:
 ```
-docker run --rm --net dockeronly_default --link dockeronly_accounts-db_1 --link dockeronly_accounts_1 --env MONGO_ENDPOINT=mongodb://accounts-db:27017/data weaveworksdemos/openapi /tmp/specs/accounts/accounts.json http://accounts -f /tmp/specs/accounts/hooks.js
-```
-
-# Docker-compose
-Look at ```docker-compose.yml``` for reference.
-
-```
-JSON_SPEC=accounts/accounts.json API_ENDPOINT=http://localhost:8080 docker-compose up --abort-on-container-exit
-
+docker run -h openapi --name openapi-tmqpb -v /path/to/api-specs/:/tmp/specs/ --link catalogue --link catalogue-db-zbqsv:mysql weaveworksdemos/openapi /tmp/specs/catalogue.json http://catalogue/ -f /tmp/specs/hooks.js
 ```

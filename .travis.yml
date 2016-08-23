@@ -7,9 +7,8 @@ jdk:
 script:
 - "echo skip"
 after_success:
-  - export MODULES="../openapi"
+  - export MODULES="openapi"
   - export GROUP=weaveworksdemos
-  - cd $TRAVIS_BUILD_DIR/sockshop
   - if [ -z "$DOCKER_PASS" ] ; then
       echo "This is a build triggered by an external PR. Skipping docker push.";
       exit 0;
