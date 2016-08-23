@@ -1,52 +1,52 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: accounts
+  name: user
   labels:
-    name: accounts
+    name: user
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: accounts
+        name: user
     spec:
       containers:
-      - name: accounts
-        image: weaveworksdemos/accounts
+      - name: user
+        image: weaveworksdemos/user
         ports:
         - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: accounts
+  name: user
   labels:
-    name: accounts
+    name: user
 spec:
   ports:
     # the port that this service should serve on
   - port: 80
     targetPort: 80
   selector:
-    name: accounts
+    name: user
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: accounts-db
+  name: user-db
   labels:
-    name: accounts-db
+    name: user-db
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: accounts-db
+        name: user-db
     spec:
       containers:
-      - name: accounts-db
-        image: weaveworksdemos/accounts-db-test
+      - name: user-db
+        image: weaveworksdemos/user-db
 
         ports:
         - name: mongo
@@ -55,13 +55,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: accounts-db
+  name: user-db
   labels:
-    name: accounts-db
+    name: user-db
 spec:
   ports:
     # the port that this service should serve on
   - port: 27017
     targetPort: 27017
   selector:
-    name: accounts-db
+    name: user-db
