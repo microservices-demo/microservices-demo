@@ -2,7 +2,7 @@ version: '2'
 
 services:
   front-end:
-    image: weaveworksdemos/front-end:f04afb3199a5ef77f15b3fd33f3564b8828f6a04
+    image: weaveworksdemos/front-end:86bacce27640159b8ccbacc54da718e55a5a086c
     hostname: front-end
     restart: always
     environment:
@@ -80,14 +80,14 @@ services:
     environment:
       - reschedule:on-node-failure
   user:
-    image: weaveworksdemos/user
+    image: weaveworksdemos/user:6580ec9ea849f7e9685b29d8f4815fabdfd28ebd
     hostname: user
     restart: always
     environment:
       - MONGO_HOST=user-db:27017
       - reschedule:on-node-failure
   user-db:
-    image: weaveworksdemos/user-db
+    image: weaveworksdemos/user-db:6580ec9ea849f7e9685b29d8f4815fabdfd28ebd
     hostname: user-db
     restart: always
     environment:
