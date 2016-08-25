@@ -133,7 +133,6 @@ services:
       - secure
   user:
     image: weaveworksdemos/user:c017ce405b96fee536e1e64509723ef96b108a0a
-    image: user-local
     hostname: user
     dns: 172.17.0.1
     dns_search: weave.local
