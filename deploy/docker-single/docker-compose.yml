@@ -47,26 +47,6 @@ services:
       - MYSQL_DATABASE=socksdb
     networks:
       - external
-  accounts:
-    image: weaveworksdemos/accounts
-    hostname: accounts
-    dns: 172.17.0.1
-    dns_search: weave.local
-    restart: always
-    environment:
-      - reschedule:on-node-failure
-    networks:
-      - secure
-  accounts-db:
-    image: weaveworksdemos/accounts-db-test
-    hostname: accounts-db
-    dns: 172.17.0.1
-    dns_search: weave.local
-    restart: always
-    environment:
-      - reschedule:on-node-failure
-    networks:
-      - secure
   cart:
     image: weaveworksdemos/cart
     hostname: cart
@@ -151,9 +131,20 @@ services:
       - reschedule:on-node-failure
     networks:
       - secure
-  login:
-    image: weaveworksdemos/login
-    hostname: login
+  user:
+    image: weaveworksdemos/user
+    hostname: user
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    environment:
+      - MONGO_HOST=user-db:27017
+      - reschedule:on-node-failure
+    networks:
+      - secure
+  user-db:
+    image: weaveworksdemos/user-db
+    hostname: user-db
     dns: 172.17.0.1
     dns_search: weave.local
     restart: always

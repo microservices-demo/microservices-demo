@@ -29,18 +29,6 @@ services:
       - reschedule:on-node-failure
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=socksdb
-  accounts:
-    image: weaveworksdemos/accounts
-    hostname: accounts
-    restart: always
-    environment:
-      - reschedule:on-node-failure
-  accounts-db:
-    image: weaveworksdemos/accounts-db-test
-    hostname: accounts-db
-    restart: always
-    environment:
-      - reschedule:on-node-failure
   cart:
     image: weaveworksdemos/cart
     hostname: cart
@@ -91,9 +79,16 @@ services:
     restart: always
     environment:
       - reschedule:on-node-failure
-  login:
-    image: weaveworksdemos/login
-    hostname: login
+  user:
+    image: weaveworksdemos/user
+    hostname: user
+    restart: always
+    environment:
+      - MONGO_HOST=user-db:27017
+      - reschedule:on-node-failure
+  user-db:
+    image: weaveworksdemos/user-db
+    hostname: user-db
     restart: always
     environment:
       - reschedule:on-node-failure
