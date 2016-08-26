@@ -132,7 +132,8 @@ services:
     networks:
       - secure
   user:
-    image: weaveworksdemos/user:c017ce405b96fee536e1e64509723ef96b108a0a
+    image: weaveworksdemos/user:5311154f68d85a164261e864587812cf1298f607
+    #image: user-local
     hostname: user
     dns: 172.17.0.1
     dns_search: weave.local
@@ -143,7 +144,7 @@ services:
     networks:
       - secure
   user-db:
-    image: weaveworksdemos/user-db:c017ce405b96fee536e1e64509723ef96b108a0a
+    image: weaveworksdemos/user-db:5311154f68d85a164261e864587812cf1298f607
     hostname: user-db
     dns: 172.17.0.1
     dns_search: weave.local
