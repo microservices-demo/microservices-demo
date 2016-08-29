@@ -20,7 +20,6 @@ after_success:
       exit 1;
     fi;
   - export DOCKER_PUSH=1;
-  - echo "Docker Push is $DOCKER_PUSH";
   - while [ "$DOCKER_PUSH" -gt 0 ] ; do
       echo "Pushing $REPO:$TRAVIS_COMMIT";
       docker push $REPO:$TRAVIS_COMMIT;
