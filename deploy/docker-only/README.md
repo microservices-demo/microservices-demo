@@ -5,7 +5,7 @@ The Weave Demo application is packaged using a [Docker Compose](https://docs.doc
 ## Pre-requisites
 
 - Install Docker
-- Install [Weave Scope](https://www.weave.works/products/install-weave-scope/)
+- Install [Weave Scope](https://www.weave.works/install-weave-scope/)
 
 ## Install & run
 
