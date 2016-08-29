@@ -16,6 +16,10 @@ spec:
         image: weaveworksdemos/user
         ports:
         - containerPort: 80
+        env:
+        - name: MONGO_HOST
+          value: user-db:27017
+
 ---
 apiVersion: v1
 kind: Service
