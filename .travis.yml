@@ -14,15 +14,14 @@ after_success:
     fi;
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
   - export REPO=${GROUP}/$(basename openapi); # build openapi testing image
-    echo "Building ${REPO}:$TRAVIS_COMMIT";
-    docker build -t ${REPO}:$TRAVIS_COMMIT ./openapi;
-    DOCKER_EXIT=$(echo $?);
-    if [[ "$DOCKER_EXIT" > 0 ]] ; then
+  - echo "Building ${REPO}:$TRAVIS_COMMIT";
+  - docker build -t ${REPO}:$TRAVIS_COMMIT ./openapi; DOCKER_EXIT=$(echo $?); if [[ "$DOCKER_EXIT" > 0 ]] ; then
       echo "Docker build failed with exit code $DOCKER_EXIT";
       exit 1;
     fi;
-    DOCKER_PUSH=1;
-    while [ $DOCKER_PUSH -gt 0 ] ; do
+  - export DOCKER_PUSH=1;
+  - echo "Docker Push is $DOCKER_PUSH";
+  - while [ "$DOCKER_PUSH" -gt 0 ] ; do
       echo "Pushing $REPO:$TRAVIS_COMMIT";
       docker push $REPO:$TRAVIS_COMMIT;
       DOCKER_PUSH=$(echo $?);
@@ -30,8 +29,8 @@ after_success:
         echo "Docker push failed with exit code $DOCKER_PUSH";
       fi;
     done;
-    if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:snapshot; echo "Pushing $REPO:snapshot"; docker push $REPO:snapshot; fi;
-    if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; docker tag $REPO:$TRAVIS_COMMIT $REPO:latest; docker push $REPO:latest; fi;
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:snapshot; echo "Pushing $REPO:snapshot"; docker push $REPO:snapshot; fi;
+  - if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; docker tag $REPO:$TRAVIS_COMMIT $REPO:latest; docker push $REPO:latest; fi;
 
 notifications:
   slack:
