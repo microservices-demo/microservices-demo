@@ -1,6 +1,8 @@
-# Weave Demo on Docker (single-host)
+# Sock Shop on Docker
 
-The Weave Demo application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file. This version does not use any custom networks. DNS is achieved by using the internal Docker DNS, which reads network alias entries provided by docker-compose.
+The Sock Sho application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.
+*This version does not use any custom networks*.
+DNS is achieved by using the internal Docker DNS, which reads network alias entries provided by docker-compose.
 
 ## Pre-requisites
 
