@@ -132,7 +132,7 @@ services:
     networks:
       - secure
   user-db:
-    image: weaveworksdemos/user
+    image: weaveworksdemos/user-db
     hostname: user-db
     domainname: weave.local
     restart: always
