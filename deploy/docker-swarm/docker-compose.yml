@@ -140,6 +140,13 @@ services:
       - reschedule:on-node-failure
     networks:
       - secure
+  user-sim:
+    image: weaveworksdemos/load-test
+    hostname: user-simulator
+    domainname: weave.local
+    networks:
+      - external
+    command: "-d 60 -r 200 -c 2 -h edge-router"
 networks:
   external:
     driver: weave
