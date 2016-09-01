@@ -374,6 +374,62 @@
         }
       }
     },
+    "UserTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/user",
+            "Name": "user",
+            "Memory": 1024
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "UserService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "UserTask"
+        }
+      }
+    },
+    "UserDBTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/user-db",
+            "Name": "user-db",
+            "Memory": 512
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "UserDBService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "UserDBTask"
+        }
+      }
+    },
     "OrdersDBTask": {
       "Condition": "DoDeployExampleApp",
       "Type": "AWS::ECS::TaskDefinition",
