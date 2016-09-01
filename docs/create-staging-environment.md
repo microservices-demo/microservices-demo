@@ -19,29 +19,20 @@ The cluster is a Kubernetes-based one. It roughly mimics the k8s deploy.
 
 First, create a bastion host to create and manage the cluster. This machine will be used by the CI pipelines in order to deploy containers.
 
-I would recommend a standard 14.04 Ubuntu instance, with few resources. Make sure you save the ssh key as others may need it to access the cluster.
-
-### Cluster install method
-
-Next, use the k8s AWS instructions to create a cluster. http://kubernetes.io/docs/getting-started-guides/aws/
-
-Note that recent reports suggest using https://github.com/kubernetes/kops instead.
+I would recommend a standard 14.04 Ubuntu instance, with few resources (e.g. t2.micro with Amazon Linux AMI). Make sure you save the ssh key as others may need it to access the cluster.
 
 **All subsequent steps are installed from the bastion. Do not run on your own laptop. It will take all teh timez.**
+### Cluster install method
 
-### Download
+Make sure that you have set the AWS credentials before proceeding.
+Next, use the k8s AWS instructions to create a cluster http://kubernetes.io/docs/getting-started-guides/aws/. Note that this script will fail (last tested on 1. September 2016, see https://github.com/kubernetes/kubernetes/issues/30495 for more information) but it will download all the necessary files into a kubernetes folder.
+Recent reports suggest using https://github.com/kubernetes/kops instead of the above script. 
 
-This is actually the install script, but there's a bug. So only download for now.
-
+If you encounter the following error
 ```
-export KUBERNETES_PROVIDER=aws; export KUBERNETES_SKIP_DOWNLOAD=true; curl -sS https://get.k8s.io
+./cluster/../cluster/../cluster/aws/../../cluster/common.sh: line 528: KUBE_MANIFESTS_TAR_URL: unbound variable
 ```
-
-### Install
-
-In the version that I used, there was a k8s bug which prevented the successful deploy. See https://github.com/kubernetes/kubernetes/issues/30495
-
-Which says that you have to edit the `./cluster/common.sh` file, so that the method `build-kube-env` looks like: 
+go to the kubernetes/cluster folder, type `sudo nano common.sh`and edit the method `build-kube-env` like this: 
 
 ```
 # $1: if 'true', we're building a master yaml, else a node
@@ -76,8 +67,9 @@ export INSTANCE_PREFIX=microservices-demo-staging AWS_S3_BUCKET=microservices-de
 ```
 
 Note that these might not all work. E.g. I don't think the install prefix works, even though it should.
+Also note that the deploying might fail if you change the region because of some VPC setting.
 
-Now run the installer. It will take a while.
+Now run the installer again. It will take a while, because a minion takes about 10 minutes to launch kubernetes.
 
 ```
 export KUBERNETES_PROVIDER=aws; export KUBERNETES_SKIP_DOWNLOAD=true; curl -sS https://get.k8s.io | bash
@@ -85,7 +77,8 @@ export KUBERNETES_PROVIDER=aws; export KUBERNETES_SKIP_DOWNLOAD=true; curl -sS h
 
 ## Verification
 
-You should be able to ssh into the bastion, then ssh into a node, if you need to. `ssh -i $HOME/.ssh/kube_aws_rsa admin@$IP`
+You should be able to ssh into the bastion, then ssh into a node, if you need to.
+`ssh -i $HOME/.ssh/kube_aws_rsa admin@$IP`
 
 Next, you should symlink the kubectl binary for global access. Other scripts will rely on this.
 
@@ -99,7 +92,7 @@ And print the cluster information to get some IP addresses.
 kubectl cluster-info
 ```
 
-Check that the UI is running.
+Check that the UI is running by going to the kubernetes-dashboard url and login with the credentials from ~/.kube/config
 
 ## Installing weave
 
@@ -125,12 +118,10 @@ Note that the master IP MUST be the internal ip address. The one usually startin
 sudo curl -L git.io/weave -o /usr/local/bin/weave ; sudo chmod +x /usr/local/bin/weave ; sudo mkdir -p /opt/cni/bin ; sudo mkdir -p /etc/cni/net.d ; sudo weave setup ; sudo weave launch $MASTER_INTERNAL_IP; sudo weave expose
 ```
 
-### On each MINION
-
 Append the cni options to the kubelet service systemd file.
 
 ```
-sudo vi /etc/sysconfig/kubelet
+sudo nano /etc/sysconfig/kubelet
 ```
 
 And ensure that the the last line looks like:
@@ -138,8 +129,10 @@ And ensure that the the last line looks like:
 ```
 DAEMON_ARGS="$DAEMON_ARGS ... --babysit-daemons=true --network-plugin=cni --network-plugin-dir=/etc/cni/net.d  "
 ```
-
-### On each MINION
+Alternatively, use this regex command:
+```
+sudo perl -pi -e 's/--babysit-daemons=true +\"/--babysit-daemons=true --network-plugin=cni --network-plugin-dir=\/etc\/cni\/net.d\"/g' /etc/sysconfig/kubelet
+```
 
 Finally, we need to restart k8s to use cni. This will kill and restart all applications, system and user. Make sure this is ok first.
 
@@ -147,11 +140,19 @@ Finally, we need to restart k8s to use cni. This will kill and restart all appli
 sudo service kubelet restart
 ```
 
-Once all minions have restarted, go to the gui or command line to verify that all system services have restarted successfully. If any services are 0/1 running, or whatever, please debug.
+If the kubernetes dashboard is not accessible anymore, type
+`kubectl describe pods --namespace kube-system kubernetes-dashboard` on the bastion. If there's an error message similar to the one below, restart all your minion EC2 instances.
+```
+Error syncing pod, skipping: failed to "SetupNetwork" for "catalogue-db-3749174200-f4wkt_default" with SetupNetworkError: "Failed to setup network for pod \"catalogue-db-3749174200-f4wkt_default(44ab7ad4-7022-11e6-aaa7-0ad1a2d3c31d)\" using network plugins \"cni\": could not find \".\" plugin; Skipping pod" 
+```
+
+Once all minions have restarted, go to the gui or command line to verify that all system services have restarted successfully. If any services are 0/1 running, or whatever, please debug (see below for a list of commands).
 
 ## Installation of application
 
-Clone the microservices-demo repo. Then start the application.
+On the bastion host, clone the microservices-demo repo with
+`git clone https://github.com/microservices-demo/microservices-demo.git`
+Then start the application.
 
 ```
 kubectl create -f microservices-demo/deploy/kubernetes/definitions/wholeWeaveDemo.yaml
@@ -162,6 +163,9 @@ Add the deploy script to the bastion's home directory, for the CI pipelines (if 
 ```
 cp microservices-demo/deploy/deploy.sh ~
 ```
+
+You should now be able to connect to the microservices-demo. The frontend url can be found by using the following command on the bastion host:
+`kubectl describe service front-end | grep Ingress`
 
 ## Installation of scope
 
