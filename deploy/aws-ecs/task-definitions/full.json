@@ -1,0 +1,1144 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Weave-enabled AWS CloudFormation template to create resources required to run tasks on an ECS cluster.  This template uses a larger example app. (weaveworks/integrations@5e4195b1aca213fe8cfde720bdc5d0b4c6b6ea8f)",
+  "Outputs": {
+    "AppFrontend": {
+      "Condition": "DoDeployExampleApp",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "http://",
+            {
+              "Fn::GetAtt": [
+                "EcsFrontendElasticLoadBalancing",
+                "DNSName"
+              ]
+            },
+            ":80"
+          ]
+        ]
+      },
+      "Description": "App frontend"
+    },
+    "WeaveScope": {
+      "Condition": "UseWeaveScopeStandalone",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "http://",
+            {
+              "Fn::GetAtt": [
+                "EcsFrontendElasticLoadBalancing",
+                "DNSName"
+              ]
+            },
+            ":4040"
+          ]
+        ]
+      },
+      "Description": "Weave Scope UI"
+    }
+  },
+  "Mappings": {
+    "VpcCidrs": {
+      "vpc": {
+        "cidr": "172.31.0.0/16"
+      },
+      "pubsubnet1": {
+        "cidr": "172.31.0.0/24"
+      },
+      "pubsubnet2": {
+        "cidr": "172.31.1.0/24"
+      }
+    },
+    "WeaveworksEcsAmiIds": {
+      "us-east-1": {
+        "ImageId": "ami-52cd5445"
+      },
+      "us-west-1": {
+        "ImageId": "ami-efa1e28f"
+      },
+      "us-west-2": {
+        "ImageId": "ami-a426edc4"
+      },
+      "eu-west-1": {
+        "ImageId": "ami-7b244e08"
+      },
+      "eu-central-1": {
+        "ImageId": "ami-721aec1d"
+      },
+      "ap-northeast-1": {
+        "ImageId": "ami-058a4964"
+      },
+      "ap-southeast-1": {
+        "ImageId": "ami-0d9f466e"
+      },
+      "ap-southeast-2": {
+        "ImageId": "ami-7df2c61e"
+      }
+    }
+  },
+  "Parameters": {
+    "EcsInstanceType": {
+      "Type": "String",
+      "Description": "Type of the EC2 instance(s) to deploy",
+      "Default": "t2.micro",
+      "AllowedValues": [
+        "t2.micro",
+        "t2.small",
+        "t2.medium",
+        "t2.large",
+        "m3.medium",
+        "m3.large",
+        "m3.xlarge",
+        "m3.2xlarge",
+        "m4.large",
+        "m4.xlarge",
+        "m4.2xlarge",
+        "m4.4xlarge",
+        "m4.10xlarge",
+        "c4.large",
+        "c4.xlarge",
+        "c4.2xlarge",
+        "c4.4xlarge",
+        "c4.8xlarge",
+        "c3.large",
+        "c3.xlarge",
+        "c3.2xlarge",
+        "c3.4xlarge",
+        "c3.8xlarge",
+        "r3.large",
+        "r3.xlarge",
+        "r3.2xlarge",
+        "r3.4xlarge",
+        "r3.8xlarge",
+        "i2.xlarge",
+        "i2.2xlarge",
+        "i2.4xlarge",
+        "i2.8xlarge"
+      ],
+      "ConstraintDescription": "must be a valid EC2 instance type."
+    },
+    "Scale": {
+      "Type": "Number",
+      "Description": "Size of ECS cluster",
+      "Default": "3"
+    },
+    "KeyName": {
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "Description": "Name of an existing EC2 KeyPair to enable SSH access to the ECS instances (if none appear in drop-down menu, you need to create one)",
+      "MinLength": "1",
+      "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
+    },
+    "DeployExampleApp": {
+      "Type": "String",
+      "Description": "No: only Weave Net/Scope net will be deployed, Yes: also deploy microservices demo app",
+      "Default": "Yes",
+      "AllowedValues": [
+        "Yes",
+        "No"
+      ],
+      "ConstraintDescription": "must be Yes or No"
+    },
+    "WeaveCloudServiceToken": {
+      "Type": "String",
+      "Description": "Optional - Authentication token for Weave Cloud [https://cloud.weave.works/]. Leave empty to run Scope in Standalone Mode.",
+      "Default": ""
+    }
+  },
+  "Conditions": {
+    "DoDeployExampleApp": {
+      "Fn::Equals": [
+        {
+          "Ref": "DeployExampleApp"
+        },
+        "Yes"
+      ]
+    },
+    "UseWeaveScopeStandalone": {
+      "Fn::Equals": [
+        {
+          "Ref": "WeaveCloudServiceToken"
+        },
+        ""
+      ]
+    }
+  },
+  "Resources": {
+    "EcsCluster": {
+      "Type": "AWS::ECS::Cluster"
+    },
+    "AccountsDBTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "mongo",
+            "Name": "accounts-db",
+            "Memory": 512
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "AccountsDBService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "AccountsDBTask"
+        }
+      }
+    },
+    "AccountsTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/accounts",
+            "Name": "accounts",
+            "Memory": 1024
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "AccountsService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "AccountsTask"
+        }
+      }
+    },
+    "CartDBTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "mongo",
+            "Name": "cart-db",
+            "Memory": 512
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "CartDBService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "CartDBTask"
+        }
+      }
+    },
+    "CartTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/cart",
+            "Name": "cart",
+            "Memory": 1024
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "CartService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "CartTask"
+        }
+      }
+    },
+    "CatalogueTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/catalogue",
+            "Name": "catalogue",
+            "Memory": 1024
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "CatalogueService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "CatalogueTask"
+        }
+      }
+    },
+    "FrontEndTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/front-end",
+            "Name": "front-end",
+            "Memory": 1024,
+            "PortMappings": [
+              {
+                "HostPort": 80,
+                "ContainerPort": 8079
+              }
+            ]
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "FrontEndService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": {
+          "Ref": "Scale"
+        },
+        "TaskDefinition": {
+          "Ref": "FrontEndTask"
+        }
+      }
+    },
+    "LoginTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/login",
+            "Name": "login",
+            "Memory": 1024
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "LoginService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "LoginTask"
+        }
+      }
+    },
+    "UserTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/user",
+            "Name": "user",
+            "Memory": 1024
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "UserService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "UserTask"
+        }
+      }
+    },
+    "UserDBTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/user-db",
+            "Name": "user-db",
+            "Memory": 512
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "UserDBService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "UserDBTask"
+        }
+      }
+    },
+    "OrdersDBTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "mongo",
+            "Name": "orders-db",
+            "Memory": 512
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "OrdersDBService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "OrdersDBTask"
+        }
+      }
+    },
+    "OrdersTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/orders",
+            "Name": "orders",
+            "Memory": 1024
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "OrdersService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "OrdersTask"
+        }
+      }
+    },
+    "PaymentTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/payment",
+            "Name": "payment",
+            "Memory": 1024
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "PaymentService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "PaymentTask"
+        }
+      }
+    },
+    "QueueMasterTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/queue-master",
+            "Name": "queue-master",
+            "Memory": 512,
+            "MountPoints": [
+              {
+                "ContainerPath": "/var/run/docker.sock",
+                "SourceVolume": "VarRunDocker_Sock"
+              }
+            ]
+          }
+        ],
+        "Volumes": [
+          {
+            "Host": {
+              "SourcePath": "/var/run/docker.sock"
+            },
+            "Name": "VarRunDocker_Sock"
+          }
+        ]
+      }
+    },
+    "QueueMasterService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "QueueMasterTask"
+        }
+      }
+    },
+    "RabbitMQTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "rabbitmq:3",
+            "Name": "rabbitmq",
+            "Memory": 512
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "RabbitMQService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "RabbitMQTask"
+        }
+      }
+    },
+    "ShippingTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/shipping",
+            "Name": "shipping",
+            "Memory": 1024
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "ShippingService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "ShippingTask"
+        }
+      }
+    },
+    "Vpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": {
+          "Fn::FindInMap": [
+            "VpcCidrs",
+            "vpc",
+            "cidr"
+          ]
+        }
+      }
+    },
+    "PubSubnetAz1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": {
+          "Fn::FindInMap": [
+            "VpcCidrs",
+            "pubsubnet1",
+            "cidr"
+          ]
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            "0",
+            {
+              "Fn::GetAZs": {
+                "Ref": "AWS::Region"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "PubSubnetAz2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": {
+          "Fn::FindInMap": [
+            "VpcCidrs",
+            "pubsubnet2",
+            "cidr"
+          ]
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            "1",
+            {
+              "Fn::GetAZs": {
+                "Ref": "AWS::Region"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "InternetGateway": {
+      "Type": "AWS::EC2::InternetGateway"
+    },
+    "AttachGateway": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "InternetGatewayId": {
+          "Ref": "InternetGateway"
+        }
+      }
+    },
+    "RouteViaIgw": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        }
+      }
+    },
+    "PublicRouteViaIgw": {
+      "DependsOn": "AttachGateway",
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "RouteViaIgw"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "InternetGateway"
+        }
+      }
+    },
+    "PubSubnet1RouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PubSubnetAz1"
+        },
+        "RouteTableId": {
+          "Ref": "RouteViaIgw"
+        }
+      }
+    },
+    "PubSubnet2RouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PubSubnetAz2"
+        },
+        "RouteTableId": {
+          "Ref": "RouteViaIgw"
+        }
+      }
+    },
+    "EcsSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "ECS Allowed Ports",
+        "VpcId": {
+          "Ref": "Vpc"
+        }
+      }
+    },
+    "EcsSecurityGroupIngressAppPort": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EcsSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "80",
+        "ToPort": "80",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "EcsSecurityGroupIngressSshPort": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EcsSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "EcsSecurityGroupIngressWeaveScopeExtPort": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EcsSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "4040",
+        "ToPort": "4040",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "EcsSecurityGroupIngressWeaveScopeIntPort": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EcsSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "4040",
+        "ToPort": "4040",
+        "SourceSecurityGroupId": {
+          "Ref": "EcsSecurityGroup"
+        }
+      }
+    },
+    "EcsSecurityGroupIngressWeaveNetIntTcpPort": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EcsSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "6783",
+        "ToPort": "6783",
+        "SourceSecurityGroupId": {
+          "Ref": "EcsSecurityGroup"
+        }
+      }
+    },
+    "EcsSecurityGroupIngressWeaveNetIntUdpPorts": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EcsSecurityGroup"
+        },
+        "IpProtocol": "udp",
+        "FromPort": "6783",
+        "ToPort": "6784",
+        "SourceSecurityGroupId": {
+          "Ref": "EcsSecurityGroup"
+        }
+      }
+    },
+    "EcsInstancePolicy": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+        ],
+        "Policies": [
+          {
+            "PolicyName": "ClusterInstanceRole",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ecs:CreateCluster",
+                    "ecs:DeregisterContainerInstance",
+                    "ecs:DiscoverPollEndpoint",
+                    "ecs:Poll",
+                    "ecs:RegisterContainerInstance",
+                    "ecs:Submit*",
+                    "ecs:ListClusters",
+                    "ecs:ListContainerInstances",
+                    "ecs:DescribeContainerInstances",
+                    "ec2:DescribeInstances",
+                    "ec2:DescribeTags",
+                    "autoscaling:DescribeAutoScalingInstances"
+                  ],
+                  "Resource": [
+                    "*"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "EcsInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "EcsInstancePolicy"
+          }
+        ]
+      }
+    },
+    "EcsInstanceLc": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "ImageId": {
+          "Fn::FindInMap": [
+            "WeaveworksEcsAmiIds",
+            {
+              "Ref": "AWS::Region"
+            },
+            "ImageId"
+          ]
+        },
+        "InstanceType": {
+          "Ref": "EcsInstanceType"
+        },
+        "AssociatePublicIpAddress": true,
+        "IamInstanceProfile": {
+          "Ref": "EcsInstanceProfile"
+        },
+        "KeyName": {
+          "Ref": "KeyName"
+        },
+        "SecurityGroups": [
+          {
+            "Ref": "EcsSecurityGroup"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "\n",
+              [
+                "#!/bin/bash -ex",
+                "yum install -y aws-cfn-bootstrap",
+                {
+                  "Fn::Join": [
+                    " ",
+                    [
+                      "/opt/aws/bin/cfn-init",
+                      "--verbose",
+                      "--stack",
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "--region",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "--resource",
+                      "EcsInstanceLc"
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Init": {
+          "config": {
+            "packages": {
+              "yum": {
+                "jq": []
+              },
+              "python": {
+                "awscli": []
+              }
+            },
+            "files": {
+              "/etc/ecs/ecs.config": {
+                "content": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "ECS_CLUSTER=",
+                      {
+                        "Ref": "EcsCluster"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "/etc/weave/scope.config": {
+                "content": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::If": [
+                          "UseWeaveScopeStandalone",
+                          "## SERVICE_TOKEN=",
+                          "SERVICE_TOKEN="
+                        ]
+                      },
+                      {
+                        "Fn::If": [
+                          "UseWeaveScopeStandalone",
+                          "<unset>",
+                          {
+                            "Ref": "WeaveCloudServiceToken"
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              },
+              "/etc/init/ecs.override": {
+                "source": "https://raw.github.com/weaveworks/integrations/master/aws/ecs/packer/to-upload/ecs.override"
+              },
+              "/etc/init/weave.conf": {
+                "source": "https://raw.github.com/weaveworks/integrations/master/aws/ecs/packer/to-upload/weave.conf"
+              },
+              "/etc/init/scope.conf": {
+                "source": "https://raw.github.com/weaveworks/integrations/master/aws/ecs/packer/to-upload/scope.conf"
+              },
+              "/etc/weave/run.sh": {
+                "source": "https://raw.github.com/weaveworks/integrations/master/aws/ecs/packer/to-upload/run.sh",
+                "mode": "000755"
+              },
+              "/etc/weave/peers.sh": {
+                "source": "https://raw.github.com/weaveworks/integrations/master/aws/ecs/packer/to-upload/peers.sh",
+                "mode": "000755"
+              },
+              "/usr/local/bin/weave": {
+                "source": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "https://github.com/weaveworks/weave/releases/download",
+                      "v1.6.1",
+                      "weave"
+                    ]
+                  ]
+                },
+                "mode": "000755"
+              },
+              "/usr/local/bin/scope": {
+                "source": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "https://github.com/weaveworks/scope/releases/download",
+                      "v0.17.1",
+                      "scope"
+                    ]
+                  ]
+                },
+                "mode": "000755"
+              }
+            }
+          }
+        }
+      }
+    },
+    "EcsInstanceAsg": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "VPCZoneIdentifier": [
+          {
+            "Fn::Join": [
+              ",",
+              [
+                {
+                  "Ref": "PubSubnetAz1"
+                },
+                {
+                  "Ref": "PubSubnetAz2"
+                }
+              ]
+            ]
+          }
+        ],
+        "LaunchConfigurationName": {
+          "Ref": "EcsInstanceLc"
+        },
+        "MinSize": "1",
+        "MaxSize": {
+          "Ref": "Scale"
+        },
+        "DesiredCapacity": {
+          "Ref": "Scale"
+        },
+        "LoadBalancerNames": [
+          {
+            "Ref": "EcsFrontendElasticLoadBalancing"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "ECS Instance - ",
+                  {
+                    "Ref": "AWS::StackName"
+                  }
+                ]
+              ]
+            },
+            "PropagateAtLaunch": "true"
+          }
+        ]
+      }
+    },
+    "EcsFrontendElasticLoadBalancing": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "DependsOn": "InternetGateway",
+      "Properties": {
+        "Listeners": [
+          {
+            "Fn::If": [
+              "DoDeployExampleApp",
+              {
+                "InstancePort": "80",
+                "LoadBalancerPort": "80",
+                "InstanceProtocol": "HTTP",
+                "Protocol": "HTTP"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          },
+          {
+            "Fn::If": [
+              "UseWeaveScopeStandalone",
+              {
+                "InstancePort": "4040",
+                "LoadBalancerPort": "4040",
+                "InstanceProtocol": "TCP",
+                "Protocol": "TCP"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "Ref": "EcsSecurityGroup"
+          }
+        ],
+        "Subnets": [
+          {
+            "Ref": "PubSubnetAz1"
+          },
+          {
+            "Ref": "PubSubnetAz2"
+          }
+        ]
+      }
+    }
+  }
+}
