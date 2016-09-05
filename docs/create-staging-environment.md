@@ -134,6 +134,12 @@ Alternatively, use this regex command:
 sudo perl -pi -e 's/--babysit-daemons=true +\"/--babysit-daemons=true --network-plugin=cni --network-plugin-dir=\/etc\/cni\/net.d\"/g' /etc/sysconfig/kubelet
 ```
 
+Due to [this bug](https://github.com/kubernetes/kubernetes/issues/30681), we also need to install the cni plugins:
+
+```
+wget https://github.com/containernetworking/cni/releases/download/v0.3.0/cni-v0.3.0.tgz && sudo tar xvf cni-v0.3.0.tgz -C /opt/cni/bin/
+```
+
 Finally, we need to restart k8s to use cni. This will kill and restart all applications, system and user. Make sure this is ok first.
 
 ```
