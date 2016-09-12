@@ -50,7 +50,7 @@ debug=false
 args=()
 cpu=0.3
 mem=1024
-tag="05614ae5523257ab04a1bf767e3ec8ff74c08e3e"
+tag="latest"
 
 # Logging
 # -----------------------------------
@@ -421,7 +421,7 @@ do_start() {
 
     wait_task_running "edge-router"
 
-    launch_service accounts-db  "echo ok"                                       weaveworksdemos/accounts-db-test:$tag   --no-shell
+    launch_service user-db      "echo ok"                                       weaveworksdemos/user-db:$tag        --no-shell
     launch_service cart-db      "echo ok"                                       mongo                               --no-shell
     launch_service orders-db    "echo ok"                                       mongo                               --no-shell
     launch_service catalogue-db "echo ok"                                       mysql                               --no-shell
@@ -429,10 +429,9 @@ do_start() {
     launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$tag       --shell
     launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$tag         --shell
     launch_service catalogue    "/app -port=80"                                       weaveworksdemos/catalogue:$tag      --no-shell
-    launch_service accounts     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=accounts-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/accounts:$tag       --shell
     launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=cart-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/cart:$tag           --shell
     launch_service payment      "/app -port=80"                                       weaveworksdemos/payment:$tag        --no-shell
-    launch_service login        "/app -port=80 -domain=mesos-executeinstance.weave.local"   weaveworksdemos/login:$tag      --shell
+    launch_service user        "echo ok"   weaveworksdemos/user:$tag      --no-shell
     launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$tag --shell
 }
 
