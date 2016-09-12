@@ -217,7 +217,7 @@ spec:
       - name: front-end
         image: weaveworksdemos/front-end
         resources:
-          requests:
+          limits:
             cpu: 100m
             memory: 100Mi
         ports:
@@ -236,7 +236,21 @@ spec:
     targetPort: 8079
   selector:
     name: front-end
----  
+---
+apiVersion: extensions/v1beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: front-end
+spec:
+  scaleRef:
+    kind: Deployment
+    name: front-end
+    subresource: scale
+  minReplicas: 1
+  maxReplicas: 10
+  cpuUtilization:
+    targetPercentage: 70
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
