@@ -5,18 +5,18 @@
       "id": "/weave-demo/database",
       "apps": [
         {
-          "id": "/weave-demo/database/accounts-db",
+          "id": "/weave-demo/database/user-db",
           "cpus": 0.1,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "weaveworksdemos/accounts-db-test",
+              "image": "weaveworksdemos/user-db",
               "network": "BRIDGE",
               "parameters": [
                 {
                   "key": "hostname",
-                  "value": "accounts-db.weave.local"
+                  "value": "user-db.weave.local"
                 }
               ]
             }
@@ -74,6 +74,9 @@
                 }
               ]
             }
+          },
+          "env": {
+            "MYSQL_ROOT_PASSWORD": "fake_password"
           }
         }
       ]
@@ -85,18 +88,18 @@
       ],
       "apps": [
         {
-          "id": "/weave-demo/service/accounts",
+          "id": "/weave-demo/service/user",
           "cpus": 0.5,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "weaveworksdemos/accounts:snapshot",
+              "image": "weaveworksdemos/user:snapshot",
               "network": "BRIDGE",
               "parameters": [
                 {
                   "key": "hostname",
-                  "value": "accounts.weave.local"
+                  "value": "user.weave.local"
                 }
               ]
             }
