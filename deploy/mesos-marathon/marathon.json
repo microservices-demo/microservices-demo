@@ -94,7 +94,7 @@
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "weaveworksdemos/user:snapshot",
+              "image": "weaveworksdemos/user:latest",
               "network": "BRIDGE",
               "parameters": [
                 {
@@ -112,7 +112,7 @@
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "weaveworksdemos/cart:snapshot",
+              "image": "weaveworksdemos/cart:latest",
               "network": "BRIDGE",
               "parameters": [
                 {
@@ -130,7 +130,7 @@
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "weaveworksdemos/orders:snapshot",
+              "image": "weaveworksdemos/orders:latest",
               "network": "BRIDGE",
               "parameters": [
                 {
@@ -148,7 +148,7 @@
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "weaveworksdemos/payment:snapshot",
+              "image": "weaveworksdemos/payment:latest",
               "network": "BRIDGE",
               "parameters": [
                 {
@@ -166,7 +166,7 @@
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "weaveworksdemos/shipping:snapshot",
+              "image": "weaveworksdemos/shipping:latest",
               "network": "BRIDGE",
               "parameters": [
                 {
@@ -184,7 +184,7 @@
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "weaveworksdemos/catalogue:snapshot",
+              "image": "weaveworksdemos/catalogue:latest",
               "network": "BRIDGE",
               "parameters": [
                 {
@@ -211,7 +211,7 @@
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "weaveworksdemos/front-end:snapshot",
+              "image": "weaveworksdemos/front-end:latest",
               "network": "BRIDGE",
               "parameters": [
                 {
@@ -245,7 +245,7 @@
           ],
           "container": {
             "docker": {
-              "image": "weaveworksdemos/edge-router:snapshot",
+              "image": "weaveworksdemos/edge-router:latest",
               "network": "BRIDGE",
               "portMappings": [
                 {
