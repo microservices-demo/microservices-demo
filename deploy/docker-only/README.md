@@ -11,7 +11,6 @@ DNS is achieved by using the internal Docker DNS, which reads network alias entr
 
 ## Install & run
 
-    curl -L https://raw.githubusercontent.com/microservices-demo/microservices-demo/master/deploy/docker-only/docker-compose.yml -o docker-compose.yml
     docker-compose up -d
 
 ## Launch Weave Scope or Weave Cloud
