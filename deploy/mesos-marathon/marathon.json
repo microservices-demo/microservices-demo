@@ -160,24 +160,6 @@
           }
         },
         {
-          "id": "/weave-demo/service/login",
-          "cpus": 0.1,
-          "mem": 128.0,
-          "container": {
-            "type": "DOCKER",
-            "docker": {
-              "image": "weaveworksdemos/login:snapshot",
-              "network": "BRIDGE",
-              "parameters": [
-                {
-                  "key": "hostname",
-                  "value": "login.weave.local"
-                }
-              ]
-            }
-          }
-        },
-        {
           "id": "/weave-demo/service/shipping",
           "cpus": 0.5,
           "mem": 1024.0,
