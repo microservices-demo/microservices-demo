@@ -1,0 +1,19 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shipping
+  labels:
+    name: shipping
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: shipping
+    spec:
+      containers:
+      - name: shipping
+        image: weaveworksdemos/shipping
+        ports:
+        - containerPort: 80

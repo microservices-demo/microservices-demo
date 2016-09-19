@@ -1,0 +1,21 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: user-db
+  labels:
+    name: user-db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: user-db
+    spec:
+      containers:
+      - name: user-db
+        image: weaveworksdemos/user-db
+
+        ports:
+        - name: mongo
+          containerPort: 27017
