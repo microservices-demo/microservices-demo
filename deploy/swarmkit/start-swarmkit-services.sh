@@ -20,15 +20,14 @@ cleanup_services() {
     docker service rm front-end
     docker service rm catalogue
     docker service rm catalogue-db
-    docker service rm accounts
-    docker service rm accounts-db
+    docker service rm user
+    docker service rm user-db
     docker service rm cart
     docker service rm cart-db
     docker service rm orders
     docker service rm orders-db
     docker service rm shipping
     docker service rm payment
-    docker service rm login
 }
 
 if ! command_exists "docker" ; then
@@ -72,18 +71,18 @@ docker service create \
        mysql
 exit_on_failure
 
-echo "Creating accounts service"
+echo "Creating user service"
 docker service create \
-       --name accounts \
+       --name user \
        --network ingress \
-       --env "reschedule=on-node-failure" weaveworksdemos/accounts:latest
+       --env "reschedule=on-node-failure" weaveworksdemos/user:latest
 exit_on_failure
 
-echo "Creating accounts-db service"
+echo "Creating user-db service"
 docker service create \
-       --name accounts-db \
+       --name user-db \
        --network ingress \
-       --env "reschedule=on-node-failure" weaveworksdemos/accounts-db-test:latest
+       --env "reschedule=on-node-failure" weaveworksdemos/user-db:latest
 exit_on_failure
 
 
@@ -129,11 +128,4 @@ docker service create \
        --name payment \
        --network ingress \
        --env "reschedule=on-node-failure" weaveworksdemos/payment:latest
-exit_on_failure
-
-echo "Creating login service"
-docker service create \
-       --name login \
-       --network ingress \
-       --env "reschedule=on-node-failure" weaveworksdemos/login:latest
 exit_on_failure
