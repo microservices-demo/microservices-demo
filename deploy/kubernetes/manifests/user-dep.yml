@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user
+        image: weaveworksdemos/user:0.2.0
         ports:
         - containerPort: 80
         env:
