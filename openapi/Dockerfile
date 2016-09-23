@@ -1,6 +1,6 @@
 FROM mhart/alpine-node:6.3
 
-ENV NODE_ENV "production"
+ENV NODE_ENV "development"
 ENV NODE_PATH "/usr/src/app/node_modules"
 
 # Install base dependencies
