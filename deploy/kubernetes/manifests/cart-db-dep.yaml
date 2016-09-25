@@ -1,0 +1,20 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cart-db
+  labels:
+    name: cart-db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: cart-db
+    spec:
+      containers:
+      - name: cart-db
+        image: mongo
+        ports:
+        - name: mongo
+          containerPort: 27017
