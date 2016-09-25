@@ -424,7 +424,7 @@ do_start() {
     launch_service accounts-db  "echo ok"                                       weaveworksdemos/accounts-db-test:$tag   --no-shell
     launch_service cart-db      "echo ok"                                       mongo                               --no-shell
     launch_service orders-db    "echo ok"                                       mongo                               --no-shell
-    launch_service catalogue-db "echo ok"                                       mysql                               --no-shell
+    launch_service catalogue-db "echo ok"                                       weaveworksdemos/catalogue-db        --no-shell
 
     launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$tag       --shell
     launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$tag         --shell

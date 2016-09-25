@@ -190,7 +190,7 @@ job "weavedemo" {
       driver = "docker"
 
       config {
-        image = "mysql"
+        image = "weaveworksdemos/catalogue-db"
         hostname = "catalogue-db.weave.local"
         network_mode = "external"
       }

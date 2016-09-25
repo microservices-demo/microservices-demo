@@ -68,7 +68,8 @@ docker service create \
         --env "reschedule=on-node-failure" \
         --env "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}" \
         --env "MYSQL_DATABASE=socksdb" \
-       mysql
+        --env "MYSQL_ALLOW_EMPTY_PASSWORD=true" \
+       weaveworksdemos/catalogue-db
 exit_on_failure
 
 echo "Creating user service"
