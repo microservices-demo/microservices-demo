@@ -5,6 +5,8 @@ metadata:
   name: orders
   labels:
     name: orders
+  annotations:
+    prometheus.io.path: "/prometheus"
 spec:
   ports:
     # the port that this service should serve on
