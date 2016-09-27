@@ -36,7 +36,7 @@ services:
     networks:
       - external
   catalogue-db:
-    image: mysql
+    image: weaveworksdemos/catalogue-db
     hostname: catalogue-db
     dns: 172.17.0.1
     dns_search: weave.local

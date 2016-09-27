@@ -22,7 +22,7 @@ services:
     environment:
       - reschedule:on-node-failure
   catalogue-db:
-    image: mysql
+    image: weaveworksdemos/catalogue-db
     hostname: catalogue-db
     restart: always
     environment:
