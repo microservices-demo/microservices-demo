@@ -1,0 +1,19 @@
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: cart-db-access
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      name: cart-db
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: cart
+      ports:
+        - protocol: TCP
+          port: 27017
+
