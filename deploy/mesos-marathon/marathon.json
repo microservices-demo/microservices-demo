@@ -65,7 +65,7 @@
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "mysql",
+              "image": "weaveworksdemos/catalogue-db",
               "network": "BRIDGE",
               "parameters": [
                 {
