@@ -1,0 +1,14 @@
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: prism-access
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: prism
