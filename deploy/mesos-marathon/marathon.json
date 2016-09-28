@@ -76,7 +76,8 @@
             }
           },
           "env": {
-            "MYSQL_ROOT_PASSWORD": "fake_password"
+            "MYSQL_ROOT_PASSWORD": "fake_password",
+            "MYSQL_DATABASE": "socksdb"
           }
         }
       ]
