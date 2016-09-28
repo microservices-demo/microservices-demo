@@ -18,6 +18,8 @@ spec:
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password
+          - name: MYSQL_DATABASE
+            value: socksdb
         ports:
         - name: mysql
           containerPort: 3306
