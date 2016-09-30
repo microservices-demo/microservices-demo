@@ -1,0 +1,21 @@
+{
+  "id": "/weave-demo/service/payment",
+  "cpus": 0.1,
+  "mem": 128.0,
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "weaveworksdemos/payment:latest",
+      "network": "BRIDGE",
+      "parameters": [
+        {
+          "key": "hostname",
+          "value": "payment.weave.local"
+        }
+      ]
+    }
+  },
+  "ipAddress": {
+    "networkName": "weave"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "/weave-demo/database/cart-db",
+  "cpus": 0.1,
+  "mem": 1024.0,
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "mongo",
+      "parameters": [
+        {
+          "key": "hostname",
+          "value": "cart-db.weave.local"
+        }
+      ]
+    }
+  },
+  "ipAddress": {
+    "networkName": "weave"
+  }
+}

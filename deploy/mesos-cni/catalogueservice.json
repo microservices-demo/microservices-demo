@@ -1,0 +1,20 @@
+{
+  "id": "/weave-demo/service/catalogue",
+  "cpus": 0.1,
+  "mem": 256.0,
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "weaveworksdemos/catalogue:latest",
+      "parameters": [
+        {
+          "key": "hostname",
+          "value": "catalogue.weave.local"
+        }
+      ]
+    }
+  },
+  "ipAddress": {
+    "networkName": "weave"
+  }
+}
