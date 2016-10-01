@@ -310,6 +310,44 @@
         }
       }
     },
+    "CatalogueDBTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/catalogue-db",
+            "Name": "catalogue-db",
+            "Memory": 512,
+            "Environment": [
+              {
+                "Name": "MYSQL_ROOT_PASSWORD",
+                "Value": "fake_password"
+              },
+              {
+                "Name": "MYSQL_DATABASE",
+                "Value": "socksdb"
+              }
+            ]
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "CatalogueDBService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "CatalogueDBTask"
+        }
+      }
+    },
     "FrontEndTask": {
       "Condition": "DoDeployExampleApp",
       "Type": "AWS::ECS::TaskDefinition",
