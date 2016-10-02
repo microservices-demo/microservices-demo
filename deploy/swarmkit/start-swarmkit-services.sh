@@ -14,12 +14,13 @@ set -o pipefail
 function usage() {
     echo "usage: $(basename $0) [cleanup]"
     echo "  The cleanup option will remove previously launched services"
+}
 
-command_exists() {
+function command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
-cleanup_services() {
+function cleanup_services() {
     for srvc in front-end catalogue catalogue-db user user-db cart cart-db orders orders-db shipping payment
     do
       docker service rm $srvc
