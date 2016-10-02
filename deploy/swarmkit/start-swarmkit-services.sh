@@ -2,10 +2,18 @@
 set -e
 set -o pipefail
 
+# This script launches the socks-shop application on a Docker Swarm cluster.
+# It assumes that it is being run on a machine with with access to the Docker
+# binary and that the cluster is running in Swarm mode.
+#
+# Note that this script is for the new Docker Swarm functionality released with
+# Docker 1.12, sometimes referred to as Swarmkit. It will not run on earlier
+# versions of Docker or clusters uses the previous Swarm functionality.
+
+
 function usage() {
     echo "usage: $(basename $0) [cleanup]"
-    echo "  When cleanup option is provided, the script will remove previously initiated services"
-}
+    echo "  The cleanup option will remove previously launched services"
 
 command_exists() {
     command -v "$@" > /dev/null 2>&1
@@ -19,6 +27,11 @@ cleanup_services() {
 
 }
 
+if [ "$1" == "help" ]; then 
+    usage
+    exit 0
+fi
+
 if ! command_exists "docker" ; then
     echo "Please ensure that docker command is on the \$PATH"
     exit 1
@@ -30,10 +43,6 @@ if [ "$1" == "cleanup" ]; then
     exit 0;
 fi
 
-if [ "$1" == "help" ]; then 
-    usage
-    exit 0
-fi
 
 echo "Creating front-end service"
 docker service create \
@@ -54,7 +63,7 @@ docker service create \
         --env "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}" \
         --env "MYSQL_DATABASE=socksdb" \
         --env "MYSQL_ALLOW_EMPTY_PASSWORD=true" \
-       weaveworksdemos/catalogue-db
+       weaveworksdemos/catalogue-db:latest
 
 echo "Creating user service"
 docker service create \
@@ -80,7 +89,7 @@ echo "Creating cart-db service"
 docker service create \
        --name cart-db \
        --network ingress \
-       mongo
+       mongo:3.2
 
 
 echo "Creating orders service"
@@ -93,7 +102,7 @@ echo "Creating orders-db service"
 docker service create \
        --name orders-db \
        --network ingress \
-       mongo
+       mongo:3.2
 
 echo "Creating shipping service"
 docker service create \
