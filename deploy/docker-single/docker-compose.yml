@@ -8,7 +8,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - external
       - secure
@@ -22,7 +22,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - external
   catalogue:
@@ -32,7 +32,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - external
   catalogue-db:
@@ -42,7 +42,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=socksdb
@@ -55,7 +55,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - internal
   cart-db:
@@ -65,7 +65,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - internal
   orders:
@@ -75,7 +75,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - internal
       - secure
@@ -87,7 +87,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - internal
   shipping:
@@ -97,7 +97,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - backoffice
   queue-master:
@@ -109,7 +109,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - backoffice
   rabbitmq:
@@ -119,7 +119,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - backoffice
   payment:
@@ -129,7 +129,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - secure
   user:
@@ -140,7 +140,7 @@ services:
     restart: always
     environment:
       - MONGO_HOST=user-db:27017
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - secure
   user-db:
@@ -150,7 +150,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
-      - reschedule:on-node-failure
+      - reschedule=on-node-failure
     networks:
       - secure
   user-sim:
