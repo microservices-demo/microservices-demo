@@ -6,13 +6,7 @@
     "type": "MESOS",
     "docker": {
       "image": "weaveworksdemos/payment:latest",
-      "network": "BRIDGE",
-      "parameters": [
-        {
-          "key": "hostname",
-          "value": "payment.weave.local"
-        }
-      ]
+      "network": "BRIDGE"
     }
   },
   "ipAddress": {

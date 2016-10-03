@@ -6,12 +6,6 @@
     "type": "MESOS",
     "docker": {
       "image": "mongo",
-      "parameters": [
-        {
-          "key": "hostname",
-          "value": "cart-db.weave.local"
-        }
-      ]
     }
   },
   "ipAddress": {

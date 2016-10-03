@@ -1,0 +1,15 @@
+{
+  "id": "/weave-demo/ui/front-end",
+  "cmd": "PORT=8079 ; npm start -- ",
+  "cpus": 0.5,
+  "mem": 1024.0,
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "weaveworksdemos/front-end:latest"
+    }
+  },
+  "ipAddress": {
+    "networkName": "weave"
+  }
+}

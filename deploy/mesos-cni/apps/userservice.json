@@ -1,0 +1,14 @@
+{
+  "id": "/weave-demo/service/user",
+  "cpus": 0.5,
+  "mem": 1024.0,
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "weaveworksdemos/user:latest"
+    }
+  },
+  "ipAddress": {
+    "networkName": "weave"
+  }
+}

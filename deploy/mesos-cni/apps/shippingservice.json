@@ -5,13 +5,7 @@
   "container": {
     "type": "MESOS",
     "docker": {
-      "image": "weaveworksdemos/shipping:latest",
-      "parameters": [
-        {
-          "key": "hostname",
-          "value": "shipping.weave.local"
-        }
-      ]
+      "image": "weaveworksdemos/shipping:latest"
     }
   },
   "ipAddress": {

@@ -5,13 +5,7 @@
     "container": {
       "type": "MESOS",
       "docker": {
-        "image": "weaveworksdemos/front-end:latest",
-        "parameters": [
-          {
-            "key": "hostname",
-            "value": "front-end.weave.local"
-          }
-        ]
+        "image": "weaveworksdemos/front-end:latest"
       }
     },
     "ipAddress": {

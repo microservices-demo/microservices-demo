@@ -5,13 +5,7 @@
   "container": {
     "type": "MESOS",
     "docker": {
-      "image": "mongo",
-      "parameters": [
-        {
-          "key": "hostname",
-          "value": "orders-db.weave.local"
-        }
-      ]
+      "image": "mongo"
     }
   },
   "ipAddress": {

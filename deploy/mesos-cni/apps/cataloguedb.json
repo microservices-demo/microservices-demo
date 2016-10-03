@@ -5,13 +5,7 @@
   "container": {
     "type": "MESOS",
     "docker": {
-      "image": "weaveworksdemos/catalogue-db",
-      "parameters": [
-        {
-          "key": "hostname",
-          "value": "catalogue-db-db.weave.local"
-        }
-      ]
+      "image": "weaveworksdemos/catalogue-db"
     }
   },
   "env": {
