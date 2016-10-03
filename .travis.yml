@@ -1,35 +1,67 @@
 language: java
 sudo: required
-services:
-- docker
-jdk:
-- oraclejdk8
+services: [ docker ]
+
+jdk: [ oraclejdk8 ]
+
+env:
+  global:
+  - PATH="${PATH}:${HOME}/.local/bin" AWS_DEFAULT_REGION="eu-central-1"
+
+install:
+- pip install --user awscli
+
 script:
-- "echo skip"
+- set -o pipefail
+- aws cloudformation validate-template --template-body "file:////${PWD}/deploy/aws-ecs/cloudformation.json" | jq .
+
 after_success:
-  - export GROUP=weaveworksdemos
-  - if [ -z "$DOCKER_PASS" ] ; then
-      echo "This is a build triggered by an external PR. Skipping docker push.";
-      exit 0;
+- export GROUP=weaveworksdemos
+- if [ -z "$DOCKER_PASS" ] ; then
+    echo "This is a build triggered by an external PR. Skipping docker push.";
+    exit 0;
+  fi;
+- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+- export REPO=${GROUP}/$(basename openapi); # build openapi testing image
+- echo "Building ${REPO}:$TRAVIS_COMMIT";
+- docker build -t ${REPO}:$TRAVIS_COMMIT ./openapi; DOCKER_EXIT=$(echo $?); if [[ "$DOCKER_EXIT" > 0 ]] ; then
+    echo "Docker build failed with exit code $DOCKER_EXIT";
+    exit 1;
+  fi;
+- export DOCKER_PUSH=1;
+- while [ "$DOCKER_PUSH" -gt 0 ] ; do
+    echo "Pushing $REPO:$TRAVIS_COMMIT";
+    docker push $REPO:$TRAVIS_COMMIT;
+    DOCKER_PUSH=$(echo $?);
+    if [[ "$DOCKER_PUSH" -gt 0 ]] ; then
+      echo "Docker push failed with exit code $DOCKER_PUSH";
     fi;
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - export REPO=${GROUP}/$(basename openapi); # build openapi testing image
-  - echo "Building ${REPO}:$TRAVIS_COMMIT";
-  - docker build -t ${REPO}:$TRAVIS_COMMIT ./openapi; DOCKER_EXIT=$(echo $?); if [[ "$DOCKER_EXIT" > 0 ]] ; then
-      echo "Docker build failed with exit code $DOCKER_EXIT";
-      exit 1;
-    fi;
-  - export DOCKER_PUSH=1;
-  - while [ "$DOCKER_PUSH" -gt 0 ] ; do
-      echo "Pushing $REPO:$TRAVIS_COMMIT";
-      docker push $REPO:$TRAVIS_COMMIT;
-      DOCKER_PUSH=$(echo $?);
-      if [[ "$DOCKER_PUSH" -gt 0 ]] ; then
-        echo "Docker push failed with exit code $DOCKER_PUSH";
-      fi;
-    done;
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:snapshot; echo "Pushing $REPO:snapshot"; docker push $REPO:snapshot; fi;
-  - if [ ! -z "$TRAVIS_TAG" ]; then docker tag $REPO:$TRAVIS_COMMIT $REPO:$TRAVIS_TAG; docker push $REPO:$TRAVIS_TAG; docker tag $REPO:$TRAVIS_COMMIT $REPO:latest; docker push $REPO:latest; fi;
+  done;
+- if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker tag $REPO:$TRAVIS_COMMIT $REPO:snapshot;
+    echo "Pushing $REPO:snapshot";
+    docker push $REPO:snapshot;
+  fi;
+- if [ ! -z "$TRAVIS_TAG" ];
+    then docker tag $REPO:$TRAVIS_COMMIT $REPO:$TRAVIS_TAG;
+    docker push $REPO:$TRAVIS_TAG;
+    docker tag $REPO:$TRAVIS_COMMIT $REPO:latest;
+    docker push $REPO:latest;
+  fi;
+- mkdir cfn-to-publish
+- jq ".Description += \" (microservices-demo/microservices-demo@${TRAVIS_COMMIT})\"" "deploy/aws-ecs/cloudformation.json" > cfn-to-publish/microservices-demo.json
+
+deploy:
+  provider: s3
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  bucket: weaveworks-cfn-public
+  skip_cleanup: true
+  local_dir: cfn-to-publish
+  upload_dir: microservices-demo
+  acl: public_read
+  on:
+    branch: master
 
 notifications:
   slack:
