@@ -9,7 +9,7 @@ is powered by the Weave Net CNI plugin.
 |---------------|---------------|---------|
 | Apache Mesos  | 1.0.1         | Configure the Weave Net CNI plugin. See http://mesos.apache.org/documentation/latest/cni/ |
 | Marathon      | 1.3.0         | None        |
-| Docker        | 1.11.2        | Version 1.12.1 does not work in conjunction with Mesos 1.0.1. See 'caveats' below |
+| Docker        | 1.11.2        | Version 1.12.1 does not work in conjunction with Mesos 1.0.1. See [Caveats](#caveats) |
 | Weave Net     | 1.7.0         | See `provisionMesosDns.sh` script. Weave Net DNS does not work with CNI so run with `--no-dns` |
 | Mesos DNS     | 0.5.2         | See `provisionWeaveCNI.sh` script |
 | Local machine |               | Install `curl` to deploy to Marathon |
