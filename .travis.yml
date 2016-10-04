@@ -13,7 +13,7 @@ install:
 
 script:
 - set -o pipefail
-- if [ -z "$AWS_ACCESS_KEY" ];
+- if [ -z "$AWS_ACCESS_KEY" ]; then
 -   echo "This is probably a PR, do not validate the CloudFormation"
 - else
 -   aws cloudformation validate-template --template-body "file:////${PWD}/deploy/aws-ecs/cloudformation.json" | jq .
