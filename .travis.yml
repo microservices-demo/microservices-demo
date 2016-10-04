@@ -14,7 +14,7 @@ install:
 script:
 - set -o pipefail
 - if [ ! -z "$AWS_ACCESS_KEY" ]; then
-    aws cloudformation validate-template --template-body "file:////${PWD}/deploy/aws-ecs/cloudformation.json" | jq .
+    aws cloudformation validate-template --template-body "file:////${PWD}/deploy/aws-ecs/cloudformation.json" | jq . ;
   fi;
 
 after_success:
