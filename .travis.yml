@@ -13,7 +13,11 @@ install:
 
 script:
 - set -o pipefail
-- aws cloudformation validate-template --template-body "file:////${PWD}/deploy/aws-ecs/cloudformation.json" | jq .
+- if [ -z "$AWS_ACCESS_KEY" ];
+-   echo "This is probably a PR, do not validate the CloudFormation"
+- else
+-   aws cloudformation validate-template --template-body "file:////${PWD}/deploy/aws-ecs/cloudformation.json" | jq .
+- fi
 
 after_success:
 - export GROUP=weaveworksdemos
