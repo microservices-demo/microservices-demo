@@ -5,6 +5,7 @@ metadata:
   name: catalogue
   labels:
     name: catalogue
+  namespace: sock-shop
 spec:
   replicas: 1
   template:

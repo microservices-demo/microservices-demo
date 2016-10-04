@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: NetworkPolicy
 metadata:
   name: orders-access
-  namespace: default
+  namespace: sock-shop
 spec:
   podSelector:
     matchLabels:
