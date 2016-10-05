@@ -24,6 +24,11 @@ Test service as a container, with their external dependencies. Only test specifi
 - API
 - Use-case
 
+### Services integration
+
+Test service integration with another service.
+This lies between Container and Application testing specific integration parts.
+
 ### Application
 
 Verify that the applicatino works as a whole, on the intended platform. Items to test:
