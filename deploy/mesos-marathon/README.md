@@ -2,7 +2,7 @@
 
 These scripts will install the microservices demo on Apache Mesos using Marathon.
 
-## Caveates
+## Caveats
 - This is using a prerelease version of Mesos 1.0.0
 - This was developed on AWS. May not work on other services.
 

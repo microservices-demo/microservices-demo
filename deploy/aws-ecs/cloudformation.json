@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Weave-enabled AWS CloudFormation template to create resources required to run tasks on an ECS cluster.  This template uses a larger example app. (weaveworks/integrations@5e4195b1aca213fe8cfde720bdc5d0b4c6b6ea8f)",
+  "Description": "Weave-enabled AWS CloudFormation template to create resources required to run tasks on an ECS cluster.",
   "Outputs": {
     "AppFrontend": {
       "Condition": "DoDeployExampleApp",
@@ -55,28 +55,28 @@
     },
     "WeaveworksEcsAmiIds": {
       "us-east-1": {
-        "ImageId": "ami-52cd5445"
+        "ImageId": "ami-3d55272a"
       },
       "us-west-1": {
-        "ImageId": "ami-efa1e28f"
+        "ImageId": "ami-444d0224"
       },
       "us-west-2": {
-        "ImageId": "ami-a426edc4"
+        "ImageId": "ami-1ccd1f7c"
       },
       "eu-west-1": {
-        "ImageId": "ami-7b244e08"
+        "ImageId": "ami-b6760fc5"
       },
       "eu-central-1": {
-        "ImageId": "ami-721aec1d"
+        "ImageId": "ami-f562909a"
       },
       "ap-northeast-1": {
-        "ImageId": "ami-058a4964"
+        "ImageId": "ami-096cba68"
       },
       "ap-southeast-1": {
-        "ImageId": "ami-0d9f466e"
+        "ImageId": "ami-7934ee1a"
       },
       "ap-southeast-2": {
-        "ImageId": "ami-7df2c61e"
+        "ImageId": "ami-22a49541"
       }
     }
   },
@@ -307,6 +307,44 @@
         "DesiredCount": 1,
         "TaskDefinition": {
           "Ref": "CatalogueTask"
+        }
+      }
+    },
+    "CatalogueDBTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "weaveworksdemos/catalogue-db",
+            "Name": "catalogue-db",
+            "Memory": 512,
+            "Environment": [
+              {
+                "Name": "MYSQL_ROOT_PASSWORD",
+                "Value": "fake_password"
+              },
+              {
+                "Name": "MYSQL_DATABASE",
+                "Value": "socksdb"
+              }
+            ]
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "CatalogueDBService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "CatalogueDBTask"
         }
       }
     },
@@ -1014,7 +1052,7 @@
                     "/",
                     [
                       "https://github.com/weaveworks/weave/releases/download",
-                      "v1.6.1",
+                      "v1.6.2",
                       "weave"
                     ]
                   ]

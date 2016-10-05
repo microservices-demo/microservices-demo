@@ -1,0 +1,20 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cart
+  labels:
+    name: cart
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: cart
+    spec:
+      containers:
+      - name: cart
+        image: weaveworksdemos/cart
+        ports:
+        - containerPort: 80

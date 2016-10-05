@@ -1,0 +1,21 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: payment
+  labels:
+    name: payment
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: payment
+    spec:
+      containers:
+      - name: payment
+        # Image known to export Prometheus metrics
+        image: weaveworksdemos/payment:24ba473198306d763ecbffedf99a34cd02d908c5
+        ports:
+        - containerPort: 80
