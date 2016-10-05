@@ -5,6 +5,7 @@ metadata:
   name: payment
   labels:
     name: payment
+  namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on

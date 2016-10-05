@@ -2,7 +2,7 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: default
+  name: sock-shop
   annotations:
     net.beta.kubernetes.io/network-policy: |
       {

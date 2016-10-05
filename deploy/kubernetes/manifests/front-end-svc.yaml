@@ -5,6 +5,7 @@ metadata:
   name: front-end
   labels:
     name: front-end
+  namespace: sock-shop
 spec:
   type: NodePort
   ports:

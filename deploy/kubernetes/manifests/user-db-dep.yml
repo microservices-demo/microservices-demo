@@ -5,6 +5,7 @@ metadata:
   name: user-db
   labels:
     name: user-db
+  namespace: sock-shop
 spec:
   replicas: 1
   template:

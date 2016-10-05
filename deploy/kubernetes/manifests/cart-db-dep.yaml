@@ -5,6 +5,7 @@ metadata:
   name: cart-db
   labels:
     name: cart-db
+  namespace: sock-shop
 spec:
   replicas: 1
   template:
