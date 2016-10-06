@@ -1,0 +1,42 @@
+{
+  "variables": {
+    "aws_access_key": "{{env `AWS_ACCESS_KEY`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_KEY`}}",
+    "aws_region": "",
+    "aws_base_ami": "",
+    "ami_groups": ""
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "{{user `aws_region`}}",
+    "source_ami": "{{user `aws_base_ami`}}",
+    "instance_type": "t2.micro",
+    "ami_name": "Kubernetes 1.4 (Ubuntu 16.04 LTS {{isotime \"2006-01-02\"}})",
+    "ami_groups": "{{user `ami_groups`}}",
+    "communicator": "ssh",
+    "ssh_username": "ubuntu",
+    "ssh_file_transfer_method": "sftp",  
+    "ssh_pty": true
+  }],
+  "provisioners": [{
+    "type": "file",
+    "source": "./ubuntu-kubernetes.list",
+    "destination": "/home/ubuntu/kubernetes.list"
+    }, {
+    "type": "shell",
+    "inline": [
+      "sudo curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -",
+      "sudo cp kubernetes.list /etc/apt/sources.list.d/kubernetes.list",
+      "sudo chown root:root /etc/apt/sources.list.d/kubernetes.list",
+      "sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list",
+
+      "sudo apt-get update",
+      "sudo apt-get install -y docker.io kubelet kubeadm kubectl kubernetes-cni",
+
+      "sudo rm /root/.ssh/authorized_keys",
+      "sudo rm /home/ubuntu/.ssh/authorized_keys"
+    ]
+  }]
+}
