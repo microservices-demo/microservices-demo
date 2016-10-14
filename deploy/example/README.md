@@ -16,7 +16,7 @@ We first have to provision some instances.
 
 <!-- deploy-test-start create-infrastructure -->
 
-  gcloud instances create blah
+    gcloud instances create blah
 
 <!-- deploy-test-end -->
 
