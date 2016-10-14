@@ -12,31 +12,31 @@ We need to install some tools before we start:
 
 # Provision infrastucture
 
+We first have to provision some instances.
+
 <!-- deploy-test-start create-infrastructure -->
 
   gcloud instances create blah
 
 <!-- deploy-test-end -->
 
+Now you can play around with your cluster!
 
-
-<!-- now we can run the tests -->
-
-<!-- deploy-test-start run-tests --> 
+<!-- now we can run the tests, hidden from the end-user -->
+<!-- deploy-test-start run-tests 
   
     cd /path/of/tests;
     ./run_tests
-
-<!-- deploy-test-end -->
-
+-->
 
 
-# Cleaning upg
+
+# Cleaning up
 If you're done, clean up your cluster with these commands:
 
 <!-- deploy-test-start destroy-infrastructure -->
 
-  gcloud destroy blah
+    gcloud destroy blah
 
 <!-- deploy-test-end -->
 
