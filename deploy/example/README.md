@@ -27,7 +27,7 @@ We need to install some tools before we start:
     cd /path/of/tests;
     ./run_tests
 
-<!-- deployment-test-end -->
+<!-- deploy-test-end -->
 
 
 

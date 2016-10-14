@@ -1,6 +1,5 @@
-#!/usr/bin/env ruby 
-
-# Executable 
+#!/usr/bin/env ruby
+# Executable documentation
 
 # Valid syntax for deployment test annotations
 # Nesting is not supported.
@@ -18,14 +17,20 @@
 require 'pp'
 
 def main
-  puts DeploymentTestPlan.from_file("README.md").to_s
+  test_plan = DeploymentTestPlan.from_file("README.md")
+  puts test_plan.to_s
+  test_plan.execute!
 end
 
 
 class DeploymentTestPlan
   PHASES = ["pre-install", "create-infrastructure", "run-tests", "destroy-infrastructure"]
 
-  Step = Struct.new(:source_name, :line_span, :shell)
+  class Step < Struct.new(:source_name, :line_span, :shell)
+    def full_name
+      "#{source_name}:#{line_span.inspect}"
+    end
+  end
 
   def self.from_file(file)
     annotations = AnnotationParser.parse_file(file)
@@ -44,9 +49,9 @@ class DeploymentTestPlan
   end
 
 
-  def initialize(required_env_vars, scripts_in_phases)
+  def initialize(required_env_vars, steps_in_phases)
     @required_env_vars = required_env_vars
-    @scripts_in_phases = scripts_in_phases
+    @steps_in_phases = steps_in_phases
   end
 
   def to_s
@@ -60,17 +65,17 @@ class DeploymentTestPlan
    end
 
    PHASES.each do |phase|
-     parts << "Scripts in phase #{phase}:"
-     @scripts_in_phases[phase].each do |script|
-       parts << "- #{script.source_name}:#{script.line_span.inspect}"
-       parts << script.shell
+     parts << "Steps in phase #{phase}:"
+     @steps_in_phases[phase].each do |step|
+       parts << "- #{step.source_name}:#{step.line_span.inspect}"
+       parts << step.shell
      end
    end
 
    parts.join("\n")
   end
 
-  def run!
+  def execute!
     missing_envs = @required_env_vars.select { |e| ENV[e].nil? }
     if missing_envs.any?
       $stderr.puts "Missing the following required environment variables:"
@@ -79,8 +84,28 @@ class DeploymentTestPlan
     else
     end
 
-    (PHASES - ["cleanup"]).each do |phase|
-      puts "Running phase #{phase}"
+
+    execute_phase("pre-install")
+    begin
+      execute_phase("create-infrastructure")
+      execute_phase("run-tests")
+    catch Exception => e
+      p e
+    ensure
+      execute_phase("destroy-infrastructure")
+    end
+  end
+
+  def execute_phase(phase_name)
+    puts "Executing phase #{phase_name}"
+    steps = @steps_in_phases[phase_name]
+
+    steps.each do |step|
+      puts "Running step #{step.full_name}"
+      system(step.shell)
+      if $?.exitstatus != 0
+        raise("Could not finish step #{step.full_name} in phase #{phase_name}")
+      end
     end
   end
 end
@@ -88,7 +113,7 @@ end
 class AnnotationParser
   Annotation = Struct.new(:source_name, :line_span, :kind, :params, :content)
 
-  def self.parse_file(file) 
+  def self.parse_file(file)
     AnnotationParser.new(File.read(file), file).parse!
   end
 
