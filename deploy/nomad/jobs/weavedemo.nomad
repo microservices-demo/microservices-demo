@@ -169,6 +169,8 @@ job "weavedemo" {
         network_mode = "external"
         dns_servers = ["172.17.0.1"]
         dns_search_domains = ["weave.local."]
+        command = "/app"
+        args =  ["-port=80", "-DSN=root@fake_password@tcp(catalogue-db:3306)/socksdb"]
       }
 
       service {
@@ -195,6 +197,11 @@ job "weavedemo" {
         network_mode = "external"
       }
 
+      env {
+        MYSQL_DATABASE = "socksdb"
+        MYSQL_ROOT_PASSWORD = "fake_password"
+      }
+
       service {
         name = "${TASKGROUP}-cataloguedb"
         tags = ["db", "catalogue", "cataloguedb"]
@@ -207,6 +214,7 @@ job "weavedemo" {
           mbits = 10
         }
       }
+
     } # - end db - #
   } # - end catalogue - #
 

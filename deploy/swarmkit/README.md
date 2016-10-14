@@ -78,5 +78,5 @@ Now, on the master1 node execute the following script:
 /vagrant/start-swarmkit-services.sh
 ```
 
-This will spawn all the services composing weave-socks app and expose the application on 192.168.11.10:3000
+This will spawn all the services composing weave-socks app and expose the application on 192.168.11.10:30000
 Since the front-end is run in ```--mode global``` it will be available on all nodes.

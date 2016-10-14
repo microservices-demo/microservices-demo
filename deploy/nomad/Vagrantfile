@@ -29,13 +29,14 @@ else
 fi
 EOF
 
-docker_daemon_config = %q{'{"cluster-store":"consul://192.168.59.101:8500"}'}
+docker_daemon_config = %q{'{"cluster-store":"consul://127.0.0.1:8500"}'}
 docker = <<-EOF
 count=$(yum list installed | grep docker | wc -l)
 if [ $count == 0 ]; then
   curl -fsSL https://get.docker.com/ | sh
   mkdir -p /etc/docker
   echo #{docker_daemon_config} > /etc/docker/daemon.json
+  systemctl enable docker
   systemctl start docker
   usermod -a -G docker vagrant
 else
@@ -43,13 +44,26 @@ else
 fi
 EOF
 
-consul = <<-EOF
+consul_initial = <<-EOF
 count=$(docker ps -q --filter name=consul | wc -l)
 if [ $count == 0 ]; then
-  docker run -d --name consul -p "8500:8500" --restart always progrium/consul -server -bootstrap
-else
-  echo consul is already running
+  docker run -d --name consul --network=host --restart always consul agent -server -bind 192.168.59.101 -bootstrap-expect 1
 fi
+
+# wait for consul to come up
+while ! curl -s localhost:8500 > /dev/null; do sleep 1; done
+echo "Consul is available!"
+EOF
+
+consul_joiner = <<-EOF
+count=$(docker ps -q --filter name=consul | wc -l)
+if [ $count == 0 ]; then
+  docker run -d --network=host --name consul --restart always consul agent -server -bind 192.168.59.102 -join 192.168.59.101
+fi
+
+# wait for consul to come up
+while ! curl -s localhost:8500 > /dev/null; do sleep 1; done
+echo "Consul is available!"
 EOF
 
 weave = <<-EOF
@@ -144,10 +158,17 @@ Vagrant.configure(2) do |config|
     config.vm.define name do |m|
       m.vm.hostname = name
       m.vm.network "private_network", ip: ip
-      m.vm.provision "shell", inline: "echo '#{nomad_config}' > /etc/nomad/config.hcl"
-      m.vm.provision "shell", inline: "systemctl start nomad"
-      m.vm.provision "shell", inline: launch_weave
-      m.vm.provision "shell", inline: launch_scope
+
+      if name == "node1"
+        m.vm.provision "shell", name: "Start consul (bootstrapped)", inline: consul_initial
+      else
+        m.vm.provision "shell", name: "Start consul (join cluster)", inline: consul_joiner
+      end
+
+      m.vm.provision "shell", name: "nomad config", inline: "echo '#{nomad_config}' > /etc/nomad/config.hcl"
+      m.vm.provision "shell", name: "Start nomad", inline: "systemctl start nomad"
+      m.vm.provision "shell", name: "Launch weave", inline: launch_weave
+      m.vm.provision "shell", name: "Launch scope", inline: launch_scope
 
       # Stuff only the head node should take care of
       if name == "node1"
@@ -155,8 +176,7 @@ Vagrant.configure(2) do |config|
           vb.memory = "512"
         end
 
-        m.vm.provision "shell", inline: consul
-        m.vm.provision "shell", inline: create_networks
+        m.vm.provision "shell", name: "Create weave networks", inline: create_networks
         m.vm.provision "file", source: "./jobs/netman.nomad", destination: "/home/vagrant/netman.nomad"
         m.vm.provision "file", source: "./jobs/weavedemo.nomad", destination: "/home/vagrant/weavedemo.nomad"
       else
