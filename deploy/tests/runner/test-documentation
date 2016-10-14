@@ -1,0 +1,247 @@
+#!/usr/bin/env ruby
+# Executable documentation
+
+# Valid syntax for deployment test annotations
+# Nesting is not supported.
+# 1. Single line annotation, not visibile in Markdown output
+#  "<!-- deploy-test name [VALUE]* -->"
+# 2. Hidden multiline annotation
+#  "<!-- deploy-test-start name [VALUE]*"
+#  CONTENT
+#  "-->"
+# 3. Visible multiline annotation
+#  "<!-- deploy-test-start name [VALUE]* -->"
+#  CONTENT
+#  "<!-- deploy-test-end -->"
+
+require 'pp'
+
+def main
+  test_plan = DeploymentTestPlan.from_file("README.md")
+  puts test_plan.to_s
+  if test_plan.execute!
+    exit 0
+  else
+    exit 1
+  end
+end
+
+
+class DeploymentTestPlan
+  PHASES = ["pre-install", "create-infrastructure", "run-tests", "destroy-infrastructure"]
+
+  class Step < Struct.new(:source_name, :line_span, :shell)
+    def full_name
+      "#{source_name}:#{line_span.inspect}"
+    end
+  end
+
+  def self.from_file(file)
+    annotations = AnnotationParser.parse_file(file)
+    DeploymentTestPlan.from_annotations(annotations)
+  end
+
+  def self.from_annotations(annotations)
+    required_env_vars = (annotations.select { |a| a.kind == "require-env" }).map { |a| a.params }.flatten
+    phases = {}
+
+    PHASES.each do |phase|
+      phases[phase] = (annotations.select { |a| a.kind == phase }).map { |a| Step.new(a.source_name, a.line_span, a.content) }
+    end
+
+    DeploymentTestPlan.new(required_env_vars, phases)
+  end
+
+
+  def initialize(required_env_vars, steps_in_phases)
+    @required_env_vars = required_env_vars
+    @steps_in_phases = steps_in_phases
+  end
+
+  def to_s
+   parts = []
+   parts << "Deployment test plan:"
+   parts << ""
+   parts << "Required environment parameters"
+
+   @required_env_vars.each do |e|
+     parts << "  - #{e}"
+   end
+
+   PHASES.each do |phase|
+     parts << "Steps in phase #{phase}:"
+     @steps_in_phases[phase].each do |step|
+       parts << "- #{step.source_name}:#{step.line_span.inspect}"
+       parts << step.shell
+     end
+   end
+
+   parts.join("\n")
+  end
+
+  def execute!
+    missing_envs = @required_env_vars.select { |e| ENV[e].nil? }
+    if missing_envs.any?
+      $stderr.puts "Missing the following required environment variables:"
+      $stderr.puts missing_envs.inspect
+      exit 1
+    end
+
+    execute_phase("pre-install")
+    begin
+      execute_phase("create-infrastructure")
+      execute_phase("run-tests")
+      return true
+    rescue Exception => e
+      p e
+      return false
+    ensure # Clean up the infrastructure
+      begin
+        execute_phase("destroy-infrastructure")
+        rescue Exception  => e
+        $stderr.puts "Failed to clean up  the infrastructure!"
+        exit 2
+      end
+    end
+  end
+
+  def execute_phase(phase_name)
+    puts "Executing phase #{phase_name}"
+    steps = @steps_in_phases[phase_name]
+
+    steps.each do |step|
+      puts "Running step #{step.full_name}"
+      system(step.shell)
+      if $?.exitstatus != 0
+        raise("Could not finish step #{step.full_name} in phase #{phase_name}")
+      end
+    end
+  end
+end
+
+class AnnotationParser
+  Annotation = Struct.new(:source_name, :line_span, :kind, :params, :content)
+
+  def self.parse_file(file)
+    AnnotationParser.new(File.read(file), file).parse!
+  end
+
+  def initialize(markdown, source_name="<unknown>")
+    @source_name = source_name
+    @markdown_lines = markdown.split("\n")
+  end
+
+  def parse!
+    @annotations = []
+    @parse_idx = 0
+
+
+    while !eof_reached?
+      parse_block || parse_inline || parse_single_line || parse_text
+    end
+
+    @annotations
+  end
+
+  private
+
+  def parse_text
+    # ignore text
+    inc_line
+  end
+
+  BLOCK_START  = /^<!-- deploy-test-start (?<kind>[-\w]+)( )?(?<params>.*) -->/
+  BLOCK_END    = /^<!-- deploy-test-end -->/
+
+  INLINE_START = /^<!-- deploy-test-hidden (?<kind>[-\w]+)( )?(?<params>.*)/
+  INLINE_END   = /^-->/
+
+  SINGLE_LINE  = /^<!-- deploy-test (?<kind>[-\w]+)( )?(?<params>.*) -->/
+
+
+  PARSE_METHOD_PREFIX = "parse_pragma_"
+
+  def parse_block
+    if (match = BLOCK_START.match(current_line)).nil?
+      false
+    else
+      inc_line
+      start_line = current_line_nr
+      kind = match["kind"]
+      params = match["params"].split(/\s+/)
+      content = ""
+      loop do
+        if eof_reached?
+          raise("Unexpected end of file; --> not closed? started on #{@source_name}:#{start_line}")
+        elsif !(BLOCK_END.match(current_line).nil?)
+          end_line = current_line_nr() -1
+          @annotations << Annotation.new(@source_name, [start_line, end_line], kind, params, content)
+          return true
+        else
+          content += current_line + "\n"
+        end
+        inc_line
+      end
+      true
+    end
+  end
+
+  def parse_inline
+    if (match = INLINE_START.match(current_line)).nil?
+      false
+    else
+      inc_line
+      start_line = current_line_nr
+      kind = match["kind"]
+      params = match["params"].split(/\s+/)
+      content = ""
+      loop do
+        if eof_reached?
+          raise("Unexpected end of file; --> not closed? started on #{@source_name}:#{start_line}")
+        elsif !(INLINE_END.match(current_line).nil?)
+          end_line = current_line_nr() -1
+          @annotations << Annotation.new(@source_name, [start_line, end_line], kind, params, content)
+          return true
+        else
+          content += current_line + "\n"
+        end
+        inc_line
+      end
+      true
+    end
+  end
+
+  def parse_single_line
+    if (match = SINGLE_LINE.match(current_line)).nil?
+      false
+    else
+      kind = match["kind"]
+      params = match["params"].split(/\s+/)
+      @annotations << Annotation.new(@source_name, [current_line_nr, current_line_nr], kind, params, nil)
+      inc_line
+    end
+  end
+
+  ##### Helper functions ####
+
+  def eof_reached?
+    @parse_idx >= @markdown_lines.length
+  end
+
+  def current_line
+    @markdown_lines[@parse_idx]
+  end
+
+  def current_line_nr
+    @parse_idx + 1
+  end
+
+  def inc_line
+    @parse_idx+=1
+  end
+end
+
+
+if $0 == __FILE__
+  main
+end
