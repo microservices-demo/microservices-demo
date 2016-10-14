@@ -19,7 +19,11 @@ require 'pp'
 def main
   test_plan = DeploymentTestPlan.from_file("README.md")
   puts test_plan.to_s
-  test_plan.execute!
+  if test_plan.execute!
+    exit 0
+  else
+    exit 1
+  end
 end
 
 
@@ -84,13 +88,14 @@ class DeploymentTestPlan
     else
     end
 
-
     execute_phase("pre-install")
     begin
       execute_phase("create-infrastructure")
       execute_phase("run-tests")
+      return true
     catch Exception => e
       p e
+      return false
     ensure
       execute_phase("destroy-infrastructure")
     end
