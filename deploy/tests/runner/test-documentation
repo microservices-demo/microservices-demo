@@ -93,11 +93,16 @@ class DeploymentTestPlan
       execute_phase("create-infrastructure")
       execute_phase("run-tests")
       return true
-    catch Exception => e
+    rescue Exception => e
       p e
       return false
-    ensure
-      execute_phase("destroy-infrastructure")
+    ensure # Clean up the infrastructure
+      begin
+        execute_phase("destroy-infrastructure")
+        rescue Exception  => e
+        $stderr.puts "Failed to clean up  the infrastructure!"
+        exit 2
+      end
     end
   end
 
