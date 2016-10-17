@@ -44,7 +44,11 @@ Run the user similator load test. For more information see [Load Test](#loadtest
 
 <!-- deploy-test-start run-tests -->
 
-    docker-compose run -d user-sim
+    EDGE_ROUTER_IP=$(docker inspect --format '{{ .NetworkSettings.Networks.dockeronly_default.IPAddress }}' dockeronly_edge-router_run_1)
+    LOAD_TEST_CONTAINER_ID=$(docker create weaveworksdemos/load-test load-test $LOAD_TEST_CONTAINER_ID -h $EDGE_ROUTER_IP -c 3 -r 10)
+    docker network connect dockeronly_default $LOAD_TEST_CONTAINER_ID  
+    docker start -a $LOAD_TEST_CONTAINER_ID
+    docker wait $LOAD_TEST_CONTAINER_ID
 
 <!-- deploy-test-end -->
 
@@ -52,7 +56,7 @@ Run the user similator load test. For more information see [Load Test](#loadtest
 
 <!-- deploy-test-start destroy-infrastructure -->
 
-    docker-compose kill
+    docker-compose stop
     docker-compose rm -f
 
 <!-- deploy-test-end -->
