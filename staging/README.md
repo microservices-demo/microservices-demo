@@ -21,11 +21,11 @@ Use the scripts in this directory to set up a Kubernetes cluster on AWS from a B
 * Install the microservices demo
 
   ```
-  kubectl apply -f microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml -f microservices-demo/deploy/kubernetes/manifests
+  kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml -f ~/microservices-demo/deploy/kubernetes/manifests
   ```
 
 * Install Weave Scope
 
   ```
-  kubectl apply -f microservices-demo/deploy/kubernetes/definitions/scope.yaml --validate=false
+  kubectl apply -f ~/microservices-demo/deploy/kubernetes/definitions/weavescope.yaml --validate=false
   ```
