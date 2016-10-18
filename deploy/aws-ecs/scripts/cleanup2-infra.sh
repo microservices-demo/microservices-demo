@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Auto Scaling Group
 echo -n "Deleting Auto Scaling Group (weave-ecs-demo-group) .. "
