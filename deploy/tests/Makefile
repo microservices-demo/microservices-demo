@@ -1,11 +1,20 @@
 .PHONY: all_tests docker_container check-ecs2-env
-test_all: docker_container test_ecs
+help:
+	cat Makefile
+
+test_all: docker_only test_ecs
 
 docker_container:
 	docker build -t microservice-demo-docdoctor .
 
-test_example:
+test_example: docker_container
 	docker run --rm -ti -v $(shell pwd)/../example:/to-test microservice-demo-docdoctor
+
+test_docker_only: docker_container
+	docker run --rm -ti \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(shell pwd)/../docker-only:/to-test \
+		microservice-demo-docdoctor
 
 test_ecs: check-ec2-env
 	docker run --rm -ti \
