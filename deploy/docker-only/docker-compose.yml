@@ -29,7 +29,7 @@ services:
     restart: always
     environment:
       - reschedule=on-node-failure
-      - MYSQL_ROOT_PASSWORD=fake_password
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=socksdb
   cart:

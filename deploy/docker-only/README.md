@@ -11,30 +11,17 @@ DNS is achieved by using the internal Docker DNS, which reads network alias entr
 
 ## Pre install
 
-<!-- deploy-test preinstall -->
+<!-- deploy-test-start pre-install -->
 
     curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
- 
+    
 <!-- deploy-test-end -->
 
 ## Provision infrastructure
 
 <!-- deploy-test-start create-infrastructure -->
 
-    docker-compose run -d user-db
-    docker-compose run -d user
-    docker-compose run -d catalogue-db
-    docker-compose run -d catalogue
-    docker-compose run -d rabbitmq
-    docker-compose run -d queue-master
-    docker-compose run -d cart-db
-    docker-compose run -d cart
-    docker-compose run -d orders-db
-    docker-compose run -d shipping
-    docker-compose run -d payment
-    docker-compose run -d orders
-    docker-compose run -d front-end
-    docker-compose run -d edge-router
+    docker-compose up -d user-db user catalogue-db catalogue rabbitmq queue-master cart-db cart orders-db shipping payment orders front-end edge-router
     
 <!-- deploy-test-end -->
 
@@ -44,11 +31,7 @@ Run the user similator load test. For more information see [Load Test](#loadtest
 
 <!-- deploy-test-start run-tests -->
 
-    EDGE_ROUTER_IP=$(docker inspect --format '{{ .NetworkSettings.Networks.dockeronly_default.IPAddress }}' dockeronly_edge-router_run_1)
-    LOAD_TEST_CONTAINER_ID=$(docker create weaveworksdemos/load-test load-test $LOAD_TEST_CONTAINER_ID -h $EDGE_ROUTER_IP -c 3 -r 10)
-    docker network connect dockeronly_default $LOAD_TEST_CONTAINER_ID  
-    docker start -a $LOAD_TEST_CONTAINER_ID
-    docker wait $LOAD_TEST_CONTAINER_ID
+    docker run --net dockeronly_default weaveworksdemos/load-test -d 60 -h edge-router -c 3 -r 10
 
 <!-- deploy-test-end -->
 
