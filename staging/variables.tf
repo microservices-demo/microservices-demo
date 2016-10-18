@@ -11,6 +11,10 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
+variable "bastion_cidr_block" {
+  descritpion = "The public ip of the bastion host, in cidr notation."
+}
+
 variable "bastion_security_group" {
   description = "The id of the security group where the bastion host resides."
 }
