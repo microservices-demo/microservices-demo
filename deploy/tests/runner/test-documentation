@@ -83,9 +83,8 @@ class DeploymentTestPlan
     missing_envs = @required_env_vars.select { |e| ENV[e].nil? }
     if missing_envs.any?
       $stderr.puts "Missing the following required environment variables:"
-      $stdenf.puts missing_envs
+      $stderr.puts missing_envs.inspect
       exit 1
-    else
     end
 
     execute_phase("pre-install")
