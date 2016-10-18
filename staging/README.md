@@ -10,7 +10,7 @@ Use the scripts in this directory to set up a Kubernetes cluster on AWS from a B
 
 * Clone this repository
 
-* Enter the missing information in [terraform.tfvars](./terraform.tfvars). See a description in [variables.tf](./variables.tf).
+* Copy [terraform.tfvars.example](./terraform.tfvars.example) to terraform.tfvars and enter the missing information. Look for a description of the variables in [variables.tf](./variables.tf).
 
 * Plan the terraform run: `terraform plan -out staging.plan`
 
@@ -29,3 +29,25 @@ Use the scripts in this directory to set up a Kubernetes cluster on AWS from a B
   ```
   kubectl apply -f ~/microservices-demo/deploy/kubernetes/definitions/weavescope.yaml --validate=false
   ```
+
+* Get the NodePort of the sock-shop front-end service
+
+  ```
+  kubectl describe svc front-end --namespace sock-shop
+  ```
+
+* Get the NodePort of the scope service
+
+  ```
+  kubectl describe svc weavescope-app
+  ```
+
+* Add the NodePorts to the AWS Security Group
+
+  ```
+  aws ec2 authorize-security-group-ingress --group-name microservices-demo-staging-k8s --protocol tcp --port [front-end NodePort] --cidr 0.0.0.0/0
+  aws ec2 authorize-security-group-ingress --group-name microservices-demo-staging-k8s --protocol tcp --port [weavescope NodePort] --cidr 0.0.0.0/0
+  ```
+
+* Access the Sock Shop front end and Weave Scope on any of the addresses output by `terraform output` on their respective ports.
+
