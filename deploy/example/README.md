@@ -4,7 +4,7 @@ Hi, cool docs over here.
 
 
 We need to install some tools before we start:
-<!-- deploy-test preinstall -->
+<!-- deploy-test pre-install -->
 
     apt-get install -yq cowsay
 
