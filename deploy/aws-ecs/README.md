@@ -24,9 +24,9 @@ To use CLI, you also need to have the [AWS CLI](http://docs.aws.amazon.com/cli/l
 
 Install it on ubuntu with the following steps:
 <!-- deploy-test-start pre-install -->
-apt-get -yq update
-apt-get -yq install curl coreutils python python-pip jq
-pip install awscli
+    apt-get -yq update
+    apt-get -yq install curl coreutils python python-pip jq
+    pip install awscli
 <!-- deploy-test-end -->
 
 To deploy and start the demo, run the setup script to deploy to ECS:
