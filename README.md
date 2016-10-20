@@ -6,7 +6,7 @@ The application is the user-facing part of an online shop that sells socks. It i
 
 It is built using [Spring Boot](http://projects.spring.io/spring-boot/), [Go kit](http://gokit.io) and [Node.js](https://nodejs.org/) and is packaged in Docker containers.
 
-You can read more about the [application design](./docs/design.md).
+You can read more about the [application design](./docs/internal-docs/design.md).
 
 ## Deployment Platforms
 
@@ -20,12 +20,12 @@ We'd love to see community contributions. We like to keep it simple and use Gith
 
 ## Screenshot
 
-![Sock Shop frontend](./docs/images/sockshop-frontend.png)
+![Sock Shop frontend](./docs/assets/sockshop-frontend.png)
 
 ## Visualizing the application
 
 Use [Weave Scope](http://weave.works/products/weave-scope/) or [Weave Cloud](http://cloud.weave.works/) to visualize the application once it's running in the selected [target platform](./deploy/).
 
-![Sock Shop in Weave Scope](./docs/images/sockshop-scope.png)
+![Sock Shop in Weave Scope](./docs/assets/sockshop-scope.png)
 
 ## 
