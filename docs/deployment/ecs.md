@@ -1,16 +1,20 @@
+---
+layout: default
+---
+
 <!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
 
-# Setup and Installation on AWS ECS
+## Deployment on Amazon's Elastic Container Service
 
-## Goal
+### Goal
 
 This directory contains the necessary tools to install an instance of the microservice demo application on [AWS ECS](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html).
 
-## Installation
+### Installation
 
 To deploy, you will need an [Amazon Web Services (AWS)](http://aws.amazon.com) account.
 
-### Using CloudFormation
+#### Using CloudFormation
 
 [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?templateURL=https:%2F%2Fs3.amazonaws.com%2Fweaveworks-cfn-public%2Fmicroservices-demo%2Fmicroservices-demo.json)
 
