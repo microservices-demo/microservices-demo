@@ -26,6 +26,6 @@ test_ecs: check-ec2-env
 		microservice-demo-docdoctor
 
 check-ec2-env:
-	@if [ "x$$AWS_ACCESS_KEY_ID" == "x" ]; then echo "AWS_ACCESS_KEY_ID not set!"; exit 1; fi
-	@if [ "x$$AWS_SECRET_ACCESS_KEY" == "x" ]; then echo "AWS_SECRET_ACCESS_KEY not set!"; exit 1; fi
-	@if [ "x$$AWS_DEFAULT_REGION" == "x" ]; then echo "AWS_DEFAULT_REGION not set!"; exit 1; fi
+	@if [ "x$$AWS_ACCESS_KEY_ID" = "x" ]; then echo "AWS_ACCESS_KEY_ID not set!"; exit 1; fi
+	@if [ "x$$AWS_SECRET_ACCESS_KEY" = "x" ]; then echo "AWS_SECRET_ACCESS_KEY not set!"; exit 1; fi
+	@if [ "x$$AWS_DEFAULT_REGION" = "x" ]; then echo "AWS_DEFAULT_REGION not set!"; exit 1; fi
