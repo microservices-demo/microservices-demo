@@ -1,6 +1,12 @@
+---
+layout: default
+---
+
+## Encrypted SSH deployment keys on travis
+
 This will show you how to create ssh deployment keys and encrypt them for use in travis.
 
-# Preparation
+### Preparation
 
 ```
 brew install ruby
@@ -8,7 +14,7 @@ sudo gem install travis
 travis login
 ```
 
-# Generate a key
+### Generate a key
 
 Replace repo with your service name. We do this on a per-service basis so we can easily revoke if compromised.
 
@@ -17,7 +23,7 @@ export REPO=<name of repo>
 ssh-keygen -t rsa -b 4096 -N "" -C ${REPO}@travis-ci.org -f ./${REPO}_deploy_rsa
 ```
 
-# Encrypyt key
+### Encrypyt key
 
 First, cd to the directory with the `.travis.yml` file in. It will automatically add the necessary lines.
 
@@ -26,7 +32,7 @@ cd /path/to/your/repo
 travis encrypt-file ${REPO}_deploy_rsa --add
 ```
 
-# Add to bastion's known keys
+### Add to bastion's known keys
 
 (Contact whomever created the bastion for master $KEY).
 
@@ -34,13 +40,13 @@ travis encrypt-file ${REPO}_deploy_rsa --add
 cat ${REPO}_deploy_rsa.pub | ssh -i $KEY ${BASTION_USER}@${BASTION} 'cat >> .ssh/authorized_keys && echo "Key copied"'
 ```
 
-# DELETE THE KEYS (IMPORTANT!)
+### DELETE THE KEYS (IMPORTANT!)
 
 ```
 rm -f ${REPO}_deploy_rsa ${REPO}_deploy_rsa.pub
 ```
 
-# Check the edited travis file for formatting and commit
+### Check the edited travis file for formatting and commit
 
 ```
 open .travis.yml
@@ -48,7 +54,7 @@ git add ${REPO}_deploy_rsa.enc .travis.yml
 git commit -m "Added encrypted deploy keys"
 ```
 
-# Add deployment code to .travis.yml
+### Add deployment code to .travis.yml
 
 Add env vars that point to the bastion IP and provide the user.
 
@@ -68,10 +74,10 @@ git add .travis.yml
 git commit -m "Added deployment code."
 ```
 
-# Push!
+### Push!
 Push and merge the code. The deployment will only run when on the master branch.
 
-# Reference
+### Reference
 You're travis file should look something like:
 
 ```
