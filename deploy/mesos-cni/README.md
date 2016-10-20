@@ -1,10 +1,13 @@
+<!-- deploy-test require-env TF_VAR_access_key TF_VAR_secret_key TF_VAR_private_key_file TF_VAR_aws_key_name -->
+
 # Deploy to Mesos using CNI
 
-These scripts will install the microservices demo on Apache Mesos using the CNI plugin.
+This guide describes how to deploy Sock Shop to a Mesos cluster that has CNI and Weave Net installed. Deployment is done using `mesos-execute` commands.
 
 *For testing only* Because CNI support is so new, it is not supported in Marathon and some features are missing from Weave. The containers are not orchestrated, so if they crash, they will not be restarted.
 
 ## Caveates
+
 - Tested with Mesos 1.0.0
 - These scripts start containers using mesos-execute. Not marathon (due to lack of marathon support). Hence, they are not orchestrated. If they crash, they will not be restarted.
 - Sometimes Docker hub can respond with 500's. It might take few tries to get it running.
@@ -15,53 +18,48 @@ These scripts will install the microservices demo on Apache Mesos using the CNI 
 
 Please this blog post about the new [mesos unified containerizer](http://winderresearch.com/2016/07/02/Overview-of-Mesos-New-Unified-Containerizer/) for more information.
 
-## Prerequisites
-- A working Mesos cluster (here is an example of [how to install mesos on AWS using terraform](https://github.com/philwinder/mesos-terraform))
-- [jq](https://stedolan.github.io/jq/)
-- curl
+## Install the prerequisites
 
-## Quick start
+Provisioning a Mesos cluster requires the following prerequisites
 
-```
-./mesos-cni.sh install
-./mesos-cni.sh start
-```
+* `git`
+* `curl`
+* [jq](https://stedolan.github.io/jq/)
+* `terraform`
+* [Mesos Terraform on AWS](https://github.com/philwinder/mesos-terraform))
 
-## Usage
+<!-- deploy-test-start pre-install -->
+    echo "Installing prerequisites...(TODO)"
+<!-- deploy-test-end -->
 
-```
-mesos-cni.sh [OPTION]... [COMMAND]
+## Create the infrastructure
 
-Starts the weavedemo project on Apache Mesos using CNI. It expects that you have populated the Masters and Agents in this script. See https://github.com/philwinder/mesos-terraform for help with installing Mesos on AWS.
+Run Terraform to create the Mesos cluster
 
-Caveats: This is using a RC version of Mesos, and may not work in the future. This was developed on AWS, so may not work on other services.
+<!-- deploy-test-start create-infrastructure -->
+    echo "Creating infrastructure...(TODO)"
+<!-- deploy-test-end -->
 
- Commands:
-  install           Install all required services on the Mesos hosts. Must install before starting.
-  uninstall         Removes all installed services
-  start             Starts the demo application services. Must already be installed.
-  stop              Stops the demo application services
+## Deploy Sock Shop
 
- Options:
-  --force           Skip all user interaction.  Implied 'Yes' to all actions.
-  -c, --cpu         Individual task CPUs
-  -m, --mem         Individual task Mem
-  -t, --tag         Sets the tag of the docker images
-  -q, --quiet       Quiet (no output)
-  -l, --log         Print log to file
-  -s, --strict      Exit script with null variables.  i.e 'set -o nounset'
-  -v, --verbose     Output more information. (Items echoed to 'verbose')
-  -d, --debug       Runs script in BASH debug mode (set -x)
-  -h, --help        Display this help and exit
-      --version     Output version information and exit
-```
+Now deploy Sock Shop
 
-## Debugging
+<!-- deploy-test-start create-infrastructure -->
+    echo "Deploying Sock Shop...(TODO)"
+<!-- deploy-test-end -->
 
-Because this deployment is highly scripted, there may be future comparability issues. There are some things you can do to help debug the issue.
+## Runing the load test
 
-1. Use the --verbose option. It provides more info.
-2. If the task is staging, everything might be ok. It might just be downloading the images.
-3. Use the --debug option. It uses `set -x` to record the actual commands.
-4. If the failure is during the application startup, log into the master, then look at the log files in the home directory.
-5. If the failure is within the application itself, check the Mesos stdout and stderr logs.
+The load test will simulate a number of users and test the entire Sock Shop application.
+
+<!-- deploy-test-start run-tests -->
+    echo "Running load test...(TODO)"
+<!-- deploy-test-end -->
+
+## Cleaning up
+
+Destroy the Mesos cluster and Sock Shop
+
+<!-- deploy-test-start destroy-infrastructure -->
+    echo "Cleaning up infrastructure...(TODO)"
+<!-- deploy-test-end -->
