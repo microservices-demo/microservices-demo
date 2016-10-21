@@ -14,19 +14,21 @@ DNS is achieved by using the internal Docker DNS, which reads network alias entr
 - Install [Weave Scope](https://www.weave.works/install-weave-scope/)
 
 <!-- deploy-test-start pre-install -->
+
     apt-get install -yq curl
 
     curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
- 
+
 <!-- deploy-test-end -->
+
 
 ### Provision infrastructure
 
 <!-- deploy-test-start create-infrastructure -->
 
     docker-compose up -d user-db user catalogue-db catalogue rabbitmq queue-master cart-db cart orders-db shipping payment orders front-end edge-router
-    
+
 <!-- deploy-test-end -->
 
 ### Run tests
