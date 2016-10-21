@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+
 ## Sock Shop on Docker
 
 The Sock Shop application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.

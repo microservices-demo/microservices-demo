@@ -2,9 +2,9 @@
 layout: default
 ---
 
-<!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
-
 ## Deployment on Amazon's Elastic Container Service
+
+<!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
 
 ### Goal
 
