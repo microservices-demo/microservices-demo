@@ -9,8 +9,8 @@ The intention is to build and deploy every master commit for each service to the
 
 ### Also see
 
- - [Current staging urls](./testing.html#application-urls)
- - [Creating ssh keys for deployment](./ssh-keys-for-deployment-on-travis.html)
+ - [Current staging urls](./testing.md#application-urls)
+ - [Creating ssh keys for deployment](./ssh-keys-for-deployment-on-travis.md)
 
 ### Cluster information
 
