@@ -2,9 +2,9 @@
 layout: default
 ---
 
-<!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
-
 ## Deployment on Amazon's Elastic Container Service
+
+<!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
 
 ### Goal
 
@@ -27,16 +27,21 @@ As this app is fairly large, you should set ***`Scale`*** to 4 and select `m3.xl
 To use CLI, you also need to have the [AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html) set up and configured.
 
 Install it on ubuntu with the following steps:
+
 <!-- deploy-test-start pre-install -->
+
     apt-get -yq update
     apt-get -yq install curl coreutils python python-pip jq
     pip install awscli
+
 <!-- deploy-test-end -->
 
 To deploy and start the demo, run the setup script to deploy to ECS:
 
 <!-- deploy-test-start create-infrastructure -->
+
     STORE_DNS_NAME_HERE=ecs-endpoint ./setup.sh
+
 <!-- deploy-test-end -->
 
 This may take a few minutes to complete. Once it's done, it will print the URL for the demo frontend, as well as the URL for the Weave Scope instance that can be used to visualize the containers and their connections.
@@ -44,7 +49,9 @@ This may take a few minutes to complete. Once it's done, it will print the URL f
 To ensure that the application is running properly, you could perform some load testing on it:
 
 <!-- deploy-test-start run-tests -->
+
     docker run weaveworksdemos/load-test -h  `cat ecs-endpoint` -c 10 -r 100
+
 <!-- deploy-test-end -->
 
 #### Cleanup
@@ -52,7 +59,9 @@ To ensure that the application is running properly, you could perform some load 
 To tear down the containers and their associated AWS objects, run the cleanup script:
 
 <!-- deploy-test-start destroy-infrastructure -->
+
     ./cleanup.sh
+
 <!-- deploy-test-end -->
 
 #### Background
