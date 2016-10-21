@@ -58,7 +58,7 @@ pre {
   font-weight: bold;
   margin: 0.3em 0 0;
   padding: 0 0 0 30px;
-  background-image: url({{ "/assets/img/weaveworks-logo.png" | relative_url }});
+  background-image: url({{ "/assets/img/weaveworks-logo.png" | prepend: site.baseurl }});
   background-repeat: no-repeat;
   background-position-y: 0.3em;
   background-size: 1em 1em;
