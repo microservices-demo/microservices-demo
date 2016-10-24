@@ -1,4 +1,4 @@
-<!-- deploy-test require-env TF_VAR_access_key TF_VAR_secret_key TF_VAR_private_key_file TF_VAR_aws_key_name -->
+<!-- deploy-test require-env TF_VAR_access_key TF_VAR_secret_key -->
 
 # Deploy to Mesos using CNI
 
