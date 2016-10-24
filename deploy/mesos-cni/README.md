@@ -29,6 +29,7 @@ Provisioning a Mesos cluster requires the following prerequisites
 * [Mesos Terraform on AWS](https://github.com/philwinder/mesos-terraform))
 
 <!-- deploy-test-start pre-install -->
+    sudo pip install awscli --ignore-installed six
     echo "Installing prerequisites...(TODO)"
 <!-- deploy-test-end -->
 
