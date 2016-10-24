@@ -31,8 +31,6 @@ test_mesos_cni: check-mesos-cni-env
 		-v $(shell pwd)/../mesos-cni:/to-test \
 		-e TF_VAR_access_key="$$TF_VAR_access_key" \
 		-e TF_VAR_secret_key="$$TF_VAR_secret_key" \
-		-e TF_VAR_private_key_file="$$TF_VAR_private_key_file" \
-		-e TF_VAR_aws_key_name="$$TF_VAR_aws_key_name" \
 		microservice-demo-docdoctor
 
 check-mesos-cni-env:
