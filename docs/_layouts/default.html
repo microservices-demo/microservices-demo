@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Microservices Demo: Socks Shop</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <link href="{{ "/assets/css/custom.css" | prepend: site.baseurl }}" rel="stylesheet">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  </head>
+  <body>
+
+    <div class="page-container container">
+      <div class="header clearfix">
+        <div class="header-home"><a href="{{site.main_url_prefix}}/">Socks Shop</a></div>
+        <nav>
+          <ul class="nav header-nav">
+            <li><a href="{{site.main_url_prefix}}/docs/quickstart.html">Quickstart</a></li>
+            <li class="active"><a href="{{site.main_url_prefix}}/docs/index.html">Docs</a></li>
+            <li><a href="http://github.com/microservices-demo" target="_blank">GitHub</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="inner">
+        <h1>Documentation</h1>
+
+        <div class="row">
+          <div class="col-sm-4">
+            {% include doc_menu.html %}
+          </div>
+          <div class="col-sm-8">
+            {{ content }}
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer">
+        <p>&copy;2016 <a href="http://weave.works/" target="_blank">Weaveworks, Inc</a></p>
+      </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+</html>
