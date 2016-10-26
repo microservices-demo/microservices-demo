@@ -29,7 +29,7 @@ Provisioning a Mesos cluster requires the following prerequisites
 * [Mesos Terraform on AWS](https://github.com/philwinder/mesos-terraform))
 
 <!-- deploy-test-start pre-install -->
-    sudo apt-get install uuid-runtime awscli jq curl
+    apt-get install uuid-runtime awscli jq curl
 <!-- deploy-test-end -->
 
 ## Create the infrastructure
@@ -50,9 +50,9 @@ Create a key pair on AWS and run Mesos Terraform to create the Mesos cluster.
     curl https://releases.hashicorp.com/terraform/0.7.7/terraform_0.7.7_linux_amd64.zip > terraform.zip
     unzip terraform.zip
     
-    git clone https://github.com/philwinder/mesos-terraform.git
+    git clone https://github.com/frankscholten/mesos-terraform.git
     cd mesos-terraform
-    git checkout aa074c00ea2929ea94c521885128f7e84c018452
+    git checkout af8809ae16b1f0163b3e29ef919f1442ee460b2b
    
     ../terraform plan
     ../terraform apply                   
