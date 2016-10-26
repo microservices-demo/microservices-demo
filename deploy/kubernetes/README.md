@@ -1,4 +1,4 @@
-#Setup and Installation on Kubernetes
+# Setup and Installation on Kubernetes
 
 (If you already have running k8s cluster skip to [here](#deploy-app))
 
@@ -19,7 +19,7 @@ terraform plan
 terraform apply
 ```
 
-###Configure CNI
+### Configure CNI
 On each node 
 
 ```
@@ -28,7 +28,7 @@ mkdir -p /etc/cni/net.d
 weave setup
 ```
 
-###Setup Sky DNS
+### Setup Sky DNS
 ```
 kubectl create -f kubernetes/definitions/ksNamespace.yaml
 kubectl create -f kubernetes/definitions/skydns-rc.yaml
@@ -36,7 +36,7 @@ kubectl create -f kubernetes/definitions/skydns-svc.yaml
 ```
 
 
-##Deploy App:
+## Deploy App
 
 If using kubernetes-anywhere, log in to one of the nodes and run the toolbox:
 ```
