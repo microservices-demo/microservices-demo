@@ -38,7 +38,7 @@ Run the user similator load test. For more information see [Load Test](#loadtest
 
 <!-- deploy-test-start run-tests -->
 
-    docker run --net mynetwork weaveworksdemos/load-test -d 60 -h edge-router -c 3 -r 10
+    docker run --rm --net mynetwork weaveworksdemos/load-test -d 60 -h edge-router -c 3 -r 10
 
 <!-- deploy-test-end -->
 
