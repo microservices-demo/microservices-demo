@@ -27,17 +27,18 @@ DNS is achieved by using the internal Docker DNS, which reads network alias entr
 
 <!-- deploy-test-start create-infrastructure -->
 
+    docker network create mynetwork
     docker-compose up -d user-db user catalogue-db catalogue rabbitmq queue-master cart-db cart orders-db shipping payment orders front-end edge-router
 
 <!-- deploy-test-end -->
 
 ### Run tests
 
-Run the user similator load test. For more information see [Load test](#load-test)
+Run the user similator load test. For more information see [Load Test](#loadtest)
 
 <!-- deploy-test-start run-tests -->
 
-    docker run weaveworksdemos/load-test -d 60 -h edge-router -c 3 -r 10
+    docker run --rm --net mynetwork weaveworksdemos/load-test -d 60 -h edge-router -c 3 -r 10
 
 <!-- deploy-test-end -->
 
@@ -45,9 +46,9 @@ Run the user similator load test. For more information see [Load test](#load-tes
 
 <!-- deploy-test-start destroy-infrastructure -->
 
-    docker-compose stop
-    docker-compose rm -f
-
+    docker-compose down
+    docker network rm mynetwork
+   
 <!-- deploy-test-end -->
 
 ### Launch Weave Scope or Weave Cloud
