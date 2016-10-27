@@ -26,7 +26,7 @@ Test service as a container, with their external dependencies. Only test specifi
 
 ### Application
 
-Verify that the applicatino works as a whole, on the intended platform. Items to test:
+Verify that the application works as a whole, on the intended platform. Items to test:
 
 - Does it start?
 - Does it not crash?
