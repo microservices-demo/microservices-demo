@@ -33,7 +33,7 @@ DNS is achieved by using the internal Docker DNS, which reads network alias entr
 
 ### Run tests
 
-Run the user similator load test. For more information see [Load Test](#loadtest)
+Run the user similator load test. For more information see [Load test](#load-test)
 
 <!-- deploy-test-start run-tests -->
 
