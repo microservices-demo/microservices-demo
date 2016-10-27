@@ -8,7 +8,7 @@ On this page, you'll find pointers to how to run the socks shop on different pla
 
 ### Internal documentation
 
-- [Create the staging environment](internal-docs/create-staging-environment.html)
-- [Design](internal-docs/design.html)
-- [Testing](internal-docs/testing.html)
-- [SSH keys for development on Travis](internal-docs/ssh-keys-for-deployment-on-travis.html)
+- [Create the staging environment](internal-docs/create-staging-environment.md)
+- [Design](internal-docs/design.md)
+- [Testing](internal-docs/testing.md)
+- [SSH keys for development on Travis](internal-docs/ssh-keys-for-deployment-on-travis.md)
