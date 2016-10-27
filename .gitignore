@@ -120,3 +120,12 @@ coverage/
 
 # Tern
 .tern-port
+
+# docker-swarm infra
+packer_cache
+docker-swarm.box
+*.tfstate
+*.tfstate.backup
+*.tfvars
+join.sh
+output-virtualbox-iso

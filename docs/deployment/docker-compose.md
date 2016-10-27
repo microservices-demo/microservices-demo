@@ -64,4 +64,3 @@ This will send some traffic to the application, which will form the connection g
     docker-compose down
    
 <!-- deploy-test-end -->
-
