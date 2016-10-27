@@ -35,7 +35,7 @@ If you encounter the following error
 ```
 ./cluster/../cluster/../cluster/aws/../../cluster/common.sh: line 528: KUBE_MANIFESTS_TAR_URL: unbound variable
 ```
-go to the kubernetes/cluster folder, type `sudo nano common.sh`and edit the method `build-kube-env` like this: 
+go to the kubernetes/cluster folder, type `sudo nano common.sh` and edit the method `build-kube-env` like this: 
 
 ```
 # $1: if 'true', we're building a master yaml, else a node
