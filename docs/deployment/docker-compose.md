@@ -46,9 +46,8 @@ Run the user similator load test. For more information see [Load Test](#loadtest
 
 <!-- deploy-test-start destroy-infrastructure -->
 
+    docker-compose down
     docker network rm mynetwork
-    docker-compose stop
-    docker-compose rm -f
    
 <!-- deploy-test-end -->
 
