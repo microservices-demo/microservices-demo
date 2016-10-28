@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: NetworkPolicy
 metadata:
-  name: prism-access
+  name: cortex-access
   namespace: sock-shop
 spec:
   podSelector:
@@ -11,4 +11,4 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              name: prism
+              name: cortex
