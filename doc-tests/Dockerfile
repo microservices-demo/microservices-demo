@@ -1,6 +1,4 @@
 FROM ubuntu:xenial
-VOLUME /to-test
-WORKDIR /to-test
 
 RUN apt-get update && apt-get install -yq ruby
 RUN apt-get update && apt-get install -yq apt-transport-https ca-certificates

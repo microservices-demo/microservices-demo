@@ -14,6 +14,14 @@ test_docker_compose: docker_container
 		-v $(shell pwd)/../docs/deployment/docker-compose.md:/to-test/README.md \
 		microservice-demo-docdoctor
 
+test_docker_compose_weave: docker_container
+	docker run --rm -ti \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(shell pwd)/../deploy/docker-compose-weave:/docker-compose-weave \
+		-v $(shell pwd)/../docs/deployment/docker-compose-weave.md:/docker-compose-weave/README.md \
+		-w /docker-compose-weave \
+		microservice-demo-docdoctor
+
 test_ecs: check-ec2-env
 	docker run --rm -ti \
 		-v /var/run/docker.sock:/var/run/docker.sock \
