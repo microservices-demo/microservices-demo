@@ -10,8 +10,9 @@ docker_container:
 test_docker_compose: docker_container
 	docker run --rm -ti \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		-v $(shell pwd)/../deploy/docker-compose:/to-test \
-		-v $(shell pwd)/../docs/deployment/docker-compose.md:/to-test/README.md \
+		-v $(shell pwd)/../deploy/docker-compose:/docker-compose \
+		-v $(shell pwd)/../docs/deployment/docker-compose.md:/docker-compose/README.md \
+                -w /docker-compose \
 		microservice-demo-docdoctor
 
 test_docker_compose_weave: docker_container
