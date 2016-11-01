@@ -2,17 +2,18 @@
 layout: default
 ---
 
-## Sock Shop on Docker Compose
+## Sock Shop on Docker Compose & Weave
 
-The Sock Shop application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.
+The Weave Demo application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.
 
 ### Networking
 
-In this version we create a Docker network and DNS is achieved by using the internal Docker DNS, which reads network alias entries provided by docker-compose.
+In this version we create several isolated networks using the [Weave Docker plugin](https://www.weave.works/docs/net/latest/plugin/) and use Weave's DNS support.
 
 ### Pre-requisites
 
 - Install Docker Compose
+- Install [Weave Net](https://www.weave.works/install-weave-net/)
 - (Optional) Install [Weave Scope](https://www.weave.works/install-weave-scope/)
 
 <!-- deploy-test-start pre-install -->
@@ -21,6 +22,8 @@ In this version we create a Docker network and DNS is achieved by using the inte
 
     curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
+    curl -L git.io/weave -o /usr/local/bin/weave
+    chmod a+x /usr/local/bin/weave
 
 <!-- deploy-test-end -->
 
@@ -29,18 +32,19 @@ In this version we create a Docker network and DNS is achieved by using the inte
 
 <!-- deploy-test-start create-infrastructure -->
 
-    docker network create mynetwork
+
+    weave launch
     docker-compose up -d user-db user catalogue-db catalogue rabbitmq queue-master cart-db cart orders-db shipping payment orders front-end edge-router
 
 <!-- deploy-test-end -->
-
+    
 ### Run tests
 
 Run the user similator load test. For more information see [Load Test](#loadtest)
 
 <!-- deploy-test-start run-tests -->
 
-    docker run --rm --net mynetwork weaveworksdemos/load-test -d 60 -h edge-router -c 3 -r 10
+    docker run --net dockercomposeweave_external --rm weaveworksdemos/load-test -d 60 -h edge-router -c 3 -r 10
 
 <!-- deploy-test-end -->
 
@@ -49,7 +53,7 @@ Run the user similator load test. For more information see [Load Test](#loadtest
 <!-- deploy-test-start destroy-infrastructure -->
 
     docker-compose down
-    docker network rm mynetwork
+    weave stop
    
 <!-- deploy-test-end -->
 
@@ -65,6 +69,11 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 
 ### Load test
 
-There's a load test provided as a service in this compose file.
-It will run when the compose is started up, after a delay of 60s.
+There's a load test provided to simulate user traffic to the application.
+
+    docker run weaveworksdemos/load-test -h http://localhost/ -r 100 -c 2
+
+This will send some traffic to the application, which will form the connection graph that you view in Scope or Weave Cloud.
+
+
 
