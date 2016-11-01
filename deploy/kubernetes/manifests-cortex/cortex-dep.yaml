@@ -2,16 +2,16 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: prism
+  name: cortex
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: prism
+        name: cortex
     spec:
       containers:
-      - name: prism
+      - name: cortex
         image: tomwilkie/prometheus:34ed558
         imagePullPolicy: IfNotPresent
         args:
@@ -25,4 +25,4 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: prism-config
+            name: cortex-config
