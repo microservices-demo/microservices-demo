@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+
+# This script determines which deployment tests should be run.
+# These tests are run as separate Travis builds, by schedulining them using Travis' API.
+#
+# It assumes a matching name between the deployment script directory $REPO/deploy/$DEPLOYMENT and
+# the deployment documentation stored in $REPO/docs/deployment/$DEPLOYMENT.md.
+#
+# This script works by parsing the k8s "complete-demo.yaml" file, extracting all required
+# container image names. These images are then pulled from the Docker Hub, and their creation
+# time is compared to one day before. If in this last day, one of the containers has been updated,
+# deployment tests for all deployment targets are spawned.
+#
+# Alternatively, if no container has been updated, but some deployment documentation or deployment
+# script has changed, just that/those changed deployments are spawned as separate Travis builds.
+
+
+require_relative "../lib/doc-tests"
+
+if ENV["TRAVIS_TOKEN"].nil?
+  $stderr.puts "environment variable TRAVIS_TOKEN is not defined."
+  exit 1
+end
+
+travis = Travis.new(ENV["TRAVIS_TOKEN"], "microservices-demo", "microservices-demo")
+
+# Find the last cron job build.
+last_cron_job = travis.builds(event_type: "cron").first
+
+check_changes_since = if last_cron_job
+                        s = Time.parse(last_cron_job["started_at"])
+                        log(:info, "Last cron job ran on #{s.rfc2822}")
+                        s
+                      else
+                        s = (Date.today - 30).to_time
+                        log(:info, "No cron job found! Checking since #{s.rfc2822}")
+                        s
+                      end
+
+
+# Find all executable documentation in $GIT_ROOT/doc/deployment.
+documented_deployments = ExecutableDeploymentDocumentation.find_all
+
+tests_to_run = []
+
+if any_image_changed_since?(find_images_in_k8s_complete_demo, check_changes_since)
+  documented_deployments.each do |dd|
+    tests_to_run << dd
+  end
+else
+  documented_deployments.each do |dd|
+    if deployment_changed?(dd, check_changes_since)
+      tests_to_run << dd
+    end
+  end
+end
+
+if tests_to_run.empty?
+  log(:info, "Nothing has changed, no tests builds will be spawned.")
+else
+  log(:info, "Will spawn #{tests_to_run.length} test builds.")
+  log(:debug, "To be precise, will spawn: #{tests_to_run.inspect}.")
+
+  spawn_travis_tests(travis, tests_to_run)
+end
