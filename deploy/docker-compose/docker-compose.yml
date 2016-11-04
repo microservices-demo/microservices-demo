@@ -5,6 +5,9 @@ services:
     image: weaveworksdemos/front-end
     hostname: front-end
     restart: always
+    read_only: true
+    cap_drop:
+      - all
     environment:
       - reschedule=on-node-failure
     networks:
