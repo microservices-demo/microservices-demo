@@ -1,4 +1,4 @@
-# Testable Deployment Documentation
+# DeployDoc Tests
 This directory contains the code that is used to daily integrate all potential changes in the
 microservices and especially in the descriptions of how these are deployed on top of different
 suported targets.
@@ -34,19 +34,19 @@ The following syntaxes are supported to add snippets:
 
  1. Single line annotation, not visibile in Markdown output
 
-    &lt;!-- deploy-test PHASE [VALUE]* --&gt;
+        <!-- deploy-test PHASE [VALUE]* -->
 
  2. Hidden multiline annotation
 
-    &lt;!-- deploy-test-start PHASE [VALUE]*
-    CONTENT
-    --&gt;
+        <!-- deploy-test-start PHASE [VALUE]*
+        CONTENT
+        -->
 
  3. Visible multiline annotation
 
-    &lt;!-- deploy-test-start PHASE [VALUE]* --&gt;
-    CONTENT
-    &lt;!-- deploy-test-end --&gt;
+        <!-- deploy-test-start PHASE [VALUE]* -->
+        CONTENT
+        <!-- deploy-test-end -->
 
 
 Note that due to current technical limitations of the test runner, each step is executed in a
@@ -59,10 +59,9 @@ To contribute to these deploy documentations (e.g. to add an additional platform
 markdown file in `$REPO/docs/deployment`.
 
 Each document should start with a yaml block, containing at least the two entries `layout: default`
-and `executableDocumentation: true`.
+and `deployDoc: true`.
 The `layout` part is required by Jekyll, which is used to render the markdown to GitHub pages,
-the `executableDocumentation` is used to determine whether or not a markdown file should be
-considered to be a test.
+the `deployDoc` is used to determine whether or not a markdown file should be tested.
 
 The runner assumes that a file `$REPO/docs/deployment/$PLATFORM.md` corresponds to a directory that
 contains the required in `$REPO/deploy/$PLATFORM/`.
@@ -74,7 +73,7 @@ Example:
 
     ---
     layout: default
-    executableDocumentation: true
+    deployDoc: true
     ---
 
     # Hello World!

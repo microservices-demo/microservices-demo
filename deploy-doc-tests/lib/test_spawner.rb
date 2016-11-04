@@ -12,7 +12,7 @@ def spawn_travis_tests travis, tests
         global: [ "SPAWNED_BY_CRON_BUILD=#{cron_build_number}" ],
         matrix: tests.map { |test| "TEST_DOCUMENTATION_FOR=#{test.name}" }
       },
-      script: ["doc-tests/run $TEST_DOCUMENTATION_FOR"]
+      script: ["deploy-doc-tests/run $TEST_DOCUMENTATION_FOR"]
     })
   }
   
@@ -24,7 +24,7 @@ end
 DOT_TRAVIS_YML_WHITELIST = ["notifications"]
 def reset_dot_travis_yml
   reset = {}
-  yaml = YAML.load(File.read(File.expand_path("../../../.travis.yml", __FILE__)))
+  yaml = YAML.load(File.read(REPO_ROOT.join(".travis.yml")))
 
   yaml.each do |key, value|
     if DOT_TRAVIS_YML_WHITELIST.include?(key)

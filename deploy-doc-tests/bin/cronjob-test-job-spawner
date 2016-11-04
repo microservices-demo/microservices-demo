@@ -1,21 +1,6 @@
 #!/usr/bin/env ruby
 
-# This script determines which deployment tests should be run.
-# These tests are run as separate Travis builds, by schedulining them using Travis' API.
-#
-# It assumes a matching name between the deployment script directory $REPO/deploy/$DEPLOYMENT and
-# the deployment documentation stored in $REPO/docs/deployment/$DEPLOYMENT.md.
-#
-# This script works by parsing the k8s "complete-demo.yaml" file, extracting all required
-# container image names. These images are then pulled from the Docker Hub, and their creation
-# time is compared to one day before. If in this last day, one of the containers has been updated,
-# deployment tests for all deployment targets are spawned.
-#
-# Alternatively, if no container has been updated, but some deployment documentation or deployment
-# script has changed, just that/those changed deployments are spawned as separate Travis builds.
-
-
-require_relative "../lib/doc-tests"
+require_relative "../lib/all"
 
 if ENV["TRAVIS_TOKEN"].nil?
   $stderr.puts "environment variable TRAVIS_TOKEN is not defined."
@@ -39,7 +24,7 @@ check_changes_since = if last_cron_job
 
 
 # Find all executable documentation in $GIT_ROOT/doc/deployment.
-documented_deployments = DeploymentTest.find_all
+documented_deployments = DeployDocTest.find_all
 
 tests_to_run = []
 

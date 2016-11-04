@@ -1,4 +1,4 @@
-class DeploymentTest
+class DeployDocTest
   class Plan
     class AnnotationParser
       Annotation = Struct.new(:source_name, :line_span, :kind, :params, :content)
