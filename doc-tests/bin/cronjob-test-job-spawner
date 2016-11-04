@@ -39,7 +39,7 @@ check_changes_since = if last_cron_job
 
 
 # Find all executable documentation in $GIT_ROOT/doc/deployment.
-documented_deployments = ExecutableDeploymentDocumentation.find_all
+documented_deployments = DeploymentTest.find_all
 
 tests_to_run = []
 
