@@ -1,4 +1,4 @@
-class DeploymentTest
+class DeployDocTest
   class Plan
     require_relative "plan/annotator_parser"
 

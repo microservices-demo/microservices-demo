@@ -51,7 +51,6 @@ class Travis
 
     uri = URI.parse(start_url)
 
-
     Enumerator.new do |yielder|
       loop do
         http = Net::HTTP.new(uri.host, uri.port)

@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
-require_relative "lib/doc-tests"
+require_relative "lib/all"
 
 which_deployment = ARGV.first
 
 if which_deployment.nil?
   $stderr.puts "No deploy document test name given."
-  puts  "The following document tests are available: " + DeploymentTest.find_all.map { |dt| dt.name }.join(", ")
+  puts  "The following document tests are available: " + DeployDocTest.find_all.map { |dt| dt.name }.join(", ")
   exit 1
 end
 
-dt = DeploymentTest.find!(which_deployment)
+dt = DeployDocTest.find!(which_deployment)
 
 dirname = File.expand_path("../", __FILE__)
 Dir.chdir dirname
@@ -35,6 +35,6 @@ cmd = ["docker run",
        "-v#{File.expand_path("../../..", __FILE__)}:/repo/",
        "-w/repo/",
        container_id,
-       "ruby doc-tests/bin/test-documentation #{which_deployment}"
+       "ruby deploy-doc-tests/bin/test-documentation #{which_deployment}"
 ].join(" ")
 exec(cmd)

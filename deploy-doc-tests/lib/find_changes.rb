@@ -2,7 +2,7 @@
 # and extracts all used images.
 def find_images_in_k8s_complete_demo
   images = []
-  yaml_parts = File.read(File.expand_path("../../../../deploy/kubernetes/complete-demo.yaml", __FILE__))\
+  yaml_parts = File.read(REPO_ROOT.join("deploy").join("kubernetes").join("complete-demo.yaml"))\
     .split("---\n")\
     .map { |part| YAML.load(part) }
 
@@ -36,6 +36,8 @@ def any_image_changed_since?(image_list, since)
     log(:info, "No, nothing changed.")
     false
   end
+
+  exit 1
 end
 
 def deployment_changed?(exec_depl_doc, since)
