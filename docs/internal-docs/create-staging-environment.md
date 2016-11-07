@@ -1,28 +1,31 @@
-# Creating the staging environment
+---
+layout: default
+---
+## Creating the staging environment
 
 The staging environment is intended to be a replica of the production environment, where we are able to test new commits without harming production.
 
 The intention is to build and deploy every master commit for each service to the staging environment. Therefore each master branch should always be in a working state, since other services may depend on it.
 
-## Also see
+### Also see
 
  - [Current staging urls](./testing.md#application-urls)
  - [Creating ssh keys for deployment](./ssh-keys-for-deployment-on-travis.md)
 
-## Cluster information
+### Cluster information
 
 The cluster is a Kubernetes-based one. It roughly mimics the k8s deploy.
   
-## Installing the cluster
+### Installing the cluster
 
-### Bastion
+#### Bastion
 
 First, create a bastion host to create and manage the cluster. This machine will be used by the CI pipelines in order to deploy containers.
 
 I would recommend a standard 14.04 Ubuntu instance, with few resources (e.g. t2.micro with Amazon Linux AMI). Make sure you save the ssh key as others may need it to access the cluster.
 
 **All subsequent steps are installed from the bastion. Do not run on your own laptop. It will take all teh timez.**
-### Cluster install method
+#### Cluster install method
 
 Make sure that you have set the AWS credentials before proceeding.
 Next, use the k8s AWS instructions to create a cluster http://kubernetes.io/docs/getting-started-guides/aws/. Note that this script will fail (last tested on 1. September 2016, see https://github.com/kubernetes/kubernetes/issues/30495 for more information) but it will download all the necessary files into a kubernetes folder.
@@ -32,7 +35,7 @@ If you encounter the following error
 ```
 ./cluster/../cluster/../cluster/aws/../../cluster/common.sh: line 528: KUBE_MANIFESTS_TAR_URL: unbound variable
 ```
-go to the kubernetes/cluster folder, type `sudo nano common.sh`and edit the method `build-kube-env` like this: 
+go to the kubernetes/cluster folder, type `sudo nano common.sh` and edit the method `build-kube-env` like this: 
 
 ```
 # $1: if 'true', we're building a master yaml, else a node
@@ -75,7 +78,7 @@ Now run the installer again. It will take a while, because a minion takes about 
 export KUBERNETES_PROVIDER=aws; export KUBERNETES_SKIP_DOWNLOAD=true; curl -sS https://get.k8s.io | bash
 ```
 
-## Verification
+### Verification
 
 You should be able to ssh into the bastion, then ssh into a node, if you need to.
 `ssh -i $HOME/.ssh/kube_aws_rsa admin@$IP`
@@ -94,11 +97,11 @@ kubectl cluster-info
 
 Check that the UI is running by going to the kubernetes-dashboard url and login with the credentials from ~/.kube/config
 
-## Installing weave
+### Installing weave
 
 Installation of weave is mandatory for correct operation of the application. If you don't, it will not be able to communicate with pods on a different host.
 
-### On the MASTER
+#### On the MASTER
 
 Note that the expose is mandatory. If you don't, K8s won't be able to communicate with the pods.
 
@@ -108,7 +111,7 @@ Note that the dir creation is mandatory. If you don't, weave won't install the c
 sudo curl -L git.io/weave -o /usr/local/bin/weave ; sudo chmod +x /usr/local/bin/weave ; sudo mkdir -p /opt/cni/bin ; sudo mkdir -p /etc/cni/net.d ; sudo weave setup ; sudo weave launch ; sudo weave expose
 ```
 
-### On each MINION
+#### On each MINION
 
 Note that the minions all connect to the master, the seed, in order to form a cluster.
 
@@ -154,7 +157,7 @@ Error syncing pod, skipping: failed to "SetupNetwork" for "catalogue-db-37491742
 
 Once all minions have restarted, go to the gui or command line to verify that all system services have restarted successfully. If any services are 0/1 running, or whatever, please debug (see below for a list of commands).
 
-## Installation of application
+### Installation of application
 
 On the bastion host, clone the microservices-demo repo with
 `git clone https://github.com/microservices-demo/microservices-demo.git`
@@ -173,7 +176,7 @@ cp microservices-demo/deploy/deploy.sh ~
 You should now be able to connect to the microservices-demo. The frontend url can be found by using the following command on the bastion host:
 `kubectl describe service front-end | grep Ingress`
 
-## Installation of scope
+### Installation of scope
 
 Scope wasn't a standard part of the installation. So I created the following specification:
 
@@ -268,7 +271,7 @@ kubectl create -f scope.yaml --validate=false
 
 The --validate false is required due to some scope/k8s bug.
 
-## Getting ip addresses of external routers
+### Getting ip addresses of external routers
 
 ```
 ubuntu@ip-172-31-43-18:~$ kubectl describe service front-end | grep Ingress
@@ -278,7 +281,7 @@ LoadBalancer Ingress:  	a7f8f3738690f11e69a2f0a688e86a8f-654938939.eu-west-1.elb
 ```
 
 
-## Debugging
+### Debugging
 
 Here are a whole host of commands that help with debugging.
 
@@ -301,6 +304,6 @@ kubectl create -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml' --valid
 
 I found that it was easiest to view individual pod logs from the gui.
 
-## Final tasks
+### Final tasks
 
 Please update the [testing documentation](./testing.md) with the new ip addresses.

@@ -4,6 +4,6 @@ Sub directories contain scripts and configuration for deployment target platform
 
 The intention was to also support the following, but have been held up by technical issues:
 
-- Mesosphere DC/OS (No support in DCOS universe for mutli-container packages)
-- Docker Swarmkit (see [the swarmkit readme](./swarmkit)
-- Docker Cloud (Does not suit our use case)
+- Mesosphere DC/OS (no support in DCOS universe for multi-container packages)
+- Docker Swarmkit (see [the swarmkit readme](./swarmkit/README.md))
+- Docker Cloud (does not suit our use case)

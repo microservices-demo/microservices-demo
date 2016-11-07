@@ -1,6 +1,10 @@
-# Design
+---
+layout: default
+---
 
-## Direction
+## Design
+
+### Direction
 
 The goal of this project is to become a "reference microservices demo".
 To this end, it aims to:
@@ -12,9 +16,9 @@ To this end, it aims to:
 - Provide a "real-life" testable application for various orchestration
   platforms
 
-## Architecture
+### Architecture
 
-![Architecture diagram](https://github.com/ContainerSolutions/weaveDemo/raw/master/docs/images/Architecture.png "Architecture")
+![Architecture diagram](../assets/Architecture.png "Architecture")
 
 The architecture of the demo microserivces application was intentionally designed to provide as many microservices as possible. If you are considering your own design, we would recommend the iterative approach, whereby you only define new microservices when you see issues (performance/testing/coupling) developing in your application.
 
