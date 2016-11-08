@@ -24,7 +24,10 @@ services:
       - SETGID
       - SETUID
       - DAC_OVERRIDE
-# Requires temp file
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:rw,noexec,nosuid
+      - /var/run:rw,noexec,nosuid
     hostname: edge-router
     restart: always
     environment:
@@ -48,6 +51,7 @@ services:
     image: weaveworksdemos/catalogue-db
     hostname: catalogue-db
     restart: always
+    command: "--socket=/tmp/mysql.lock --pid-file=/tmp/mysql.pid"
     cap_drop:
       - all
     cap_add:
@@ -55,7 +59,9 @@ services:
       - CHOWN
       - SETGID
       - SETUID
-# Requires temp file
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -71,7 +77,9 @@ services:
       - all
     cap_add:
       - NET_BIND_SERVICE
-# Requires temp file
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
     networks:
@@ -86,7 +94,9 @@ services:
       - CHOWN
       - SETGID
       - SETUID
-# Requires temp file
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
     networks:
@@ -99,7 +109,9 @@ services:
       - all
     cap_add:
       - NET_BIND_SERVICE
-# Requires temp file
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
     networks:
@@ -114,7 +126,9 @@ services:
       - CHOWN
       - SETGID
       - SETUID
-# Requires temp file
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
     networks:
@@ -127,7 +141,9 @@ services:
       - all
     cap_add:
       - NET_BIND_SERVICE
-# Requires temp file
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
     networks:
@@ -142,7 +158,9 @@ services:
       - all
     cap_add:
       - NET_BIND_SERVICE
-# Requires temp file
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
     networks:
@@ -200,7 +218,9 @@ services:
       - CHOWN
       - SETGID
       - SETUID
-# Requires temp file
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
     networks:
