@@ -5,9 +5,9 @@ services:
     image: weaveworksdemos/front-end
     hostname: front-end
     restart: always
-    read_only: true
     cap_drop:
       - all
+    read_only: true
     environment:
       - reschedule=on-node-failure
     networks:
@@ -16,6 +16,15 @@ services:
     image: weaveworksdemos/edge-router
     ports:
       - '80:80'
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+# Requires temp file
     hostname: edge-router
     restart: always
     environment:
@@ -26,6 +35,11 @@ services:
     image: weaveworksdemos/catalogue
     hostname: catalogue
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
     environment:
       - reschedule=on-node-failure
     networks:
@@ -34,6 +48,14 @@ services:
     image: weaveworksdemos/catalogue-db
     hostname: catalogue-db
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - DAC_OVERRIDE
+      - CHOWN
+      - SETGID
+      - SETUID
+# Requires temp file
     environment:
       - reschedule=on-node-failure
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -45,6 +67,11 @@ services:
     image: weaveworksdemos/cart
     hostname: cart
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+# Requires temp file
     environment:
       - reschedule=on-node-failure
     networks:
@@ -53,6 +80,13 @@ services:
     image: mongo
     hostname: cart-db
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+# Requires temp file
     environment:
       - reschedule=on-node-failure
     networks:
@@ -61,6 +95,11 @@ services:
     image: weaveworksdemos/orders
     hostname: orders
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+# Requires temp file
     environment:
       - reschedule=on-node-failure
     networks:
@@ -69,6 +108,13 @@ services:
     image: mongo
     hostname: orders-db
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+# Requires temp file
     environment:
       - reschedule=on-node-failure
     networks:
@@ -77,6 +123,11 @@ services:
     image: weaveworksdemos/shipping
     hostname: shipping
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+# Requires temp file
     environment:
       - reschedule=on-node-failure
     networks:
@@ -87,6 +138,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+# Requires temp file
     environment:
       - reschedule=on-node-failure
     networks:
@@ -95,6 +151,14 @@ services:
     image: rabbitmq:3
     hostname: rabbitmq
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    read_only: true
     environment:
       - reschedule=on-node-failure
     networks:
@@ -103,6 +167,11 @@ services:
     image: weaveworksdemos/payment
     hostname: payment
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
     environment:
       - reschedule=on-node-failure
     networks:
@@ -111,6 +180,11 @@ services:
     image: weaveworksdemos/user
     hostname: user
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
     environment:
       - MONGO_HOST=user-db:27017
       - reschedule=on-node-failure
@@ -120,12 +194,22 @@ services:
     image: weaveworksdemos/user-db
     hostname: user-db
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+# Requires temp file
     environment:
       - reschedule=on-node-failure
     networks:
       - mynetwork
   user-sim:
     image: weaveworksdemos/load-test
+    cap_drop:
+      - all
+    read_only: true
     hostname: user-simulator
     command: "-d 60 -r 200 -c 2 -h edge-router"
     networks:
