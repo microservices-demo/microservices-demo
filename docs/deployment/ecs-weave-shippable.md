@@ -93,9 +93,21 @@ deploy the `front-end` service.
   * Find the 'front-end' repo in the list and select 'Enable'
 
 3. Create the `front-end` CD pipeline
-  * In the microservices-demo repo, update the following values for your AWS environment:
-    * In file `shippable.jobs.yml`
-      * Update the 
+  * In the microservices-demo repo, you'll need to update the `shippable.resource.yml`
+  configuration file with values from your AWS environment:
+    * Resource `img-front-end`
+      * Replace the Amazon ECR registry URL with the URL for your Container registry,
+      e.g. replace the AWS account ID in this URL with your account ID and the
+      region, if necessary - '288971733297.dkr.ecr.us-east-1.amazonaws.com/front-end'
+      * You can copy/paste this URL by selecting 'View Push Commands' on this page
+    * Resource `alb-front-end-test`
+      * Replace the value for 'SourceName' to be the ARN for your Target Group named 'frontendTESTTG'
+    * Resource `alb-front-end-prod`
+      * Replace the value for 'SourceName' to be the ARN for your Target Group named 'frontendPRODTG'
+    * If you're running in your cluster in a region other than 'us-east-1':
+      * Resource `cluster-demo-ecs`
+        * Replace the value for 'Region' to be the AWS region where you're
+        running your cluster
   * Select the 'Pipelines' tab, 'Resources' view, and 'Add Resource' button
   (far right)
   * In the Subscription Integrations dropdown: choose 'Add integration' and complete the fields, as follows:
@@ -172,14 +184,34 @@ deploy the `front-end` service.
     * Then a Deploy job will run to deploy to Amazon ECS
   * View your application running in your browser at (enter ALB address and port 8080)
 
-7. Create a Release
-  * Right-click the 'release-front-end' job and select 'Run'
-  * A new release will be created based on the Test deployment
-
-8. Deploy to the Prod environment
+7. Deploy to the Prod environment
   * Right-click the 'ecs-deploy-prod' job and select 'Run'
   * A Deploy job will run and deploy a Prod instance of 'front-end' to Amazon ECS
   * View your application running in your browser at (enter ALB address (port 80))
 
-9. Make a change to your front-end service and auto-deploy to Test environment
-  * Change line
+8. Make a change to your front-end service and auto-deploy to Test environment
+  * In your editor, open the `public/css/style.blue.css` file in the `front-end` repo
+  * Comment out line 1273, and un-comment line 1274 (this will change the color
+    of the active tab on the home page from blue to green)
+  * Commit your changes to GitHub
+  * View the automated CI/CD flow in Pipeline view in Shippable, which will result
+  in the code change being deployed to your Test environment
+  * In your browser, navigate again to your Test environment (on port 8080) and
+  confirm that the change was deployed successfully
+
+9. Explore!
+  * Navigate to http://{your ALB DNS}:4040 to view the Weave visualization of
+  your containerized application
+  * Navigate to https://console.aws.amazon.com/ecs/home#/clusters/ecs-weave-shippable-demo/services and explore the different elements of your cluster in Amazon ECS
+  * Navigate to your Amazon ECR repository to view your newly created Docker images
+    * Select 'Repositories' in the left-hand nav from your cluster page
+  * Explore additional elements of your Shippable Pipelines:
+    * Select the 'Jobs' view in the Pipelines tab and click on the Latest version
+    number for the `ecs-deploy-test-front-end` job.
+    * For the most recent version, select 'More' and 'Trace' to see details of the
+    elements included in this latest deployment to the Test environment
+    * Expand the `man-front-end` Resource Name
+
+10. When finished exploring, return to the AWS Management Console - CloudFormation
+page, select the 'ecs-weave-shippable-demo' stack, select 'Actions' and 'Delete
+Stack' to remove all resources related to this demo.

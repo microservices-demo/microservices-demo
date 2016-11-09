@@ -312,6 +312,12 @@
         "ClusterName" : "ecs-weave-shippable-demo"
       }
     },
+    "EcrRepo": {
+      "Type": "AWS::ECR::Repository",
+      "Properties": {
+        "RepositoryName" : "front-end"
+      }
+    },
     "AccountsDBTask": {
       "Condition": "DoDeployExampleApp",
       "Type": "AWS::ECS::TaskDefinition",
@@ -991,6 +997,7 @@
        "Type" : "AWS::IAM::User",
        "Properties" : {
           "Path" : "/",
+          "UserName" : "shippableDemoUser",
           "LoginProfile" : {
              "Password" : "myP@ssW0rd"
           },
