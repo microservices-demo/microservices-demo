@@ -47,7 +47,7 @@ jobs:
   - name: ecs-deploy-prod-front-end
     type: deploy
     steps:
-      - IN: man-front-end
+      - IN: ecs-deploy-test-front-end
         switch: off
       # - IN: release-front-end
       #   switch: off
