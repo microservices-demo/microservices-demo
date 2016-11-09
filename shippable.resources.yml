@@ -46,7 +46,6 @@ resources:
       # cpuShares: 256
 
 ################################
-
 # Specify CD pipeline resources
 
 # Pipelines to configure:
