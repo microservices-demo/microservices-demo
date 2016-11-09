@@ -5,6 +5,8 @@ metadata:
   name: cart
   labels:
     name: cart
+  annotations:
+    prometheus.io/path: "/prometheus"
   namespace: sock-shop
 spec:
   ports:
