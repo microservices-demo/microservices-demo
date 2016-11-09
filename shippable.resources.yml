@@ -75,7 +75,7 @@ resources:
     type: dockerOptions
     version:
       portMappings:
-        - 0:8079
+        - 0:8080
 
 # Environment variables for TEST environment
   - name: params-front-end-test
@@ -83,14 +83,14 @@ resources:
     version:
       params:
         ENVIRONMENT: "development"
-        PORT: 8079
+        PORT: 8080
 
 # Docker image options for PROD environment
   - name: img-opts-front-end-prod
     type: dockerOptions
     version:
       portMappings:
-        - 0:8079
+        - 0:80
 
 # Environment variables for PROD environment
   - name: params-front-end-prod
@@ -98,7 +98,7 @@ resources:
     version:
       params:
         ENVIRONMENT: "production"
-        PORT: 8079
+        PORT: 80
 
 # PROD replica controller
   - name: replicas-front-end-prod

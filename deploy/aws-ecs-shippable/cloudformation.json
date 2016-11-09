@@ -238,7 +238,7 @@
   "Properties" : {
     "HealthCheckIntervalSeconds" : 30,
     "HealthCheckPath" : "/",
-    "HealthCheckPort" : "8080",
+    /*"HealthCheckPort" : "8079",*/
     "HealthCheckProtocol" : "HTTP",
     "HealthCheckTimeoutSeconds" : 5,
     "HealthyThresholdCount" : 5,
@@ -254,7 +254,7 @@
   "Properties" : {
     "HealthCheckIntervalSeconds" : 30,
     "HealthCheckPath" : "/",
-    "HealthCheckPort" : "80",
+    /*"HealthCheckPort" : "8079",*/
     "HealthCheckProtocol" : "HTTP",
     "HealthCheckTimeoutSeconds" : 5 ,
     "HealthyThresholdCount" : 5,
