@@ -65,7 +65,6 @@ resources:
 # Docker image information
   - name: img-front-end
     type: image
-    integration: shippable-aws
     pointer:
       sourceName: 288971733297.dkr.ecr.us-east-1.amazonaws.com/front-end
       isPull: false
@@ -77,7 +76,7 @@ resources:
     type: dockerOptions
     version:
       portMappings:
-        - 0:80
+        - 0:8079
 
 # Environment variables for TEST environment
   - name: params-front-end-test
@@ -85,14 +84,14 @@ resources:
     version:
       params:
         ENVIRONMENT: "development"
-        PORT: 80
+        PORT: 8079
 
 # Docker image options for PROD environment
   - name: img-opts-front-end-prod
     type: dockerOptions
     version:
       portMappings:
-        - 0:80
+        - 0:8079
 
 # Environment variables for PROD environment
   - name: params-front-end-prod
@@ -100,7 +99,7 @@ resources:
     version:
       params:
         ENVIRONMENT: "production"
-        PORT: 80
+        PORT: 8079
 
 # PROD replica controller
   - name: replicas-front-end-prod
