@@ -6,7 +6,7 @@ metadata:
   labels:
     name: orders
   annotations:
-    prometheus.io.path: "/prometheus"
+    prometheus.io/path: "/prometheus"
   namespace: sock-shop
 spec:
   ports:
