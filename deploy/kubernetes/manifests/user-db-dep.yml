@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: user-db
-        image: weaveworksdemos/user-db
+        image: weaveworksdemos/user-db:0.3.0
 
         ports:
         - name: mongo
