@@ -21,7 +21,7 @@ For additional information on the Sock Shop microservices demo application creat
 by Weave.works and Container Solutions, see [the full description]
 (https://microservices-demo.github.io/).
 
-### Getting Started
+## Getting Started
 
 To run the demonstration, you'll set up the following:
 
@@ -33,7 +33,7 @@ To run the demonstration, you'll set up the following:
 
 3. Configure an automated CI/CD pipeline to deploy the 'front-end' component
 
-##### Fork and clone the repos
+#### Fork and clone the repos
 
 1. Go to the GitHub repo for  [microservices-demo](https://github.com/microservices-demo/microservices-demo)
 
@@ -48,7 +48,7 @@ if you don't have one).
 
 4. Repeat steps 1-3 for the [front-end](https://github.com/ecs-weave-shippable-demo/front-end) component
 
-##### Provision a Weave-enabled Amazon ECS cluster
+#### Provision a Weave-enabled Amazon ECS cluster
 
 1. [Log into Amazon Management Console](https://console.aws.amazon.com/console/home)
   * If you do not have an AWS account, create one first
@@ -78,7 +78,7 @@ CloudFormation will now create the entire stack necessary to run your eCommerce
 demo app on Amazon ECS. This could several minutes to complete and it will
 provision compute on AWS.
 
-##### Configure an automated CI/CD pipeline
+#### Configure an automated CI/CD pipeline
 
 Your Weave-enabled cluster is now running 15 out of the 16 services of the Socks
 Shop application. We'll use Shippable to set up an automated CI/CD pipeline to
@@ -213,6 +213,7 @@ deploy the `front-end` service.
     elements included in this latest deployment to the Test environment
     * Expand the `man-front-end` Resource Name
 
-10. When finished exploring, return to the AWS Management Console - CloudFormation
+10. Delete your CloudFormation stack
+When finished exploring, return to the AWS Management Console - CloudFormation
 page, select the 'ecs-weave-shippable-demo' stack, select 'Actions' and 'Delete
 Stack' to remove all resources related to this demo.
