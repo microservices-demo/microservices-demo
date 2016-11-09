@@ -93,6 +93,9 @@ deploy the `front-end` service.
   * Find the 'front-end' repo in the list and select 'Enable'
 
 3. Create the `front-end` CD pipeline
+  * In the microservices-demo repo, update the following values for your AWS environment:
+    * In file `shippable.jobs.yml`
+      * Update the 
   * Select the 'Pipelines' tab, 'Resources' view, and 'Add Resource' button
   (far right)
   * In the Subscription Integrations dropdown: choose 'Add integration' and complete the fields, as follows:
@@ -179,4 +182,4 @@ deploy the `front-end` service.
   * View your application running in your browser at (enter ALB address (port 80))
 
 9. Make a change to your front-end service and auto-deploy to Test environment
-  *
+  * Change line
