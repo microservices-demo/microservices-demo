@@ -18,3 +18,19 @@ spec:
         image: weaveworksdemos/cart:0.3.0
         ports:
         - containerPort: 80
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory

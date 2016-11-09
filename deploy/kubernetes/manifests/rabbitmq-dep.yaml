@@ -18,3 +18,13 @@ spec:
         image: rabbitmq:3
         ports:
         - containerPort: 5672
+        securityContext:
+          capabilities:
+            drop:
+              - all
+            add:
+              - CHOWN
+              - SETGID
+              - SETUID
+              - DAC_OVERRIDE
+          readOnlyRootFilesystem: true
