@@ -104,6 +104,6 @@ resources:
   - name: replicas-front-end-prod
     type: replicas
     version:
-      count: 2
+      count: 1
 
 #--------------------
