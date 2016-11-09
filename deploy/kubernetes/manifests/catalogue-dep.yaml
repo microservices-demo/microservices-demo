@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue
+        image: weaveworksdemos/catalogue:0.2.0
         ports:
         - containerPort: 80

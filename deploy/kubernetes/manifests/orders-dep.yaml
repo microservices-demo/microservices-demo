@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.2.0
+        image: weaveworksdemos/orders:0.3.0
         ports:
         - containerPort: 80
