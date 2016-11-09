@@ -20,3 +20,10 @@ spec:
             memory: 100Mi
         ports:
         - containerPort: 8079
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+          readOnlyRootFilesystem: true
