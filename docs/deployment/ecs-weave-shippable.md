@@ -24,6 +24,7 @@ by Weave.works and Container Solutions, see [the full description]
 ### Getting Started
 
 To run the demonstration, you'll set up the following:
+
 1. Fork and clone the two repos you'll need:
   * [deploy-pipeline](https://github.com/ecs-weave-shippable-demo/deploy-pipeline)
   * [front-end component](https://github.com/ecs-weave-shippable-demo/front-end)
