@@ -9,9 +9,9 @@ resources:
 # AWS cluster information
   - name: cluster-demo-ecs
     type: cluster
-    integration: ttrahan-aws
+    integration: shippable-aws
     pointer:
-      sourceName : "weave-ecs-demo-cluster"
+      sourceName : "ecs-weave-shippable-demo"
       region: "us-east-1"
 
 # AWS ALB target group for TEST environment
@@ -65,7 +65,7 @@ resources:
 # Docker image information
   - name: img-front-end
     type: image
-    integration: ttrahan-ecr
+    integration: shippable-aws
     pointer:
       sourceName: 288971733297.dkr.ecr.us-east-1.amazonaws.com/front-end
       isPull: false

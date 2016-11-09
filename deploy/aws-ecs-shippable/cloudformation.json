@@ -124,7 +124,7 @@
     "Scale": {
       "Type": "Number",
       "Description": "Size of ECS cluster",
-      "Default": "3"
+      "Default": "4"
     },
     "KeyName": {
       "Type": "AWS::EC2::KeyPair::KeyName",
@@ -309,7 +309,10 @@
   }
 },
     "EcsCluster": {
-      "Type": "AWS::ECS::Cluster"
+      "Type": "AWS::ECS::Cluster",
+      "Properties" : {
+        "ClusterName" : "ecs-weave-shippable-demo"
+      }
     },
     "AccountsDBTask": {
       "Condition": "DoDeployExampleApp",
@@ -320,7 +323,7 @@
             "Essential": true,
             "Image": "mongo",
             "Name": "accounts-db",
-            "Memory": 512
+            "Memory": 256
           }
         ],
         "Volumes": []
@@ -348,7 +351,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/accounts",
             "Name": "accounts",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -376,7 +379,7 @@
             "Essential": true,
             "Image": "mongo",
             "Name": "cart-db",
-            "Memory": 512
+            "Memory": 256
           }
         ],
         "Volumes": []
@@ -404,7 +407,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/cart",
             "Name": "cart",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -432,7 +435,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/catalogue",
             "Name": "catalogue",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -460,7 +463,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/catalogue-db",
             "Name": "catalogue-db",
-            "Memory": 512,
+            "Memory": 256,
             "Environment": [
               {
                 "Name": "MYSQL_ROOT_PASSWORD",
@@ -489,42 +492,6 @@
         }
       }
     },
-    "FrontEndTask": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::TaskDefinition",
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Essential": true,
-            "Image": "weaveworksdemos/front-end",
-            "Name": "front-end",
-            "Memory": 1024,
-            "PortMappings": [
-              {
-                "HostPort": 80,
-                "ContainerPort": 8079
-              }
-            ]
-          }
-        ],
-        "Volumes": []
-      }
-    },
-    "FrontEndService": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::Service",
-      "Properties": {
-        "Cluster": {
-          "Ref": "EcsCluster"
-        },
-        "DesiredCount": {
-          "Ref": "Scale"
-        },
-        "TaskDefinition": {
-          "Ref": "FrontEndTask"
-        }
-      }
-    },
     "LoginTask": {
       "Condition": "DoDeployExampleApp",
       "Type": "AWS::ECS::TaskDefinition",
@@ -534,7 +501,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/login",
             "Name": "login",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -562,7 +529,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/user",
             "Name": "user",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -590,7 +557,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/user-db",
             "Name": "user-db",
-            "Memory": 512
+            "Memory": 256
           }
         ],
         "Volumes": []
@@ -618,7 +585,7 @@
             "Essential": true,
             "Image": "mongo",
             "Name": "orders-db",
-            "Memory": 512
+            "Memory": 256
           }
         ],
         "Volumes": []
@@ -646,7 +613,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/orders",
             "Name": "orders",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -674,7 +641,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/payment",
             "Name": "payment",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -702,7 +669,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/queue-master",
             "Name": "queue-master",
-            "Memory": 512,
+            "Memory": 256,
             "MountPoints": [
               {
                 "ContainerPath": "/var/run/docker.sock",
@@ -743,7 +710,7 @@
             "Essential": true,
             "Image": "rabbitmq:3",
             "Name": "rabbitmq",
-            "Memory": 512
+            "Memory": 256
           }
         ],
         "Volumes": []
@@ -771,7 +738,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/shipping",
             "Name": "shipping",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -1021,6 +988,75 @@
           "Ref": "EcsSecurityGroup"
         }
       }
+    },
+    "shippableDemoUser" : {
+       "Type" : "AWS::IAM::User",
+       "Properties" : {
+          "Path" : "/",
+          "LoginProfile" : {
+             "Password" : "myP@ssW0rd"
+          },
+          "Policies" : [ {
+             "PolicyName" : "shippableEcrPushPull",
+             "PolicyDocument" : {
+               "Version": "2012-10-17",
+               "Statement": [
+                 {
+                   "Effect": "Allow",
+                   "Action": [
+                     "ecr:BatchGetImage",
+                     "ecr:GetDownloadUrlForLayer",
+                     "ecr:InitiateLayerUpload",
+                     "ecr:UploadLayerPart",
+                     "ecr:CompleteLayerUpload",
+                     "ecr:BatchCheckLayerAvailability",
+                     "ecr:PutImage",
+                     "ecr:GetAuthorizationToken",
+                     "ecr:GetRepositoryPolicy",
+                     "ecr:DescribeRepositories",
+                     "ecr:ListImages"
+                   ],
+                   "Resource": "*"
+                 }
+               ]
+             },
+          },
+          {
+             "PolicyName" : "shippableEcsDeploy",
+             "PolicyDocument" : {
+               "Version": "2012-10-17",
+               "Statement": [
+                 {
+                   "Effect": "Allow",
+                   "Action": [
+                     "elasticloadbalancing:ConfigureHealthCheck",
+                     "elasticloadbalancing:DescribeLoadBalancers",
+                     "elasticloadbalancing:DeleteLoadBalancerListeners",
+                     "elasticloadbalancing:CreateLoadBalancerListeners",
+                     "iam:ListServerCertificates",
+                     "iam:ListRoles",
+                     "iam:PassRole",
+                     "ec2:DescribeRegions",
+                     "ec2:DescribeInstances",
+                     "ecs:DescribeClusters",
+                     "ecs:ListClusters",
+                     "ecs:RegisterTaskDefinition",
+                     "ecs:DeregisterTaskDefinition",
+                     "ecs:ListTaskDefinitions",
+                     "ecs:DescribeServices",
+                     "ecs:UpdateService",
+                     "ecs:DeleteService",
+                     "ecs:CreateService",
+                     "ecs:ListTasks",
+                     "ecs:ListContainerInstances",
+                     "ecs:DescribeContainerInstances"
+                   ],
+                   "Resource": "*"
+                 }
+               ]
+             },
+          } ]
+       }
     },
     "EcsInstancePolicy": {
       "Type": "AWS::IAM::Role",
