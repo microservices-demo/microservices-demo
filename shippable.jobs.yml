@@ -29,26 +29,28 @@ jobs:
             port: 8080
       - TASK: managed
 
-# Create release for PROD
-  - name: release-front-end
-    type: release
-    steps:
-      - IN: ver-front-end
-        switch: off
-      - IN: ecs-deploy-test-front-end
-        switch: off
-      - IN: trigger-front-end-release
-      - IN: img-opts-front-end-prod
-      - TASK:   managed
-        bump: patch
+# # Create release for PROD
+#   - name: release-front-end
+#     type: release
+#     steps:
+#       - IN: ver-front-end
+#         switch: off
+#       - IN: ecs-deploy-test-front-end
+#         switch: off
+#       - IN: trigger-front-end-release
+#       - IN: img-opts-front-end-prod
+#       - TASK:   managed
+#         bump: patch
 
 # move this block to separate repo to limit PROD deployment to different users
 # PROD deployment to Amazon ECS
   - name: ecs-deploy-prod-front-end
     type: deploy
     steps:
-      - IN: release-front-end
+      - IN: man-front-end
         switch: off
+      # - IN: release-front-end
+      #   switch: off
       - IN: params-front-end-prod
       - IN: replicas-front-end-prod
       - IN: trigger-front-end-prod

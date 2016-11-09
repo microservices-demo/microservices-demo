@@ -238,7 +238,6 @@
   "Properties" : {
     "HealthCheckIntervalSeconds" : 30,
     "HealthCheckPath" : "/",
-    /*"HealthCheckPort" : "8079",*/
     "HealthCheckProtocol" : "HTTP",
     "HealthCheckTimeoutSeconds" : 5,
     "HealthyThresholdCount" : 5,
@@ -254,7 +253,6 @@
   "Properties" : {
     "HealthCheckIntervalSeconds" : 30,
     "HealthCheckPath" : "/",
-    /*"HealthCheckPort" : "8079",*/
     "HealthCheckProtocol" : "HTTP",
     "HealthCheckTimeoutSeconds" : 5 ,
     "HealthyThresholdCount" : 5,
@@ -981,7 +979,7 @@
         "GroupId": {
           "Ref": "EcsSecurityGroup"
         },
-        "IpProtocol": "udp",
+        "IpProtocol": "tcp",
         "FromPort": "31000",
         "ToPort": "61000",
         "SourceSecurityGroupId": {
@@ -1389,6 +1387,16 @@
             "Ref": "EcsCluster"
         }
     },
+    "TargetGroupARN-test": {
+        "Value": {
+            "Ref": "frontendTESTTG"
+        }
+    },
+    "TargetGroupARN-prod": {
+        "Value": {
+            "Ref": "frontendPRODTG"
+        }
+    },
     "ProdALB": {
         "Value": {
             "Fn::Join": [
@@ -1403,23 +1411,23 @@
                     ":80"
                 ]
             ]
-            }
-        },
-        "TestALB": {
-            "Value": {
-                "Fn::Join": [
-                    "", [
-
-                        {
-                            "Fn::GetAtt": [
-                                "SockShopALB",
-                                "DNSName"
-                            ]
-                        },
-                        ":8080"
-                    ]
-                ]
-            }
         }
+    },
+    "TestALB": {
+        "Value": {
+            "Fn::Join": [
+                "", [
+
+                    {
+                        "Fn::GetAtt": [
+                            "SockShopALB",
+                            "DNSName"
+                        ]
+                    },
+                    ":8080"
+                ]
+            ]
+        }
+    }
     }
 }
