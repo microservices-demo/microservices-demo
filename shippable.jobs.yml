@@ -26,7 +26,7 @@ jobs:
         applyTo:
           - manifest: man-front-end
             image: img-front-end
-            port: 8080
+            port: 8079
       - TASK: managed
 
 # Create release for PROD
@@ -56,7 +56,7 @@ jobs:
         applyTo:
           - manifest: man-front-end
             image: img-front-end
-            port: 80
+            port: 8079
       - IN: cluster-demo-ecs
       - TASK: managed
 
