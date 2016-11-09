@@ -69,7 +69,7 @@ resources:
       sourceName: 288971733297.dkr.ecr.us-east-1.amazonaws.com/front-end
       isPull: false
     seed:
-      versionName: master.11
+      versionName: master.20
 
 # Docker image options for TEST environment
   - name: img-opts-front-end-test
