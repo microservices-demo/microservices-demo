@@ -245,6 +245,12 @@
     "Port" : 8080,
     "Protocol" : "HTTP",
     "UnhealthyThresholdCount" : 5,
+    "TargetGroupAttributes" : [
+      {
+        "Key" : "deregistration_delay.timeout_seconds",
+        "Value" : 5
+      }
+    ],
     "VpcId" : { "Ref": "Vpc" }
   }
 },
@@ -260,6 +266,12 @@
     "Port" : 80,
     "Protocol" : "HTTP",
     "UnhealthyThresholdCount" : 5,
+    "TargetGroupAttributes" : [
+      {
+        "Key" : "deregistration_delay.timeout_seconds",
+        "Value" : 5 
+      }
+    ],
     "VpcId" : { "Ref": "Vpc" }
   }
 },

@@ -26,8 +26,8 @@ by Weave.works and Container Solutions, see [the full description]
 To run the demonstration, you'll set up the following:
 
 1. Fork and clone the two repos you'll need:
-  * [deploy-pipeline](https://github.com/ecs-weave-shippable-demo/deploy-pipeline)
-  * [front-end component](https://github.com/ecs-weave-shippable-demo/front-end)
+  * [microservices-demo](https://github.com/microservices-demo/microservices-demo)
+  * [front-end component](https://github.com/microservices-demo/front-end)
 
 2. Provision a Weave-enabled Amazon ECS cluster in your AWS account
 
@@ -46,7 +46,7 @@ if you don't have one).
   * Go to your local machine and open a command line
   * Execute `git clone {your_forked_url}` at the command line
 
-4. Repeat steps 1-3 for the [front-end](https://github.com/ecs-weave-shippable-demo/front-end) component
+4. Repeat steps 1-3 for the [front-end](https://github.com/microservices-demo/front-end) component
 
 #### Provision a Weave-enabled Amazon ECS cluster
 
