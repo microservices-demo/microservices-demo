@@ -1,0 +1,20 @@
+triggers:
+# This file contains triggers to be used to manually trigger an automated CI/CD
+# workflow using Shippable Pipelines
+
+################################
+
+  - name: trigger-front-end-test
+    type: trigger
+    version:
+      message: 'trigger to deploy to TEST'
+
+  - name: trigger-front-end-prod
+    type: trigger
+    version:
+      message: 'trigger to deploy to PROD'
+
+  - name: trigger-front-end-release
+    type: trigger
+    version:
+      message: 'trigger to create release'
