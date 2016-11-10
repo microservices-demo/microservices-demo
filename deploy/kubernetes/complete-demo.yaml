@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user
+        image: weaveworksdemos/user:0.3.0
         ports:
         - containerPort: 80
 ---
@@ -46,7 +46,7 @@ spec:
     spec:
       containers:
       - name: user-db
-        image: weaveworksdemos/user-db
+        image: weaveworksdemos/user-db:0.3.0
         ports:
         - name: mongo
           containerPort: 27017
@@ -80,7 +80,7 @@ spec:
     spec:
       containers:
       - name: cart
-        image: weaveworksdemos/cart
+        image: weaveworksdemos/cart:0.3.0
         ports:
         - containerPort: 80
 ---
@@ -115,7 +115,7 @@ spec:
     spec:
       containers:
       - name: cart-db
-        image: mongo
+        image: mongo:3.4
         ports:
         - name: mongo
           containerPort: 27017
@@ -149,7 +149,7 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue
+        image: weaveworksdemos/catalogue:0.2.0
         ports:
         - containerPort: 80
 ---
@@ -182,7 +182,7 @@ spec:
     spec:
       containers:
       - name: catalogue-db
-        image: weaveworksdemos/catalogue-db
+        image: weaveworksdemos/catalogue-db:0.2.0
         env: 
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password
@@ -219,7 +219,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: weaveworksdemos/front-end
+        image: weaveworksdemos/front-end:0.2.0
         resources:
           requests:
             cpu: 100m
@@ -240,7 +240,7 @@ spec:
     targetPort: 8079
   selector:
     name: front-end
----  
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -256,7 +256,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.2.0
+        image: weaveworksdemos/orders:0.3.0
         ports:
         - containerPort: 80
 ---
@@ -291,7 +291,7 @@ spec:
     spec:
       containers:
       - name: orders-db
-        image: mongo
+        image: mongo:3.4
         ports:
         - name: mongo
           containerPort: 27017
@@ -325,7 +325,7 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment
+        image: weaveworksdemos/payment:0.3.0
         ports:
         - containerPort: 80
 ---
@@ -358,7 +358,7 @@ spec:
     spec:
       containers:
       - name: queue-master
-        image: weaveworksdemos/queue-master
+        image: weaveworksdemos/queue-master:0.3.0
         ports:
         - containerPort: 80
 ---
@@ -426,7 +426,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping
+        image: weaveworksdemos/shipping:0.3.0
         ports:
         - containerPort: 80
 ---
