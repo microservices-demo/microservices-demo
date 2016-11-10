@@ -184,7 +184,7 @@
   "Properties": {
     "DefaultActions": [{
       "Type": "forward",
-      "TargetGroupArn": { "Ref": "frontendTESTTG" }
+      "TargetGroupArn": { "Ref": "frontendPRODTG" }
     }],
     "LoadBalancerArn": { "Ref": "SockShopALB" },
     "Port": "80",

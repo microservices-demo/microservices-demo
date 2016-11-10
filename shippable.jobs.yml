@@ -38,7 +38,6 @@ jobs:
 #       - IN: ecs-deploy-test-front-end
 #         switch: off
 #       - IN: trigger-front-end-release
-#       - IN: img-opts-front-end-prod
 #       - TASK:   managed
 #         bump: patch
 
@@ -51,6 +50,7 @@ jobs:
         switch: off
       # - IN: release-front-end
       #   switch: off
+      - IN: img-opts-front-end-prod
       - IN: params-front-end-prod
       - IN: replicas-front-end-prod
       - IN: trigger-front-end-prod
