@@ -5,7 +5,7 @@ class DeployDocTest < Struct.new(:name, :markdown_file, :deployment_directory, :
   def self.find!(name)
     deploy_doc_test = DeployDocTest.find_all.find { |deploy_doc_test| deploy_doc_test.name == name }
     if deploy_doc_test.nil?
-      $stderr.puts "Executable deployment documentation for #{name} not found."
+      $stderr.puts "DeployDoc for #{name} not found."
       exit 1
     else
       deploy_doc_test

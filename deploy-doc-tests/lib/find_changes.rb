@@ -46,7 +46,7 @@ def deployment_changed?(exec_depl_doc, since)
 
   changed = false
   if last_deployment_doc_change > since
-    log(:debug, "Something in the executable documentation for #{exec_depl_doc.name} has changed since #{since.rfc2822}")
+    log(:debug, "Something in the DeployDoc for #{exec_depl_doc.name} has changed since #{since.rfc2822}")
     changed = true
   end
   if last_deploy_change > since
@@ -55,7 +55,7 @@ def deployment_changed?(exec_depl_doc, since)
   end
 
   if changed
-    log(:info, "Executable documentation or script for #{exec_depl_doc.name} has changed since #{since.rfc2822}")
+    log(:info, "DeployDoc or script for #{exec_depl_doc.name} has changed since #{since.rfc2822}")
   end
 
   changed
