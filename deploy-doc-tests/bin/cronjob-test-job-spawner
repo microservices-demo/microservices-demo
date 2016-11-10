@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/all"
+
+if ENV["TRAVIS_TOKEN"].nil?
+  $stderr.puts "environment variable TRAVIS_TOKEN is not defined."
+  exit 1
+end
+
+travis = Travis.new(ENV["TRAVIS_TOKEN"], "microservices-demo", "microservices-demo")
+
+# Find the last cron job build.
+last_cron_job = travis.builds(event_type: "cron").first
+
+check_changes_since = if last_cron_job
+                        s = Time.parse(last_cron_job["started_at"])
+                        log(:info, "Last cron job ran on #{s.rfc2822}")
+                        s
+                      else
+                        s = (Date.today - 30).to_time
+                        log(:info, "No cron job found! Checking since #{s.rfc2822}")
+                        s
+                      end
+
+
+# Find all DeployDoc's in $GIT_ROOT/doc/deployment.
+documented_deployments = DeployDocTest.find_all
+
+tests_to_run = []
+
+if any_image_changed_since?(find_images_in_k8s_complete_demo, check_changes_since)
+  documented_deployments.each do |dd|
+    tests_to_run << dd
+  end
+else
+  documented_deployments.each do |dd|
+    if deployment_changed?(dd, check_changes_since)
+      tests_to_run << dd
+    end
+  end
+end
+
+if tests_to_run.empty?
+  log(:info, "Nothing has changed, no tests builds will be spawned.")
+else
+  log(:info, "Will spawn #{tests_to_run.length} test builds.")
+  log(:debug, "To be precise, will spawn: #{tests_to_run.inspect}.")
+
+  spawn_travis_tests(travis, tests_to_run)
+end

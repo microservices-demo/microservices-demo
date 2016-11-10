@@ -1,5 +1,6 @@
 ---
 layout: default
+executableDocumentation: true
 ---
 
 ## Sock Shop on Docker Compose
