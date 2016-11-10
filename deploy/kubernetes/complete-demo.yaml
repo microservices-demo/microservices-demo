@@ -115,7 +115,7 @@ spec:
     spec:
       containers:
       - name: cart-db
-        image: mongo
+        image: mongo:3.4
         ports:
         - name: mongo
           containerPort: 27017
@@ -291,7 +291,7 @@ spec:
     spec:
       containers:
       - name: orders-db
-        image: mongo
+        image: mongo:3.4
         ports:
         - name: mongo
           containerPort: 27017
