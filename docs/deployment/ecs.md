@@ -1,5 +1,7 @@
 ---
 layout: default
+executableDocumentation: true
+deploymentScriptDir: "aws-ecs"
 ---
 
 ## Deployment on Amazon's Elastic Container Service
