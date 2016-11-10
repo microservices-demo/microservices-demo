@@ -90,6 +90,8 @@ metadata:
   name: cart
   labels:
     name: cart
+  annotations:
+    prometheus.io/path: "/prometheus"
 spec:
   ports:
     # the port that this service should serve on
@@ -254,7 +256,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders
+        image: weaveworksdemos/orders:0.2.0
         ports:
         - containerPort: 80
 ---
@@ -264,6 +266,8 @@ metadata:
   name: orders
   labels:
     name: orders
+  annotations:
+    prometheus.io/path: "/prometheus"
 spec:
   ports:
     # the port that this service should serve on
@@ -364,6 +368,8 @@ metadata:
   name: queue-master
   labels:
     name: queue-master
+  annotations:
+    prometheus.io/path: "/prometheus"
 spec:
   ports:
     # the port that this service should serve on
@@ -430,6 +436,8 @@ metadata:
   name: shipping
   labels:
     name: shipping
+  annotations:
+    prometheus.io/path: "/prometheus"
 spec:
   ports:
     # the port that this service should serve on

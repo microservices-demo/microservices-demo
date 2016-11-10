@@ -67,9 +67,6 @@ items:
                 - '$(WEAVESCOPE_APP_SERVICE_HOST):$(WEAVESCOPE_APP_SERVICE_PORT)'
               securityContext:
                 privileged: true
-              resources:
-                limits:
-                  cpu: 50m
               volumeMounts:
                 - name: docker-sock
                   mountPath: /var/run/docker.sock
