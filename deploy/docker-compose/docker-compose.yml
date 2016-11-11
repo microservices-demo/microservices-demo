@@ -48,17 +48,6 @@ services:
     image: weaveworksdemos/catalogue-db
     hostname: catalogue-db
     restart: always
-    command: "--socket=/tmp/mysql.lock --pid-file=/tmp/mysql.pid"
-    cap_drop:
-      - all
-    cap_add:
-      - DAC_OVERRIDE
-      - CHOWN
-      - SETGID
-      - SETUID
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
