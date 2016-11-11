@@ -2,12 +2,9 @@ version: '2'
 
 services:
   front-end:
-    image: weaveworksdemos/front-end
+    image: weaveworksdemos/front-end:9093ed8f9be68d2497bcb92587b01db6ac8197fe
     hostname: front-end
     restart: always
-    cap_drop:
-      - all
-    read_only: true
     environment:
       - reschedule=on-node-failure
     networks:
