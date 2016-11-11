@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+require_relative "lib/all"
+
+which_deployment = ARGV.first
+
+if which_deployment.nil?
+  $stderr.puts "No deploy document test name given."
+  puts  "The following document tests are available: " + DeployDocTest.find_all.map { |dt| dt.name }.join(", ")
+  exit 1
+end
+
+dt = DeployDocTest.find!(which_deployment)
+
+dirname = File.expand_path("../", __FILE__)
+Dir.chdir dirname
+
+log(:info, "Building test runner container")
+container_id = capture_or_die("docker build -q .").chomp.split(":").last
+
+envs = dt.plan.required_env_vars.map do |name|
+  val = ENV[name]
+  if val.nil?
+    $stderr.puts "Required environmental variable #{name} is not set"
+    exit 1
+  else
+    "-e#{name}=#{val}"
+  end
+end.join(" ")
+
+log(:info, "Running test!")
+cmd = ["docker run",
+       "--rm",
+       envs,
+       "-v/var/run/docker.sock:/var/run/docker.sock",
+       "-v#{File.expand_path("../../..", __FILE__)}:/repo/",
+       "-w/repo/",
+       container_id,
+       "ruby deploy-doc-tests/bin/test-documentation #{which_deployment}"
+].join(" ")
+exec(cmd)

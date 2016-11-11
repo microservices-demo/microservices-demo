@@ -36,6 +36,7 @@ items:
         - name: app
           port: 80
           targetPort: 4040
+          nodePort: 30001
           protocol: TCP
       selector:
         app: weavescope

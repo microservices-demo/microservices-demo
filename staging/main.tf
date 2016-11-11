@@ -99,3 +99,33 @@ resource "null_resource" "weave-kube" {
     command = "kubectl apply -f https://git.io/weave-kube"
   }
 }
+
+resource "aws_elb" "microservices-demo-staging-k8s" {
+  depends_on = [ "aws_instance.k8s-node" ]
+  name = "microservices-demo-staging-k8s"
+  instances = ["${aws_instance.k8s-node.*.id}"]
+  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  security_groups = ["${aws_security_group.microservices-demo-staging-k8s.id}"]
+
+  listener {
+    lb_port = 80
+    instance_port = 30000
+    lb_protocol = "http"
+    instance_protocol = "http"
+  }
+}
+
+resource "aws_elb" "microservicesdemo-staging-scope" {
+  depends_on = [ "aws_instance.k8s-node" ]
+  name = "microservicesdemo-staging-scope"
+  instances = ["${aws_instance.k8s-node.*.id}"]
+  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  security_groups = ["${aws_security_group.microservices-demo-staging-k8s.id}"]
+
+  listener {
+    lb_port = 80
+    instance_port = 30001
+    lb_protocol = "http"
+    instance_protocol = "http"
+  }
+}
