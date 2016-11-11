@@ -84,7 +84,7 @@
     "EcsInstanceType": {
       "Type": "String",
       "Description": "Type of the EC2 instance(s) to deploy",
-      "Default": "t2.micro",
+      "Default": "t2.small",
       "AllowedValues": [
         "t2.micro",
         "t2.small",
@@ -245,6 +245,12 @@
     "Port" : 8080,
     "Protocol" : "HTTP",
     "UnhealthyThresholdCount" : 5,
+    "TargetGroupAttributes" : [
+      {
+        "Key" : "deregistration_delay.timeout_seconds",
+        "Value" : 5
+      }
+    ],
     "VpcId" : { "Ref": "Vpc" }
   }
 },
@@ -260,6 +266,12 @@
     "Port" : 80,
     "Protocol" : "HTTP",
     "UnhealthyThresholdCount" : 5,
+    "TargetGroupAttributes" : [
+      {
+        "Key" : "deregistration_delay.timeout_seconds",
+        "Value" : 5
+      }
+    ],
     "VpcId" : { "Ref": "Vpc" }
   }
 },
@@ -1394,12 +1406,12 @@
             "Ref": "EcsCluster"
         }
     },
-    "TargetGroupARN-test": {
+    "TargetGroupARNTest": {
         "Value": {
             "Ref": "frontendTESTTG"
         }
     },
-    "TargetGroupARN-prod": {
+    "TargetGroupARNProd": {
         "Value": {
             "Ref": "frontendPRODTG"
         }

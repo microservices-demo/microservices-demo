@@ -4,7 +4,7 @@ executableDocumentation: true
 deploymentScriptDir: "aws-ecs"
 ---
 
-## Deployment on Amazon's Elastic Container Service
+## Deployment on Amazon EC/2 Container Service
 
 <!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
 
