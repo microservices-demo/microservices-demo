@@ -54,7 +54,7 @@ except for the front-end service.
 
 3. Select `Create Stack`
 
-4. Under `Choose a template`, select `Choose file`
+4. Under `Choose a template`, select `Choose file` or `Browse`
 
 5. Navigate to the directory where you cloned the <span style="color: orange">
 microservices-demo</span> repo
@@ -77,16 +77,16 @@ and choose to upload the file `./deploy/aws-ecs/cloudformation.json`
 necessary to run your eCommerce demo app on Amazon ECS. This could several
 minutes to complete and it will provision compute on AWS.
 
-When complete, you'll find values of AWS resources needed for the CI/CD pipeline
-setup available on the `Output` tab.
+When your stack creation finishes with 'CREATE_COMPLETE', you'll find values of
+AWS resources needed for the CI/CD pipeline setup available on the `Outputs` tab.
 
 ---
 ### Configure an automated CI/CD pipeline
 
 Your Weave-enabled Amazon ECS cluster should now be running 15 out of the 16 services
-of the Socks Shop application. We'll use Shippable to set up an automated CI/CD
-pipeline to deploy the <a href="https://github.com/microservices-demo/front-end"
-style="color: orange">
+of the Socks Shop application (you can see this by navigating to EC2 Container Service).
+We'll use Shippable to set up an automated CI/CD pipeline to deploy the
+<a href="https://github.com/microservices-demo/front-end" style="color: orange">
 front-end</a> service.
 
 1. Create a <a href="https://www.shippable.com" style="color: orange">Shippable</a>
@@ -180,10 +180,15 @@ and <span style="color: orange">Amazon ECS</span></p>
 6. <p>Link <span style="color: orange">CI</span> to your <span style="color: orange">
 Pipeline</span> via an <span style="color: orange">Event Trigger</span></p>
   * Navigate to `Account Settings` via the gear icon in upper right
+  * Navigate to the 'API tokens' tab, create an API Token, and save it (you'll need
+  it again shortly)
   * Select `Integrations` tab
   * Select `Add Integration`
     * Select `Event Trigger` from list
     * Name your integration `trigger-img-front-end`
+    * Select `Resource` in the `Select Trigger` dropdown
+    * Select the `img-front-end` resource you created in your pipeline
+    * In Authorization field, enter 'apiToken ' + your API token from above
     * Select `Save`
   * Now, assign your Account Integration for use by your Subscription
     * Select your Subscription from the dropdown menu in upper left

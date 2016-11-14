@@ -84,7 +84,7 @@
     "EcsInstanceType": {
       "Type": "String",
       "Description": "Type of the EC2 instance(s) to deploy",
-      "Default": "t2.small",
+      "Default": "t2.medium",
       "AllowedValues": [
         "t2.micro",
         "t2.small",
