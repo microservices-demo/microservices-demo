@@ -1,5 +1,19 @@
 #!/usr/bin/env ruby
+require "optparse"
 require_relative "lib/all"
+
+action = :run
+OptionParser.new do |opts|
+  opts.banner = "Usage: deploy-doc-tests/run <name> [options]"
+  opts.on("-s", "--output-shell-script", "Just generate a shell script containing all the steps") do |v|
+    action = :output_shell_script
+  end
+
+  opts.on("-d", "--shell-in-container", "Start a (temporary) docker container with the same environment as the tests will run in") do |v|
+    action = :just_docker_env
+  end
+
+end.parse!
 
 which_deployment = ARGV.first
 
@@ -7,34 +21,59 @@ if which_deployment.nil?
   $stderr.puts "No deploy document test name given."
   puts  "The following document tests are available: " + DeployDocTest.find_all.map { |dt| dt.name }.join(", ")
   exit 1
+else
+  deployment_doc_test = DeployDocTest.find!(which_deployment)
 end
 
-dt = DeployDocTest.find!(which_deployment)
+# Jump to directory in which this file is stored.
+Dir.chdir File.expand_path("../", __FILE__) 
 
-dirname = File.expand_path("../", __FILE__)
-Dir.chdir dirname
+def build_run_container
+  log(:info, "Building test runner container")
+  capture_or_die("docker build -q .").chomp.split(":").last
+end
 
-log(:info, "Building test runner container")
-container_id = capture_or_die("docker build -q .").chomp.split(":").last
+def check_and_find_envs(deployment_doc_test)
+  deployment_doc_test.plan.required_env_vars.map do |name|
+    val = ENV[name]
+    if val.nil?
+      $stderr.puts "Required environmental variable #{name} is not set"
+      exit 1
+    else
+      "-e#{name}=#{val}"
+    end
+  end.join(" ")
+end
 
-envs = dt.plan.required_env_vars.map do |name|
-  val = ENV[name]
-  if val.nil?
-    $stderr.puts "Required environmental variable #{name} is not set"
-    exit 1
-  else
-    "-e#{name}=#{val}"
-  end
-end.join(" ")
+def docker_cmd(container_id, envs, cmd, extra_opts = [])
+  docker_cmd = ["docker run",
+         "--rm",
+         envs,
+         "-v/var/run/docker.sock:/var/run/docker.sock",
+         "-v#{File.expand_path("../../..", __FILE__)}:/repo/",
+         "-w/repo/"]
 
-log(:info, "Running test!")
-cmd = ["docker run",
-       "--rm",
-       envs,
-       "-v/var/run/docker.sock:/var/run/docker.sock",
-       "-v#{File.expand_path("../../..", __FILE__)}:/repo/",
-       "-w/repo/",
-       container_id,
-       "ruby deploy-doc-tests/bin/test-documentation #{which_deployment}"
-].join(" ")
-exec(cmd)
+  docker_cmd += extra_opts
+
+  docker_cmd += [container_id, cmd]
+
+  docker_cmd.join(" ")
+end
+
+
+case action
+when :run
+  container_id =  build_run_container
+  envs = check_and_find_envs(deployment_doc_test)
+
+  log(:info, "Running test!")
+  exec(docker_cmd(container_id, envs, "ruby deploy-doc-tests/bin/test-documentation #{which_deployment}"))
+when :output_shell_script
+  puts deployment_doc_test.plan.to_shell_script
+when :just_docker_env
+  container_id =  build_run_container
+  envs = check_and_find_envs(deployment_doc_test)
+  log(:info, "Starting container with same environment as tests")
+
+  exec(docker_cmd(container_id, envs, "bash", ["-ti"]))
+end
