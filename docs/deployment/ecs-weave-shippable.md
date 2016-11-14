@@ -26,6 +26,7 @@ This page provides the instructions necessary to:
   front-end</a> service using Shippable
 
 ---
+
 ### Fork and clone the repos
 To get started, you'll need to fork and clone two GitHub repos.
 
@@ -44,6 +45,7 @@ style="color: orange">
 front-end</a> repo
 
 ---
+
 ### Provision Amazon ECS cluster
 Now, you'll provision a Weave-enabled Amazon ECS cluster and deploy all services
 except for the front-end service.
@@ -81,6 +83,7 @@ When your stack creation finishes with 'CREATE_COMPLETE', you'll find values of
 AWS resources needed for the CI/CD pipeline setup available on the `Outputs` tab.
 
 ---
+
 ### Configure an automated CI/CD pipeline
 
 Your Weave-enabled Amazon ECS cluster should now be running 15 out of the 16 services
@@ -245,6 +248,7 @@ auto-deploy to Test environment</span></p>
     * Expand the `man-front-end` Resource Name
 
 ---
+
 ### Delete your CloudFormation stack
 When finished exploring, return to the AWS Management Console - CloudFormation
 page, select the `ecs-weave-shippable-demo` stack, select `Actions` and `Delete
