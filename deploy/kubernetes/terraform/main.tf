@@ -1,8 +1,99 @@
-module "kubernetes-anywhere-aws-ec2" {
-    source         = "github.com/weaveworks/weave-kubernetes-anywhere/phase1/aws-ec2-terraform"
-    cluster	   = "${var.cluster}"
-    ec2_key_name   = "${var.ec2_key_name}"
-    aws_access_key = "${var.aws_access_key}"
-    aws_secret_key = "${var.aws_secret_key}"
-    aws_region     = "${var.aws_region}"
+provider "aws" {
+  region = "${var.aws_region}"
+}
+
+resource "aws_security_group" "microservices-demo-deploy-doc-k8s" {
+  name        = "microservices-demo-deploy-doc-k8s"
+  description = "Allow all internal traffic. Allow SSH and HTTP from anywhere"
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = "true"
+  }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_key_pair" "k8s-ssh-key" {
+  public_key = "${var.ssh_public_key}
+}
+
+resource "aws_instance" "k8s-node" {
+  depends_on      = [ "aws_instance.k8s-master" ] 
+  count           = "${var.nodecount}"
+  instance_type   = "${var.node_instance_type}"
+  ami             = "${lookup(var.aws_amis, var.aws_region)}"
+  key_name        = "${var.key_name}"
+  security_groups = ["${aws_security_group.microservices-demo-deploy-doc-k8s.name}"]
+  tags {
+    Name = "microservices-demo-deploy-doc-node"
+  }
+
+  connection {
+    user        = "${var.instance_user}"
+    private_key = "${file("${var.private_key_file}")}"
+  }
+
+  provisioner "file" {
+    source      = "install_kubeadm.sh"
+    destination = "/tmp/install_kubeadm.sh"
+  }
+ 
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/install_kubeadm.sh", 
+      "/tmp/install_kubeadm.sh"
+    ]
+  }
+
+  provisioner "local-exec" {
+    command = "sh join_node.sh ${self.private_ip}"
+  }
+}
+
+resource "aws_instance" "k8s-master" {
+  instance_type   = "${var.master_instance_type}"
+  ami             = "${lookup(var.aws_amis, var.aws_region)}"
+  key_name        = "${var.key_name}"
+  security_groups = ["${aws_security_group.microservices-demo-deploy-doc-k8s.name}"]
+  tags {
+    Name = "microservices-demo-deploy-doc-master"
+  }
+  provisioner "remote-exec" {
+    connection {
+      user        = "${var.instance_user}"
+      private_key = "${file("${var.private_key_file}")}"
+    }
+    scripts = [ 
+      "install_kubeadm.sh"
+    ]
+  }
+
+  provisioner "local-exec" {
+    command = "sh init_master.sh ${self.public_ip}"
+  }
+}
+
+resource "null_resource" "weave-kube" {
+  depends_on = [ "aws_instance.k8s-node" ]
+  provisioner "local-exec" {
+    command = "kubectl apply -f https://git.io/weave-kube"
+  }
 }
