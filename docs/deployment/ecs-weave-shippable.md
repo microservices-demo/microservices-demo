@@ -60,7 +60,7 @@ except for the front-end service.
 
 5. Navigate to the directory where you cloned the <span style="color: orange">
 microservices-demo</span> repo
-and choose to upload the file `./deploy/aws-ecs/cloudformation.json`
+and choose to upload the file `./deploy/aws-ecs-shippable/cloudformation.json`
 
 6. <p>Complete the form fields with the following values and select `Next`</p>
   * Stack name: `ecs-weave-shippable-demo`
