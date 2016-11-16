@@ -976,6 +976,25 @@
                       "EcsInstanceLc"
                     ]
                   ]
+                },
+                {
+                  "Fn::Join": [
+                    " ",
+                    [
+                      "/opt/aws/bin/cfn-signal",
+                      "--verbose",
+                      "--stack",
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "--region",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "--resource",
+                      "EcsInstanceAsg"
+                    ]
+                  ]
                 }
               ]
             ]
