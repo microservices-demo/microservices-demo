@@ -11,21 +11,20 @@ set -o pipefail
 # versions of Docker or clusters uses the previous Swarm functionality.
 
 
-function usage() {
+usage() {
     echo "usage: $(basename $0) [cleanup]"
     echo "  The cleanup option will remove previously launched services"
 }
 
-function command_exists() {
+command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
-function cleanup_services() {
-    for srvc in front-end catalogue catalogue-db user user-db cart cart-db orders orders-db shipping payment
+cleanup_services() {
+    for srvc in front-end catalogue catalogue-db user user-db cart cart-db orders orders-db shipping payment rabbitmq
     do
-      docker service rm $srvc
+      docker service rm $srvc 
     done
-
 }
 
 if [ "$1" == "help" ]; then 
@@ -41,8 +40,16 @@ fi
 if [ "$1" == "cleanup" ]; then
     echo "Cleaning up services"
     cleanup_services
+    echo "Cleaning up network"
+    docker network rm msnet
     exit 0;
 fi
+
+echo "Creating overlay network"
+docker network create \
+        --driver overlay \
+        --subnet 10.0.0.0/24 \
+        msnet 
 
 
 echo "Creating front-end service"
@@ -54,13 +61,13 @@ docker service create \
 echo "Creating catalogue service"
 docker service create \
        --name catalogue \
-       --network ingress \
+       --network msnet \
        weaveworksdemos/catalogue:latest
 
 echo "Creating catalogue-db service"
 docker service create \
        --name catalogue-db \
-       --network ingress \
+       --network msnet \
         --env "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}" \
         --env "MYSQL_DATABASE=socksdb" \
         --env "MYSQL_ALLOW_EMPTY_PASSWORD=true" \
@@ -69,50 +76,56 @@ docker service create \
 echo "Creating user service"
 docker service create \
        --name user \
-       --network ingress \
+       --network msnet \
        weaveworksdemos/user:latest
 
 echo "Creating user-db service"
 docker service create \
        --name user-db \
-       --network ingress \
+       --network msnet \
        weaveworksdemos/user-db:latest
 
 
 echo "Creating cart service"
 docker service create \
        --name cart \
-       --network ingress \
+       --network msnet \
        weaveworksdemos/cart:latest
 
 
 echo "Creating cart-db service"
 docker service create \
        --name cart-db \
-       --network ingress \
+       --network msnet \
        mongo:3.2
 
 
 echo "Creating orders service"
 docker service create \
        --name orders \
-       --network ingress \
+       --network msnet \
        weaveworksdemos/orders:latest
+
+echo "Creating rabbitmq service"
+docker service create \
+      --name rabbitmq \
+      --network msnet \
+      rabbitmq:3
 
 echo "Creating orders-db service"
 docker service create \
        --name orders-db \
-       --network ingress \
+       --network msnet \
        mongo:3.2
 
 echo "Creating shipping service"
 docker service create \
        --name shipping \
-       --network ingress \
+       --network msnet \
        weaveworksdemos/shipping:latest
 
 echo "Creating payment service"
 docker service create \
        --name payment \
-       --network ingress \
+       --network msnet \
        weaveworksdemos/payment:latest
