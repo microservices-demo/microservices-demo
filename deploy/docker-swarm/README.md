@@ -1,32 +1,82 @@
-# Weave Demo on Docker Swarm
+# Run weave-socks demo on the new Docker Swarm
 
-The Weave Demo application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.
+Please refer to the [new Docker Swarm introduction](http://container-solutions.com/hail-new-docker-swarm/)
 
-## Pre-requisites
+# Blockers
 
-- Install Docker
-- Install [Weave Net](https://www.weave.works/install-weave-net/)
-- Install [Weave Scope](https://www.weave.works/install-weave-scope/)
+Currently, new Docker Swarm does not support running containers in privileged mode. 
+Maybe it will be allowed in the future.
+Please refer to the issue [1030](https://github.com/docker/swarmkit/issues/1030#issuecomment-232299819).
+This prevents from running Weave Scope, since it needs privileged mode.
 
-## Install & run
+Running global plugins is not supported either.
 
-Launch Weave Net on each host. There are [instructions for preparing a Swarm](../../install/docker-machine-swarm) specific to this demo.
+# Overview
 
-    curl -L https://raw.githubusercontent.com/microservices-demo/microservices-demo/master/deploy/docker-swarm/docker-compose.yml -o docker-compose.yml
-    docker-compose up -d
+This setup includes 3 nodes for Docker Swarm.
+master1 - is the Docker Swarm manager node
+node1 and node2 - worker nodes
 
-## Launch Weave Cloud
+# Pre-requisities
 
-On each Swarm host, launch Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.weave.works/).
+* Vagrant
+* VirtualBox
 
-    scope launch --service-token=<token>
+or 
 
-## Load test
-
-There's a load test provided to simulate user traffic to the application.
-
-    docker run weaveworksdemos/load-test -h http://localhost/ -r 100 -c 2
-
-This will send some traffic to the application, which will form the connection graph that you view in Scope or Weave Cloud.
+* Docker For Mac (limited to a single node)
 
 
+# How-to using Docker For Mac
+
+* Put your docker into the swarm mode
+```
+docker swarm init
+```
+
+* Execute the services startup script
+```
+./start-swarmkit-services.sh
+```
+
+Navigate to http://localhost:30000 to verify that the demo works.
+
+* To remove the running services execute
+```
+./start-swarmkit-services.sh cleanup
+```
+
+# How-to using Vagrant and VirtualBox
+
+
+Navigate to the vagrant directory and launch vagrant boxes using up.sh
+```
+./up.sh
+```
+
+SSH into the master node ```vagrant ssh```
+
+Launch docker swarm manager
+```
+docker swarm init --secret "" --listen-addr 192.168.11.10:2377
+```
+
+SSH into node1 and join the swarm
+```
+docker swarm join --listen-addr 192.168.11.11:2377 192.168.11.10:2377
+```
+
+SSH into node2 and join the swarm
+```
+docker swarm join --listen-addr 192.168.11.12:2377 192.168.11.10:2377
+```
+
+If everything succeeded, we should have a docker swarm cluster of 3 nodes.
+
+Now, on the master1 node execute the following script:
+```
+/vagrant/start-swarmkit-services.sh
+```
+
+This will spawn all the services composing weave-socks app and expose the application on 192.168.11.10:30000
+Since the front-end is run in ```--mode global``` it will be available on all nodes.
