@@ -1,8 +1,12 @@
-FROM ubuntu:xenial
+FROM alpine:3.4
 
-RUN apt-get update && \
-    apt-get install -yq apt-transport-https ca-certificates && \
-    apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D && \
-    echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" > /etc/apt/sources.list.d/docker.list && \
-    apt-get update
-RUN apt-get install -yq ruby curl docker-engine
+ENV TERM=xterm
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+RUN apk update && apk add --no-cache ruby-json curl docker py-pip jq openssh
+RUN curl https://releases.hashicorp.com/packer/0.12.0/packer_0.12.0_linux_amd64.zip -o packer.zip && \
+    unzip packer.zip && \
+    mv packer /usr/bin/ 
+RUN curl https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip -o terraform.zip && \
+    unzip terraform.zip && \
+    mv terraform /usr/bin/
+RUN pip install docker-compose awscli

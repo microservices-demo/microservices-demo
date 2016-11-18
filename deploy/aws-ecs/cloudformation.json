@@ -55,28 +55,31 @@
     },
     "WeaveworksEcsAmiIds": {
       "us-east-1": {
-        "ImageId": "ami-3d55272a"
+        "ImageId": "ami-1924770e"
+      },
+      "us-east-2": {
+        "ImageId": "ami-bd3e64d8"
       },
       "us-west-1": {
-        "ImageId": "ami-444d0224"
+        "ImageId": "ami-7f004b1f"
       },
       "us-west-2": {
-        "ImageId": "ami-1ccd1f7c"
+        "ImageId": "ami-56ed4936"
       },
       "eu-west-1": {
-        "ImageId": "ami-b6760fc5"
+        "ImageId": "ami-c8337dbb"
       },
       "eu-central-1": {
-        "ImageId": "ami-f562909a"
+        "ImageId": "ami-dd12ebb2"
       },
       "ap-northeast-1": {
-        "ImageId": "ami-096cba68"
+        "ImageId": "ami-c8b016a9"
       },
       "ap-southeast-1": {
-        "ImageId": "ami-7934ee1a"
+        "ImageId": "ami-6d22840e"
       },
       "ap-southeast-2": {
-        "ImageId": "ami-22a49541"
+        "ImageId": "ami-73407d10"
       }
     }
   },
@@ -973,6 +976,25 @@
                       "EcsInstanceLc"
                     ]
                   ]
+                },
+                {
+                  "Fn::Join": [
+                    " ",
+                    [
+                      "/opt/aws/bin/cfn-signal",
+                      "--verbose",
+                      "--stack",
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "--region",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "--resource",
+                      "EcsInstanceAsg"
+                    ]
+                  ]
                 }
               ]
             ]
@@ -1052,7 +1074,7 @@
                     "/",
                     [
                       "https://github.com/weaveworks/weave/releases/download",
-                      "v1.6.2",
+                      "v1.8.0",
                       "weave"
                     ]
                   ]
@@ -1065,7 +1087,7 @@
                     "/",
                     [
                       "https://github.com/weaveworks/scope/releases/download",
-                      "v0.17.1",
+                      "v1.0.0",
                       "scope"
                     ]
                   ]

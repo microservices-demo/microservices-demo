@@ -10,8 +10,6 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   edge-router:
     image: weaveworksdemos/edge-router
     ports:
@@ -32,8 +30,6 @@ services:
     restart: always
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   catalogue:
     image: weaveworksdemos/catalogue
     hostname: catalogue
@@ -45,8 +41,6 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   catalogue-db:
     image: weaveworksdemos/catalogue-db
     hostname: catalogue-db
@@ -56,8 +50,6 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=socksdb
-    networks:
-      - mynetwork
   cart:
     image: weaveworksdemos/cart
     hostname: cart
@@ -71,8 +63,6 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   cart-db:
     image: mongo
     hostname: cart-db
@@ -88,8 +78,6 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   orders:
     image: weaveworksdemos/orders
     hostname: orders
@@ -103,8 +91,6 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   orders-db:
     image: mongo
     hostname: orders-db
@@ -120,8 +106,6 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   shipping:
     image: weaveworksdemos/shipping
     hostname: shipping
@@ -135,8 +119,6 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   queue-master:
     image: weaveworksdemos/queue-master
     hostname: queue-master
@@ -152,8 +134,6 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   rabbitmq:
     image: rabbitmq:3
     hostname: rabbitmq
@@ -168,8 +148,6 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   payment:
     image: weaveworksdemos/payment
     hostname: payment
@@ -181,8 +159,6 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   user:
     image: weaveworksdemos/user
     hostname: user
@@ -195,8 +171,6 @@ services:
     environment:
       - MONGO_HOST=user-db:27017
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   user-db:
     image: weaveworksdemos/user-db
     hostname: user-db
@@ -212,8 +186,6 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
-    networks:
-      - mynetwork
   user-sim:
     image: weaveworksdemos/load-test
     cap_drop:
@@ -221,10 +193,3 @@ services:
     read_only: true
     hostname: user-simulator
     command: "-d 60 -r 200 -c 2 -h edge-router"
-    networks:
-      - mynetwork
-
-networks:
-  mynetwork:
-    external:
-      name: mynetwork
