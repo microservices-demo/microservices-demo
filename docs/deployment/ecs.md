@@ -1,6 +1,6 @@
 ---
 layout: default
-executableDocumentation: true
+deployDoc: true
 deploymentScriptDir: "aws-ecs"
 ---
 

@@ -4,7 +4,13 @@ require_relative "lib/all"
 
 action = :run
 OptionParser.new do |opts|
-  opts.banner = "Usage: deploy-doc-tests/run <name> [options]"
+  opts.banner = "Usage: deploydoc-tests/deploydoc <name> [options]"
+
+  opts.on("-h", "--help", "Print help") do
+    puts opts
+    exit
+  end
+ 
   opts.on("-s", "--output-shell-script", "Just generate a shell script containing all the steps") do |v|
     action = :output_shell_script
   end
@@ -75,5 +81,5 @@ when :just_docker_env
   envs = check_and_find_envs(deployment_doc_test)
   log(:info, "Starting container with same environment as tests")
 
-  exec(docker_cmd(container_id, envs, "bash", ["-ti"]))
+  exec(docker_cmd(container_id, envs, "sh", ["-ti"]))
 end
