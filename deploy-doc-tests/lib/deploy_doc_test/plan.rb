@@ -64,7 +64,6 @@ class DeployDocTest
         lines << ("#" * 80)
         lines << "# Phase #{phase_name}"
         @steps_in_phases[phase_name].each do |step|
-          p step
           lines << "# lines #{ step.line_span.inspect }"
           lines << step.shell
         end
