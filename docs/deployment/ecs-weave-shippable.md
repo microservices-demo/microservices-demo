@@ -65,7 +65,7 @@ and choose to upload the file `./deploy/aws-ecs-shippable/cloudformation.json`
 6. <p>Complete the form fields with the following values and select `Next`</p>
   * Stack name: `ecs-weave-shippable-demo`
   * DeployExampleApp: `Yes`
-  * EcsInstanceType: `t2.small`
+  * EcsInstanceType: `t2.medium`
   * KeyName: `choose an existing key pair or leave blank to create a new one`
   * Scale: `4`
   * WeaveCloudServiceToken: `leave blank`
@@ -98,6 +98,17 @@ GitHub credentials
 
 2. <p>Enable the <span style="color: orange">front-end</span> repo for <span style="color: orange">
 CI</span> in Shippable</p>
+  * In your local copy of the `front-end` repo, you’ll need to update the `GROUP`
+  environment variable in the shippable.yml configuration file with your values
+  from your AWS environment (i.e. your Account ID and Region):
+    * Replace the Amazon ECR registry URL with the URL for your Container registry,  e.g. `288971733297.dkr.ecr.us-east-1.amazonaws.com/front-end`
+    * You can copy/paste this URL by selecting `View Push Commands` on
+    <a href="https://console.aws.amazon.com/ecs/home#/repositories/front-end#images;tagStatus=ALL" style="color: orange">this page</a>
+  ```yml
+  env:
+    global:
+      - GROUP=288971733297.dkr.ecr.us-east-1.amazonaws.com
+  ```
   * Select your Subscription from the drop-down menu (three horizontal lines)
   in upper left
   * Select `Enable project` in left-hand nav
