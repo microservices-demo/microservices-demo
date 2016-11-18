@@ -29,7 +29,7 @@ class DeployDocTest < Struct.new(:name, :markdown_file, :deployment_directory, :
                           end
         script_dir = REPO_ROOT.join("deploy").join(script_dir_name)
         if ! Dir.exist? script_dir
-          raise("Could not find a $repo/deploy/#{name} directory!")
+          raise("Could not find the #{script_dir} directory!")
         end
         all << DeployDocTest.new(name, md_file, script_dir, yaml)
       end

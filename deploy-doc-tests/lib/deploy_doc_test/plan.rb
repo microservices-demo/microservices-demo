@@ -58,6 +58,19 @@ class DeployDocTest
       @required_env_vars.select { |e| ENV[e].nil? }
     end
 
+    def to_shell_script
+      lines = ["#!/usr/bin/env bash"]
+      PHASES.each do |phase_name|
+        lines << ("#" * 80)
+        lines << "# Phase #{phase_name}"
+        @steps_in_phases[phase_name].each do |step|
+          lines << "# lines #{ step.line_span.inspect }"
+          lines << step.shell
+        end
+      end
+      lines.join("\n")
+    end
+
     def execute!
       if missing_env_vars.any?
         $stderr.puts "Missing the following required environment variables:"
