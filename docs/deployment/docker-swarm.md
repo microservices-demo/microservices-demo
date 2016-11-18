@@ -61,6 +61,15 @@ Feel free to run it by issuing the following command:
 <!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY -->
 
 <!-- deploy-test-hidden pre-install
+    curl https://releases.hashicorp.com/packer/0.12.0/packer_0.12.0_linux_amd64.zip -o /root/packer.zip 
+    unzip /root/packer.zip -d /usr/bin
+
+    curl https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip -o /root/terraform.zip 
+    unzip /root/terraform.zip -d /usr/bin
+
+    apk add -\-no-cache openssh
+    pip install awscli
+
     export AWS_DEFAULT_REGION='eu-west-1'
     mkdir -p ~/.ssh/
     aws ec2 describe-key-pairs -\-key-name docker-swarm &>/dev/null
@@ -93,7 +102,6 @@ EOF
     master_ip=$(terraform output -state=/root/state.tfstate | grep master_address | awk '{print $3}')
     scp -i ~/.ssh/docker-swarm.pem /repo/deploy/healthcheck.rb /root/boot.sh /root/test.sh ubuntu@$master_ip:/home/ubuntu/
     ssh -i ~/.ssh/docker-swarm.pem ubuntu@$master_ip "chmod +x boot.sh; ./boot.sh"
-
 -->
 
     export AWS_ACCESS_KEY_ID=[secret]
