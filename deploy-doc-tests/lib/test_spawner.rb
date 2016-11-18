@@ -12,7 +12,7 @@ def spawn_travis_tests travis, tests
         global: [ "SPAWNED_BY_CRON_BUILD=#{cron_build_number}" ],
         matrix: tests.map { |test| "TEST_DOCUMENTATION_FOR=#{test.name}" }
       },
-      script: ["deploy-doc-tests/run $TEST_DOCUMENTATION_FOR"]
+      script: ["deploy-doc-tests/run-deploy-doc-test $TEST_DOCUMENTATION_FOR"]
     })
   }
   
