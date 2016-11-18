@@ -1,0 +1,60 @@
+version: '2'
+
+services:
+  front-end:
+    image: weaveworksdemos/front-end
+    ports:
+      - '80:8079'
+    environment:
+      - reschedule=on-node-failure
+  catalogue:
+    image: weaveworksdemos/catalogue
+    environment:
+      - reschedule=on-node-failure
+  catalogue-db:
+    image: weaveworksdemos/catalogue-db
+    environment:
+      - reschedule=on-node-failure
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=socksdb
+  cart:
+    image: weaveworksdemos/cart
+    environment:
+      - reschedule=on-node-failure
+  cart-db:
+    image: mongo
+    environment:
+      - reschedule=on-node-failure
+  orders:
+    image: weaveworksdemos/orders
+    environment:
+      - reschedule=on-node-failure
+  orders-db:
+    image: mongo
+    environment:
+      - reschedule=on-node-failure
+  shipping:
+    image: weaveworksdemos/shipping
+    environment:
+      - reschedule=on-node-failure
+  rabbitmq:
+    image: rabbitmq:3
+    environment:
+      - reschedule=on-node-failure
+  payment:
+    image: weaveworksdemos/payment
+    environment:
+      - reschedule=on-node-failure
+  user:
+    image: weaveworksdemos/user
+    environment:
+      - MONGO_HOST=user-db:27017
+      - reschedule=on-node-failure
+  user-db:
+    image: weaveworksdemos/user-db
+    environment:
+      - reschedule=on-node-failure
+  user-sim:
+    image: weaveworksdemos/load-test
+    command: "-d 60 -r 200 -c 2 -h front-end"

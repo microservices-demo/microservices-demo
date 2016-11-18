@@ -1,0 +1,138 @@
+{
+  "Services": {
+    "cart": {
+      "Env": [
+        "reschedule=on-node-failure"
+      ], 
+      "Image": "weaveworksdemos/cart@sha256:ef6988fa43d937498f5f56a4fedce78ea338b66960819f17ab37ba1808c9974b", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "cart-db": {
+      "Env": [
+        "reschedule=on-node-failure"
+      ], 
+      "Image": "mongo@sha256:532a19da83ee0e4e2a2ec6bc4212fc4af26357c040675d5c2629a4e4c4563cef", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "catalogue": {
+      "Env": [
+        "reschedule=on-node-failure"
+      ], 
+      "Image": "weaveworksdemos/catalogue@sha256:72418de273e75bc3684232d97ff5c9376fc26ead544659fad349d0ee282dbe8c", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "catalogue-db": {
+      "Env": [
+        "MYSQL_ALLOW_EMPTY_PASSWORD=true", 
+        "reschedule=on-node-failure", 
+        "MYSQL_DATABASE=socksdb"
+      ], 
+      "Image": "weaveworksdemos/catalogue-db@sha256:6d5552efda50deab2c903fad6c49c89d714731b9e4c1f84625b7aec2948985c9", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "front-end": {
+      "Env": [
+        "reschedule=on-node-failure"
+      ], 
+      "Image": "weaveworksdemos/front-end@sha256:bed617a6c944fae8722d8ba9b48682a509129ec9b79a0f5668248f820647fe5b", 
+      "Networks": [
+        "default"
+      ], 
+      "Ports": [
+        {
+          "Port": 8079, 
+          "Protocol": "tcp"
+        }
+      ]
+    }, 
+    "orders": {
+      "Env": [
+        "reschedule=on-node-failure"
+      ], 
+      "Image": "weaveworksdemos/orders@sha256:62841fddf3604f6df7a790413d4e8447d6701e4e0b24c9076206e818b157bfc2", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "orders-db": {
+      "Env": [
+        "reschedule=on-node-failure"
+      ], 
+      "Image": "mongo@sha256:532a19da83ee0e4e2a2ec6bc4212fc4af26357c040675d5c2629a4e4c4563cef", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "payment": {
+      "Env": [
+        "reschedule=on-node-failure"
+      ], 
+      "Image": "weaveworksdemos/payment@sha256:660e5f8cefb93cfbbc31a36a1316ef12abdf41831ff782c1747c84bc3196e5ae", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "rabbitmq": {
+      "Env": [
+        "reschedule=on-node-failure"
+      ], 
+      "Image": "rabbitmq@sha256:0eed7d52710144f2600b99d2a467d7444d86b0434b6a515f05bebd1049fd2bac", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "shipping": {
+      "Env": [
+        "reschedule=on-node-failure"
+      ], 
+      "Image": "weaveworksdemos/shipping@sha256:13ee378384e1e70cfcbe33a0aca36ef5a2b1a6e7620a4403665a63b558a4cba4", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "user": {
+      "Env": [
+        "reschedule=on-node-failure", 
+        "MONGO_HOST=user-db:27017"
+      ], 
+      "Image": "weaveworksdemos/user@sha256:5e4cff43b77815b8b1d996b3d76ce6ddcabad778f30cd9351d625d5ac4e4861e", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "user-db": {
+      "Env": [
+        "reschedule=on-node-failure"
+      ], 
+      "Image": "weaveworksdemos/user-db@sha256:695bc22c11396c7ae747118c56e619f3b3295d9d4cbec999d30230b3f399a389", 
+      "Networks": [
+        "default"
+      ]
+    }, 
+    "user-sim": {
+      "Args": [
+        "-d", 
+        "60", 
+        "-r", 
+        "200", 
+        "-c", 
+        "2", 
+        "-h", 
+        "edge-router"
+      ], 
+      "Image": "weaveworksdemos/load-test@sha256:389c75f7722387aa3211102879e94142d2019c0a42c32dcd62a9edf68e690b3d", 
+      "Networks": [
+        "default"
+      ]
+    }
+  }, 
+  "Version": "0.1"
+}

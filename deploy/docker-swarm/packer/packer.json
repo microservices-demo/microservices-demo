@@ -1,0 +1,93 @@
+{
+    "variables": {
+        "aws_access_key": "",
+        "aws_secret_key": ""
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "eu-west-1",
+        "source_ami": "ami-0d77397e",
+        "instance_type": "t2.micro",
+        "ssh_username": "ubuntu",
+        "ami_name": "docker-swarm"
+    },{
+        "type": "googlecompute",
+        "project_id": "container-solutions",
+        "source_image": "ubuntu-1604-xenial-v20161020",
+        "image_name": "docker-swarm",
+        "zone": "europe-west1-b"
+    },{
+        "type": "virtualbox-iso",
+        "guest_os_type": "Ubuntu_64",
+        "vm_name": "docker-swarm",
+        "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04-server-amd64.iso",
+        "iso_checksum": "23e97cd5d4145d4105fbf29878534049",
+        "iso_checksum_type": "md5",
+        "disk_size" : 10000,
+        "ssh_username": "vagrant",
+        "ssh_password": "vagrant",
+        "ssh_wait_timeout": "10000s",
+        "http_directory": "packer",
+        "headless": "true",
+        "boot_wait": "5s",
+        "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+        "boot_command": [
+            "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            "/install/vmlinuz<wait>",
+            " auto<wait>",
+            " console-setup/ask_detect=false<wait>",
+            " console-setup/layoutcode=us<wait>",
+            " console-setup/modelcode=pc105<wait>",
+            " debconf/frontend=noninteractive<wait>",
+            " debian-installer=en_US<wait>",
+            " fb=false<wait>",
+            " initrd=/install/initrd.gz<wait>",
+            " kbd-chooser/method=us<wait>",
+            " keyboard-configuration/layout=USA<wait>",
+            " keyboard-configuration/variant=USA<wait>",
+            " locale=en_US<wait>",
+            " netcfg/get_domain=vm<wait>",
+            " netcfg/get_hostname=vagrant<wait>",
+            " grub-installer/bootdev=/dev/sda<wait>",
+            " noapic<wait>",
+            " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+            " -- <wait>",
+            " <enter><wait>"
+        ]
+    }],
+    "provisioners": [{
+        "type": "shell",
+        "inline": [
+            "sleep 30",
+            "sudo groupadd docker",
+            "sudo usermod -aG docker $(whoami)",
+            "sudo apt-get update",
+            "sudo apt-get -yq install apt-transport-https ca-certificates curl",
+            "sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D",
+            "echo \"deb https://apt.dockerproject.org/repo ubuntu-xenial experimental\" | sudo tee /etc/apt/sources.list.d/docker.list",
+            "sudo apt-get update",
+            "sudo apt-get install -yq linux-image-extra-$(uname -r) linux-image-extra-virtual docker-engine",
+            "sudo curl -L \"https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose",
+            "sudo chmod +x /usr/local/bin/docker-compose",
+            "sudo curl -L git.io/weave -o /usr/local/bin/weave",
+            "sudo chmod +x /usr/local/bin/weave"
+        ]
+    }],
+    "post-processors": [{
+        "type": "vagrant",
+        "only": ["virtualbox-iso"],
+        "include": ["docker-compose.yml"],
+        "output": "infra/local/docker-swarm.box"
+    },{
+        "type": "shell-local",
+        "only": ["virtualbox-iso"],
+        "inline": [
+            "vagrant box add --force docker-swarm infra/local/docker-swarm.box"
+        ]
+    }]
+}
