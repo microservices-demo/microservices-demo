@@ -182,7 +182,7 @@
             "Essential": true,
             "Image": "mongo",
             "Name": "cart-db",
-            "Memory": 512
+            "Memory": 64
           }
         ],
         "Volumes": []
@@ -210,7 +210,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/cart",
             "Name": "cart",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -238,7 +238,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/catalogue",
             "Name": "catalogue",
-            "Memory": 1024
+            "Memory": 16
           }
         ],
         "Volumes": []
@@ -266,7 +266,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/catalogue-db",
             "Name": "catalogue-db",
-            "Memory": 512,
+            "Memory": 128,
             "Environment": [
               {
                 "Name": "MYSQL_ROOT_PASSWORD",
@@ -304,7 +304,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/front-end",
             "Name": "front-end",
-            "Memory": 1024,
+            "Memory": 64,
             "PortMappings": [
               {
                 "HostPort": 80,
@@ -340,7 +340,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/user",
             "Name": "user",
-            "Memory": 1024
+            "Memory": 16
           }
         ],
         "Volumes": []
@@ -368,7 +368,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/user-db",
             "Name": "user-db",
-            "Memory": 512
+            "Memory": 64
           }
         ],
         "Volumes": []
@@ -396,7 +396,7 @@
             "Essential": true,
             "Image": "mongo",
             "Name": "orders-db",
-            "Memory": 512
+            "Memory": 64
           }
         ],
         "Volumes": []
@@ -424,7 +424,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/orders",
             "Name": "orders",
-            "Memory": 1024
+            "Memory": 16
           }
         ],
         "Volumes": []
@@ -452,7 +452,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/payment",
             "Name": "payment",
-            "Memory": 1024
+            "Memory": 16
           }
         ],
         "Volumes": []
@@ -521,7 +521,7 @@
             "Essential": true,
             "Image": "rabbitmq:3",
             "Name": "rabbitmq",
-            "Memory": 512
+            "Memory": 64
           }
         ],
         "Volumes": []
@@ -549,7 +549,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/shipping",
             "Name": "shipping",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
