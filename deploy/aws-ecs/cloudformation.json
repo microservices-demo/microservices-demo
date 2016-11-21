@@ -173,62 +173,6 @@
     "EcsCluster": {
       "Type": "AWS::ECS::Cluster"
     },
-    "AccountsDBTask": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::TaskDefinition",
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Essential": true,
-            "Image": "mongo",
-            "Name": "accounts-db",
-            "Memory": 512
-          }
-        ],
-        "Volumes": []
-      }
-    },
-    "AccountsDBService": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::Service",
-      "Properties": {
-        "Cluster": {
-          "Ref": "EcsCluster"
-        },
-        "DesiredCount": 1,
-        "TaskDefinition": {
-          "Ref": "AccountsDBTask"
-        }
-      }
-    },
-    "AccountsTask": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::TaskDefinition",
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Essential": true,
-            "Image": "weaveworksdemos/accounts",
-            "Name": "accounts",
-            "Memory": 1024
-          }
-        ],
-        "Volumes": []
-      }
-    },
-    "AccountsService": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::Service",
-      "Properties": {
-        "Cluster": {
-          "Ref": "EcsCluster"
-        },
-        "DesiredCount": 1,
-        "TaskDefinition": {
-          "Ref": "AccountsTask"
-        }
-      }
-    },
     "CartDBTask": {
       "Condition": "DoDeployExampleApp",
       "Type": "AWS::ECS::TaskDefinition",
@@ -384,34 +328,6 @@
         },
         "TaskDefinition": {
           "Ref": "FrontEndTask"
-        }
-      }
-    },
-    "LoginTask": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::TaskDefinition",
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Essential": true,
-            "Image": "weaveworksdemos/login",
-            "Name": "login",
-            "Memory": 1024
-          }
-        ],
-        "Volumes": []
-      }
-    },
-    "LoginService": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::Service",
-      "Properties": {
-        "Cluster": {
-          "Ref": "EcsCluster"
-        },
-        "DesiredCount": 1,
-        "TaskDefinition": {
-          "Ref": "LoginTask"
         }
       }
     },
