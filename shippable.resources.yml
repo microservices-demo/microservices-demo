@@ -97,7 +97,7 @@ resources:
     type: params
     version:
       params:
-        ENVIRONMENT: "production"
+        ENVIRONMENT: "development"
         PORT: 80
 
 # PROD replica controller
