@@ -48,7 +48,6 @@ jobs:
     steps:
       - IN: ecs-deploy-test-front-end
         switch: off
-
       # - IN: release-front-end
       #   switch: off
       - IN: img-opts-front-end-prod
