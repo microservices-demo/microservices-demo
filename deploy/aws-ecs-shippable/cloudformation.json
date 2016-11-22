@@ -1400,51 +1400,70 @@
 },
 "Outputs": {
     "ecscluster": {
-        "Value": {
-            "Ref": "EcsCluster"
+      "Description": "Your ECS cluster name",
+      "Value": {
+          "Ref": "EcsCluster"
         }
+    },
+    "EcrRepo": {
+      "Description": "Your ECR Repository URL",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+          { "Ref" : "AWS::AccountId" },
+            ".dkr.ecr.",
+            { "Ref" : "AWS::Region" },
+            ".amazonaws.com/front-end"
+          ]
+        ]
+      }
     },
     "TargetGroupARNTest": {
-        "Value": {
-            "Ref": "frontendTESTTG"
-        }
+      "Description": "Your TargetGroupArn for front-end TEST environment",
+      "Value": {
+          "Ref": "frontendTESTTG"
+      }
     },
     "TargetGroupARNProd": {
-        "Value": {
-            "Ref": "frontendPRODTG"
-        }
+      "Description": "Your TargetGroupArn for front-end PROD environment",
+      "Value": {
+          "Ref": "frontendPRODTG"
+      }
     },
     "ProdALB": {
-        "Value": {
-            "Fn::Join": [
-                "", [
+      "Description": "URL for front-end PROD environment",
+      "Value": {
+          "Fn::Join": [
+              "", [
 
-                    {
-                        "Fn::GetAtt": [
-                            "SockShopALB",
-                            "DNSName"
-                        ]
-                    },
-                    ":80"
-                ]
-            ]
-        }
+                  {
+                      "Fn::GetAtt": [
+                          "SockShopALB",
+                          "DNSName"
+                      ]
+                  },
+                  ":80"
+              ]
+          ]
+      }
     },
     "TestALB": {
-        "Value": {
-            "Fn::Join": [
-                "", [
+      "Description": "URL for front-end TEST environment",
+      "Value": {
+          "Fn::Join": [
+              "", [
 
-                    {
-                        "Fn::GetAtt": [
-                            "SockShopALB",
-                            "DNSName"
-                        ]
-                    },
-                    ":8080"
-                ]
-            ]
-        }
+                  {
+                      "Fn::GetAtt": [
+                          "SockShopALB",
+                          "DNSName"
+                      ]
+                  },
+                  ":8080"
+              ]
+          ]
+      }
     }
-    }
+}
 }
