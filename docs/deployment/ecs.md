@@ -22,8 +22,6 @@ To deploy, you will need an [Amazon Web Services (AWS)](http://aws.amazon.com) a
 
 By clicking "Launch Stack" button above, you will get redirected to AWS CloudFormation console. You will be asked to set cluster size (***`Scale`***) and instance type (***`EcsInstanceType`***).
 
-As this app is fairly large, you should set ***`Scale`*** to 4 and select `m3.xlarge` for ***`EcsInstanceType`***.
-
 ### Using CLI
 
 To use CLI, you also need to have the [AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html) set up and configured.
