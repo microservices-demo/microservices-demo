@@ -55,31 +55,31 @@
     },
     "WeaveworksEcsAmiIds": {
       "us-east-1": {
-        "ImageId": "ami-1924770e"
+        "ImageId": "ami-eca289fb"
       },
       "us-east-2": {
-        "ImageId": "ami-bd3e64d8"
+        "ImageId": "ami-446f3521"
       },
       "us-west-1": {
-        "ImageId": "ami-7f004b1f"
+        "ImageId": "ami-9fadf8ff"
       },
       "us-west-2": {
-        "ImageId": "ami-56ed4936"
+        "ImageId": "ami-7abc111a"
       },
       "eu-west-1": {
-        "ImageId": "ami-c8337dbb"
+        "ImageId": "ami-a1491ad2"
       },
       "eu-central-1": {
-        "ImageId": "ami-dd12ebb2"
+        "ImageId": "ami-54f5303b"
       },
       "ap-northeast-1": {
-        "ImageId": "ami-c8b016a9"
+        "ImageId": "ami-9cd57ffd"
       },
       "ap-southeast-1": {
-        "ImageId": "ami-6d22840e"
+        "ImageId": "ami-a900a3ca"
       },
       "ap-southeast-2": {
-        "ImageId": "ami-73407d10"
+        "ImageId": "ami-5781be34"
       }
     }
   },
