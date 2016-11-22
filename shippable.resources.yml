@@ -90,7 +90,7 @@ resources:
     type: dockerOptions
     version:
       portMappings:
-        - 0:8079
+        - 0:8080
 
 # Environment variables for PROD environment
   - name: params-front-end-prod
@@ -98,7 +98,7 @@ resources:
     version:
       params:
         ENVIRONMENT: "production"
-        PORT: 8079
+        PORT: 8080
 
 # PROD replica controller
   - name: replicas-front-end-prod
