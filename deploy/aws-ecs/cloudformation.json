@@ -127,7 +127,7 @@
     "Scale": {
       "Type": "Number",
       "Description": "Size of ECS cluster",
-      "Default": "2"
+      "Default": "3"
     },
     "KeyName": {
       "Type": "AWS::EC2::KeyPair::KeyName",
