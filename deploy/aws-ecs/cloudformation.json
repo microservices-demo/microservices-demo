@@ -898,7 +898,6 @@
                     " ",
                     [
                       "/opt/aws/bin/cfn-signal",
-                      "--verbose",
                       "--stack",
                       {
                         "Ref": "AWS::StackName"
