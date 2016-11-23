@@ -83,6 +83,7 @@ resources:
     version:
       params:
         ENVIRONMENT: "development"
+        NODE_ENV: "development"
         PORT: 8080
 
 # Docker image options for PROD environment
@@ -98,6 +99,7 @@ resources:
     version:
       params:
         ENVIRONMENT: "production"
+        NODE_ENV: "production"
         PORT: 8080
 
 # PROD replica controller
