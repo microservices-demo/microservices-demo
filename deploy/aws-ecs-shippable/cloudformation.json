@@ -170,157 +170,157 @@
     }
   },
   "Resources": {
-"SockShopALB": {
-  "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
-  "Properties" : {
-    "Name" : "SockShopALB",
-    "Scheme" : "internet-facing",
-    "LoadBalancerAttributes" : [
-      { "Key" : "idle_timeout.timeout_seconds", "Value" : "30" }
-    ],
-    "SecurityGroups" : [ { "Ref": "EcsSecurityGroup" } ],
-    "Subnets" : [ {"Ref": "PubSubnetAz1" }, {"Ref": "PubSubnetAz2"} ]
-  }
-},
-"ALBListener80": {
-  "Type": "AWS::ElasticLoadBalancingV2::Listener",
-  "Properties": {
-    "DefaultActions": [{
-      "Type": "forward",
-      "TargetGroupArn": { "Ref": "frontendPRODTG" }
-    }],
-    "LoadBalancerArn": { "Ref": "SockShopALB" },
-    "Port": "80",
-    "Protocol": "HTTP"
-  }
-},
-"ALBListener8080": {
-  "Type": "AWS::ElasticLoadBalancingV2::Listener",
-  "Properties": {
-    "DefaultActions": [{
-      "Type": "forward",
-      "TargetGroupArn": { "Ref": "frontendTESTTG" }
-    }],
-    "LoadBalancerArn": { "Ref": "SockShopALB" },
-    "Port": "8080",
-    "Protocol": "HTTP"
-  }
-},
-"frontendPRODListenerRule": {
-  "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
-  "Properties": {
-    "Actions": [{
-      "Type": "forward",
-      "TargetGroupArn": { "Ref": "frontendPRODTG" }
-    }],
-    "Conditions": [{
-      "Field": "path-pattern",
-      "Values": [ "/" ]
-    }],
-    "ListenerArn": { "Ref": "ALBListener80" },
-    "Priority": 1
-  }
-},
-"frontendTESTListenerRule": {
-  "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
-  "Properties": {
-    "Actions": [{
-      "Type": "forward",
-      "TargetGroupArn": { "Ref": "frontendTESTTG" }
-    }],
-    "Conditions": [{
-      "Field": "path-pattern",
-      "Values": [ "/" ]
-    }],
-    "ListenerArn": { "Ref": "ALBListener8080" },
-    "Priority": 1
-  }
-},
-"frontendTESTTG" : {
-  "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
-  "Properties" : {
-    "HealthCheckIntervalSeconds" : 30,
-    "HealthCheckPath" : "/",
-    "HealthCheckProtocol" : "HTTP",
-    "HealthCheckTimeoutSeconds" : 5,
-    "HealthyThresholdCount" : 5,
-    "Name" : "frontendTESTTG",
-    "Port" : 8080,
-    "Protocol" : "HTTP",
-    "UnhealthyThresholdCount" : 5,
-    "TargetGroupAttributes" : [
-      {
-        "Key" : "deregistration_delay.timeout_seconds",
-        "Value" : 5
+    "SockShopALB": {
+      "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties" : {
+        "Name" : "SockShopALB",
+        "Scheme" : "internet-facing",
+        "LoadBalancerAttributes" : [
+          { "Key" : "idle_timeout.timeout_seconds", "Value" : "30" }
+        ],
+        "SecurityGroups" : [ { "Ref": "EcsSecurityGroup" } ],
+        "Subnets" : [ {"Ref": "PubSubnetAz1" }, {"Ref": "PubSubnetAz2"} ]
       }
-    ],
-    "VpcId" : { "Ref": "Vpc" }
-  }
-},
-"frontendPRODTG" : {
-  "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
-  "Properties" : {
-    "HealthCheckIntervalSeconds" : 30,
-    "HealthCheckPath" : "/",
-    "HealthCheckProtocol" : "HTTP",
-    "HealthCheckTimeoutSeconds" : 5 ,
-    "HealthyThresholdCount" : 5,
-    "Name" : "frontendPRODTG",
-    "Port" : 80,
-    "Protocol" : "HTTP",
-    "UnhealthyThresholdCount" : 5,
-    "TargetGroupAttributes" : [
-      {
-        "Key" : "deregistration_delay.timeout_seconds",
-        "Value" : 5
-      }
-    ],
-    "VpcId" : { "Ref": "Vpc" }
-  }
-},
-"ECSServiceRole": {
-  "Type": "AWS::IAM::Role",
-  "Properties": {
-    "AssumeRolePolicyDocument": {
-      "Statement": [
-        {
-          "Effect": "Allow",
-          "Principal": {
-            "Service": [
-              "ecs.amazonaws.com"
-            ]
-          },
-          "Action": [
-            "sts:AssumeRole"
-          ]
-        }
-      ]
     },
-    "Path": "/",
-    "Policies": [
-      {
-        "PolicyName": "ecs-service",
-        "PolicyDocument": {
+    "ALBListener80": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "DefaultActions": [{
+          "Type": "forward",
+          "TargetGroupArn": { "Ref": "frontendPRODTG" }
+        }],
+        "LoadBalancerArn": { "Ref": "SockShopALB" },
+        "Port": "80",
+        "Protocol": "HTTP"
+      }
+    },
+    "ALBListener8080": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "DefaultActions": [{
+          "Type": "forward",
+          "TargetGroupArn": { "Ref": "frontendTESTTG" }
+        }],
+        "LoadBalancerArn": { "Ref": "SockShopALB" },
+        "Port": "8080",
+        "Protocol": "HTTP"
+      }
+    },
+    "frontendPRODListenerRule": {
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+      "Properties": {
+        "Actions": [{
+          "Type": "forward",
+          "TargetGroupArn": { "Ref": "frontendPRODTG" }
+        }],
+        "Conditions": [{
+          "Field": "path-pattern",
+          "Values": [ "/" ]
+        }],
+        "ListenerArn": { "Ref": "ALBListener80" },
+        "Priority": 1
+      }
+    },
+    "frontendTESTListenerRule": {
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+      "Properties": {
+        "Actions": [{
+          "Type": "forward",
+          "TargetGroupArn": { "Ref": "frontendTESTTG" }
+        }],
+        "Conditions": [{
+          "Field": "path-pattern",
+          "Values": [ "/" ]
+        }],
+        "ListenerArn": { "Ref": "ALBListener8080" },
+        "Priority": 1
+      }
+    },
+    "frontendTESTTG" : {
+      "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties" : {
+        "HealthCheckIntervalSeconds" : 30,
+        "HealthCheckPath" : "/",
+        "HealthCheckProtocol" : "HTTP",
+        "HealthCheckTimeoutSeconds" : 5,
+        "HealthyThresholdCount" : 5,
+        "Name" : "frontendTESTTG",
+        "Port" : 8080,
+        "Protocol" : "HTTP",
+        "UnhealthyThresholdCount" : 5,
+        "TargetGroupAttributes" : [
+          {
+            "Key" : "deregistration_delay.timeout_seconds",
+            "Value" : 5
+          }
+        ],
+        "VpcId" : { "Ref": "Vpc" }
+      }
+    },
+    "frontendPRODTG" : {
+      "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties" : {
+        "HealthCheckIntervalSeconds" : 30,
+        "HealthCheckPath" : "/",
+        "HealthCheckProtocol" : "HTTP",
+        "HealthCheckTimeoutSeconds" : 5 ,
+        "HealthyThresholdCount" : 5,
+        "Name" : "frontendPRODTG",
+        "Port" : 80,
+        "Protocol" : "HTTP",
+        "UnhealthyThresholdCount" : 5,
+        "TargetGroupAttributes" : [
+          {
+            "Key" : "deregistration_delay.timeout_seconds",
+            "Value" : 5
+          }
+        ],
+        "VpcId" : { "Ref": "Vpc" }
+      }
+    },
+    "ECSServiceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
           "Statement": [
             {
               "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ecs.amazonaws.com"
+                ]
+              },
               "Action": [
-                  "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-                  "elasticloadbalancing:DeregisterTargets",
-                  "elasticloadbalancing:Describe*",
-                  "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-                  "elasticloadbalancing:RegisterTargets",
-                  "ec2:Describe*",
-                  "ec2:AuthorizeSecurityGroupIngress"
-              ],
-              "Resource": "*"
+                "sts:AssumeRole"
+              ]
             }
           ]
-        }
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "ecs-service",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                      "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+                      "elasticloadbalancing:DeregisterTargets",
+                      "elasticloadbalancing:Describe*",
+                      "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+                      "elasticloadbalancing:RegisterTargets",
+                      "ec2:Describe*",
+                      "ec2:AuthorizeSecurityGroupIngress"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
       }
-    ]
-  }
-},
+    },
     "EcsCluster": {
       "Type": "AWS::ECS::Cluster",
       "Properties" : {
@@ -1329,11 +1329,6 @@
         "DesiredCapacity": {
           "Ref": "Scale"
         },
-        "LoadBalancerNames": [
-          {
-            "Ref": "EcsFrontendElasticLoadBalancing"
-          }
-        ],
         "Tags": [
           {
             "Key": "Name",
@@ -1405,51 +1400,70 @@
 },
 "Outputs": {
     "ecscluster": {
-        "Value": {
-            "Ref": "EcsCluster"
+      "Description": "Your ECS cluster name",
+      "Value": {
+          "Ref": "EcsCluster"
         }
+    },
+    "EcrRepo": {
+      "Description": "Your ECR Repository URL",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+          { "Ref" : "AWS::AccountId" },
+            ".dkr.ecr.",
+            { "Ref" : "AWS::Region" },
+            ".amazonaws.com/front-end"
+          ]
+        ]
+      }
     },
     "TargetGroupARNTest": {
-        "Value": {
-            "Ref": "frontendTESTTG"
-        }
+      "Description": "Your TargetGroupArn for front-end TEST environment",
+      "Value": {
+          "Ref": "frontendTESTTG"
+      }
     },
     "TargetGroupARNProd": {
-        "Value": {
-            "Ref": "frontendPRODTG"
-        }
+      "Description": "Your TargetGroupArn for front-end PROD environment",
+      "Value": {
+          "Ref": "frontendPRODTG"
+      }
     },
     "ProdALB": {
-        "Value": {
-            "Fn::Join": [
-                "", [
+      "Description": "URL for front-end PROD environment",
+      "Value": {
+          "Fn::Join": [
+              "", [
 
-                    {
-                        "Fn::GetAtt": [
-                            "SockShopALB",
-                            "DNSName"
-                        ]
-                    },
-                    ":80"
-                ]
-            ]
-        }
+                  {
+                      "Fn::GetAtt": [
+                          "SockShopALB",
+                          "DNSName"
+                      ]
+                  },
+                  ":80"
+              ]
+          ]
+      }
     },
     "TestALB": {
-        "Value": {
-            "Fn::Join": [
-                "", [
+      "Description": "URL for front-end TEST environment",
+      "Value": {
+          "Fn::Join": [
+              "", [
 
-                    {
-                        "Fn::GetAtt": [
-                            "SockShopALB",
-                            "DNSName"
-                        ]
-                    },
-                    ":8080"
-                ]
-            ]
-        }
+                  {
+                      "Fn::GetAtt": [
+                          "SockShopALB",
+                          "DNSName"
+                      ]
+                  },
+                  ":8080"
+              ]
+          ]
+      }
     }
-    }
+}
 }

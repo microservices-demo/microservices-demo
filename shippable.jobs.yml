@@ -48,7 +48,6 @@ jobs:
     steps:
       - IN: ecs-deploy-test-front-end
         switch: off
-
       # - IN: release-front-end
       #   switch: off
       - IN: img-opts-front-end-prod
@@ -59,7 +58,7 @@ jobs:
         applyTo:
           - manifest: man-front-end
             image: img-front-end
-            port: 80
+            port: 8080
       - IN: cluster-demo-ecs
       - TASK: managed
 
