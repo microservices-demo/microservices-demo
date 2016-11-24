@@ -1,6 +1,6 @@
 ---
 layout: default
-executableDocumentation: true
+deployDoc: true
 deploymentScriptDir: "aws-ecs"
 ---
 
@@ -26,17 +26,13 @@ By clicking "Launch Stack" button above, you will get redirected to AWS CloudFor
 
 To use CLI, you also need to have the [AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html) set up and configured.
 
-Install it on ubuntu with the following steps:
+To deploy and start the demo, run the setup script to deploy to ECS:
+<!-- deploy-test-hidden pre-install
 
-<!-- deploy-test-start pre-install -->
-
-    apt-get -yq update
-    apt-get -yq install curl coreutils python python-pip jq
+    apt-get install -yq jq 
     pip install awscli
 
-<!-- deploy-test-end -->
-
-To deploy and start the demo, run the setup script to deploy to ECS:
+-->
 
 <!-- deploy-test-start create-infrastructure -->
 
@@ -44,15 +40,32 @@ To deploy and start the demo, run the setup script to deploy to ECS:
 
 <!-- deploy-test-end -->
 
+
 This may take a few minutes to complete. Once it's done, it will print the URL for the demo frontend, as well as the URL for the Weave Scope instance that can be used to visualize the containers and their connections.
 
 To ensure that the application is running properly, you could perform some load testing on it:
 
 <!-- deploy-test-start run-tests -->
 
-    docker run weaveworksdemos/load-test -h  `cat ecs-endpoint` -c 10 -r 100
+    docker run weaveworksdemos/load-test -h `cat ecs-endpoint` -c 10 -r 100
 
 <!-- deploy-test-end -->
+
+<!-- deploy-test-hidden run-tests
+
+    frontend_task=$(aws ecs list-tasks -\-cluster weave-ecs-demo-cluster -\-service-name weavedemo-edge-router-service  -\-query 'taskArns[0]' -\-output text)
+    container_inst=$(aws ecs describe-tasks -\-cluster weave-ecs-demo-cluster -\-tasks $frontend_task -\-query 'tasks[0].containerInstanceArn' -\-output text)
+    instance_id=$(aws ecs describe-container-instances -\-cluster weave-ecs-demo-cluster -\-container-instances $container_inst -\-query 'containerInstances[0].ec2InstanceId'  -\-output text)
+    dns_name=$(aws ec2 describe-instances -\-instance-ids $instance_id -\-query 'Reservations[0].Instances[*].PublicDnsName' -\-output text)
+    scp -i weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" /repo/deploy/healthcheck.rb ec2-user@$dns_name:/home/ec2-user/
+
+    ssh -i weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" ec2-user@$dns_name "eval \$(weave env); docker run -\-rm -v /home/ec2-user/healthcheck.rb:/healthcheck.rb -i andrius/alpine-ruby ruby /healthcheck.rb -s user.weave.local,catalogue.weave.local,cart.weave.local,shipping.weave.local,payment.weave.local,orders.weave.local,queue-master.weave.local"
+
+    if [ $? -ne 0 ]; then 
+        exit 1; 
+    fi
+-->
+
 
 #### Cleanup
 

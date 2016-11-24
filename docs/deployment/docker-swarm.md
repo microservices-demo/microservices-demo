@@ -67,7 +67,6 @@ Feel free to run it by issuing the following command:
     curl https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip -o /root/terraform.zip 
     unzip /root/terraform.zip -d /usr/bin
 
-    apk add -\-no-cache openssh
     pip install awscli
 
     export AWS_DEFAULT_REGION='eu-west-1'
