@@ -11,12 +11,14 @@ eCommerce application, with fully automated deployments, in 30
 minutes or less.
 
 Your sample application will feature:
+
   * **Amazon ECS**{: style="color: orange"} for container orchestration
   * **Amazon ECR**{: style="color: orange"} for container registry
   * **Weave Scope**{: style="color: orange"} for service discovery and container visualization
   * **Shippable**{: style="color: orange"} for automated CI/CD
 
-This page provides the instructions necessary to:
+This page provides the instructions necessary to:  
+
   * Provision a Weave-enabled Amazon ECS cluster using Cloud Formations and
   deploy all components of the Sock Shop microservices demo application except
   the <a href="https://github.com/microservices-demo/front-end" style="color: orange">front-end</a>
@@ -208,6 +210,7 @@ environment:
       <p></p>
 
     Now, load your Pipeline configuration files into Shippable:
+    
     * Select the `Pipelines` tab, `Resources` view, and then `Add Resource`
     button (far right)
     * In the Subscription Integrations dropdown: choose `Add integration` and

@@ -7,3 +7,6 @@ docker run -it --rm \
   -p 127.0.0.1:4000:4000 \
   jekyll/jekyll $@
 
+# # To run with gem github-pages locally
+# bundle exec jekyll build
+# bundle exec jekyll serve
