@@ -29,6 +29,12 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 
 ### Provision infrastructure
 
+<!-- deploy-test-hidden pre-install
+
+    pip install docker-compose
+
+-->
+
 <!-- deploy-test-start create-infrastructure -->
 
     docker-compose up -d 
@@ -36,7 +42,7 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 <!-- deploy-test-end -->
 
 <!-- deploy-test-hidden create-infrastructure 
-    docker run -td -\-net=dockercompose_default -\-name healthcheck andrius/alpine-ruby /bin/sh &>/dev/null
+    docker run -td -\-net=dockercompose_default -\-name healthcheck andrius/alpine-ruby /bin/sh 
     docker cp /repo/deploy/healthcheck.rb healthcheck:/healthcheck.rb
 -->
 
@@ -48,7 +54,7 @@ This will send some traffic to the application, which will form the connection g
 
 <!-- deploy-test-hidden run-tests
     
-    docker exec -t healthcheck ruby /healthcheck.rb -s user,catalogue,queue-master,cart,shipping,payment,orders -d 60
+    docker exec -t healthcheck ruby /healthcheck.rb -s user,catalogue,queue-master,cart,shipping,payment,orders -d 90
     if [ $? -ne 0 ]; then 
         docker rm -f healthcheck 
         exit 1; 

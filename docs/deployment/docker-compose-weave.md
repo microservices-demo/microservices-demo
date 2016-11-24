@@ -27,20 +27,30 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 
     scope launch --service-token=<token>
 
+### Pre-reqs
+
+<!-- deploy-test-start pre-install -->
+
+    curl -L git.io/weave -o /usr/local/bin/weave
+    chmod a+x /usr/local/bin/weave
+
+<!-- deploy-test-end -->
+<!-- deploy-test-hidden pre-install 
+
+    pip install docker-compose
+
+-->
 ### Provision infrastructure
 
 <!-- deploy-test-start create-infrastructure -->
 
-    curl -L git.io/weave -o /usr/local/bin/weave
-    chmod a+x /usr/local/bin/weave
     weave launch
-
     docker-compose up -d
 
 <!-- deploy-test-end -->
 
 <!-- deploy-test-hidden create-infrastructure 
-    docker run -td -\-name healthcheck andrius/alpine-ruby /bin/sh &>/dev/null
+    docker run -td -\-name healthcheck andrius/alpine-ruby /bin/sh 
     docker network connect dockercomposeweave_secure healthcheck
     docker network connect dockercomposeweave_internal healthcheck
     docker network connect dockercomposeweave_external healthcheck
