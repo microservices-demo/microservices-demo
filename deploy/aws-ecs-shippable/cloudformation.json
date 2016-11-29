@@ -1069,7 +1069,9 @@
                      "ecs:CreateService",
                      "ecs:ListTasks",
                      "ecs:ListContainerInstances",
-                     "ecs:DescribeContainerInstances"
+                     "ecs:DescribeContainerInstances",
+                     "ecs:ListServices",
+                     "ecs:DescribeTasks"
                    ],
                    "Resource": "*"
                  }

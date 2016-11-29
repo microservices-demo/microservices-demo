@@ -815,6 +815,9 @@
                     "ecs:ListClusters",
                     "ecs:ListContainerInstances",
                     "ecs:DescribeContainerInstances",
+                    "ecs:ListServices",
+                    "ecs:DescribeTasks",
+                    "ecs:DescribeServices",
                     "ec2:DescribeInstances",
                     "ec2:DescribeTags",
                     "autoscaling:DescribeAutoScalingInstances"
@@ -1002,7 +1005,7 @@
                     "/",
                     [
                       "https://github.com/weaveworks/scope/releases/download",
-                      "v1.0.0",
+                      "v1.1.0",
                       "scope"
                     ]
                   ]
