@@ -26,6 +26,26 @@ Running global plugins is not supported either.
 * *Optional* [Packer](https://www.packer.io/downloads.html)
 * *Optional* [Terraform](https://www.terraform.io/downloads.html)
 
+```
+git clone https://github.com/microservices-demo/microservices-demo 
+cd microservices-demo
+curl -sSL https://get.docker.com/ | sh
+```
+
+<!-- deploy-test-start pre-install -->
+
+    apt-get install -yq curl jq python-pip unzip
+
+    curl https://releases.hashicorp.com/packer/0.12.0/packer_0.12.0_linux_amd64.zip -o /root/packer.zip 
+    unzip /root/packer.zip -d /usr/bin
+
+    curl https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip -o /root/terraform.zip 
+    unzip /root/terraform.zip -d /usr/bin
+
+    pip install awscli
+
+<!-- deploy-test-end -->
+
 ## Docker Swarm (Single-Node)
 
 * Put your docker into the swarm mode
@@ -34,6 +54,7 @@ Running global plugins is not supported either.
 * Deploy the dab file
 
 ~~~~
+    cd microservices-demo/deploy/docker-swarm/
     docker swarm init  
     docker-compose pull
     docker-compose bundle
@@ -58,23 +79,20 @@ Feel free to run it by issuing the following command:
 
 ## Docker Swarm (Multi-Node)
 
-<!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY -->
+<!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
+
+Begin by setting the appropriate AWS environment variables.
+```
+export AWS_ACCESS_KEY_ID=[YOURACCESSKEYID]
+export AWS_SECRET_ACCESS_KEY=[YOURSECRETACCESSKEY]
+export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
+```
 
 <!-- deploy-test-hidden pre-install
-    curl https://releases.hashicorp.com/packer/0.12.0/packer_0.12.0_linux_amd64.zip -o /root/packer.zip 
-    unzip /root/packer.zip -d /usr/bin
 
-    curl https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip -o /root/terraform.zip 
-    unzip /root/terraform.zip -d /usr/bin
-
-    pip install awscli
-
-    export AWS_DEFAULT_REGION='eu-west-1'
     mkdir -p ~/.ssh/
     aws ec2 describe-key-pairs -\-key-name docker-swarm &>/dev/null
     if [ $? -eq 0 ]; then aws ec2 delete-key-pair -\-key-name docker-swarm; fi
-    aws ec2 create-key-pair -\-key-name docker-swarm -\-query 'KeyMaterial' -\-output text > ~/.ssh/docker-swarm.pem
-    chmod 600 ~/.ssh/docker-swarm.pem
     
     cat > /root/boot.sh <<EOF
 #!/usr/bin/env bash
@@ -93,48 +111,39 @@ EOF
 -->
 
 #### AWS
-<!-- deploy-test-hidden create-infrastructure
-    packer build -only=amazon-ebs packer/packer.json
-    cd infra/aws
-    terraform apply -state=/root/state.tfstate
+<!-- deploy-test-start create-infrastructure -->
 
-    master_ip=$(terraform output -state=/root/state.tfstate | grep master_address | awk '{print $3}')
+    aws ec2 create-key-pair -\-key-name docker-swarm -\-query 'KeyMaterial' -\-output text > ~/.ssh/docker-swarm.pem
+    chmod 600 ~/.ssh/docker-swarm.pem
+
+    packer build -only=amazon-ebs deploy/docker-swarm/packer/packer.json
+    terraform apply deploy/docker-swarm/infra/aws/
+
+<!-- deploy-test-end -->
+
+<!-- deploy-test-hidden create-infrastructure
+
+    master_ip=$(terraform output -json | jq -r '.master_address.value' )
     scp -i ~/.ssh/docker-swarm.pem /repo/deploy/healthcheck.rb /root/boot.sh /root/test.sh ubuntu@$master_ip:/home/ubuntu/
     ssh -i ~/.ssh/docker-swarm.pem ubuntu@$master_ip "chmod +x boot.sh; ./boot.sh"
+
 -->
-
-    export AWS_ACCESS_KEY_ID=[secret]
-    export AWS_SECRET_ACCESS_KEY=[secret]
-    export TF_VAR_num_nodes=2
-    export TF_VAR_private_key_name="docker-swarm"
-    export TF_VAR_private_key_path="~/.ssh/docker-swarm.pem"
-    export TF_VAR_instance_type="t2.micro"
-
-    packer build -only=amazon-ebs packer/packer.json
-    cd infra/aws
-    terraform plan 
-    terraform apply 
 
 #### gcloud
 
-    export TF_VAR_num_nodes="2"
     export TF_VAR_project_name='project-name'
     export TF_VAR_credentials_file_path="~/.gcloud/accounts.json"
     export TF_VAR_public_key_path="~/.ssh/gcloud_id_rsa.pub"
     export TF_VAR_private_key_path="~/.ssh/gcloud_id_rsa"
-    export TF_VAR_machine_type="g1-small"
 
-    packer build -only=googlecompute packer/packer.json
-    cd infra/gcloud
-    terraform plan 
-    terraform apply 
+    packer build -only=googlecompute deploy/docker-swarm/packer/packer.json
+    terraform apply deploy/docker-swarm/infra/gcloud/
 
 #### Local
 
     export NUM_NODES=2
-    packer build -only=virtualbox-iso packer/packer.json
-    cd infra/local
-    ./swarm.sh up
+    packer build -only=virtualbox-iso deploy/docker-swarm/packer/packer.json
+    .deploy/docker-swarm/infra/local/swarm.sh up
 
 ### Run tests
 
@@ -145,7 +154,12 @@ This will send some traffic to the application, which will form the connection g
 
 Using any IP from the command: `terraform output`
 
-    docker run --rm weaveworksdemos/load-test -d 60 -h <ip-of-deployment>:30000 -c 3 -r 10
+<!-- deploy-test-start run-tests -->
+
+    master_ip=$(terraform output -json | jq -r '.master_address.value' )
+    docker run --rm weaveworksdemos/load-test -d 60 -h $master_ip:30000 -c 3 -r 10
+
+<!-- deploy-test-end -->
 
 #### Local
 
@@ -153,7 +167,7 @@ Using any IP from the command: `terraform output`
     
 <!-- deploy-test-hidden run-tests
 
-    master_ip=$(terraform output -state=/root/state.tfstate | grep master_address | awk '{print $3}')
+    master_ip=$(terraform output -json | jq -r '.master_address.value' )
     ssh -i ~/.ssh/docker-swarm.pem ubuntu@$master_ip "chmod +x test.sh; ./test.sh"
     
     if [ $? -ne 0 ]; then 
@@ -165,13 +179,17 @@ Using any IP from the command: `terraform output`
 ### Cleaning up
 
 #### AWS & Gcloud
-<!-- deploy-test-hidden destroy-infrastructure 
-    cd infra/aws
-    terraform destroy -force -state=/root/state.tfstate
+
+<!-- deploy-test-start destroy-infrastructure -->
+
+    terraform destroy -force deploy/docker-swarm/infra/aws/
     aws ec2 delete-key-pair -\-key-name docker-swarm
--->
-    terraform destroy -force
+    rm ~/.ssh/docker-swarm.pem
+    rm terraform.tfstate
+    rm terraform.tfstate.backup
+
+<!-- deploy-test-end -->
 
 #### Local
 
-    ./swarm.sh down
+    ./deploy/docker-swarm/infra/local/swarm.sh down
