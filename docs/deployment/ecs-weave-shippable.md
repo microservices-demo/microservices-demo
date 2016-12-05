@@ -349,7 +349,7 @@ auto-deploy to the Test environment</span></p>
 
     * Explore additional elements of your Shippable Pipelines:
       * Select the `Jobs` view in the Pipelines tab and click on the `Latest Version`
-      number for the `ecs-deploy-test-front-end` job.
+      number for the `ecs-deploy-doc-front-end` job.
       * For the most recent version, select `More` and `Trace` to see details of the
       elements included in this latest deployment to the Test environment
       * Expand the `man-front-end` Resource Name
