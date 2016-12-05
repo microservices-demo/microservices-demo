@@ -108,7 +108,7 @@ resource "aws_instance" "docker-swarm-master" {
   }
 
   provisioner "file" { 
-     source = "../../docker-compose.yml"
+     source = "deploy/docker-swarm/docker-compose.yml"
      destination = "/tmp/docker-compose.yml"
   }
 

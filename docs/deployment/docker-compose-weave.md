@@ -17,35 +17,41 @@ In this version we create several isolated networks using the [Weave Docker plug
 - Install [Weave Scope](https://www.weave.works/install-weave-scope/)
 - Install [Weave Net](https://www.weave.works/install-weave-net/)
 
-### *(Optional)* Launch Weave Scope or Weave Cloud
-
-Weave Scope (local instance)
-
-    scope launch
-
-Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.weave.works/).
-
-    scope launch --service-token=<token>
-
-### Pre-reqs
+```
+git clone https://github.com/microservices-demo/microservices-demo 
+cd microservices-demo
+curl -sSL https://get.docker.com/ | sh
+```
 
 <!-- deploy-test-start pre-install -->
 
+    apt-get install -yq python-pip curl
+    pip install docker-compose
     curl -L git.io/weave -o /usr/local/bin/weave
     chmod a+x /usr/local/bin/weave
 
 <!-- deploy-test-end -->
-<!-- deploy-test-hidden pre-install 
 
-    pip install docker-compose
+### *(Optional)* Launch Weave Scope or Weave Cloud
 
--->
+Weave Scope (local instance)
+
+    sudo curl -L git.io/scope -o /usr/local/bin/scope
+    sudo chmod a+x /usr/local/bin/scope
+    scope launch
+
+Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.weave.works/).
+
+    sudo curl -L git.io/scope -o /usr/local/bin/scope
+    sudo chmod a+x /usr/local/bin/scope
+    scope launch --service-token=<token>
+
 ### Provision infrastructure
 
 <!-- deploy-test-start create-infrastructure -->
 
     weave launch
-    docker-compose up -d
+    docker-compose -f deploy/docker-compose-weave/docker-compose.yml up -d
 
 <!-- deploy-test-end -->
 
@@ -55,7 +61,7 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
     docker network connect dockercomposeweave_internal healthcheck
     docker network connect dockercomposeweave_external healthcheck
     docker network connect dockercomposeweave_backoffice healthcheck
-    docker cp /repo/deploy/healthcheck.rb healthcheck:/healthcheck.rb
+    docker cp deploy/healthcheck.rb healthcheck:/healthcheck.rb
 -->   
 ### Run tests
 
@@ -69,8 +75,9 @@ This will send some traffic to the application, which will form the connection g
     if [ $? -ne 0 ]; then 
         docker rm -f healthcheck 
         exit 1; 
+    else
+        docker rm -f healthcheck 
     fi
-    docker rm -f healthcheck 
 
 -->
 
@@ -79,7 +86,7 @@ This will send some traffic to the application, which will form the connection g
 
 <!-- deploy-test-start destroy-infrastructure -->
 
-    docker-compose down
+    docker-compose -f deploy/docker-compose-weave/docker-compose.yml down
     weave stop
    
 <!-- deploy-test-end -->

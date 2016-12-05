@@ -17,33 +17,44 @@ In this version we create a Docker network and DNS is achieved by using the inte
 - Install [Docker Compose](https://docs.docker.com/compose/install/)
 - *(Optional)* Install [Weave Scope](https://www.weave.works/install-weave-scope/)
 
+```
+git clone https://github.com/microservices-demo/microservices-demo 
+cd microservices-demo
+curl -sSL https://get.docker.com/ | sh
+```
+<!-- deploy-test-start pre-install -->
+
+    apt-get install -yq python-pip
+    pip install docker-compose
+
+<!-- deploy-test-end -->
+
+
 ### *(Optional)* Launch Weave Scope or Weave Cloud
 
 Weave Scope (local instance)
 
+    sudo curl -L git.io/scope -o /usr/local/bin/scope
+    sudo chmod a+x /usr/local/bin/scope
     scope launch
 
 Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.weave.works/).
 
+    sudo curl -L git.io/scope -o /usr/local/bin/scope
+    sudo chmod a+x /usr/local/bin/scope
     scope launch --service-token=<token>
 
 ### Provision infrastructure
 
-<!-- deploy-test-hidden pre-install
+<!-- deploy-test-start pre-install -->
 
-    pip install docker-compose
-
--->
-
-<!-- deploy-test-start create-infrastructure -->
-
-    docker-compose up -d 
+    docker-compose -f deploy/docker-compose/docker-compose.yml up -d 
 
 <!-- deploy-test-end -->
 
 <!-- deploy-test-hidden create-infrastructure 
     docker run -td -\-net=dockercompose_default -\-name healthcheck andrius/alpine-ruby /bin/sh 
-    docker cp /repo/deploy/healthcheck.rb healthcheck:/healthcheck.rb
+    docker cp deploy/healthcheck.rb healthcheck:/healthcheck.rb
 -->
 
 ### Run tests
@@ -67,6 +78,6 @@ This will send some traffic to the application, which will form the connection g
 
 <!-- deploy-test-start destroy-infrastructure -->
 
-    docker-compose down
+    docker-compose -f deploy/docker-compose/docker-compose.yml down
    
 <!-- deploy-test-end -->
