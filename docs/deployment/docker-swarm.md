@@ -27,24 +27,24 @@ Running global plugins is not supported either.
 * *Optional* [Terraform](https://www.terraform.io/downloads.html)
 
 ```
-git clone https://github.com/microservices-demo/microservices-demo 
+git clone https://github.com/microservices-demo/microservices-demo
 cd microservices-demo
-curl -sSL https://get.docker.com/ | sh
 ```
 
-<!-- deploy-test-start pre-install -->
+<!-- deploy-doc-start pre-install -->
 
-    apt-get install -yq curl jq python-pip unzip
+    curl -sSL https://get.docker.com/ | sh
+    apt-get install -yq curl jq python-pip unzip build-essential python-dev
 
-    curl https://releases.hashicorp.com/packer/0.12.0/packer_0.12.0_linux_amd64.zip -o /root/packer.zip 
+    curl https://releases.hashicorp.com/packer/0.12.0/packer_0.12.0_linux_amd64.zip -o /root/packer.zip
     unzip /root/packer.zip -d /usr/bin
 
-    curl https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip -o /root/terraform.zip 
+    curl https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip -o /root/terraform.zip
     unzip /root/terraform.zip -d /usr/bin
 
     pip install awscli
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 ## Docker Swarm (Single-Node)
 
@@ -55,7 +55,7 @@ curl -sSL https://get.docker.com/ | sh
 
 ~~~~
     cd microservices-demo/deploy/docker-swarm/
-    docker swarm init  
+    docker swarm init
     docker-compose pull
     docker-compose bundle
     docker deploy dockerswarm
@@ -65,7 +65,7 @@ curl -sSL https://get.docker.com/ | sh
 
 ### Run tests
 
-There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).  
+There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest). 
 This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud. 
 
 Feel free to run it by issuing the following command:
@@ -79,7 +79,7 @@ Feel free to run it by issuing the following command:
 
 ## Docker Swarm (Multi-Node)
 
-<!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
+<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
 
 Begin by setting the appropriate AWS environment variables.
 ```
@@ -88,17 +88,17 @@ export AWS_SECRET_ACCESS_KEY=[YOURSECRETACCESSKEY]
 export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
 ```
 
-<!-- deploy-test-hidden pre-install
+<!-- deploy-doc-hidden pre-install
 
     mkdir -p ~/.ssh/
     aws ec2 describe-key-pairs -\-key-name docker-swarm &>/dev/null
     if [ $? -eq 0 ]; then aws ec2 delete-key-pair -\-key-name docker-swarm; fi
-    
+
     cat > /root/boot.sh <<EOF
 #!/usr/bin/env bash
-docker service create -\-constraint='node.role == manager' -\-network=dockerswarm_default -\-name healthcheck andrius/alpine-ruby sleep 1200 
-sleep 30 
-ID=\$(docker ps | grep healthcheck | awk '{print \$1}') 
+docker service create -\-constraint='node.role == manager' -\-network=dockerswarm_default -\-name healthcheck andrius/alpine-ruby sleep 1200
+sleep 30
+ID=\$(docker ps | grep healthcheck | awk '{print \$1}')
 docker cp /home/ubuntu/healthcheck.rb \$ID:/healthcheck.rb
 EOF
 
@@ -111,7 +111,7 @@ EOF
 -->
 
 #### AWS
-<!-- deploy-test-start create-infrastructure -->
+<!-- deploy-doc-start create-infrastructure -->
 
     aws ec2 create-key-pair -\-key-name docker-swarm -\-query 'KeyMaterial' -\-output text > ~/.ssh/docker-swarm.pem
     chmod 600 ~/.ssh/docker-swarm.pem
@@ -119,12 +119,12 @@ EOF
     packer build -only=amazon-ebs deploy/docker-swarm/packer/packer.json
     terraform apply deploy/docker-swarm/infra/aws/
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
-<!-- deploy-test-hidden create-infrastructure
+<!-- deploy-doc-hidden create-infrastructure
 
     master_ip=$(terraform output -json | jq -r '.master_address.value' )
-    scp -i ~/.ssh/docker-swarm.pem /repo/deploy/healthcheck.rb /root/boot.sh /root/test.sh ubuntu@$master_ip:/home/ubuntu/
+    scp -i ~/.ssh/docker-swarm.pem deploy/healthcheck.rb /root/boot.sh /root/test.sh ubuntu@$master_ip:/home/ubuntu/
     ssh -i ~/.ssh/docker-swarm.pem ubuntu@$master_ip "chmod +x boot.sh; ./boot.sh"
 
 -->
@@ -154,24 +154,24 @@ This will send some traffic to the application, which will form the connection g
 
 Using any IP from the command: `terraform output`
 
-<!-- deploy-test-start run-tests -->
+<!-- deploy-doc-start run-tests -->
 
     master_ip=$(terraform output -json | jq -r '.master_address.value' )
     docker run --rm weaveworksdemos/load-test -d 60 -h $master_ip:30000 -c 3 -r 10
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 #### Local
 
     docker run --rm weaveworksdemos/load-test -d 60 -h 10.0.0.10:30000 -c 3 -r 10
-    
-<!-- deploy-test-hidden run-tests
+
+<!-- deploy-doc-hidden run-tests
 
     master_ip=$(terraform output -json | jq -r '.master_address.value' )
     ssh -i ~/.ssh/docker-swarm.pem ubuntu@$master_ip "chmod +x test.sh; ./test.sh"
-    
-    if [ $? -ne 0 ]; then 
-        exit 1; 
+
+    if [ $? -ne 0 ]; then
+        exit 1;
     fi
 
 -->
@@ -180,7 +180,7 @@ Using any IP from the command: `terraform output`
 
 #### AWS & Gcloud
 
-<!-- deploy-test-start destroy-infrastructure -->
+<!-- deploy-doc-start destroy-infrastructure -->
 
     terraform destroy -force deploy/docker-swarm/infra/aws/
     aws ec2 delete-key-pair -\-key-name docker-swarm
@@ -188,7 +188,7 @@ Using any IP from the command: `terraform output`
     rm terraform.tfstate
     rm terraform.tfstate.backup
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 #### Local
 
