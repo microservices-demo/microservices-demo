@@ -18,19 +18,19 @@ In this version we create several isolated networks using the [Weave Docker plug
 - Install [Weave Net](https://www.weave.works/install-weave-net/)
 
 ```
-git clone https://github.com/microservices-demo/microservices-demo 
+git clone https://github.com/microservices-demo/microservices-demo
 cd microservices-demo
-curl -sSL https://get.docker.com/ | sh
 ```
 
-<!-- deploy-test-start pre-install -->
+<!-- deploy-doc-start pre-install -->
 
-    apt-get install -yq python-pip curl
+    curl -sSL https://get.docker.com/ | sh
+    apt-get install -yq python-pip build-essential python-dev
     pip install docker-compose
     curl -L git.io/weave -o /usr/local/bin/weave
     chmod a+x /usr/local/bin/weave
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 ### *(Optional)* Launch Weave Scope or Weave Cloud
 
@@ -48,35 +48,34 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 
 ### Provision infrastructure
 
-<!-- deploy-test-start create-infrastructure -->
+<!-- deploy-doc-start create-infrastructure -->
 
     weave launch
     docker-compose -f deploy/docker-compose-weave/docker-compose.yml up -d
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
-<!-- deploy-test-hidden create-infrastructure 
-    docker run -td -\-name healthcheck andrius/alpine-ruby /bin/sh 
+### Run tests
+
+There's a load test provided as a service in this compose file. For more information see [Load Test](#loadtest). 
+It will run when the compose is started up, after a delay of 60s. This is a load test provided to simulate user traffic to the application. 
+This will send some traffic to the application, which will form the connection graph that you view in Scope or Weave Cloud. 
+
+<!-- deploy-doc-hidden run-tests
+
+    docker run -td -\-name healthcheck andrius/alpine-ruby /bin/sh
     docker network connect dockercomposeweave_secure healthcheck
     docker network connect dockercomposeweave_internal healthcheck
     docker network connect dockercomposeweave_external healthcheck
     docker network connect dockercomposeweave_backoffice healthcheck
     docker cp deploy/healthcheck.rb healthcheck:/healthcheck.rb
--->   
-### Run tests
-
-There's a load test provided as a service in this compose file. For more information see [Load Test](#loadtest).  
-It will run when the compose is started up, after a delay of 60s. This is a load test provided to simulate user traffic to the application.
-This will send some traffic to the application, which will form the connection graph that you view in Scope or Weave Cloud. 
-
-<!-- deploy-test-hidden run-tests
 
     docker exec -t healthcheck ruby /healthcheck.rb -s user,catalogue,queue-master,cart,shipping,payment,orders -d 120
-    if [ $? -ne 0 ]; then 
-        docker rm -f healthcheck 
-        exit 1; 
+    if [ $? -ne 0 ]; then
+        docker rm -f healthcheck
+        exit 1;
     else
-        docker rm -f healthcheck 
+        docker rm -f healthcheck
     fi
 
 -->
@@ -84,9 +83,9 @@ This will send some traffic to the application, which will form the connection g
 
 ### Cleaning up
 
-<!-- deploy-test-start destroy-infrastructure -->
+<!-- deploy-doc-start destroy-infrastructure -->
 
     docker-compose -f deploy/docker-compose-weave/docker-compose.yml down
     weave stop
-   
-<!-- deploy-test-end -->
+
+<!-- deploy-doc-end -->

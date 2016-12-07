@@ -1,6 +1,5 @@
 require "yaml"
 class DeployDocTest < Struct.new(:name, :markdown_file, :deployment_directory, :config)
-  require_relative "deploy_doc_test/plan"
 
   def self.find!(name)
     deploy_doc_test = DeployDocTest.find_all.find { |deploy_doc_test| deploy_doc_test.name == name }
@@ -36,9 +35,5 @@ class DeployDocTest < Struct.new(:name, :markdown_file, :deployment_directory, :
     end
 
     all
-  end
-
-  def plan
-    @plan ||= Plan.from_file(self.markdown_file)
   end
 end
