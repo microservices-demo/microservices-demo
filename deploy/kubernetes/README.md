@@ -10,7 +10,7 @@ Make sure minikube is running on http://192.168.99.100:30000
 
 Create the namespace for sock-shop
 
-4) `kubectl create -f microservices-demo/deploy/kubernetes/manifests/ksNamespace.yaml`
+4) `kubectl create -f microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml`
 
 Fix a bug!
 
