@@ -1,6 +1,7 @@
 # Installing sock-shop on Minikube
 
 1) Install minikube
+
 2) `minikube start`
 
 Make sure minikube is running on http://192.168.99.100:30000
