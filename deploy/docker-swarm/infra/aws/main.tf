@@ -107,7 +107,7 @@ resource "aws_instance" "docker-swarm-master" {
     private_key = "${file("${var.private_key_path}")}"
   }
 
-  provisioner "file" { 
+  provisioner "file" {
      source = "deploy/docker-swarm/docker-compose.yml"
      destination = "/tmp/docker-compose.yml"
   }
@@ -120,7 +120,7 @@ resource "aws_instance" "docker-swarm-master" {
   }
 
   provisioner "local-exec" {
-    command = "TOKEN=$(ssh -i \"${var.private_key_path}\" -o \"StrictHostKeyChecking no\" ubuntu@${aws_instance.docker-swarm-master.public_ip} docker swarm join-token -q worker); echo \"#!/usr/bin/env bash\ndocker swarm join --token $TOKEN ${aws_instance.docker-swarm-master.public_ip}:2377\" >| join.sh"
+    command = "TOKEN=$(ssh -i ${var.private_key_path} -o StrictHostKeyChecking=no ubuntu@${aws_instance.docker-swarm-master.public_ip} docker swarm join-token -q worker); echo \"#!/usr/bin/env bash\ndocker swarm join --token $TOKEN ${aws_instance.docker-swarm-master.public_ip}:2377\" >| join.sh"
   }
 }
 

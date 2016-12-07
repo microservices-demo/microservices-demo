@@ -13,20 +13,21 @@ Weave Net and Weave Scope.
 * *Optional* [AWS Account](https://aws.amazon.com/)
 * *Optional* [awscli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
 
-<!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
-<!-- deploy-test-start pre-install -->
+<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
+<!-- deploy-doc-start pre-install -->
 
-    apt-get install -yq jq python-pip curl unzip
+    curl -sSL https://get.docker.com/ | sh
+    apt-get install -yq jq python-pip curl unzip build-essential python-dev
     pip install awscli
-    curl -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip 
+    curl -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip
     unzip /tmp/terraform.zip -d /usr/bin
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 ```
-git clone https://github.com/microservices-demo/microservices-demo 
+git clone https://github.com/microservices-demo/microservices-demo
 ```
-<!-- deploy-test-hidden pre-install 
+<!-- deploy-doc-hidden pre-install
 
     cat > /root/healthcheck.sh <<-EOF
 #!/usr/bin/env bash
@@ -50,78 +51,78 @@ export AWS_SECRET_ACCESS_KEY=[YOURSECRETACCESSKEY]
 export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
 ```
 
-Next we'll create a private key for use during this demo.    
+Next we'll create a private key for use during this demo.
 
-<!-- deploy-test-start create-infrastructure -->
+<!-- deploy-doc-start create-infrastructure -->
 
     aws ec2 create-key-pair --key-name deploy-docs-k8s --query 'KeyMaterial' --output text > ~/.ssh/deploy-docs-k8s.pem
     chmod 600 ~/.ssh/deploy-docs-k8s.pem
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 Finally run terraform.
 
-<!-- deploy-test-start create-infrastructure -->
+<!-- deploy-doc-start create-infrastructure -->
 
     terraform apply deploy/kubernetes/terraform/
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 Our master node makes use of some of the files in this repo so lets securely copy those over.
 
-<!-- deploy-test-start create-infrastructure -->
+<!-- deploy-doc-start create-infrastructure -->
 
-    master_ip=$(terraform output -json | jq -r '.master_address.value') 
+    master_ip=$(terraform output -json | jq -r '.master_address.value')
     scp -i ~/.ssh/deploy-docs-k8s.pem -o StrictHostKeyChecking=no deploy/kubernetes/weavescope.yaml ubuntu@$master_ip:/tmp/
     scp -i ~/.ssh/deploy-docs-k8s.pem -rp deploy/kubernetes/manifests ubuntu@$master_ip:/tmp/
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 ### <a name="weavenet"></a>Setup Weave Net
 * Run the following commands to setup Kubernetes and Weave Net on the master instance
 
-<!-- deploy-test-start create-infrastructure -->
+<!-- deploy-doc-start create-infrastructure -->
 
-    master_ip=$(terraform output -json | jq -r '.master_address.value') 
+    master_ip=$(terraform output -json | jq -r '.master_address.value')
     ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip sudo kubeadm init > k8s-init.log
     grep -e --token k8s-init.log > join.cmd
     ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl apply -f https://git.io/weave-kube
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
-### Time for the nodes to join the master 
+### Time for the nodes to join the master
 * Run the following commands to SSH into each node\_addresses listed when you ran the ```terraform output``` command and run the ```kubeadm join --token <token> <master-ip>``` command from before.
 
-<!-- deploy-test-start create-infrastructure -->
+<!-- deploy-doc-start create-infrastructure -->
 
-    node_addresses=$(terraform output -json | jq -r '.node_addresses.value|@sh' | sed -e "s/'//g" ) 
+    node_addresses=$(terraform output -json | jq -r '.node_addresses.value|@sh' | sed -e "s/'//g" )
     for node in $node_addresses; do
         ssh -i ~/.ssh/deploy-docs-k8s.pem -o StrictHostKeyChecking=no ubuntu@$node sudo `cat join.cmd`
     done
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 ### Setup Weave Scope
 * SSH into the master node
 * Start weave scope on the cluster
 
-<!-- deploy-test-start create-infrastructure -->
+<!-- deploy-doc-start create-infrastructure -->
 
-    master_ip=$(terraform output -json | jq -r '.master_address.value') 
+    master_ip=$(terraform output -json | jq -r '.master_address.value')
     ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl apply -f /tmp/weavescope.yaml -\-validate=false
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 ### Deploy Sock Shop
 * SSH into the master node
 * Deploy the sock shop
 
-<!-- deploy-test-start create-infrastructure -->
+<!-- deploy-doc-start create-infrastructure -->
 
-    master_ip=$(terraform output -json | jq -r '.master_address.value') 
+    master_ip=$(terraform output -json | jq -r '.master_address.value')
     ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl apply -f /tmp/manifests/sock-shop-ns.yml -f /tmp/manifests
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 ### View the results
 Each app is behind a load balancer which delivers the app from one of 3+ nodes
@@ -140,24 +141,24 @@ scope_address = elb-scope-927708071.eu-west-1.elb.amazonaws.com
 sock_shop_address = elb-sock-shop-363710645.eu-west-1.elb.amazonaws.com
 ```
 
-Open any of the links listed in scope_address and sock_shop_address to see the apps in action.   
+Open any of the links listed in scope_address and sock_shop_address to see the apps in action.
 It may take a few moments for the apps to get running.
 
 ### Run tests
 
-There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).  
-This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud. 
+There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).
+This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud.
 
-<!-- deploy-test-start run-tests -->
+<!-- deploy-doc-start run-tests -->
 
-    elb_url=$(terraform output -json | jq -r '.sock_shop_address.value') 
+    elb_url=$(terraform output -json | jq -r '.sock_shop_address.value')
     docker run --rm weaveworksdemos/load-test -d 300 -h $elb_url -c 3 -r 10
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
-<!-- deploy-test-hidden run-tests
+<!-- deploy-doc-hidden run-tests
 
-    master_ip=$(terraform output -json | jq -r '.master_address.value') 
+    master_ip=$(terraform output -json | jq -r '.master_address.value')
     scp -i ~/.ssh/deploy-docs-k8s.pem -rp /root/healthcheck.sh ubuntu@$master_ip:/home/ubuntu
     ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip "chmod +x /home/ubuntu/healthcheck.sh; ./healthcheck.sh"
 
@@ -180,7 +181,7 @@ ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl delete service $(kub
 
 Destroying the entire infrastructure
 
-<!-- deploy-test-start destroy-infrastructure -->
+<!-- deploy-doc-start destroy-infrastructure -->
 
     terraform destroy -force deploy/kubernetes/terraform/
     aws ec2 delete-key-pair -\-key-name deploy-docs-k8s
@@ -190,4 +191,4 @@ Destroying the entire infrastructure
     rm k8s-init.log
     rm join.cmd
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
