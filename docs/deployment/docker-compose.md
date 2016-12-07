@@ -18,16 +18,16 @@ In this version we create a Docker network and DNS is achieved by using the inte
 - *(Optional)* Install [Weave Scope](https://www.weave.works/install-weave-scope/)
 
 ```
-git clone https://github.com/microservices-demo/microservices-demo 
+git clone https://github.com/microservices-demo/microservices-demo
 cd microservices-demo
-curl -sSL https://get.docker.com/ | sh
 ```
-<!-- deploy-test-start pre-install -->
+<!-- deploy-doc-start pre-install -->
 
-    apt-get install -yq python-pip
+    curl -sSL https://get.docker.com/ | sh
+    apt-get install -yq python-pip build-essential python-dev
     pip install docker-compose
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 
 ### *(Optional)* Launch Weave Scope or Weave Cloud
@@ -46,38 +46,36 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 
 ### Provision infrastructure
 
-<!-- deploy-test-start pre-install -->
+<!-- deploy-doc-start create-infrastructure -->
 
-    docker-compose -f deploy/docker-compose/docker-compose.yml up -d 
+    docker-compose -f deploy/docker-compose/docker-compose.yml up -d
 
-<!-- deploy-test-end -->
-
-<!-- deploy-test-hidden create-infrastructure 
-    docker run -td -\-net=dockercompose_default -\-name healthcheck andrius/alpine-ruby /bin/sh 
-    docker cp deploy/healthcheck.rb healthcheck:/healthcheck.rb
--->
+<!-- deploy-doc-end -->
 
 ### Run tests
 
-There's a load test provided as a service in this compose file. For more information see [Load Test](#loadtest).  
-It will run when the compose is started up, after a delay of 60s. This is a load test provided to simulate user traffic to the application.
+There's a load test provided as a service in this compose file. For more information see [Load Test](#loadtest). 
+It will run when the compose is started up, after a delay of 60s. This is a load test provided to simulate user traffic to the application. 
 This will send some traffic to the application, which will form the connection graph that you view in Scope or Weave Cloud. 
 
-<!-- deploy-test-hidden run-tests
-    
+<!-- deploy-doc-hidden run-tests
+
+    docker run -td -\-net=dockercompose_default -\-name healthcheck andrius/alpine-ruby /bin/sh
+    docker cp deploy/healthcheck.rb healthcheck:/healthcheck.rb
     docker exec -t healthcheck ruby /healthcheck.rb -s user,catalogue,queue-master,cart,shipping,payment,orders -d 90
-    if [ $? -ne 0 ]; then 
-        docker rm -f healthcheck 
-        exit 1; 
+    if [ $? -ne 0 ]; then
+        docker rm -f healthcheck
+        exit 1;
+    else
+        docker rm -f healthcheck
     fi
-    docker rm -f healthcheck 
 
 -->
 
 ### Cleaning up
 
-<!-- deploy-test-start destroy-infrastructure -->
+<!-- deploy-doc-start destroy-infrastructure -->
 
     docker-compose -f deploy/docker-compose/docker-compose.yml down
-   
-<!-- deploy-test-end -->
+
+<!-- deploy-doc-end -->

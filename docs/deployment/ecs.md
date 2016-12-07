@@ -6,7 +6,7 @@ deploymentScriptDir: "aws-ecs"
 
 ## Deployment on Amazon EC/2 Container Service
 
-<!-- deploy-test require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
+<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
 
 ### Goal
 
@@ -27,32 +27,33 @@ By clicking "Launch Stack" button above, you will get redirected to AWS CloudFor
 To use CLI, you also need to have the [AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html) set up and configured.
 
 To deploy and start the demo, run the setup script to deploy to ECS:
-<!-- deploy-test-start pre-install -->
+<!-- deploy-doc-start pre-install -->
 
-    apt-get install -yq jq 
+    curl -sSL https://get.docker.com/ | sh
+    apt-get install -yq jq python-pip build-essential python-dev
     pip install awscli
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
-<!-- deploy-test-start create-infrastructure -->
+<!-- deploy-doc-start create-infrastructure -->
 
     cd deploy/aws-ecs/
     STORE_DNS_NAME_HERE=ecs-endpoint ./setup.sh
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 
 This may take a few minutes to complete. Once it's done, it will print the URL for the demo frontend, as well as the URL for the Weave Scope instance that can be used to visualize the containers and their connections.
 
 To ensure that the application is running properly, you could perform some load testing on it:
 
-<!-- deploy-test-start run-tests -->
+<!-- deploy-doc-start run-tests -->
 
     docker run weaveworksdemos/load-test -d 60 -h `cat deploy/aws-ecs/ecs-endpoint` -c 10 -r 100
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
-<!-- deploy-test-hidden run-tests
+<!-- deploy-doc-hidden run-tests
 
     frontend_task=$(aws ecs list-tasks -\-cluster weave-ecs-demo-cluster -\-service-name weavedemo-edge-router-service  -\-query 'taskArns[0]' -\-output text)
     container_inst=$(aws ecs describe-tasks -\-cluster weave-ecs-demo-cluster -\-tasks $frontend_task -\-query 'tasks[0].containerInstanceArn' -\-output text)
@@ -63,8 +64,8 @@ To ensure that the application is running properly, you could perform some load 
 
     ssh -i deploy/aws-ecs/weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" ec2-user@$dns_name "eval \$(weave env); docker run -\-rm -v /home/ec2-user/healthcheck.rb:/healthcheck.rb -i andrius/alpine-ruby ruby /healthcheck.rb -s user.weave.local,catalogue.weave.local,cart.weave.local,shipping.weave.local,payment.weave.local,orders.weave.local,queue-master.weave.local"
 
-    if [ $? -ne 0 ]; then 
-        exit 1; 
+    if [ $? -ne 0 ]; then
+        exit 1;
     fi
 -->
 
@@ -73,12 +74,12 @@ To ensure that the application is running properly, you could perform some load 
 
 To tear down the containers and their associated AWS objects, run the cleanup script:
 
-<!-- deploy-test-start destroy-infrastructure -->
+<!-- deploy-doc-start destroy-infrastructure -->
 
     cd deploy/aws-ecs/
     ./cleanup.sh
 
-<!-- deploy-test-end -->
+<!-- deploy-doc-end -->
 
 #### Background
 
