@@ -1,4 +1,4 @@
-# Deploy to Mesos using CNI
+# Deploy to Mesos using Marathon
 
 These scripts will install the microservices demo on Apache Mesos using Marathon.
 
