@@ -48,6 +48,11 @@ resource "aws_instance" "k8s-node" {
     Name = "microservices-demo-staging-node"
   }
 
+  root_block_device {
+    volume_type = "gp2"
+    volume_size = "32"
+  }
+
   connection {
     user        = "${var.instance_user}"
     private_key = "${file("${var.private_key_file}")}"
@@ -78,6 +83,12 @@ resource "aws_instance" "k8s-master" {
   tags {
     Name = "microservices-demo-staging-master"
   }
+
+  root_block_device {
+    volume_type = "gp2"
+    volume_size = "32"
+  }
+
   provisioner "remote-exec" {
     connection {
       user        = "${var.instance_user}"
