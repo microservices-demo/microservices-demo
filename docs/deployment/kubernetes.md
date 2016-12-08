@@ -91,7 +91,7 @@ Our master node makes use of some of the files in this repo so lets securely cop
 <!-- deploy-doc-end -->
 
 ### Time for the nodes to join the master
-* Run the following commands to SSH into each node\_addresses listed when you ran the ```terraform output``` command and run the ```kubeadm join --token <token> <master-ip>``` command from before.
+* Run the following commands to SSH into each node\_addresses and run the ```kubeadm join --token <token> <master-ip>``` command from before.
 
 <!-- deploy-doc-start create-infrastructure -->
 
@@ -125,24 +125,23 @@ Our master node makes use of some of the files in this repo so lets securely cop
 <!-- deploy-doc-end -->
 
 ### View the results
-Each app is behind a load balancer which delivers the app from one of 3+ nodes
+Run `terraform output` command to see the load balancer and node URLs
 
-Run `terraform output` again to see the load balancer URLs
+The sock shop is available at the sock_shop_address as displayed below. The scope app is accessible via the master and
+any of the node urls on port 30001. It may take a few moments for the apps to get running.
+
 ```
 Outputs:
 
-master_address = ec2-52-49-12-162.eu-west-1.compute.amazonaws.com
+master_address = ec2-52-213-213-161.eu-west-1.compute.amazonaws.com
 node_addresses = [
-    ec2-52-212-222-97.eu-west-1.compute.amazonaws.com,
-    ec2-52-51-218-57.eu-west-1.compute.amazonaws.com,
-    ec2-52-18-214-169.eu-west-1.compute.amazonaws.com
+    ec2-52-213-136-12.eu-west-1.compute.amazonaws.com,
+    ec2-52-208-64-132.eu-west-1.compute.amazonaws.com,
+    ec2-52-48-129-206.eu-west-1.compute.amazonaws.com
 ]
-scope_address = elb-scope-927708071.eu-west-1.elb.amazonaws.com
-sock_shop_address = elb-sock-shop-363710645.eu-west-1.elb.amazonaws.com
-```
+sock_shop_address = MD-k8s-elb-sock-shop-1211989270.eu-west-1.elb.amazonaws.com
 
-Open any of the links listed in scope_address and sock_shop_address to see the apps in action.
-It may take a few moments for the apps to get running.
+```
 
 ### Run tests
 
