@@ -86,8 +86,8 @@ job "weavedemo" {
     } # - end edge-router - #
   } # - end frontend - #
 
-  # - accounts - #
-  group "accounts" {
+  # - user - #
+  group "user" {
     count = 1
 
     restart {
@@ -98,20 +98,20 @@ job "weavedemo" {
     }
 
     # - app - #
-    task "accounts" {
+    task "user" {
       driver = "docker"
 
       config {
-        image = "weaveworksdemos/accounts"
-        hostname = "accounts.weave.local"
+        image = "weaveworksdemos/user"
+        hostname = "user.weave.local"
         network_mode = "secure"
         dns_servers = ["172.17.0.1"]
         dns_search_domains = ["weave.local."]
       }
 
       service {
-        name = "${TASKGROUP}-accounts"
-        tags = ["accounts"]
+        name = "${TASKGROUP}-user"
+        tags = ["user"]
       }
 
       resources {
@@ -124,18 +124,18 @@ job "weavedemo" {
     } # - end app - #
 
     # - db - #
-    task "accountsdb" {
+    task "user-db" {
       driver = "docker"
 
       config {
-        image = "weaveworksdemos/accounts-db-test"
-        hostname = "accounts-db.weave.local"
+        image = "weaveworksdemos/user-db"
+        hostname = "user-db.weave.local"
         network_mode = "secure"
       }
 
       service {
-        name = "${TASKGROUP}-accountsdb"
-        tags = ["db", "accounts", "accountsdb"]
+        name = "${TASKGROUP}-userdb"
+        tags = ["db", "user", "userdb"]
       }
 
       resources {
@@ -146,7 +146,7 @@ job "weavedemo" {
         }
       }
     } # - end db - #
-  } # - end accounts - #
+  } # - end user - #
 
   # - catalogue - #
   group "catalogue" {
@@ -169,8 +169,6 @@ job "weavedemo" {
         network_mode = "external"
         dns_servers = ["172.17.0.1"]
         dns_search_domains = ["weave.local."]
-        command = "/app"
-        args =  ["-port=80", "-DSN=root@fake_password@tcp(catalogue-db:3306)/socksdb"]
       }
 
       service {
@@ -199,7 +197,8 @@ job "weavedemo" {
 
       env {
         MYSQL_DATABASE = "socksdb"
-        MYSQL_ROOT_PASSWORD = "fake_password"
+        MYSQL_ROOT_PASSWORD = ""
+        MYSQL_ALLOW_EMPTY_PASSWORD = "true"
       }
 
       service {
@@ -209,7 +208,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 96 # 96MB
+        memory = 512 # 96MB
         network {
           mbits = 10
         }
@@ -248,7 +247,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 256 # 256MB
+        memory = 512 # 512MB
         network {
           mbits = 10
         }
@@ -310,51 +309,13 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 256 # 256MB
+        memory = 512 # 256MB
         network {
           mbits = 10
         }
       }
     } # - end app - #
   } # - end shipping - #
-
-  # - login - #
-  group "login" {
-    count = 1
-
-    restart {
-      attempts = 10
-      interval = "5m"
-      delay = "25s"
-      mode = "delay"
-    }
-
-    # - app - #
-    task "login" {
-      driver = "docker"
-
-      config {
-        image = "weaveworksdemos/login"
-        hostname = "login.weave.local"
-        network_mode = "secure"
-        dns_servers = ["172.17.0.1"]
-        dns_search_domains = ["weave.local."]
-      }
-
-      service {
-        name = "${TASKGROUP}-login"
-        tags = ["login"]
-      }
-
-      resources {
-        cpu = 100 # 100 Mhz
-        memory = 16 # 16MB
-        network {
-          mbits = 10
-        }
-      }
-    } # - end app - #
-  } # - end login - #
 
   # - payment - #
   group "payment" {
@@ -425,7 +386,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 256 # 256MB
+        memory = 512 # 512MB
         network {
           mbits = 10
         }
