@@ -93,10 +93,9 @@ Generally, you can proceed to the following step when:
 
 Keys and/or passwords are available from the maintainer.
 
-| Stage | Description | URL | Maintainer |
-|:------|:------------|:----|:------|
-| Staging | Bastion host | 52.209.82.220 | Phil |
-| Staging | App | http://microservices-demo-staging-k8s-1909785901.eu-west-1.elb.amazonaws.com/ | Phil |
-| Staging | K8s UI | https://52.209.23.12/ui | Phil |
-| Staging | Scope UI | http://microservicesdemo-staging-scope-1843834065.eu-west-1.elb.amazonaws.com/ | Phil |
-
+| Stage   | Description  | URL                                                                           | Maintainer |
+|:--------|:-------------|:------------------------------------------------------------------------------|:-----------|
+| Staging | Bastion host | 52.209.82.220                                                                 | Phil       |
+| Staging | App          | http://microservices-demo-staging-k8s-1605564473.eu-west-1.elb.amazonaws.com/ | Phil       |
+| Staging | K8s UI       | https://52.209.23.12/ui                                                       | Phil       |
+| Staging | Scope UI     | http://microservicesdemo-staging-scope-1340023156.eu-west-1.elb.amazonaws.com | Phil       |
