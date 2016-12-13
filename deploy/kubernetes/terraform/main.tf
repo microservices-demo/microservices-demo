@@ -91,7 +91,7 @@ resource "aws_elb" "elb-sock-shop" {
 
   listener {
     lb_port = 80
-    instance_port = 30000
+    instance_port = 30001
     lb_protocol = "http"
     instance_protocol = "http"
   }
