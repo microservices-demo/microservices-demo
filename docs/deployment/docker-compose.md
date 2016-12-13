@@ -21,13 +21,13 @@ In this version we create a Docker network and DNS is achieved by using the inte
 git clone https://github.com/microservices-demo/microservices-demo
 cd microservices-demo
 ```
-<!-- deploy-doc-start pre-install -->
+<!-- deploy-doc-hidden pre-install
 
     curl -sSL https://get.docker.com/ | sh
     apt-get install -yq python-pip build-essential python-dev
     pip install docker-compose
 
-<!-- deploy-doc-end -->
+-->
 
 
 ### *(Optional)* Launch Weave Scope or Weave Cloud

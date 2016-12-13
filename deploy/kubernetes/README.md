@@ -1,25 +1,31 @@
 # Installing sock-shop on Minikube
 
-1) Install minikube
+1) Install minikube (https://github.com/kubernetes/minikube)
 
-2) `minikube start`
+2) Start minikube
+
+```
+minikube start
+```
 
 Make sure minikube is running on http://192.168.99.100:30000
 
 3) Clone the microservices-demo repo
 
-Create the namespace for sock-shop
+```
+git clone https://github.com/microservices-demo/microservices-demo
+```
 
-4) `kubectl create -f microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml`
+4) Start the Sock Shop application
 
-Fix a bug!
+```
+kubectl create -f microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml -f microservices-demo/deploy/kubernetes/manifests
+```
 
-5) Edit the `microservices-demo/deploy/kubernetes/manifests/front-end-svc.yaml` file, and change the "NodePort" to be 30001.
+5) Wait for all the services to start
 
-6) `kubectl create -f microservices-demo/deploy/kubernetes/manifests`
+```
+kubectl get pods --namespace="sock-shop"
+```
 
-Wait for all the services to start:
-
-7) `watch kubectl get pods --namespace="sock-shop"`
-
-8) http://192.168.99.100:30001
+6) Visit the Sock Shop webpage at http://192.168.99.100:30001
