@@ -26,6 +26,7 @@ Weave Net and Weave Scope.
 
 ```
 git clone https://github.com/microservices-demo/microservices-demo
+cd microservices-demo
 ```
 <!-- deploy-doc-hidden pre-install
 
