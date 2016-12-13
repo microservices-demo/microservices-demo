@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_security_group" "k8s-security-group" {
-  name        = "MD-k8s-security-group"
+  name        = "md-k8s-security-group"
   description = "allow all internal traffic, ssh, http from anywhere"
   ingress {
     from_port   = 0
@@ -23,6 +23,12 @@ resource "aws_security_group" "k8s-security-group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port   = 30001
+    to_port     = 30001
+    protocol     = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -31,13 +37,13 @@ resource "aws_security_group" "k8s-security-group" {
   }
 }
 
-resource "aws_instance" "MD-k8s-master" {
+resource "aws_instance" "md-k8s-master" {
   instance_type   = "${var.master_instance_type}"
   ami             = "${lookup(var.aws_amis, var.aws_region)}"
   key_name        = "${var.key_name}"
   security_groups = ["${aws_security_group.k8s-security-group.name}"]
   tags {
-    Name = "MD-k8s-master"
+    Name = "md-k8s-master"
   }
   
   connection {
@@ -56,14 +62,14 @@ resource "aws_instance" "MD-k8s-master" {
   }
 }
 
-resource "aws_instance" "MD-k8s-node" {
+resource "aws_instance" "md-k8s-node" {
   instance_type   = "${var.node_instance_type}"
   count           = "${var.node_count}"
   ami             = "${lookup(var.aws_amis, var.aws_region)}"
   key_name        = "${var.key_name}"
   security_groups = ["${aws_security_group.k8s-security-group.name}"]
   tags {
-    Name = "MD-k8s-node"
+    Name = "md-k8s-node"
   }
 
   connection {
@@ -83,27 +89,11 @@ resource "aws_instance" "MD-k8s-node" {
 }
 
 resource "aws_elb" "elb-sock-shop" {
-  depends_on = [ "aws_instance.MD-k8s-node" ]
-  name = "MD-k8s-elb-sock-shop"
-  instances = ["${aws_instance.MD-k8s-node.*.id}"]
+  depends_on = [ "aws_instance.md-k8s-node" ]
+  name = "md-k8s-elb-sock-shop"
+  instances = ["${aws_instance.md-k8s-node.*.id}"]
   availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  security_groups = ["${aws_security_group.k8s-security-group.id}"]
-
-  listener {
-    lb_port = 80
-    instance_port = 30001
-    lb_protocol = "http"
-    instance_protocol = "http"
-  }
-}
-
-resource "aws_elb" "elb-scope" {
-  depends_on = [ "aws_instance.MD-k8s-node" ]
-  name = "MD-k8s-elb-scope"
-  instances = ["${aws_instance.MD-k8s-node.*.id}"]
-  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  security_groups = ["${aws_security_group.k8s-security-group.id}"]
-
+  security_groups = ["${aws_security_group.k8s-security-group.id}"] 
   listener {
     lb_port = 80
     instance_port = 30001
