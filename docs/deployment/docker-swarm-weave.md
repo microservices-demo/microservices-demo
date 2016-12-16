@@ -3,7 +3,7 @@ layout: default
 deployDoc: true
 ---
 
-## Sock Shop via Docker Swarm + Weave
+## Sock Shop via Docker Swarm + Weave Scope
 
 Not possible at the moment. You can install Sock Shop on Docker Swarm (without Weave Scope) by following [these instructions](docker-swarm.md)
 
