@@ -1,31 +1,8 @@
-# Installing sock-shop on Minikube
+# Installing sock-shop on Kubernetes
 
-1) Install minikube (https://github.com/kubernetes/minikube)
+See the [documentation](../../docs/deployment/kubernetes.md) on how to deploy Sock Shop using Minikube.
 
-2) Start minikube
+## Kubernestes manifests
 
-```
-minikube start
-```
-
-Make sure minikube is running on http://192.168.99.100:30000
-
-3) Clone the microservices-demo repo
-
-```
-git clone https://github.com/microservices-demo/microservices-demo
-```
-
-4) Start the Sock Shop application
-
-```
-kubectl create -f microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml -f microservices-demo/deploy/kubernetes/manifests
-```
-
-5) Wait for all the services to start
-
-```
-kubectl get pods --namespace="sock-shop"
-```
-
-6) Visit the Sock Shop webpage at http://192.168.99.100:30001
+There are 2 sets of manifests for deploying Sock Shop on Kubernetes: one in the [manifests directory](manifests/), and complete-demo.yaml. The complete-demo.yaml is a single file manifest
+made by concatenating all the manifests from the manifests directory, so please regenerate it when changing files in the manifests directory.
