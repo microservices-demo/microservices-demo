@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 SCRIPT_NAME=`basename "$0"`
-GROUP=weaveworksdemos
+GROUP="weaveworksdemos"
+NAMESPACE="sock-shop"
 
 if [ "$#" -ne 2 ]
 then
@@ -10,4 +11,4 @@ then
   exit 1
 fi
 
-kubectl set image deployment/$1 $1=$GROUP/$1:$2
+kubectl set image deployment/$1 $1=$GROUP/$1:$2 --namespace=$NAMESPACE

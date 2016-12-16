@@ -55,28 +55,31 @@
     },
     "WeaveworksEcsAmiIds": {
       "us-east-1": {
-        "ImageId": "ami-3d55272a"
+        "ImageId": "ami-eca289fb"
+      },
+      "us-east-2": {
+        "ImageId": "ami-446f3521"
       },
       "us-west-1": {
-        "ImageId": "ami-444d0224"
+        "ImageId": "ami-9fadf8ff"
       },
       "us-west-2": {
-        "ImageId": "ami-1ccd1f7c"
+        "ImageId": "ami-7abc111a"
       },
       "eu-west-1": {
-        "ImageId": "ami-b6760fc5"
+        "ImageId": "ami-a1491ad2"
       },
       "eu-central-1": {
-        "ImageId": "ami-f562909a"
+        "ImageId": "ami-54f5303b"
       },
       "ap-northeast-1": {
-        "ImageId": "ami-096cba68"
+        "ImageId": "ami-9cd57ffd"
       },
       "ap-southeast-1": {
-        "ImageId": "ami-7934ee1a"
+        "ImageId": "ami-a900a3ca"
       },
       "ap-southeast-2": {
-        "ImageId": "ami-22a49541"
+        "ImageId": "ami-5781be34"
       }
     }
   },
@@ -84,7 +87,7 @@
     "EcsInstanceType": {
       "Type": "String",
       "Description": "Type of the EC2 instance(s) to deploy",
-      "Default": "t2.micro",
+      "Default": "t2.medium",
       "AllowedValues": [
         "t2.micro",
         "t2.small",
@@ -170,62 +173,6 @@
     "EcsCluster": {
       "Type": "AWS::ECS::Cluster"
     },
-    "AccountsDBTask": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::TaskDefinition",
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Essential": true,
-            "Image": "mongo",
-            "Name": "accounts-db",
-            "Memory": 512
-          }
-        ],
-        "Volumes": []
-      }
-    },
-    "AccountsDBService": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::Service",
-      "Properties": {
-        "Cluster": {
-          "Ref": "EcsCluster"
-        },
-        "DesiredCount": 1,
-        "TaskDefinition": {
-          "Ref": "AccountsDBTask"
-        }
-      }
-    },
-    "AccountsTask": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::TaskDefinition",
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Essential": true,
-            "Image": "weaveworksdemos/accounts",
-            "Name": "accounts",
-            "Memory": 1024
-          }
-        ],
-        "Volumes": []
-      }
-    },
-    "AccountsService": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::Service",
-      "Properties": {
-        "Cluster": {
-          "Ref": "EcsCluster"
-        },
-        "DesiredCount": 1,
-        "TaskDefinition": {
-          "Ref": "AccountsTask"
-        }
-      }
-    },
     "CartDBTask": {
       "Condition": "DoDeployExampleApp",
       "Type": "AWS::ECS::TaskDefinition",
@@ -235,7 +182,7 @@
             "Essential": true,
             "Image": "mongo",
             "Name": "cart-db",
-            "Memory": 512
+            "Memory": 128
           }
         ],
         "Volumes": []
@@ -263,7 +210,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/cart",
             "Name": "cart",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -291,7 +238,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/catalogue",
             "Name": "catalogue",
-            "Memory": 1024
+            "Memory": 32
           }
         ],
         "Volumes": []
@@ -357,7 +304,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/front-end",
             "Name": "front-end",
-            "Memory": 1024,
+            "Memory": 256,
             "PortMappings": [
               {
                 "HostPort": 80,
@@ -384,34 +331,6 @@
         }
       }
     },
-    "LoginTask": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::TaskDefinition",
-      "Properties": {
-        "ContainerDefinitions": [
-          {
-            "Essential": true,
-            "Image": "weaveworksdemos/login",
-            "Name": "login",
-            "Memory": 1024
-          }
-        ],
-        "Volumes": []
-      }
-    },
-    "LoginService": {
-      "Condition": "DoDeployExampleApp",
-      "Type": "AWS::ECS::Service",
-      "Properties": {
-        "Cluster": {
-          "Ref": "EcsCluster"
-        },
-        "DesiredCount": 1,
-        "TaskDefinition": {
-          "Ref": "LoginTask"
-        }
-      }
-    },
     "UserTask": {
       "Condition": "DoDeployExampleApp",
       "Type": "AWS::ECS::TaskDefinition",
@@ -421,7 +340,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/user",
             "Name": "user",
-            "Memory": 1024
+            "Memory": 32
           }
         ],
         "Volumes": []
@@ -449,7 +368,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/user-db",
             "Name": "user-db",
-            "Memory": 512
+            "Memory": 128
           }
         ],
         "Volumes": []
@@ -477,7 +396,7 @@
             "Essential": true,
             "Image": "mongo",
             "Name": "orders-db",
-            "Memory": 512
+            "Memory": 128
           }
         ],
         "Volumes": []
@@ -505,7 +424,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/orders",
             "Name": "orders",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -533,7 +452,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/payment",
             "Name": "payment",
-            "Memory": 1024
+            "Memory": 32
           }
         ],
         "Volumes": []
@@ -602,7 +521,7 @@
             "Essential": true,
             "Image": "rabbitmq:3",
             "Name": "rabbitmq",
-            "Memory": 512
+            "Memory": 128
           }
         ],
         "Volumes": []
@@ -630,7 +549,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/shipping",
             "Name": "shipping",
-            "Memory": 1024
+            "Memory": 512
           }
         ],
         "Volumes": []
@@ -896,6 +815,9 @@
                     "ecs:ListClusters",
                     "ecs:ListContainerInstances",
                     "ecs:DescribeContainerInstances",
+                    "ecs:ListServices",
+                    "ecs:DescribeTasks",
+                    "ecs:DescribeServices",
                     "ec2:DescribeInstances",
                     "ec2:DescribeTags",
                     "autoscaling:DescribeAutoScalingInstances"
@@ -971,6 +893,24 @@
                       },
                       "--resource",
                       "EcsInstanceLc"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    " ",
+                    [
+                      "/opt/aws/bin/cfn-signal",
+                      "--stack",
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "--region",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "--resource",
+                      "EcsInstanceAsg"
                     ]
                   ]
                 }
@@ -1052,7 +992,7 @@
                     "/",
                     [
                       "https://github.com/weaveworks/weave/releases/download",
-                      "v1.6.2",
+                      "v1.8.0",
                       "weave"
                     ]
                   ]
@@ -1065,7 +1005,7 @@
                     "/",
                     [
                       "https://github.com/weaveworks/scope/releases/download",
-                      "v0.17.1",
+                      "v1.1.0",
                       "scope"
                     ]
                   ]

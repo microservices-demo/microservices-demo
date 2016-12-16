@@ -1,0 +1,13 @@
+# Development settings
+
+baseurl: "/microservices-demo"
+url: "https://microservices-demo.github.io"
+#deploy_doc_url_prefix: https://microservices-demo.github.io/microservices-demo
+deploy_doc_url_prefix: /microservices-demo
+main_url_prefix: https://microservices-demo.github.io
+
+# Build settings
+markdown: kramdown
+exclude:
+  - Gemfile
+  - Gemfile.lock

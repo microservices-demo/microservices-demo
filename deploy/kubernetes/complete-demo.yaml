@@ -1,102 +1,8 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: user
-  labels:
-    name: user
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        name: user
-    spec:
-      containers:
-      - name: user
-        image: weaveworksdemos/user
-        ports:
-        - containerPort: 80
 ---
 apiVersion: v1
-kind: Service
+kind: Namespace
 metadata:
-  name: user
-  labels:
-    name: user
-spec:
-  ports:
-    # the port that this service should serve on
-  - port: 80
-    targetPort: 80
-  selector:
-    name: user
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: user-db
-  labels:
-    name: user-db
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        name: user-db
-    spec:
-      containers:
-      - name: user-db
-        image: weaveworksdemos/user-db
-        ports:
-        - name: mongo
-          containerPort: 27017
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: user-db
-  labels:
-    name: user-db
-spec:
-  ports:
-    # the port that this service should serve on
-  - port: 27017
-    targetPort: 27017
-  selector:
-    name: user-db
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: cart
-  labels:
-    name: cart
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        name: cart
-    spec:
-      containers:
-      - name: cart
-        image: weaveworksdemos/cart
-        ports:
-        - containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: cart
-  labels:
-    name: cart
-spec:
-  ports:
-    # the port that this service should serve on
-  - port: 80
-    targetPort: 80
-  selector:
-    name: cart
+  name: sock-shop
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -104,6 +10,7 @@ metadata:
   name: cart-db
   labels:
     name: cart-db
+  namespace: sock-shop
 spec:
   replicas: 1
   template:
@@ -117,6 +24,22 @@ spec:
         ports:
         - name: mongo
           containerPort: 27017
+        securityContext:
+          capabilities:
+            drop:
+              - all
+            add:
+              - CHOWN
+              - SETGID
+              - SETUID
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
 ---
 apiVersion: v1
 kind: Service
@@ -124,6 +47,7 @@ metadata:
   name: cart-db
   labels:
     name: cart-db
+  namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
@@ -135,35 +59,55 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: catalogue
+  name: cart
   labels:
-    name: catalogue
+    name: cart
+  namespace: sock-shop
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: catalogue
+        name: cart
     spec:
       containers:
-      - name: catalogue
-        image: weaveworksdemos/catalogue
+      - name: cart
+        image: weaveworksdemos/cart:0.3.0
         ports:
         - containerPort: 80
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: catalogue
+  name: cart
   labels:
-    name: catalogue
+    name: cart
+  annotations:
+    prometheus.io/path: "/prometheus"
+  namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
   - port: 80
     targetPort: 80
   selector:
-    name: catalogue
+    name: cart
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -171,6 +115,7 @@ metadata:
   name: catalogue-db
   labels:
     name: catalogue-db
+  namespace: sock-shop
 spec:
   replicas: 1
   template:
@@ -180,8 +125,8 @@ spec:
     spec:
       containers:
       - name: catalogue-db
-        image: weaveworksdemos/catalogue-db
-        env: 
+        image: weaveworksdemos/catalogue-db:0.2.0
+        env:
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password
           - name: MYSQL_DATABASE
@@ -196,6 +141,7 @@ metadata:
   name: catalogue-db
   labels:
     name: catalogue-db
+  namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
@@ -207,7 +153,52 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  name: catalogue
+  labels:
+    name: catalogue
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: catalogue
+    spec:
+      containers:
+      - name: catalogue
+        image: weaveworksdemos/catalogue:0.2.0
+        ports:
+        - containerPort: 80
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogue
+  labels:
+    name: catalogue
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: catalogue
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
   name: front-end
+  namespace: sock-shop
 spec:
   replicas: 1
   template:
@@ -217,13 +208,20 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: weaveworksdemos/front-end
+        image: weaveworksdemos/front-end:0.2.0
         resources:
           requests:
             cpu: 100m
             memory: 100Mi
         ports:
         - containerPort: 8079
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+          readOnlyRootFilesystem: true
 ---
 apiVersion: v1
 kind: Service
@@ -231,46 +229,15 @@ metadata:
   name: front-end
   labels:
     name: front-end
+  namespace: sock-shop
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
   - port: 80
     targetPort: 8079
+    nodePort: 31500
   selector:
     name: front-end
----  
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: orders
-  labels:
-    name: orders
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        name: orders
-    spec:
-      containers:
-      - name: orders
-        image: weaveworksdemos/orders
-        ports:
-        - containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: orders
-  labels:
-    name: orders
-spec:
-  ports:
-    # the port that this service should serve on
-  - port: 80
-    targetPort: 80
-  selector:
-    name: orders
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -278,6 +245,7 @@ metadata:
   name: orders-db
   labels:
     name: orders-db
+  namespace: sock-shop
 spec:
   replicas: 1
   template:
@@ -291,6 +259,22 @@ spec:
         ports:
         - name: mongo
           containerPort: 27017
+        securityContext:
+          capabilities:
+            drop:
+              - all
+            add:
+              - CHOWN
+              - SETGID
+              - SETUID
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
 ---
 apiVersion: v1
 kind: Service
@@ -298,6 +282,7 @@ metadata:
   name: orders-db
   labels:
     name: orders-db
+  namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
@@ -309,9 +294,63 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  name: orders
+  labels:
+    name: orders
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: orders
+    spec:
+      containers:
+      - name: orders
+        image: weaveworksdemos/orders:0.3.0
+        ports:
+        - containerPort: 80
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders
+  labels:
+    name: orders
+  annotations:
+    prometheus.io/path: "/prometheus"
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: orders
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
   name: payment
   labels:
     name: payment
+  namespace: sock-shop
 spec:
   replicas: 1
   template:
@@ -321,9 +360,18 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment
+        image: weaveworksdemos/payment:0.3.0
         ports:
         - containerPort: 80
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
 ---
 apiVersion: v1
 kind: Service
@@ -331,6 +379,7 @@ metadata:
   name: payment
   labels:
     name: payment
+  namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
@@ -345,6 +394,7 @@ metadata:
   name: queue-master
   labels:
     name: queue-master
+  namespace: sock-shop
 spec:
   replicas: 1
   template:
@@ -354,7 +404,7 @@ spec:
     spec:
       containers:
       - name: queue-master
-        image: weaveworksdemos/queue-master
+        image: weaveworksdemos/queue-master:0.3.0
         ports:
         - containerPort: 80
 ---
@@ -364,6 +414,9 @@ metadata:
   name: queue-master
   labels:
     name: queue-master
+  annotations:
+    prometheus.io/path: "/prometheus"
+  namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
@@ -378,6 +431,7 @@ metadata:
   name: rabbitmq
   labels:
     name: rabbitmq
+  namespace: sock-shop
 spec:
   replicas: 1
   template:
@@ -390,6 +444,16 @@ spec:
         image: rabbitmq:3
         ports:
         - containerPort: 5672
+        securityContext:
+          capabilities:
+            drop:
+              - all
+            add:
+              - CHOWN
+              - SETGID
+              - SETUID
+              - DAC_OVERRIDE
+          readOnlyRootFilesystem: true
 ---
 apiVersion: v1
 kind: Service
@@ -397,6 +461,7 @@ metadata:
   name: rabbitmq
   labels:
     name: rabbitmq
+  namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
@@ -411,6 +476,7 @@ metadata:
   name: shipping
   labels:
     name: shipping
+  namespace: sock-shop
 spec:
   replicas: 1
   template:
@@ -420,9 +486,26 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping
+        image: weaveworksdemos/shipping:0.3.0
         ports:
         - containerPort: 80
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
+
 ---
 apiVersion: v1
 kind: Service
@@ -430,6 +513,9 @@ metadata:
   name: shipping
   labels:
     name: shipping
+  annotations:
+    prometheus.io/path: "/prometheus"
+  namespace: sock-shop
 spec:
   ports:
     # the port that this service should serve on
@@ -437,3 +523,103 @@ spec:
     targetPort: 80
   selector:
     name: shipping
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: user-db
+  labels:
+    name: user-db
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: user-db
+    spec:
+      containers:
+      - name: user-db
+        image: weaveworksdemos/user-db:0.3.0
+
+        ports:
+        - name: mongo
+          containerPort: 27017
+        securityContext:
+          capabilities:
+            drop:
+              - all
+            add:
+              - CHOWN
+              - SETGID
+              - SETUID
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-db
+  labels:
+    name: user-db
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 27017
+    targetPort: 27017
+  selector:
+    name: user-db
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: user
+  labels:
+    name: user
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: user
+    spec:
+      containers:
+      - name: user
+        image: weaveworksdemos/user:0.3.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: MONGO_HOST
+          value: user-db:27017
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+  labels:
+    name: user
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: user

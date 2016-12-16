@@ -1,0 +1,65 @@
+jobs:
+# This file contains jobs for an automated CI/CD workflow using Shippable
+# Pipelines
+
+################################
+
+# add pipeline workflow for Sock Shop FRONT-END component
+
+# manifest gen
+  - name: man-front-end
+    type: manifest
+    steps:
+      - IN: img-front-end
+      - IN: img-opts-front-end-test
+      - TASK: managed
+
+# TEST deployment to Amazon ECS
+  - name: ecs-deploy-test-front-end
+    type: deploy
+    steps:
+      - IN: man-front-end
+      - IN: params-front-end-test
+      - IN: trigger-front-end-test
+      - IN: cluster-demo-ecs
+      - IN: alb-front-end-test
+        applyTo:
+          - manifest: man-front-end
+            image: img-front-end
+            port: 8080
+      - TASK: managed
+
+# # Create release for PROD
+#   - name: release-front-end
+#     type: release
+#     steps:
+#       - IN: ver-front-end
+#         switch: off
+#       - IN: ecs-deploy-test-front-end
+#         switch: off
+#       - IN: trigger-front-end-release
+#       - TASK:   managed
+#         bump: patch
+
+# move this block to separate repo to limit PROD deployment to different users
+# PROD deployment to Amazon ECS
+  - name: ecs-deploy-prod-front-end
+    type: deploy
+    steps:
+      - IN: ecs-deploy-test-front-end
+        switch: off
+      # - IN: release-front-end
+      #   switch: off
+      - IN: img-opts-front-end-prod
+      - IN: params-front-end-prod
+      - IN: replicas-front-end-prod
+      - IN: trigger-front-end-prod
+      - IN: alb-front-end-prod
+        applyTo:
+          - manifest: man-front-end
+            image: img-front-end
+            port: 8080
+      - IN: cluster-demo-ecs
+      - TASK: managed
+
+################################

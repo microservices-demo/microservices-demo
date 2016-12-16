@@ -17,3 +17,8 @@ echo "  http://$dns_name/"
 echo
 echo "To view the Weave Scope for the demo, go to this URL:"
 echo "  http://${dns_name}:4040/"
+
+# And store it in a file, if requested.
+if [ "x$STORE_DNS_NAME_HERE" != "x" ]; then
+  echo "$dns_name" > $STORE_DNS_NAME_HERE
+fi

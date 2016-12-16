@@ -5,6 +5,8 @@ metadata:
   name: shipping
   labels:
     name: shipping
+  annotations:
+    prometheus.io/path: "/prometheus"
   namespace: sock-shop
 spec:
   ports:
@@ -13,3 +15,4 @@ spec:
     targetPort: 80
   selector:
     name: shipping
+

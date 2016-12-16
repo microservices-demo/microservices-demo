@@ -13,6 +13,9 @@
                 "ecs:ListClusters",
                 "ecs:ListContainerInstances",
                 "ecs:DescribeContainerInstances",
+                "ecs:ListServices",
+                "ecs:DescribeTasks",
+                "ecs:DescribeServices",	    
                 "ec2:DescribeInstances",
                 "ec2:DescribeTags",
                 "autoscaling:DescribeAutoScalingInstances"

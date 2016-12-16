@@ -1,0 +1,111 @@
+resources:
+# This file contains resources to be used as inputs to an automated CI/CD
+# workflow using Shippable Pipelines
+
+################################
+
+# Specify shared infrastructure resources
+
+# AWS cluster information
+  - name: cluster-demo-ecs
+    type: cluster
+    integration: shippable-aws
+    pointer:
+      sourceName : "ecs-weave-shippable-demo"
+      region: "us-east-1"
+
+# AWS ALB target group for TEST environment
+  - name: alb-front-end-test     #required
+    type: loadBalancer      #required
+    pointer:
+      sourceName: "arn:aws:elasticloadbalancing:us-east-1:288971733297:targetgroup/frontendTESTTG/815ea30a8dcbaabc"
+      method: application
+
+# AWS ALB target group for PROD environment
+  - name: alb-front-end-prod     #required
+    type: loadBalancer      #required
+    pointer:
+      sourceName: "arn:aws:elasticloadbalancing:us-east-1:288971733297:targetgroup/frontendPRODTG/dea24e9a89ef88f4"
+      method: application
+
+################################
+
+# Specify shared application resources
+
+# Docker Image Options
+  - name: img-opts-shared-test
+    type: dockerOptions
+    version:
+      memory: 64
+      # cpuShares: 128
+
+  - name: img-opts-shared-prod
+    type: dockerOptions
+    version:
+      memory: 128
+      # cpuShares: 256
+
+################################
+# Specify CD pipeline resources
+
+# Pipelines to configure:
+#   * FRONT-END
+
+#--------------------
+
+# CI/CD pipeline resources for FRONT-END component
+
+# Component version seed for release management
+  - name: ver-front-end
+    type: version
+    seed:
+      versionName: "1.0.0"
+
+# Docker image information
+  - name: img-front-end
+    type: image
+    pointer:
+      sourceName: 288971733297.dkr.ecr.us-east-1.amazonaws.com/front-end
+      isPull: false
+    seed:
+      versionName: master.1
+
+# Docker image options for TEST environment
+  - name: img-opts-front-end-test
+    type: dockerOptions
+    version:
+      portMappings:
+        - 0:8080
+
+# Environment variables for TEST environment
+  - name: params-front-end-test
+    type: params
+    version:
+      params:
+        ENVIRONMENT: "development"
+        NODE_ENV: "development"
+        PORT: 8080
+
+# Docker image options for PROD environment
+  - name: img-opts-front-end-prod
+    type: dockerOptions
+    version:
+      portMappings:
+        - 0:8080
+
+# Environment variables for PROD environment
+  - name: params-front-end-prod
+    type: params
+    version:
+      params:
+        ENVIRONMENT: "production"
+        NODE_ENV: "production"
+        PORT: 8080
+
+# PROD replica controller
+  - name: replicas-front-end-prod
+    type: replicas
+    version:
+      count: 2
+
+#--------------------

@@ -1,0 +1,28 @@
+{
+    "family": "weavedemo-catalogue-db",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "weaveworksdemos/catalogue-db",
+            "memory": 256,
+            "name": "catalogue-db",
+            "environment": [
+              {
+                "name": "MYSQL_ROOT_PASSWORD",
+                "value": "fake_password"
+              },
+              {
+                "name": "MYSQL_DATABASE",
+                "value": "socksdb"
+              }
+            ],
+            "portMappings": [
+              {
+                "containerPort": 3306,
+                "hostPort": 0,
+                "protocol": ""
+              }
+            ]
+        }
+    ]
+}
