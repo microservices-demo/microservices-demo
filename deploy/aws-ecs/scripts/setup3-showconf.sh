@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+SCOPE_TOKEN=${1:-}
 STORE_DNS_NAME_HERE=${STORE_DNS_NAME_HERE:-}
 
 # Find the container instance where the frontend is running
@@ -17,7 +18,7 @@ echo
 echo "Open your browser and go to this URL to view the demo:"
 echo "  http://$dns_name/"
 echo
-if [ -z $1 ]; then
+if [ -z $SCOPE_TOKEN ]; then
     echo "To view the Weave Scope for the demo, go to this URL:"
     echo "  http://${dns_name}:4040/"
 else
