@@ -64,26 +64,35 @@ To start the application you will need to ssh into the `node1` box and run the r
     aws ec2 delete-route-table -\-route-table-id $route_table_id
     aws ec2 delete-internet-gateway -\-internet-gateway-id $internet_gateway_id
     aws ec2 delete-vpc -\-vpc-id $vpc_id
+
 <!-- deploy-doc-hidden create-infrastructure
 
     cd deploy/nomad
     export VAGRANT_DEFAULT_PROVIDER=aws
     SSH_USERNAME=ec2-user vagrant up -\-provider=aws
     vagrant ssh node1 -c "nomad run netman.nomad"
-    vagrant ssh node1 -c "nomad run weavedemo.nomad"
-
 
 -->
 
 <!-- deploy-doc-hidden run-tests
 
-    sleep 420
     cd deploy/nomad
-    vagrant ssh node1 -c "nomad status weavedemo"
-    vagrant ssh node1 -c "eval \$(weave env); docker create -\-name healthcheck -v \$PWD/healthcheck.rb:/healthcheck.rb andrius/alpine-ruby ./healthcheck.rb -s orders,cart,payment,user,catalogue,shipping,queue-master"
-    vagrant ssh node1 -c "docker network connect backoffice healthcheck; docker network connect internal healthcheck; docker network connect external healthcheck; docker network connect secure healthcheck"
-    vagrant ssh node1 -c "docker start -a healthcheck"
+    i=0
+    STATUS=1
+    while [ $i -lt 5 ] || [ $STATUS -ne 0 ]; do
+        vagrant ssh node1 -c "nomad run weavedemo.nomad"
+        vagrant ssh node1 -c "nomad status weavedemo"
+        vagrant ssh node1 -c "eval \$(weave env); docker create -\-name healthcheck -v \$PWD/healthcheck.rb:/healthcheck.rb andrius/alpine-ruby ./healthcheck.rb -s orders,cart,payment,user,catalogue,shipping,queue-master"
+        vagrant ssh node1 -c "docker network connect backoffice healthcheck; docker network connect internal healthcheck; docker network connect external healthcheck; docker network connect secure healthcheck"
 
+        sleep 180
+        echo "sleeping 3mins..."
+        vagrant ssh node1 -c "docker start -a healthcheck"
+        STATUS=$?
+
+        vagrant ssh node1 -c "docker rm -f healthcheck"
+        i=$(($i+1))
+    done
 -->
 
 <!-- deploy-doc-hidden destroy-infrastructure
