@@ -96,7 +96,7 @@ resource "aws_elb" "elb-sock-shop" {
   security_groups = ["${aws_security_group.k8s-security-group.id}"] 
   listener {
     lb_port = 80
-    instance_port = 30001
+    instance_port = 31500
     lb_protocol = "http"
     instance_protocol = "http"
   }
