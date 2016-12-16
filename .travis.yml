@@ -68,6 +68,7 @@ deploy:
   acl: public_read
   on:
     branch: master
+  condition: "$TRAVIS_EVENT_TYPE" != "cron"
 
 notifications:
   slack:
