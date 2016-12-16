@@ -30,7 +30,7 @@
             "http://",
             {
               "Fn::GetAtt": [
-                "EcsFrontendElasticLoadBalancing",
+                "EcsScopeElasticLoadBalancing",
                 "DNSName"
               ]
             },
@@ -1048,6 +1048,9 @@
         "LoadBalancerNames": [
           {
             "Ref": "EcsFrontendElasticLoadBalancing"
+          },
+          {
+            "Ref": "EcsScopeElasticLoadBalancing"
           }
         ],
         "Tags": [
@@ -1087,7 +1090,28 @@
                 "Ref": "AWS::NoValue"
               }
             ]
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "Ref": "EcsSecurityGroup"
+          }
+        ],
+        "Subnets": [
+          {
+            "Ref": "PubSubnetAz1"
           },
+          {
+            "Ref": "PubSubnetAz2"
+          }
+        ]
+      }
+    },
+    "EcsScopeElasticLoadBalancing": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "DependsOn": "InternetGateway",
+      "Properties": {
+        "Listeners": [
           {
             "Fn::If": [
               "UseWeaveScopeStandalone",
