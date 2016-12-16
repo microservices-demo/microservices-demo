@@ -118,7 +118,6 @@ EOF
 Vagrant.configure(2) do |config|
   username = ENV["SSH_USERNAME"] || 'vagrant'
 
-
   config.vm.provider "virtualbox" do |vb, override|
     override.vm.box = "centos/7"
     vb.memory = "6144"
@@ -193,9 +192,6 @@ Vagrant.configure(2) do |config|
 
       m.vm.provider :aws do |aws, override|
         aws.private_ip_address = ip
-        if name == "node1"
-          aws.instance_type = "t2.micro"
-        end
       end
 
       if name == "node1"

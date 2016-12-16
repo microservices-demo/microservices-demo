@@ -72,7 +72,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 32 # 32MB
+        memory = 64 # 32MB
         network {
           mbits = 10
           port "http" {
@@ -173,12 +173,12 @@ job "weavedemo" {
 
       service {
         name = "${TASKGROUP}-catalogue"
-        tags = ["frontend", "front-end", "catalogue"]
+        tags = ["catalogue"]
       }
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 32 # 32MB
+        memory = 128 # 32MB
         network {
           mbits = 10
         }
@@ -208,7 +208,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 512 # 96MB
+        memory = 512 # 512MB
         network {
           mbits = 10
         }
@@ -247,7 +247,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 512 # 512MB
+        memory = 1024 # 1024MB
         network {
           mbits = 10
         }
@@ -309,7 +309,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 512 # 256MB
+        memory = 1024 # 1024MB
         network {
           mbits = 10
         }
@@ -386,7 +386,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 512 # 512MB
+        memory = 1024 # 1024MB
         network {
           mbits = 10
         }
@@ -445,7 +445,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 256 # 256MB
+        memory = 512 # 512MB
         network {
           mbits = 10
         }
