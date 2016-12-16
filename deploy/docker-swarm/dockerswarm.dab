@@ -13,7 +13,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "mongo@sha256:532a19da83ee0e4e2a2ec6bc4212fc4af26357c040675d5c2629a4e4c4563cef", 
+      "Image": "mongo@sha256:d929ffc5d0871712198be82c475397e5e9c71f3d2a9fa4b304f623ad09ad204b", 
       "Networks": [
         "default"
       ]
@@ -42,7 +42,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "weaveworksdemos/front-end@sha256:bed617a6c944fae8722d8ba9b48682a509129ec9b79a0f5668248f820647fe5b", 
+      "Image": "weaveworksdemos/front-end@sha256:4ccd9fed485ada6b3b9c8c00cef4da98419b218813f8f122858bad84d20148bd", 
       "Networks": [
         "default"
       ], 
@@ -66,7 +66,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "mongo@sha256:532a19da83ee0e4e2a2ec6bc4212fc4af26357c040675d5c2629a4e4c4563cef", 
+      "Image": "mongo@sha256:d929ffc5d0871712198be82c475397e5e9c71f3d2a9fa4b304f623ad09ad204b", 
       "Networks": [
         "default"
       ]
@@ -84,7 +84,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "rabbitmq@sha256:0eed7d52710144f2600b99d2a467d7444d86b0434b6a515f05bebd1049fd2bac", 
+      "Image": "rabbitmq@sha256:812a992fb56696c29415e27eabb337564235db83bda95441319f6b3b79982670", 
       "Networks": [
         "default"
       ]
@@ -126,9 +126,9 @@
         "-c", 
         "2", 
         "-h", 
-        "edge-router"
+        "front-end"
       ], 
-      "Image": "weaveworksdemos/load-test@sha256:389c75f7722387aa3211102879e94142d2019c0a42c32dcd62a9edf68e690b3d", 
+      "Image": "weaveworksdemos/load-test@sha256:8f38522fd59ee5082279d0cbf2743089b6f686745976b2a13dc44f8ba3405046", 
       "Networks": [
         "default"
       ]
