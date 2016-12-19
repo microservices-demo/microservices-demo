@@ -14,10 +14,12 @@ This page describes how to install Sock Shop via the [AWS ECS cli](http://docs.a
 
 First make sure you have an [AWS](http://aws.amazon.com) account. Then install the `ecs-cli` tool.
 
+<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION -->
 <!-- deploy-doc-start pre-install -->
 
     sudo curl -o /usr/local/bin/ecs-cli https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
     sudo chmod +x /usr/local/bin/ecs-cli
+    ecs-cli configure sockshop-ecs-cli
 
 <!-- deploy-doc-end -->
 
@@ -25,6 +27,8 @@ Now you can deploy Sock Shop via `ecs-cli` using the existing Docker Compose fil
 
 <!-- deploy-doc-start create-infrastructure -->
 
+    ecs-cli up --capability-iam --keypair keyname
+    ecs-cli compose up
     curl https://raw.githubusercontent.com/microservices-demo/microservices-demo/master/deploy/docker-compose/docker-compose.yml
     ecs-cli compose up --file https://github.com/microservices-demo/microservices-demo/blob/master/docs/deployment/docker-compose.md
     
