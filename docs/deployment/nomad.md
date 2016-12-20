@@ -2,14 +2,38 @@
 layout: default
 deployDoc: true
 ---
+<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
 
 ## Sock Shop on Nomad
 
-This demo demonstrates running the Sock Shop on Nomad.
 
-### Pre-Requirements
+### Goal
+The goal of this demo is to demonstrate running the Sock Shop on [Nomad](https://www.nomadproject.io/) while 
+using [Weave Net](https://www.weave.works/products/weave-net/) to provide secure networking, 
+and [Weave Scope](https://www.weave.works/products/weave-scope/) to monitor the deployment.
+
+### Dependencies
   * [Vagrant](https://vagrantup.com) `~> 1.8.1`
   * [VirtualBox](https://www.virtualbox.org/) `~> 5.0.22`
+
+<!-- deploy-doc-hidden pre-install
+
+    curl -sSL https://get.docker.com/ | sh
+    apt-get install -yq rsync python-pip python-dev build-essential jq
+    pip install awscli
+
+    mkdir -p ~/.ssh/
+    aws ec2 create-key-pair -\-key-name microservices-demo-nomad -\-query 'KeyMaterial' -\-output text > ~/.ssh/nomad.pem
+    curl -o /root/vagrant.deb -sSL https://releases.hashicorp.com/vagrant/1.9.1/vagrant_1.9.1_x86_64.deb
+    dpkg -i /root/vagrant.deb
+    vagrant plugin install vagrant-aws
+
+-->
+
+### Weave Cloud
+There are two options availbable here.
+* A local instance of Weave Scope which is already configured to run and become availabe on port 4040. 
+* Create a account at [cloud.weave.works](https://cloud.weave.works) and using the provided token set the environment variable `export SCOPE_TOKEN=<token>`
 
 ### Getting Started
 _This example sets up a Nomad cluster with one server and three nodes. Make sure you have at least 6272MB of RAM available._
@@ -29,89 +53,59 @@ This will:
                  packages and what not, so please be patient. The output is quite verbose, so at all points you shoulld know what is
                  going on and what went wrong if anything fails._
 
-### Starting the application
-To start the application you will need to ssh into the `node1` box and run the respective Nomad jobs:
-<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
-
-<!-- deploy-doc-hidden pre-install
-
-    apt-get update
-    apt-get install -yq rsync python-pip python-dev build-essential
-    pip install awscli
-
-    mkdir -p ~/.ssh/
-    aws ec2 create-key-pair -\-key-name microservices-demo-nomad -\-query 'KeyMaterial' -\-output text > ~/.ssh/nomad.pem
-    curl -o /root/vagrant.deb -sSL https://releases.hashicorp.com/vagrant/1.9.1/vagrant_1.9.1_x86_64.deb
-    dpkg -i /root/vagrant.deb
-    vagrant plugin install vagrant-aws
-
--->
-
-    vpc_id=$(aws ec2 create-vpc -\-cidr-block 192.168.59.0/28 | jq -r '.Vpc.VpcId' )
-    internet_gateway_id=$(aws ec2 create-internet-gateway | jq -r '.InternetGateway.InternetGatewayId')
-    route_table_id=$(aws ec2 describe-route-tables -\-filter "Name=vpc-id,Values=$vpc_id" | jq -r ".RouteTables[].RouteTableId")
-    aws ec2 attach-internet-gateway -\-internet-gateway-id $internet_gateway_id -\-vpc-id $vpc_id
-    aws ec2 create-route -\-gateway-id $internet_gateway_id -\-destination-cidr-block 0.0.0.0/0 -\-route-table-id $route_table_id
-
-    subnet_id=$(aws ec2 create-subnet -\-vpc-id $vpc_id -\-cidr-block 192.168.59.0/28 -\-availability-zone eu-west-1c | jq -r '.Subnet.SubnetId')
-    security_group_id=$(aws ec2 create-security-group -\-group-name nomad-deploy-doc -\-description "Security Group for nomad deploy doc" -\-vpc-id $vpc_id | jq -r '.GroupId' )
-    aws ec2 authorize-security-group-ingress -\-group-id $security_group_id -\-protocol tcp -\-port 22 -\-cidr 0.0.0.0/0
-    aws ec2 authorize-security-group-ingress -\-group-id $security_group_id -\-protocol tcp -\-port 80 -\-cidr 0.0.0.0/0
-    aws ec2 authorize-security-group-ingress -\-group-id $security_group_id -\-protocol tcp -\-port 8301 -\-cidr 0.0.0.0/0
-
-    aws ec2 delete-subnet -\-subnet-id $subnet_id
-    aws ec2 delete-security-group -\-group-id nomad-deploy-doc -\-group-id $security_group_id
-    aws ec2 delete-route-table -\-route-table-id $route_table_id
-    aws ec2 delete-internet-gateway -\-internet-gateway-id $internet_gateway_id
-    aws ec2 delete-vpc -\-vpc-id $vpc_id
-
 <!-- deploy-doc-hidden create-infrastructure
 
+    AWS_VPC_ID=$(aws ec2 create-vpc -\-cidr-block 192.168.59.0/24 | jq -r '.Vpc.VpcId' )
+    AWS_INTERNET_GATEWAY_ID=$(aws ec2 create-internet-gateway | jq -r '.InternetGateway.InternetGatewayId')
+    AWS_ROUTE_TABLE_ID=$(aws ec2 describe-route-tables -\-filter "Name=vpc-id,Values=$AWS_VPC_ID" | jq -r ".RouteTables[].RouteTableId")
+    aws ec2 attach-internet-gateway -\-internet-gateway-id $AWS_INTERNET_GATEWAY_ID -\-vpc-id $AWS_VPC_ID
+    aws ec2 create-route -\-gateway-id $AWS_INTERNET_GATEWAY_ID -\-destination-cidr-block 0.0.0.0/0 -\-route-table-id $AWS_ROUTE_TABLE_ID
+
+    export AWS_SUBNET_ID=$(aws ec2 create-subnet -\-vpc-id $AWS_VPC_ID -\-cidr-block 192.168.59.0/24 -\-availability-zone eu-west-1c | jq -r '.Subnet.SubnetId')
+    export AWS_SECURITY_GROUP_ID=$(aws ec2 create-security-group -\-group-name nomad-deploy-doc -\-description "Security Group for nomad deploy doc" -\-vpc-id $AWS_VPC_ID | jq -r '.GroupId' )
+    aws ec2 authorize-security-group-ingress -\-group-id $AWS_SECURITY_GROUP_ID -\-protocol tcp -\-port 22 -\-cidr 0.0.0.0/0
+    aws ec2 authorize-security-group-ingress -\-group-id $AWS_SECURITY_GROUP_ID -\-protocol tcp -\-port 80 -\-cidr 0.0.0.0/0
+    aws ec2 authorize-security-group-ingress -\-group-id $AWS_SECURITY_GROUP_ID -\-protocol all -\-source-group $AWS_SECURITY_GROUP_ID
+
+    cat > ~/.bash_profile <<-EOF
+export AWS_VPC_ID=$AWS_VPC_ID
+export AWS_INTERNET_GATEWAY_ID=$AWS_INTERNET_GATEWAY_ID
+export AWS_ROUTE_TABLE_ID=$AWS_ROUTE_TABLE_ID
+export AWS_SUBNET_ID=$AWS_SUBNET_ID
+export AWS_SECURITY_GROUP_ID=$AWS_SECURITY_GROUP_ID
+export VAGRANT_DEFAULT_PROVIDER=aws
+export NUM_NODES=3
+export SSH_USERNAME=ec2-user
+EOF
+
+    . ~/.bash_profile
+
     cd deploy/nomad
-    export VAGRANT_DEFAULT_PROVIDER=aws
-    SSH_USERNAME=ec2-user vagrant up -\-provider=aws
+    VAGRANT_DEFAULT_PROVIDER=aws vagrant up -\-provider=aws
     vagrant ssh node1 -c "nomad run netman.nomad"
 
 -->
 
-<!-- deploy-doc-hidden run-tests
+### Starting the application
+To start the application you will need to ssh into the `node1` box and run the respective Nomad jobs:
+```
+root@local:/# vagrant ssh node1
+vagrant@node1:/# nomad run netman.nomad
+vagrant@node1:/# nomad run weavedemo.nomad
+```
 
-    cd deploy/nomad
-    i=0
-    STATUS=1
-    while [ $i -lt 5 ] || [ $STATUS -ne 0 ]; do
-        vagrant ssh node1 -c "nomad run weavedemo.nomad"
-        vagrant ssh node1 -c "nomad status weavedemo"
-        vagrant ssh node1 -c "eval \$(weave env); docker create -\-name healthcheck -v \$PWD/healthcheck.rb:/healthcheck.rb andrius/alpine-ruby ./healthcheck.rb -s orders,cart,payment,user,catalogue,shipping,queue-master"
-        vagrant ssh node1 -c "docker network connect backoffice healthcheck; docker network connect internal healthcheck; docker network connect external healthcheck; docker network connect secure healthcheck"
-
-        sleep 180
-        echo "sleeping 3mins..."
-        vagrant ssh node1 -c "docker start -a healthcheck"
-        STATUS=$?
-
-        vagrant ssh node1 -c "docker rm -f healthcheck"
-        i=$(($i+1))
-    done
--->
-
-<!-- deploy-doc-hidden destroy-infrastructure
-
-    cd deploy/nomad
-    vagrant destroy -\-force
-    aws ec2 delete-key-pair -\-key-name microservices-demo-nomad
-
--->
+The output from the following commands should be similar to what's displayed below:
 
 ```
-$ vagrant ssh node1
-$ nomad run netman.nomad
+vagrant@node1:/#  nomad run netman.nomad
 ==> Monitoring evaluation "858414a3"
     Evaluation triggered by job "netman"
     Allocation "0e3a6a5a" modified: node "9b8300f6", group "main"
     Evaluation status changed: "pending" -> "complete"
 ==> Evaluation "858414a3" finished with status "complete"
-$ nomad run weavedemo.nomad
+```
+```
+vagrant@node1:/# nomad run weavedemo.nomad
 ==> Monitoring evaluation "0ad17a84"
     Evaluation triggered by job "weavedemo"
     Allocation "5c1ebc22" modified: node "9b8300f6", group "frontend"
@@ -129,9 +123,9 @@ $ nomad run weavedemo.nomad
 ```
 
 ### Locating The Endpoint
-Let's take the Allocation ID of the **frontend** task group and ask Nomad about its status:
+Taking the Allocation ID of the **frontend** task group above we can ask Nomad about its status:
 ```
-$ nomad alloc-status 5c1ebc22
+vagrant@node1:/# nomad alloc-status 5c1ebc22
 ID            = 5c1ebc22
 Eval ID       = c318487e
 Name          = weavedemo.frontend[0]
@@ -147,12 +141,6 @@ CPU    Memory          Disk     IOPS  Addresses
 
 Recent Events:
 Time                    Type        Description
-07/01/16 18:06:03 CEST  Started     Task started by client
-07/01/16 18:05:25 CEST  Restarting  Task restarting in 26.343413077s
-07/01/16 18:05:25 CEST  Terminated  Exit Code: 1, Exit Message: "Docker container exited with non-zero exit code: 1"
-07/01/16 18:05:24 CEST  Started     Task started by client
-07/01/16 18:04:37 CEST  Restarting  Task restarting in 26.58623629s
-07/01/16 18:04:37 CEST  Terminated  Exit Code: 1, Exit Message: "Docker container exited with non-zero exit code: 1"
 07/01/16 18:04:36 CEST  Started     Task started by client
 07/01/16 18:02:54 CEST  Received    Task received by client
 
@@ -168,5 +156,52 @@ Time                    Type      Description
 ```
 
 If you look carefully, you will notice that the **edgerouter** task is **running** and among the resources that have been
-allocated for it, ports 80 (HTTTP) and 443 (HTTPS) have been bound to the ip **192.168.59.102**. This is the IP that you
-can use on your browser to access the application.
+allocated for it, ports 80 (HTTTP) and 443 (HTTPS) have been bound to the IP **192.168.59.102**. Visiting this IP should 
+yield a running sock shop, while visiting this IP on port 4040 should show the Weave Scope dashboard unless configured to
+use Weave Coud, then visit cloud.weave.works to check.
+
+### Run tests
+
+There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).
+This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud.
+
+```
+docker run --rm weaveworksdemos/load-test -d 300 -h 192.168.59.102 -c 3 -r 10
+```
+
+<!-- deploy-doc-hidden run-tests
+    . ~/.bash_profile
+
+    cd deploy/nomad
+    vagrant ssh node1 -c "nomad run weavedemo.nomad"
+    public_dns=$(aws ec2 describe-instances -\-filter "Name=tag:Name,Values=nomad-node" "Name=instance-state-name,Values=running" | jq -r ".Reservations[].Instances[0].PublicIpAddress" | head -n1)
+    docker run -\-rm weaveworksdemos/load-test -d 300 -h $public_dns -c 3 -r 10
+
+    vagrant ssh node1 -c "eval \$(weave env); nomad run weavedemo.nomad; docker create -\-name healthcheck -v \$PWD/healthcheck.rb:/healthcheck.rb andrius/alpine-ruby ./healthcheck.rb -s orders,cart,payment,user,catalogue,shipping,queue-master; docker network connect backoffice healthcheck; docker network connect internal healthcheck; docker network connect external healthcheck; docker network connect secure healthcheck; docker start -a healthcheck"
+    if [ $? -ne 0 ]; then
+        vagrant ssh node1 -c "docker rm -f healthcheck"
+        exit 1
+    else
+        vagrant ssh node1 -c "docker rm -f healthcheck"
+    fi
+-->
+
+### Cleaning Up
+
+```
+vagrant destroy -f
+```
+<!-- deploy-doc-hidden destroy-infrastructure
+    . ~/.bash_profile
+
+    cd deploy/nomad
+    vagrant destroy -\-force
+    aws ec2 wait instance-terminated -\-filter "Name=key-name,Values=microservices-demo-nomad"
+    aws ec2 delete-key-pair -\-key-name microservices-demo-nomad
+    aws ec2 delete-subnet -\-subnet-id $AWS_SUBNET_ID
+    aws ec2 delete-security-group -\-group-id nomad-deploy-doc -\-group-id $AWS_SECURITY_GROUP_ID
+    aws ec2 detach-internet-gateway -\-internet-gateway-id $AWS_INTERNET_GATEWAY_ID -\-vpc-id $AWS_VPC_ID
+    aws ec2 delete-internet-gateway -\-internet-gateway-id $AWS_INTERNET_GATEWAY_ID
+    aws ec2 delete-vpc -\-vpc-id $AWS_VPC_ID
+
+-->
