@@ -4,6 +4,7 @@ def find_images_in_k8s_complete_demo
   images = []
   yaml_parts = File.read(REPO_ROOT.join("deploy").join("kubernetes").join("complete-demo.yaml"))\
     .split("---\n")\
+    .select{ |part| part.to_s != "" }
     .map { |part| YAML.load(part) }
 
   yaml_parts \
