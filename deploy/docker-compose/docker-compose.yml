@@ -1,15 +1,11 @@
 version: '2'
 
 services:
-  fluentd:
-    image: fluent/fluentd
-    volumes:
-      - /tmp/fluentd/log:/fluentd/log
-      - /tmp/fluentd/conf:/fluentd/etc
-    environment:
-      FLUENTD_CONF: in_docker.conf
+  log-server:
+    image: weaveworksdemos/log-server
+    hostname: log-server
     ports:
-      - "24224:24224"
+      - '24224:24224'
   front-end:
     image: weaveworksdemos/front-end
     hostname: front-end
@@ -22,7 +18,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   edge-router:
     image: weaveworksdemos/edge-router
     ports:
@@ -46,7 +42,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   catalogue:
     image: weaveworksdemos/catalogue
     hostname: catalogue
@@ -61,7 +57,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   catalogue-db:
     image: weaveworksdemos/catalogue-db
     hostname: catalogue-db
@@ -74,7 +70,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   cart:
     image: weaveworksdemos/cart
     hostname: cart
@@ -91,7 +87,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   cart-db:
     image: mongo
     hostname: cart-db
@@ -110,7 +106,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   orders:
     image: weaveworksdemos/orders
     hostname: orders
@@ -127,7 +123,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   orders-db:
     image: mongo
     hostname: orders-db
@@ -146,7 +142,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   shipping:
     image: weaveworksdemos/shipping
     hostname: shipping
@@ -163,7 +159,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   queue-master:
     image: weaveworksdemos/queue-master
     hostname: queue-master
@@ -182,7 +178,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   rabbitmq:
     image: rabbitmq:3
     hostname: rabbitmq
@@ -200,7 +196,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   payment:
     image: weaveworksdemos/payment
     hostname: payment
@@ -215,7 +211,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   user:
     image: weaveworksdemos/user
     hostname: user
@@ -231,7 +227,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   user-db:
     image: weaveworksdemos/user-db
     hostname: user-db
@@ -250,7 +246,7 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
   user-sim:
     image: weaveworksdemos/load-test
     cap_drop:
@@ -261,4 +257,4 @@ services:
     logging:
       driver: fluentd
     depends_on:
-      - fluentd
+      - log-server
