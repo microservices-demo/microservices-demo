@@ -1,9 +1,14 @@
 version: '2'
 
 services:
+  elasticsearch:
+    image: elasticsearch
+    hostname: elasticsearch
   log-server:
     image: weaveworksdemos/log-server
     hostname: log-server
+    depends_on:
+      - elasticsearch
     ports:
       - '24224:24224'
   front-end:
