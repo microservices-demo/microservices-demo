@@ -1,4 +1,5 @@
 # vi: set ft=ruby :
+num_nodes = ENV["NUM_NODES"] || 2
 nomad_unit = <<-EOF
 [Service]
 ExecStart=/usr/bin/nomad agent -config /etc/nomad
@@ -12,7 +13,7 @@ if [ -a /usr/bin/nomad ]; then
 else
   yum install -y unzip
   cd /tmp
-  curl https://releases.hashicorp.com/nomad/0.5.0/nomad_0.5.0_linux_amd64.zip > nomad.zip
+  curl https://releases.hashicorp.com/nomad/0.5.1-rc2/nomad_0.5.1-rc2_linux_amd64.zip > nomad.zip
   unzip -d . nomad.zip
   chmod +x nomad
   mv nomad /usr/bin/nomad
@@ -47,7 +48,7 @@ EOF
 consul_initial = <<-EOF
 count=$(docker ps -q --filter name=consul | wc -l)
 if [ $count == 0 ]; then
-  docker run -d --name consul --network=host --restart always consul agent -server -bind 192.168.59.101 -bootstrap-expect 1
+  docker run -d --name consul --network=host --restart always consul agent -server -bind 192.168.59.101 -bootstrap
 fi
 
 # wait for consul to come up
@@ -58,7 +59,7 @@ EOF
 consul_joiner = <<-EOF
 count=$(docker ps -q --filter name=consul | wc -l)
 if [ $count == 0 ]; then
-  docker run -d --network=host --name consul --restart always consul agent -server -bind 192.168.59.102 -join 192.168.59.101
+  docker run -d --network=host --name consul --restart always consul agent -server -bind $IP -join 192.168.59.101
 fi
 
 # wait for consul to come up
@@ -97,7 +98,11 @@ EOF
 launch_scope = <<-EOF
 count=$(docker ps -q -f name=weavescope | wc -l)
 if [ $count -eq 0 ]; then
-  /usr/bin/scope launch
+  if [ -z "$SCOPE_TOKEN" ]; then
+    /usr/bin/scope launch
+  else
+    /usr/bin/scope launch --service-token=$SCOPE_TOKEN
+  fi
 else
   echo scope is already running
   exit 0
@@ -129,14 +134,15 @@ Vagrant.configure(2) do |config|
 
     override.ssh.username = "ec2-user"
     override.ssh.private_key_path = "~/.ssh/nomad.pem"
+    override.nfs.functional = false
 
     aws.ami = "ami-02ace471"
     aws.keypair_name = "microservices-demo-nomad"
     aws.instance_type = "m4.large"
     aws.region = "eu-west-1"
     aws.availability_zone = "eu-west-1c"
-    aws.security_groups = ["sg-d95bc8bf"]
-    aws.subnet_id = "subnet-168feb4e"
+    aws.security_groups = [ENV["AWS_SECURITY_GROUP_ID"]]
+    aws.subnet_id = ENV["AWS_SUBNET_ID"]
     aws.associate_public_ip = true
   end
 
@@ -147,7 +153,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: scope
 
 
-  (1..2).each do |n|
+  (1..num_nodes.to_i).each do |n|
     ip = "192.168.59.10#{n}"
     name = "node#{n}"
     nomad_config = <<-EOF
@@ -192,18 +198,21 @@ Vagrant.configure(2) do |config|
 
       m.vm.provider :aws do |aws, override|
         aws.private_ip_address = ip
+        if name != "node1"
+          aws.tags = {'Name' => 'nomad-node'}
+        end
       end
 
       if name == "node1"
         m.vm.provision "shell", name: "Start consul (bootstrapped)", inline: consul_initial
       else
-        m.vm.provision "shell", name: "Start consul (join cluster)", inline: consul_joiner
+        m.vm.provision "shell", name: "Start consul (join cluster)", env: {"IP" => ip}, inline: consul_joiner
       end
 
       m.vm.provision "shell", name: "nomad config", inline: "echo '#{nomad_config}' > /etc/nomad/config.hcl"
       m.vm.provision "shell", name: "Start nomad", inline: "systemctl start nomad"
       m.vm.provision "shell", name: "Launch weave", inline: launch_weave
-      m.vm.provision "shell", name: "Launch scope", inline: launch_scope
+      m.vm.provision "shell", name: "Launch scope", env: {"SCOPE_TOKEN" => ENV["SCOPE_TOKEN"] || ""}, inline: launch_scope
 
       # Stuff only the head node should take care of
       if name == "node1"

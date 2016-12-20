@@ -72,7 +72,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 64 # 32MB
+        memory = 128 # 128MB
         network {
           mbits = 10
           port "http" {
