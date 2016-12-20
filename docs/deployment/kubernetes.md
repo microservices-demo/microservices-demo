@@ -5,47 +5,24 @@ deployDoc: true
 
 ## Sock Shop via Kubernetes + Weave
 
-This demo demonstrates running the Sock Shop on a Kubernetes cluster using
-Weave Net and Weave Scope. In addition to the basic Kubernetes demo this 
-demo demonstrates using Weave Flux to automate the deployment workflow.
 
-### Pre-requisites
-* *Optional* [Terraform](https://www.terraform.io/downloads.html)
-* *Optional* [AWS Account](https://aws.amazon.com/)
-* *Optional* [awscli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
-* [minikube](https://github.com/kubernetes/minikube/releases)
+### Goal
 
+This goal of this demo is to run the Sock Shop on a Kubernetes cluster using
+Weave Net for networking, Weave Scope for monitoring,
+and Weave Flux for automation.
 
-### First and foremost fork the repo
-* Fork the repo before you begin. Here is a handy <a href="https://github.com/microservices-demo/microservices-demo" target="_blank">link</a>
+### Dependencies
 
-### Installing sock-shop on Minikube
+This demo does require you to fork the microservices-demo repo, the other three dependencies are required
+if you wish to use our helper scripts to setup a k8s cluster, otherwise feel free to ignore them.
 
-* Install [minikube](https://github.com/kubernetes/minikube/releases)
-* Run `minikube start`
-* Make sure minikube is running on http://192.168.99.100:30000
-* cd to the microservices-demo repo
-* Create the namespace for sock-shop and deploy the sock-shop
-* Wait for all the services to start
-* Once all the pods are up and ready open up the browser and visit http://192.168.99.100:30001
+* [Terraform](https://www.terraform.io/downloads.html)
+* [AWS Account](https://aws.amazon.com/)
+* [awscli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
+* <a class="github-button" href="https://github.com/microservices-demo/microservices-demo/fork" data-icon="octicon-repo-forked" data-count-href="/microservices-demo/microservices-demo" data-count-api="/repos/microservices-demo/microservices-demo#forks_count" data-count-aria-label="# forks on GitHub">Fork</a>
 
-```
-minikube start
-git clone git@github.com:<YOUR_GITHUB_USERNAME>/microservices-demo.git
-cd microservices-demo
-kubectl apply -f deploy/kubernetes/manifests/sock-shop-ns.yml -f deploy/kubernetes/manifests
-kubectl get pods --namespace=sock-shop
-
-NAME                            READY     STATUS              RESTARTS   AGE
-cart-1704365679-sf8rt           0/1       ContainerCreating   0          10s
-cart-db-2635696824-ciwux        0/1       ContainerCreating   0          10s
-... truncated ...
-user-3469357200-5irfy           0/1       ContainerCreating   0          7s
-user-db-2978321794-r960k        0/1       ContainerCreating   0          8s
-```
-
-### Installing sock-shop on AWS
-
+### Setting up dependencies
 <!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION SLACK_WEBHOOK -->
 <!-- deploy-doc-start pre-install -->
 
@@ -62,10 +39,6 @@ user-db-2978321794-r960k        0/1       ContainerCreating   0          8s
 
 <!-- deploy-doc-end -->
 
-```
-git clone https://github.com/microservices-demo/microservices-demo
-cd microservices-demo
-```
 
 <!-- deploy-doc-hidden pre-install
 
@@ -88,7 +61,6 @@ EOF
         ./deploy/kubernetes/terraform/cleanup.sh
     fi
 -->
-### Setup Kubernetes
 
 Begin by setting the appropriate AWS environment variables.
 ```
@@ -97,7 +69,7 @@ export AWS_SECRET_ACCESS_KEY=[YOURSECRETACCESSKEY]
 export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
 ```
 
-First we'll create a repo key and upload it to AWS. Next we'll upload it to github for the repo we just forked above.
+First we'll create a repo key and upload it to AWS.
 
 ```
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com" -f ~/.ssh/microservices-demo_id_rsa
@@ -115,14 +87,17 @@ aws ec2 import-key-pair -\-key-name microservices-demo-flux -\-public-key-materi
 
 -->
 
-You may opt to take advantage of the command below to add the public key to your forked repo or perfer to do it manually through the github web interface
+Next we'll upload it to your forked github repo, either you can use the provided command-line option below or do it manually through github <a target="_blank" href="https://github.com">here</a>.
+
 ```
 curl -u <YOUR_GITHUB_USERNAME> -d '{"title": "microservices-demo-flux", "key": "'"`cat ~/.ssh/microservices-demo_id_rsa.pub`"'", "read_only": false}' https://api.github.com/repos/<YOUR_GITHUB_USERNAME>/microservices-demo/keys
 ```
 
-Finally run terraform.
+### Setup AWS cluster
 
 ```
+git clone https://github.com/<YOUR-GITHUB-USERNAME>/microservices-demo
+cd microservices-demo
 export TF_VAR_private_key_path="~/.ssh/microservices-demo_id_rsa"
 export TF_VAR_key_name="microservices-demo-flux"
 terraform apply deploy/kubernetes/terraform/
@@ -159,7 +134,7 @@ scp -i ~/.ssh/microservices-demo_id_rsa -rp deploy/kubernetes/manifests ubuntu@$
 -->
 
 ### <a name="weavenet"></a>Setup Weave Net
-* Run the following commands to setup Kubernetes and Weave Net on the master instance
+Run the following commands to setup Kubernetes and Weave Net on the master instance
 
 ```
 master_ip=$(terraform output -json | jq -r '.master_address.value')
@@ -181,8 +156,8 @@ ssh -i ~/.ssh/microservices-demo_id_rsa ubuntu@$master_ip kubectl apply -f https
 
 -->
 
-### Time for the nodes to join the master
-* Run the following commands to SSH into each node\_addresses and run the ```kubeadm join --token <token> <master-ip>``` command from before.
+### Nodes join the master
+Run the following commands to SSH into each node\_addresses and run the ```kubeadm join --token <token> <master-ip>``` command from before.
 
 ```
 node_addresses=$(terraform output -json | jq -r '.node_addresses.value|@sh' | sed -e "s/'//g" )
@@ -209,7 +184,6 @@ done
 * Start weave scope on the cluster
 
 ```
-master_ip=$(terraform output -json | jq -r '.master_address.value')
 ssh -i ~/.ssh/microservices-demo_id_rsa ubuntu@$master_ip kubectl apply -f /tmp/weavescope.yaml -\-validate=false
 ```
 
@@ -229,7 +203,6 @@ ssh -i ~/.ssh/microservices-demo_id_rsa ubuntu@$master_ip kubectl apply -f /tmp/
 * Deploy the sock shop
 
 ```
-master_ip=$(terraform output -json | jq -r '.master_address.value')
 ssh -i ~/.ssh/microservices-demo_id_rsa ubuntu@$master_ip kubectl apply -f /tmp/manifests/sock-shop-ns.yml -f /tmp/manifests
 ```
 
@@ -246,8 +219,7 @@ ssh -i ~/.ssh/microservices-demo_id_rsa ubuntu@$master_ip kubectl apply -f /tmp/
 
 ### Setup Weave Flux
 
-* Create a file called flux.conf similar to the one displayed below
-* Fill in values that are applicable to your deployment
+* Locally create a file called flux.conf similar to the one displayed below filling in applicable values
 
 ```
 git:
@@ -293,20 +265,20 @@ EOF
 
 * SSH into the master node
 * Start the flux deployment and service
-* Set fluxctl to use flux.conf
-* Set FLUX_URL
-* Iterate over the services setting them to update automatically
+
 
 
 ```
-master_ip=$(terraform output -json | jq -r '.master_address.value')
-
 ssh -i ~/.ssh/microservices-demo_id_rsa ubuntu@$master_ip kubectl create -f 'https://raw.githubusercontent.com/weaveworks/flux/master/deploy/standalone/flux-deployment.yaml'
 ssh -i ~/.ssh/microservices-demo_id_rsa ubuntu@$master_ip kubectl create -f 'https://raw.githubusercontent.com/weaveworks/flux/master/deploy/standalone/flux-service.yaml'
+```
 
-echo "Sleeping for 120s.."
-sleep 120
+* Wait for the flux service to startup...should take 2 minutes
+* Once again locally set fluxctl to use flux.conf
+* Set the environment variable `FLUX_URL`
+* Iterate over the services setting them to update automatically
 
+```
 flux_port=$(ssh -i ~/.ssh/microservices-demo_id_rsa ubuntu@$master_ip kubectl get service fluxsvc -\-template \'\{\{ index .spec.ports 0 \"nodePort\" \}\}\')
 aws ec2 authorize-security-group-ingress -\-group-name md-k8s-security-group -\-protocol tcp -\-port $flux_port -\-cidr 0.0.0.0/0
 export FLUX_URL=http://$master_ip:$flux_port
@@ -342,7 +314,12 @@ done
 
 -->
 
-If all went successfully then your demo is set up to automatically deploy changes made to the sock shop microservices app by monitoring the docker registry for changes. If you would like more information or to run your own version head on over to <a href="https://www.weave.works/guides/cloud-guide-part-2-deploy-continuous-delivery/" target="_blank">this</a> handy guide provided by the wonderful people at Weaveworks.
+### Done Deploying
+
+If all went successfully then your demo is set up to automatically deploy changes made to the sock shop microservices app by monitoring the docker registry for changes, and consulting the manifest files in your forked repo.  
+
+
+If you would like more information or to run your own version head on over to <a href="https://www.weave.works/guides/cloud-guide-part-2-deploy-continuous-delivery/" target="_blank">this</a> handy guide provided by the wonderful people at Weaveworks.
 
 ### View the results
 Run `terraform output` command to see the load balancer and node URLs
