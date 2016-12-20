@@ -39,11 +39,11 @@ resource "google_compute_instance" "docker-swarm-node" {
     }
 
     metadata {
-        ssh-keys = "root:${file("${var.public_key_path}")}"
+        ssh-keys = "ubuntu:${file("${var.public_key_path}")}"
     }
 
     connection {
-        user        = "root"
+        user        = "ubuntu"
         private_key = "${file("${var.private_key_path}")}"
     }
 
@@ -80,43 +80,43 @@ resource "google_compute_instance" "docker-swarm-master" {
     }
 
     metadata {
-        ssh-keys = "root:${file("${var.public_key_path}")}"
+        ssh-keys = "ubuntu:${file("${var.public_key_path}")}"
     }
 
     connection {
-        user        = "root"
+        user        = "ubuntu"
         private_key = "${file("${var.private_key_path}")}"
     }
 
     provisioner "file" { 
-        source      = "../../docker-compose.yml"
+        source      = "./deploy/docker-swarm/docker-compose.yml"
         destination = "/tmp/docker-compose.yml"
     }
 
     provisioner "remote-exec" {
         inline = [
             "sudo service docker start",
-            "docker swarm init",
+            "sudo docker swarm init",
         ]
     }
 
     provisioner "local-exec" {
-        command = "TOKEN=$(ssh -i \"${var.private_key_path}\" -o \"StrictHostKeyChecking no\" -o \"UserKnownHostsFile /dev/null\" root@${self.network_interface.0.access_config.0.assigned_nat_ip} docker swarm join-token -q worker); echo \"#!/usr/bin/env bash\ndocker swarm join --token $TOKEN ${self.network_interface.0.access_config.0.assigned_nat_ip}:2377\" >| join.sh"
+        command = "TOKEN=$(ssh -i \"${var.private_key_path}\" -o \"StrictHostKeyChecking no\" -o \"UserKnownHostsFile /dev/null\" ubuntu@${self.network_interface.0.access_config.0.assigned_nat_ip} sudo docker swarm join-token -q worker); echo \"#!/usr/bin/env bash\nsudo docker swarm join --token $TOKEN ${self.network_interface.0.access_config.0.assigned_nat_ip}:2377\" >| join.sh"
     }
 }
 
 resource "null_resource" "docker-swarm" {
   depends_on = [ "google_compute_instance.docker-swarm-node" ] 
   connection {
-    user        = "root"
+    user        = "ubuntu"
     private_key = "${file("${var.private_key_path}")}"
     host        = "${google_compute_instance.docker-swarm-master.network_interface.0.access_config.0.assigned_nat_ip}"
   }
   provisioner "remote-exec" {
     inline = [
-        "docker-compose -f /tmp/docker-compose.yml pull",
-        "docker-compose -f /tmp/docker-compose.yml bundle -o dockerswarm.dab",
-        "docker deploy dockerswarm"
+        "sudo docker-compose -f /tmp/docker-compose.yml pull",
+        "sudo docker-compose -f /tmp/docker-compose.yml bundle -o dockerswarm.dab",
+        "sudo docker deploy dockerswarm"
     ]
   }
 
