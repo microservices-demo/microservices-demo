@@ -36,8 +36,6 @@ def any_image_changed_since?(image_list, since)
     log(:info, "No, nothing changed.")
     false
   end
-
-  exit 1
 end
 
 def deployment_changed?(exec_depl_doc, since)
