@@ -1,6 +1,15 @@
 version: '2'
 
 services:
+  fluentd:
+    image: fluent/fluentd
+    volumes:
+      - /tmp/fluentd/log:/fluentd/log
+      - /tmp/fluentd/conf:/fluentd/etc
+    environment:
+      FLUENTD_CONF: in_docker.conf
+    ports:
+      - "24224:24224"
   front-end:
     image: weaveworksdemos/front-end
     hostname: front-end
@@ -10,6 +19,10 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   edge-router:
     image: weaveworksdemos/edge-router
     ports:
@@ -30,6 +43,10 @@ services:
     restart: always
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   catalogue:
     image: weaveworksdemos/catalogue
     hostname: catalogue
@@ -41,6 +58,10 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   catalogue-db:
     image: weaveworksdemos/catalogue-db
     hostname: catalogue-db
@@ -50,6 +71,10 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=socksdb
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   cart:
     image: weaveworksdemos/cart
     hostname: cart
@@ -63,6 +88,10 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   cart-db:
     image: mongo
     hostname: cart-db
@@ -78,6 +107,10 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   orders:
     image: weaveworksdemos/orders
     hostname: orders
@@ -91,6 +124,10 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   orders-db:
     image: mongo
     hostname: orders-db
@@ -106,6 +143,10 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   shipping:
     image: weaveworksdemos/shipping
     hostname: shipping
@@ -119,6 +160,10 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   queue-master:
     image: weaveworksdemos/queue-master
     hostname: queue-master
@@ -134,6 +179,10 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   rabbitmq:
     image: rabbitmq:3
     hostname: rabbitmq
@@ -148,6 +197,10 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   payment:
     image: weaveworksdemos/payment
     hostname: payment
@@ -159,6 +212,10 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   user:
     image: weaveworksdemos/user
     hostname: user
@@ -171,6 +228,10 @@ services:
     environment:
       - MONGO_HOST=user-db:27017
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   user-db:
     image: weaveworksdemos/user-db
     hostname: user-db
@@ -186,6 +247,10 @@ services:
       - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
   user-sim:
     image: weaveworksdemos/load-test
     cap_drop:
@@ -193,3 +258,7 @@ services:
     read_only: true
     hostname: user-simulator
     command: "-d 60 -r 200 -c 2 -h edge-router"
+    logging:
+      driver: fluentd
+    depends_on:
+      - fluentd
