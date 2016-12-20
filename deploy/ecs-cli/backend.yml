@@ -3,6 +3,7 @@ version: '2'
 services:
   shipping:
     image: weaveworksdemos/shipping
+    mem_limit: 512000000
     hostname: shipping
     restart: always
     cap_drop:
@@ -16,6 +17,7 @@ services:
       - reschedule=on-node-failure
   queue-master:
     image: weaveworksdemos/queue-master
+    mem_limit: 512000000
     hostname: queue-master
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -31,6 +33,7 @@ services:
       - reschedule=on-node-failure
   rabbitmq:
     image: rabbitmq:3
+    mem_limit: 128000000
     hostname: rabbitmq
     restart: always
     cap_drop:
@@ -45,6 +48,7 @@ services:
       - reschedule=on-node-failure
   payment:
     image: weaveworksdemos/payment
+    mem_limit: 32000000
     hostname: payment
     restart: always
     cap_drop:
@@ -56,6 +60,7 @@ services:
       - reschedule=on-node-failure
   user:
     image: weaveworksdemos/user
+    mem_limit: 32000000
     hostname: user
     restart: always
     cap_drop:
@@ -68,6 +73,7 @@ services:
       - reschedule=on-node-failure
   user-db:
     image: weaveworksdemos/user-db
+    mem_limit: 128000000
     hostname: user-db
     restart: always
     cap_drop:

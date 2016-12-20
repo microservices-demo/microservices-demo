@@ -3,6 +3,7 @@ version: '2'
 services:
   front-end:
     image: weaveworksdemos/front-end
+    mem_limit: 256000000
     hostname: front-end
     restart: always
     cap_drop:
@@ -12,6 +13,7 @@ services:
       - reschedule=on-node-failure
   edge-router:
     image: weaveworksdemos/edge-router
+    mem_limit: 32000000
     ports:
       - '80:80'
     cap_drop:
@@ -32,6 +34,7 @@ services:
       - reschedule=on-node-failure
   catalogue:
     image: weaveworksdemos/catalogue
+    mem_limit: 32000000
     hostname: catalogue
     restart: always
     cap_drop:
@@ -43,6 +46,7 @@ services:
       - reschedule=on-node-failure
   catalogue-db:
     image: weaveworksdemos/catalogue-db
+    mem_limit: 512000000
     hostname: catalogue-db
     restart: always
     environment:
@@ -52,6 +56,7 @@ services:
       - MYSQL_DATABASE=socksdb
   cart:
     image: weaveworksdemos/cart
+    mem_limit: 512000000
     hostname: cart
     restart: always
     cap_drop:
@@ -65,6 +70,7 @@ services:
       - reschedule=on-node-failure
   cart-db:
     image: mongo
+    mem_limit: 128000000
     hostname: cart-db
     restart: always
     cap_drop:
@@ -80,6 +86,7 @@ services:
       - reschedule=on-node-failure
   orders:
     image: weaveworksdemos/orders
+    mem_limit: 512000000
     hostname: orders
     restart: always
     cap_drop:
@@ -93,6 +100,7 @@ services:
       - reschedule=on-node-failure
   orders-db:
     image: mongo
+    mem_limit: 128000000
     hostname: orders-db
     restart: always
     cap_drop:
