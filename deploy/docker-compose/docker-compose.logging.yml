@@ -19,253 +19,76 @@ services:
     ports:
       - '24224:24224'
   front-end:
-    image: weaveworksdemos/front-end
-    hostname: front-end
-    restart: always
-    cap_drop:
-      - all
-    read_only: true
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   edge-router:
-    image: weaveworksdemos/edge-router
-    ports:
-      - '80:80'
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-      - CHOWN
-      - SETGID
-      - SETUID
-      - DAC_OVERRIDE
-    read_only: true
-    tmpfs:
-      - /var/cache/nginx:rw,noexec,nosuid
-      - /var/run:rw,noexec,nosuid
-    hostname: edge-router
-    restart: always
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   catalogue:
-    image: weaveworksdemos/catalogue
-    hostname: catalogue
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: true
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   catalogue-db:
-    image: weaveworksdemos/catalogue-db
-    hostname: catalogue-db
-    restart: always
-    environment:
-      - reschedule=on-node-failure
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
-      - MYSQL_DATABASE=socksdb
     logging:
       driver: fluentd
     depends_on:
       - log-server
   cart:
-    image: weaveworksdemos/cart
-    hostname: cart
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   cart-db:
-    image: mongo
-    hostname: cart-db
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - CHOWN
-      - SETGID
-      - SETUID
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   orders:
-    image: weaveworksdemos/orders
-    hostname: orders
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   orders-db:
-    image: mongo
-    hostname: orders-db
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - CHOWN
-      - SETGID
-      - SETUID
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   shipping:
-    image: weaveworksdemos/shipping
-    hostname: shipping
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   queue-master:
-    image: weaveworksdemos/queue-master
-    hostname: queue-master
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   rabbitmq:
-    image: rabbitmq:3
-    hostname: rabbitmq
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - CHOWN
-      - SETGID
-      - SETUID
-      - DAC_OVERRIDE
-    read_only: true
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   payment:
-    image: weaveworksdemos/payment
-    hostname: payment
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: true
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   user:
-    image: weaveworksdemos/user
-    hostname: user
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: true
-    environment:
-      - MONGO_HOST=user-db:27017
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   user-db:
-    image: weaveworksdemos/user-db
-    hostname: user-db
-    restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - CHOWN
-      - SETGID
-      - SETUID
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
-    environment:
-      - reschedule=on-node-failure
     logging:
       driver: fluentd
     depends_on:
       - log-server
   user-sim:
-    image: weaveworksdemos/load-test
-    cap_drop:
-      - all
-    read_only: true
-    hostname: user-simulator
-    command: "-d 60 -r 200 -c 2 -h edge-router"
     logging:
       driver: fluentd
     depends_on:
