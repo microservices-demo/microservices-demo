@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: flentd
+  name: fluentd
   labels:
     tier: monitoring
     name: fluentd
@@ -12,9 +12,12 @@ spec:
         name: fluentd
     spec:
       containers:
-          image: weaveworksdemos/log-server
-          name: fluentd
-          volumeMounts:
+       - image: weaveworksdemos/log-server
+         name: fluentd
+         env:
+            - name: FLUENTD_CONF
+              value: kubernetes.conf
+         volumeMounts:
             - name: container-logs
               mountPath: /var/log/containers/
               readOnly: true
