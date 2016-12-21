@@ -9,7 +9,7 @@ This demo demonstrates running the Sock Shop on Minikube.
 
 ### Pre-requisites
 * Install [Minikube](https://github.com/kubernetes/minikube)
-* Install [kubectl] (http://kubernetes.io/docs/user-guide/prereqs/)
+* Install [kubectl](http://kubernetes.io/docs/user-guide/prereqs/)
 
 ### Clone the microservices-demo repo 
 
