@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: flentd
+  labels:
+    tier: monitoring
+    name: fluentd
+spec:
+  template:
+    metadata:
+      labels:
+        name: fluentd
+    spec:
+      containers:
+          image: weaveworksdemos/log-server
+          name: fluentd
+          volumeMounts:
+            - name: container-logs
+              mountPath: /var/log/containers/
+              readOnly: true
+      volumes:
+        - name: container-logs
+          hostPath:
+            path: /var/log/containers/
