@@ -52,6 +52,15 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 
 <!-- deploy-doc-end -->
 
+##### Run with Fluentd logging
+
+If you want to run the application using a more advanced logging setup based on Fluentd + ELK stack, you can add the logging compose file
+to override some settings and add some extra containers:
+
+```
+docker-compose -f deploy/docker-compose/docker-compose.yml -f deploy/docker-compose/docker-compose.logging.yml up -d
+```
+
 ### Run tests
 
 There's a load test provided as a service in this compose file. For more information see [Load Test](#loadtest). 
