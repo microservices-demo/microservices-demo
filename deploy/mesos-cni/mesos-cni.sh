@@ -8,7 +8,7 @@ USER=ubuntu
 MASTERS=($MASTER)
 AGENTS=($SLAVE0 $SLAVE1 $SLAVE2)
 SSH_OPTS=-oStrictHostKeyChecking=no
-SERVICES=("cart-db" "orders-db" "user-db" "shipping" "orders" "catalogue" "catalogue-db" "cart" "payment" "user" "front-end")
+SERVICES=("cart-db" "orders-db" "user-db" "shipping" "orders" "catalogue" "catalogue-db" "cart" "payment" "user" "front-end" "zipkin")
 
 
 ############## Begin Utilities ###################
@@ -428,11 +428,12 @@ do_start() {
 
     launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$tag       --shell
     launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$tag         --shell
-    launch_service catalogue    "/app -port=80"                                       weaveworksdemos/catalogue:$tag      --no-shell
+    launch_service catalogue    "/app -port=80 -zipkin=http://zipkin:9411/api/v1/spans"         weaveworksdemos/catalogue:$tag      --no-shell
     launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=cart-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/cart:$tag           --shell
     launch_service payment      "/app -port=80"                                       weaveworksdemos/payment:$tag        --no-shell
     launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$tag --shell
-    launch_service user         "/user -port=80"                                       weaveworksdemos/user:$tag      --no-shell
+    launch_service user         "/user -port=80 -zipkin=http://zipkin:9411/api/v1/spans"    weaveworksdemos/user:$tag      --no-shell
+    launch_service zipkin       "echo ok"                                              openzipkin/zipkin:$tag      --no-shell
 }
 
 do_stop() {

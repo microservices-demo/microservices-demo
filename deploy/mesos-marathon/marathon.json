@@ -92,6 +92,9 @@
           "id": "/weave-demo/service/user",
           "cpus": 0.5,
           "mem": 1024.0,
+          "env": {
+            "ZIPKIN": "http://zipkin:9411/api/v1/spans"
+          },
           "container": {
             "type": "DOCKER",
             "docker": {
@@ -101,6 +104,27 @@
                 {
                   "key": "hostname",
                   "value": "user.weave.local"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "/weave-demo/service/zipkin",
+          "cpus": 0.5,
+          "ports": [
+                9411
+          ], 
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "openzipkin/zipkin:latest",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "zipkin.weave.local"
                 }
               ]
             }
@@ -182,6 +206,9 @@
           "id": "/weave-demo/service/catalogue",
           "cpus": 0.1,
           "mem": 256.0,
+          "env": {
+            "ZIPKIN": "http://zipkin:9411/api/v1/spans"
+          },
           "container": {
             "type": "DOCKER",
             "docker": {
