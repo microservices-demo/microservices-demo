@@ -20,6 +20,7 @@
     }, 
     "catalogue": {
       "Env": [
+        "ZIPKIN=http://zipkin:9411/api/v1/spans",
         "reschedule=on-node-failure"
       ], 
       "Image": "weaveworksdemos/catalogue@sha256:72418de273e75bc3684232d97ff5c9376fc26ead544659fad349d0ee282dbe8c", 
@@ -100,7 +101,8 @@
     }, 
     "user": {
       "Env": [
-        "reschedule=on-node-failure", 
+        "reschedule=on-node-failure",
+	"ZIPKIN=http://zipkin:9411/api/v1/spans",
         "MONGO_HOST=user-db:27017"
       ], 
       "Image": "weaveworksdemos/user@sha256:5e4cff43b77815b8b1d996b3d76ce6ddcabad778f30cd9351d625d5ac4e4861e", 
@@ -129,6 +131,15 @@
         "edge-router"
       ], 
       "Image": "weaveworksdemos/load-test@sha256:389c75f7722387aa3211102879e94142d2019c0a42c32dcd62a9edf68e690b3d", 
+      "Networks": [
+        "default"
+      ]
+    },
+    "zipkin": {
+      "Env": [
+        "reschedule=on-node-failure",
+      ], 
+      "Image": "openzipkin/zipkin:latest", 
       "Networks": [
         "default"
       ]

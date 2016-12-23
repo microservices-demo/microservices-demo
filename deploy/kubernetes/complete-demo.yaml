@@ -125,7 +125,7 @@ spec:
     spec:
       containers:
       - name: catalogue-db
-        image: weaveworksdemos/catalogue-db:0.2.0
+        image: weaveworksdemos/catalogue-db:0.3.0
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password
@@ -166,7 +166,10 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue:0.2.0
+        image: weaveworksdemos/catalogue:0.3.0
+        env:
+          - name: ZIPKIN
+            value: http://zipkin:9411/api/v1/spans
         ports:
         - containerPort: 80
         securityContext:
@@ -540,8 +543,7 @@ spec:
     spec:
       containers:
       - name: user-db
-        image: weaveworksdemos/user-db:0.3.0
-
+        image: weaveworksdemos/user-db:0.4.0
         ports:
         - name: mongo
           containerPort: 27017
@@ -593,12 +595,14 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.3.0
+        image: weaveworksdemos/user:0.4.0
         ports:
         - containerPort: 80
         env:
         - name: MONGO_HOST
           value: user-db:27017
+        - name: ZIPKIN
+          value: http://zipkin:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -623,3 +627,52 @@ spec:
     targetPort: 80
   selector:
     name: user
+
+
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zipkin
+  labels:
+    name: zipkin
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: zipkin
+    spec:
+      containers:
+      - name: zipkin
+        image: openzipkin/zipkin
+        ports:
+        - containerPort: 9411
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - CHOWN
+              - SETGID
+              - SETUID
+          readOnlyRootFilesystem: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  labels:
+    name: zipkin
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 9411
+    targetPort: 9411
+  selector:
+    name: zipkin

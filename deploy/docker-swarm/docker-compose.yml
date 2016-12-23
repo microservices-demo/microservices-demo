@@ -11,6 +11,7 @@ services:
     image: weaveworksdemos/catalogue
     environment:
       - reschedule=on-node-failure
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
   catalogue-db:
     image: weaveworksdemos/catalogue-db
     environment:
@@ -51,6 +52,7 @@ services:
     environment:
       - MONGO_HOST=user-db:27017
       - reschedule=on-node-failure
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
   user-db:
     image: weaveworksdemos/user-db
     environment:
@@ -58,3 +60,7 @@ services:
   user-sim:
     image: weaveworksdemos/load-test
     command: "-d 60 -r 200 -c 2 -h front-end"
+  zipkin:
+    image: openzipkin/zipkin 
+    ports:
+      - "9411:9411"

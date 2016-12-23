@@ -1,26 +1,22 @@
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: catalogue
+  name: zipkin
   labels:
-    name: catalogue
+    name: zipkin
   namespace: sock-shop
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: catalogue
+        name: zipkin
     spec:
       containers:
-      - name: catalogue
-        image: weaveworksdemos/catalogue:0.2.0
-        env:
-         - name: ZIPKIN
-           value: http://zipkin:9411/api/v1/spans
-       ports:
-        - containerPort: 80
+      - name: zipkin
+        image: openzipkin/zipkin
+        ports:
+        - containerPort: 9411
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -28,5 +24,7 @@ spec:
             drop:
               - all
             add:
-              - NET_BIND_SERVICE
+              - CHOWN
+              - SETGID
+              - SETUID
           readOnlyRootFilesystem: true
