@@ -4,7 +4,6 @@ deployDoc: true
 ---
 <!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
 
-<<<<<<< HEAD
 ## Sock Shop on Nomad
 
 
