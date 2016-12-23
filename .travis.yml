@@ -13,13 +13,20 @@ install:
 
 script:
 - set -o pipefail
-- if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then deploy-doc-tests/bin/cronjob-test-job-spawner; fi
+- if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
+    gem install travis-cron_tools;
+    ruby .travis-cron.rb;
+  fi;
 - if [ ! -z "$AWS_ACCESS_KEY" ]; then
     aws cloudformation validate-template --template-body "file:////${PWD}/deploy/aws-ecs/cloudformation.json" | jq . ;
   fi;
 
 after_success:
 - export GROUP=weaveworksdemos
+- if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
+    echo "Not pushing artifacts in cron jobs";
+    exit 0;
+  fi;
 - if [ -z "$DOCKER_PASS" ] ; then
     echo "This is a build triggered by an external PR. Skipping docker push.";
     exit 0;
@@ -65,6 +72,7 @@ deploy:
   acl: public_read
   on:
     branch: master
+  condition: "\"$TRAVIS_EVENT_TYPE\" != \"cron\""
 
 notifications:
   slack:
