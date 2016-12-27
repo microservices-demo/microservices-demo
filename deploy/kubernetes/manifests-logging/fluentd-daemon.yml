@@ -5,6 +5,7 @@ metadata:
   labels:
     tier: monitoring
     name: fluentd
+  namespace: kube-system
 spec:
   template:
     metadata:
@@ -12,16 +13,15 @@ spec:
         name: fluentd
     spec:
       containers:
-       - image: weaveworksdemos/log-server
+       - image: seqvence/log-server
          name: fluentd
          env:
             - name: FLUENTD_CONF
               value: kubernetes.conf
          volumeMounts:
-            - name: container-logs
-              mountPath: /var/log/containers/
-              readOnly: true
+            - name: varlibdockercontainers
+              mountPath: /var/lib/docker/containers
       volumes:
-        - name: container-logs
+        - name: varlibdockercontainers
           hostPath:
-            path: /var/log/containers/
+            path: /var/lib/docker/containers
