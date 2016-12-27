@@ -102,7 +102,7 @@
     "user": {
       "Env": [
         "reschedule=on-node-failure",
-	"ZIPKIN=http://zipkin:9411/api/v1/spans",
+        "ZIPKIN=http://zipkin:9411/api/v1/spans",
         "MONGO_HOST=user-db:27017"
       ], 
       "Image": "weaveworksdemos/user@sha256:5e4cff43b77815b8b1d996b3d76ce6ddcabad778f30cd9351d625d5ac4e4861e", 
