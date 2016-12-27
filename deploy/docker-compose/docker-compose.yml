@@ -14,6 +14,18 @@ services:
     image: weaveworksdemos/edge-router
     ports:
       - '80:80'
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:rw,noexec,nosuid
+      - /var/run:rw,noexec,nosuid
     hostname: edge-router
     restart: always
     environment:
@@ -22,7 +34,13 @@ services:
     image: weaveworksdemos/catalogue
     hostname: catalogue
     restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
     environment:
+      - reschedule=on-node-failure
       - ZIPKIN=http://zipkin:9411/api/v1/spans
   catalogue-db:
     image: weaveworksdemos/catalogue-db
