@@ -143,7 +143,7 @@ services:
     environment:
       - reschedule=on-node-failure
   user:
-    image: weaveworksdemos/user:snapshot
+    image: weaveworksdemos/user
     hostname: user
     restart: always
     cap_drop:
