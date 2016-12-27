@@ -19,7 +19,7 @@ services:
     environment:
       - reschedule=on-node-failure
   catalogue:
-    image: weaveworksdemos/catalogue:snapshot
+    image: weaveworksdemos/catalogue
     hostname: catalogue
     restart: always
     environment:
