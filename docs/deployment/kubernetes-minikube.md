@@ -24,6 +24,7 @@ You can start Minikube by running:
 
 <!-- deploy-doc-start start-minikube -->
 
+
     minikube start
 
 <!-- deploy-doc-end -->
@@ -39,7 +40,15 @@ This step is required because Elasticsearch will not start if it detects a value
 sudo sysctl -w vm.max_map_count=262144
 ```
 
-Once the setting is done you can start the logging manifests.
+Another requirement for running the logging applications is a higher amount of memory for the Minikube VM. The VM is configured by default with 4GB and we recommend assigning at least 6GB.
+
+```
+minikube delete
+minikube config set memory 6144
+minikube start
+```
+
+Once these settings are done you can start the logging manifests.
 
 ```
 kubectl create -f deploy/kubernetes/manifests-logging
