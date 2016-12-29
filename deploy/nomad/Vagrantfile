@@ -13,7 +13,7 @@ if [ -a /usr/bin/nomad ]; then
 else
   yum install -y unzip
   cd /tmp
-  curl https://releases.hashicorp.com/nomad/0.5.1-rc2/nomad_0.5.1-rc2_linux_amd64.zip > nomad.zip
+  curl https://releases.hashicorp.com/nomad/0.5.2/nomad_0.5.2_linux_amd64.zip > nomad.zip
   unzip -d . nomad.zip
   chmod +x nomad
   mv nomad /usr/bin/nomad
