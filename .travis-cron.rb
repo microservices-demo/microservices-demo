@@ -82,7 +82,7 @@ else
   cron_build_number = ENV["TRAVIS_BUILD_NUMBER"]
   travis_build_request = {
     message: "[deployment-daily-ci] spawned by cron build #{cron_build_number}",
-    branch: ENV["TRAVIS_COMMIT"],
+    commit: ENV["TRAVIS_COMMIT"],
     config: Travis::CronTools.reset_dot_travis_yml.merge({
       language: "generic",
       sudo: true,
