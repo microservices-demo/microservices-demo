@@ -31,9 +31,9 @@ and [Weave Scope](https://www.weave.works/products/weave-scope/) to monitor the 
 -->
 
 ### Weave Cloud
-There are two options availbable here.
-* A local instance of Weave Scope which is already configured to run and become availabe on port 4040. 
-* Create a account at [cloud.weave.works](https://cloud.weave.works) and using the provided token set the environment variable `export SCOPE_TOKEN=<token>`
+There are two options available here.
+  * A local instance of Weave Scope which is already configured to run and become availabe on port 4040. 
+  * Create a account at [cloud.weave.works](https://cloud.weave.works) and using the provided token set the environment variable `export SCOPE_TOKEN=<token>`
 
 ### Getting Started
 _This example sets up a Nomad cluster with one server and three nodes. Make sure you have at least 6272MB of RAM available._
