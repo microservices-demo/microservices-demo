@@ -141,7 +141,7 @@ Our master node makes use of some of the files in this repo so lets securely cop
 Run `terraform output` command to see the load balancer and node URLs
 
 The sock shop is available at the sock_shop_address as displayed below. The scope app is accessible via the master and
-any of the node urls on port 30001. It may take a few moments for the apps to get running.
+any of the node urls on port 30001, while the same applies for Kibana, but using port 31601. It may take a few moments for the apps to get running.
 
 ```
 Outputs:
