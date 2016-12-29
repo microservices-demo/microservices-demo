@@ -88,6 +88,7 @@ EOF
 
 ### Starting the application
 To start the application you will need to ssh into the `node1` box and run the respective Nomad jobs:
+
 ```
 root@local:/# vagrant ssh node1
 vagrant@node1:/# nomad run netman.nomad
@@ -124,6 +125,7 @@ vagrant@node1:/# nomad run weavedemo.nomad
 
 ### Locating The Endpoint
 Taking the Allocation ID of the **frontend** task group above we can ask Nomad about its status:
+
 ```
 vagrant@node1:/# nomad alloc-status 5c1ebc22
 ID            = 5c1ebc22
