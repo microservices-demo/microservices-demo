@@ -29,6 +29,12 @@ resource "aws_security_group" "k8s-security-group" {
     protocol     = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port   = 30000
+    to_port     = 30000
+    protocol     = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -83,7 +89,8 @@ resource "aws_instance" "md-k8s-node" {
       "sudo echo \"deb http://apt.kubernetes.io/ kubernetes-xenial main\" | sudo tee --append /etc/apt/sources.list.d/kubernetes.list",
       "sudo apt-get update",
       "sudo apt-get install -y docker.io",
-      "sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni"
+      "sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni",
+      "sudo sysctl -w vm.max_map_count=262144"
     ]
   }
 }
