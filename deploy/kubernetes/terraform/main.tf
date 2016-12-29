@@ -30,8 +30,8 @@ resource "aws_security_group" "k8s-security-group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port   = 30000
-    to_port     = 30000
+    from_port   = 31601
+    to_port     = 31601
     protocol     = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
