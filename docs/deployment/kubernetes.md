@@ -114,6 +114,18 @@ Our master node makes use of some of the files in this repo so lets securely cop
 
 <!-- deploy-doc-end -->
 
+### Setup Fluentd + ELK based logging
+* Copy the logging manifests
+* Start Fluentd, Elasticsearch and Kibana
+
+<!-- deploy-doc-start create-infrastructure -->
+
+    master_ip=$(terraform output -json | jq -r '.master_address.value')
+    scp -i ~/.ssh/deploy-docs-k8s.pem -rp deploy/kubernetes/manifests-logging ubuntu@$master_ip:/tmp/
+    ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl apply -f /tmp/manifests-logging/
+
+<!-- deploy-doc-end -->
+
 ### Deploy Sock Shop
 * SSH into the master node
 * Deploy the sock shop
