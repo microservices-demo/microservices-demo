@@ -31,7 +31,7 @@ You can start Minikube by running:
 
 Check if it's running with `minikube status`, and make sure the Kubernetes dashboard is running on http://192.168.99.100:30000.
 
-##### Run with Fluentd logging
+##### Run with Fluentd + ELK based logging
 
 If you want to run the application using a more advanced logging setup based on Fluentd + ELK stack, you need to login to the minikube vm and increase the vm.max_map_count.
 This step is required because Elasticsearch will not start if it detects a value lower than 262144, and boot2docker, which is the VM used by minikube, has a default value which lower that. 
