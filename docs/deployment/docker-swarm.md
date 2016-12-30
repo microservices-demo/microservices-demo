@@ -105,7 +105,6 @@ EOF
     cat > /root/test.sh <<EOF
 #!/usr/bin/env bash
 ID=\$(docker ps | grep healthcheck | awk '{print \$1}')
-docker exec \$ID apk -\-no-cache add ruby-json
 docker exec \$ID ruby /healthcheck.rb -s user,catalogue,cart,shipping,payment,orders -d 300
 EOF
 
