@@ -1,4 +1,4 @@
-job "logging" {
+job "logging-fluentd" {
   datacenters = ["dc1"]
   type = "system"
 
