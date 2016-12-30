@@ -11,6 +11,10 @@ env:
 install:
 - pip install --user awscli
 
+before_install:
+- openssl aes-256-cbc -K $encrypted_eb0cac23fac1_key -iv $encrypted_eb0cac23fac1_iv
+  -in microservices-demo_id_rsa.enc -out microservices-demo_id_rsa -d
+
 script:
 - set -o pipefail
 - if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
