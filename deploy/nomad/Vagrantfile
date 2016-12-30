@@ -149,6 +149,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: "nmcli connection reload; systemctl restart network.service", run: "always"
   config.vm.provision "shell", env: {"USERNAME" => username}, inline: nomad
   config.vm.provision "shell", env: {"USERNAME" => username}, inline: docker
+  config.vm.provision "shell", inline: "sudo sysctl -w vm.max_map_count=262144"
   config.vm.provision "shell", inline: weave
   config.vm.provision "shell", inline: scope
 
