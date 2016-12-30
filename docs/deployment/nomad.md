@@ -39,6 +39,7 @@ There are two options available here.
 _This example sets up a Nomad cluster with one server and three nodes. Make sure you have at least 6272MB of RAM available._
 
 The easiest way to get started is to simply run
+
 ```
 $ vagrant up
 ```
