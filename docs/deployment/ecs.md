@@ -62,7 +62,7 @@ To ensure that the application is running properly, you could perform some load 
 
     scp -i deploy/aws-ecs/weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" deploy/healthcheck.rb ec2-user@$dns_name:/home/ec2-user/
 
-    ssh -i deploy/aws-ecs/weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" ec2-user@$dns_name "eval \$(weave env); docker run -\-rm -v /home/ec2-user/healthcheck.rb:/healthcheck.rb -i andrius/alpine-ruby ruby /healthcheck.rb -s user.weave.local,catalogue.weave.local,cart.weave.local,shipping.weave.local,payment.weave.local,orders.weave.local,queue-master.weave.local"
+    ssh -i deploy/aws-ecs/weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" ec2-user@$dns_name "eval \$(weave env); docker run -\-rm -v /home/ec2-user/healthcheck.rb:/healthcheck.rb -i andrius/alpine-ruby /bin/sh -c 'apk -\-no-cache add ruby-json; ruby /healthcheck.rb -s user.weave.local,catalogue.weave.local,cart.weave.local,shipping.weave.local,payment.weave.local,orders.weave.local,queue-master.weave.local'"
 
     if [ $? -ne 0 ]; then
         exit 1;

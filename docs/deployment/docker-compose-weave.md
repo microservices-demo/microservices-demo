@@ -64,6 +64,7 @@ This will send some traffic to the application, which will form the connection g
 <!-- deploy-doc-hidden run-tests
 
     docker run -td -\-name healthcheck andrius/alpine-ruby /bin/sh
+    docker exec -t healthcheck apk -\-no-cache add ruby-json
     docker network connect dockercomposeweave_secure healthcheck
     docker network connect dockercomposeweave_internal healthcheck
     docker network connect dockercomposeweave_external healthcheck

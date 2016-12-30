@@ -177,7 +177,7 @@ docker run --rm weaveworksdemos/load-test -d 300 -h 192.168.59.102 -c 3 -r 10
     public_dns=$(aws ec2 describe-instances -\-filter "Name=tag:Name,Values=nomad-node" "Name=instance-state-name,Values=running" | jq -r ".Reservations[].Instances[0].PublicIpAddress" | head -n1)
     docker run -\-rm weaveworksdemos/load-test -d 300 -h $public_dns -c 3 -r 10
 
-    vagrant ssh node1 -c "eval \$(weave env); nomad run weavedemo.nomad; docker create -\-name healthcheck -v \$PWD/healthcheck.rb:/healthcheck.rb andrius/alpine-ruby ./healthcheck.rb -s orders,cart,payment,user,catalogue,shipping,queue-master; docker network connect backoffice healthcheck; docker network connect internal healthcheck; docker network connect external healthcheck; docker network connect secure healthcheck; docker start -a healthcheck"
+    vagrant ssh node1 -c "eval \$(weave env); nomad run weavedemo.nomad; docker create -\-name healthcheck -v \$PWD/healthcheck.rb:/healthcheck.rb andrius/alpine-ruby /bin/sh -c 'apk -\-no-cache add ruby-json; ./healthcheck.rb -s orders,cart,payment,user,catalogue,shipping,queue-master'; docker network connect backoffice healthcheck; docker network connect internal healthcheck; docker network connect external healthcheck; docker network connect secure healthcheck; docker start -a healthcheck"
     if [ $? -ne 0 ]; then
         vagrant ssh node1 -c "docker rm -f healthcheck"
         exit 1
