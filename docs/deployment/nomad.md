@@ -31,9 +31,9 @@ and [Weave Scope](https://www.weave.works/products/weave-scope/) to monitor the 
 -->
 
 ### Weave Cloud
-There are two options availbable here.
-* A local instance of Weave Scope which is already configured to run and become availabe on port 4040. 
-* Create a account at [cloud.weave.works](https://cloud.weave.works) and using the provided token set the environment variable `export SCOPE_TOKEN=<token>`
+There are two options available here.
+  * A local instance of Weave Scope which is already configured to run and become availabe on port 4040. 
+  * Create a account at [cloud.weave.works](https://cloud.weave.works) and using the provided token set the environment variable `export SCOPE_TOKEN=<token>`
 
 ### Getting Started
 _This example sets up a Nomad cluster with one server and three nodes. Make sure you have at least 6272MB of RAM available._
@@ -88,6 +88,7 @@ EOF
 
 ### Starting the application
 To start the application you will need to ssh into the `node1` box and run the respective Nomad jobs:
+
 ```
 root@local:/# vagrant ssh node1
 vagrant@node1:/# nomad run netman.nomad
@@ -124,6 +125,7 @@ vagrant@node1:/# nomad run weavedemo.nomad
 
 ### Locating The Endpoint
 Taking the Allocation ID of the **frontend** task group above we can ask Nomad about its status:
+
 ```
 vagrant@node1:/# nomad alloc-status 5c1ebc22
 ID            = 5c1ebc22
