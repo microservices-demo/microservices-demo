@@ -12,30 +12,62 @@ job "logging-elk" {
     max_parallel = 1
   }
 
-  # - elasticsearch - #
-  task "elasticsearch" {
-    driver = "docker"
+  # - logging-elk - #
+  group "logging-elk" {
 
-    config {
-      image = "elasticsearch"
-      hostname = "elasticsearch.weave.local"
-      network_mode = "external"
-      dns_servers = ["172.17.0.1"]
-      dns_search_domains = ["weave.local."]
-      logging {
-        type = "json-file"
+    # - elasticsearch - #
+    task "elasticsearch" {
+      driver = "docker"
+
+      config {
+        image = "elasticsearch"
+        hostname = "elasticsearch.weave.local"
+        network_mode = "external"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
+        logging {
+          type = "json-file"
+        }
       }
+
+      resources {
+        memory = 3000
+        network {
+          mbits = 50
+        }
+      }
+
     }
+    # - end elasticsearch - #
 
-    resources {
-      cpu = 200 # 50 Mhz
-      memory = 800 # 10Mb
-      network {
-        mbits = 50
+    # - kibana - #
+    task "kibana" {
+      driver = "docker"
+
+      config {
+        image = "kibana"
+        hostname = "kibana.weave.local"
+        network_mode = "external"
+        dns_servers = ["172.17.0.1"]
+        dns_search_domains = ["weave.local."]
+        logging {
+          type = "json-file"
+        }
       }
-    }    
 
-  }
-  # - end elasticsearch - #
+      resources {
+        memory = 2000
+        network {
+          mbits = 50
+          port "kibana" {
+            static = "5601"
+          }
+        }
+      }
+
+    }
+    # - end kibana - #
+
+  } # - end logging-elk - #
 
 }
