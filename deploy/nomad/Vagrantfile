@@ -188,7 +188,8 @@ Vagrant.configure(2) do |config|
       nomad_config << <<-EOF
         servers = ["192.168.59.101"]
         options = {
-          "driver.raw_exec.enable" = "1"
+          driver.raw_exec.enable = "1
+          docker.cleanup.image = false
         }
       }
       EOF
