@@ -11,7 +11,7 @@ nomad = <<-EOF
 if [ -a /usr/bin/nomad ]; then
   echo nomad is already installed
 else
-  yum install -y unzip
+  apt-get install -y unzip
   cd /tmp
   curl https://releases.hashicorp.com/nomad/0.5.2/nomad_0.5.2_linux_amd64.zip > nomad.zip
   unzip -d . nomad.zip
@@ -20,8 +20,10 @@ else
   rm nomad.zip
   useradd -d /var/lib/nomad nomad
   usermod -a -G nomad $USERNAME
+  mkhomedir_helper nomad
   chmod g+rw /var/lib/nomad
   mkdir -p /etc/nomad
+  mkdir -p /usr/lib/systemd/system
   echo '#{nomad_unit}' > /usr/lib/systemd/system/nomad.service
   systemctl daemon-reload
   systemctl unmask nomad
@@ -32,7 +34,7 @@ EOF
 
 docker_daemon_config = %q{'{"cluster-store":"consul://127.0.0.1:8500"}'}
 docker = <<-EOF
-count=$(yum list installed | grep docker | wc -l)
+count=$(apt list --installed | grep docker | wc -l)
 if [ $count == 0 ]; then
   curl -fsSL https://get.docker.com/ | sh
   mkdir -p /etc/docker
@@ -59,7 +61,7 @@ EOF
 consul_joiner = <<-EOF
 count=$(docker ps -q --filter name=consul | wc -l)
 if [ $count == 0 ]; then
-  docker run -d --network=host --name consul --restart always consul agent -server -bind $IP -join 192.168.59.101
+ docker run -d --network=host --name consul --restart always consul agent -server -bind $IP -join 192.168.59.101
 fi
 
 # wait for consul to come up
@@ -121,10 +123,10 @@ done
 EOF
 
 Vagrant.configure(2) do |config|
-  username = ENV["SSH_USERNAME"] || 'vagrant'
+  username = ENV["SSH_USERNAME"] || 'ubuntu'
 
   config.vm.provider "virtualbox" do |vb, override|
-    override.vm.box = "centos/7"
+    override.vm.box = "ubuntu/xenial64"
     vb.memory = "6144"
   end
 
@@ -146,9 +148,10 @@ Vagrant.configure(2) do |config|
     aws.associate_public_ip = true
   end
 
-  config.vm.provision "shell", inline: "nmcli connection reload; systemctl restart network.service", run: "always"
+  config.vm.provision "shell", inline: "systemctl restart networking.service", run: "always"
   config.vm.provision "shell", env: {"USERNAME" => username}, inline: nomad
   config.vm.provision "shell", env: {"USERNAME" => username}, inline: docker
+  config.vm.provision "shell", inline: "sudo sysctl -w vm.max_map_count=262144"
   config.vm.provision "shell", inline: weave
   config.vm.provision "shell", inline: scope
 
@@ -179,13 +182,14 @@ Vagrant.configure(2) do |config|
         EOF
       else
         nomad_config << <<-EOF
-          network_interface = "eth1"
+          network_interface = "enp0s8"
         EOF
       end
       nomad_config << <<-EOF
         servers = ["192.168.59.101"]
         options = {
-          "driver.raw_exec.enable" = "1"
+          driver.raw_exec.enable = "1
+          docker.cleanup.image = false
         }
       }
       EOF
@@ -209,6 +213,7 @@ Vagrant.configure(2) do |config|
         m.vm.provision "shell", name: "Start consul (join cluster)", env: {"IP" => ip}, inline: consul_joiner
       end
 
+      m.vm.provision "shell", name: "restart docker", inline: "systemctl restart docker"
       m.vm.provision "shell", name: "nomad config", inline: "echo '#{nomad_config}' > /etc/nomad/config.hcl"
       m.vm.provision "shell", name: "Start nomad", inline: "systemctl start nomad"
       m.vm.provision "shell", name: "Launch weave", inline: launch_weave
@@ -217,12 +222,14 @@ Vagrant.configure(2) do |config|
       # Stuff only the head node should take care of
       if name == "node1"
         m.vm.provider "virtualbox" do |vb|
-          vb.memory = "512"
+          vb.memory = "1024"
         end
 
         m.vm.provision "shell", name: "Create weave networks", inline: create_networks
         m.vm.provision "file", source: "./jobs/netman.nomad", destination: "/home/#{username}/netman.nomad"
         m.vm.provision "file", source: "./jobs/weavedemo.nomad", destination: "/home/#{username}/weavedemo.nomad"
+        m.vm.provision "file", source: "./jobs/logging-elk.nomad", destination: "/home/#{username}/logging-elk.nomad"
+        m.vm.provision "file", source: "./jobs/logging-fluentd.nomad", destination: "/home/#{username}/logging-fluentd.nomad"
         m.vm.provision "file", source: "../healthcheck.rb", destination: "/home/#{username}/healthcheck.rb"
       else
         # Stuff the rest of the nodes should take care of
