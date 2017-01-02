@@ -18,7 +18,7 @@ spec:
          name: fluentd
          env:
             - name: FLUENTD_CONF
-              value: kubernetes.conf
+              value: elk.conf
          volumeMounts:
             - name: varlibdockercontainers
               mountPath: /var/lib/docker/containers
