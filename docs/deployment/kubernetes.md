@@ -74,8 +74,7 @@ Our master node makes use of some of the files in this repo so lets securely cop
 <!-- deploy-doc-start create-infrastructure -->
 
     master_ip=$(terraform output -json | jq -r '.master_address.value')
-    scp -i ~/.ssh/deploy-docs-k8s.pem -o StrictHostKeyChecking=no deploy/kubernetes/weavescope.yaml ubuntu@$master_ip:/tmp/
-    scp -i ~/.ssh/deploy-docs-k8s.pem -rp deploy/kubernetes/manifests ubuntu@$master_ip:/tmp/
+    scp -i ~/.ssh/deploy-docs-k8s.pem -o StrictHostKeyChecking=no -rp deploy/kubernetes/manifests ubuntu@$master_ip:/tmp/
 
 <!-- deploy-doc-end -->
 
@@ -104,15 +103,26 @@ Our master node makes use of some of the files in this repo so lets securely cop
 <!-- deploy-doc-end -->
 
 ### Setup Weave Scope
+There are two options for running Weave Scope, either you can run the UI locally, or using the hosted provider at [cloud.weave.works](http://cloud.weave.works)
+
+#### Locally
 * SSH into the master node
 * Start weave scope on the cluster
 
 <!-- deploy-doc-start create-infrastructure -->
 
     master_ip=$(terraform output -json | jq -r '.master_address.value')
-    ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl apply -f /tmp/weavescope.yaml -\-validate=false
+    ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl apply -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml'
 
 <!-- deploy-doc-end -->
+
+#### Hosted
+* SSH into the master node
+* Running the Scope UI on Weave Cloud using the ```<token>``` from [cloud.weave.works](http://cloud.weave.works)
+
+```
+    ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl apply -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml?service-token=<token>'
+```
 
 ### Deploy Sock Shop
 * SSH into the master node
