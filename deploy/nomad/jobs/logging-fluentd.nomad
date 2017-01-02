@@ -31,7 +31,7 @@ job "logging-fluentd" {
     }
 
     env {
-      FLUENTD_CONF = "kubernetes.conf"
+      FLUENTD_CONF = "elk.conf"
     }
 
     resources {
