@@ -47,7 +47,7 @@ Once the application is deployed, navigate to http://192.168.99.100:30001 to see
 
 ### Run tests
 
-There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).
+There is a separate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).
 This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud.
 
 ```
@@ -60,7 +60,7 @@ docker run --rm weaveworksdemos/load-test -d 5 http://192.168.99.100:30001 -c 3 
 kubectl delete -f deploy/kubernetes/manifests/sock-shop-ns.yml -f deploy/kubernetes/manifests
 ```
 
-If you don't need the Minikube instance anynmore you can delete it by running:
+If you don't need the Minikube instance anymore you can delete it by running:
 
 ```
 minikube delete
