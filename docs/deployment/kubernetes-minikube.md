@@ -1,6 +1,5 @@
 ---
 layout: default
-deployDoc: true
 ---
 
 ## Sock Shop on Minikube
@@ -22,11 +21,9 @@ cd microservices-demo
 
 You can start Minikube by running:
 
-<!-- deploy-doc-start start-minikube -->
-
-    minikube start
-
-<!-- deploy-doc-end -->
+```
+minikube start
+```
 
 Check if it's running with `minikube status`, and make sure the Kubernetes dashboard is running on http://192.168.99.100:30000.
 
@@ -34,11 +31,9 @@ Check if it's running with `minikube status`, and make sure the Kubernetes dashb
 
 Deploy the Sock Shop application on Minikube
 
-<!-- deploy-doc-start create-application -->
-
-    kubectl create -f deploy/kubernetes/manifests/sock-shop-ns.yml -f deploy/kubernetes/manifests
-
-<!-- deploy-doc-end -->
+```
+kubectl create -f deploy/kubernetes/manifests/sock-shop-ns.yml -f deploy/kubernetes/manifests
+```
 
 Wait for all the Sock Shop services to start:
 
@@ -52,16 +47,12 @@ Once the application is deployed, navigate to http://192.168.99.100:30001 to see
 
 ### Uninstall the Sock Shop application
 
-<!-- deploy-doc-start delete-application -->
-
-    kubectl delete -f deploy/kubernetes/manifests/sock-shop-ns.yml -f deploy/kubernetes/manifests
-
-<!-- deploy-doc-end -->
+```
+kubectl delete -f deploy/kubernetes/manifests/sock-shop-ns.yml -f deploy/kubernetes/manifests
+```
 
 If you don't need the Minikube instance anynmore you can delete it by running:
 
-<!-- deploy-doc-start delete-minikube -->
-
-    minikube delete
-
-<!-- deploy-doc-end -->
+```
+minikube delete
+```
