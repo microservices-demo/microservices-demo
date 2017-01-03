@@ -12,7 +12,8 @@ This page describes how to install Sock Shop via the [AWS ECS cli](http://docs.a
 
 ### Installation
 
-First make sure you have an [AWS](http://aws.amazon.com) account. Then install the `ecs-cli` tool.
+First make sure you have an [AWS](http://aws.amazon.com) account. Then install the `ecs-cli` tool. Depending on what platform you might need to change the
+link to reflect your own platform.
 
 <!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION -->
 <!-- deploy-doc-start pre-install -->
