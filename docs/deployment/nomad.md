@@ -39,6 +39,7 @@ There are two options available here.
 _This example sets up a Nomad cluster with one server and three nodes. Make sure you have at least 6272MB of RAM available._
 
 The easiest way to get started is to simply run
+
 ```
 $ vagrant up
 ```
@@ -86,19 +87,32 @@ EOF
 
 -->
 
+##### Run with Fluentd + ELK based logging
+
+Although this step is option, if you want to run the application using a more advanced logging setup based on Fluentd + ELK stack, 
+you can do so by running the following Nomad jobs:
+
+```
+root@local:/# vagrant ssh node1
+ubuntu@node1:/# nomad run logging-elk.nomad
+ubuntu@node1:/# nomad run logging-fluentd.nomad
+```
+
+Once both jobs finish starting you can view the Kibana interface by opening page http://192.168.59.102:5601.
+
 ### Starting the application
 To start the application you will need to ssh into the `node1` box and run the respective Nomad jobs:
 
 ```
 root@local:/# vagrant ssh node1
-vagrant@node1:/# nomad run netman.nomad
-vagrant@node1:/# nomad run weavedemo.nomad
+ubuntu@node1:/# nomad run netman.nomad
+ubuntu@node1:/# nomad run weavedemo.nomad
 ```
 
 The output from the following commands should be similar to what's displayed below:
 
 ```
-vagrant@node1:/#  nomad run netman.nomad
+ubuntu@node1:/#  nomad run netman.nomad
 ==> Monitoring evaluation "858414a3"
     Evaluation triggered by job "netman"
     Allocation "0e3a6a5a" modified: node "9b8300f6", group "main"
@@ -106,7 +120,7 @@ vagrant@node1:/#  nomad run netman.nomad
 ==> Evaluation "858414a3" finished with status "complete"
 ```
 ```
-vagrant@node1:/# nomad run weavedemo.nomad
+ubuntu@node1:/# nomad run weavedemo.nomad
 ==> Monitoring evaluation "0ad17a84"
     Evaluation triggered by job "weavedemo"
     Allocation "5c1ebc22" modified: node "9b8300f6", group "frontend"
@@ -127,7 +141,7 @@ vagrant@node1:/# nomad run weavedemo.nomad
 Taking the Allocation ID of the **frontend** task group above we can ask Nomad about its status:
 
 ```
-vagrant@node1:/# nomad alloc-status 5c1ebc22
+ubuntu@node1:/# nomad alloc-status 5c1ebc22
 ID            = 5c1ebc22
 Eval ID       = c318487e
 Name          = weavedemo.frontend[0]
