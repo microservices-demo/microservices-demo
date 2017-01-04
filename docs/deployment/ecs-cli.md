@@ -8,7 +8,13 @@ deploymentScriptDir: "ecs-cli"
 
 ### Goal
 
-This page describes how to install Sock Shop via the [AWS ECS cli](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI.html).
+This page describes how to install Sock Shop via the AWS ECS cli.
+
+### Pre-requisites
+
+* [AWS Account](https://aws.amazon.com/)
+* [ECS permission for the AWS account](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/IAMPolicyExamples.html)
+* [ecs-cli](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html)
 
 ### Installation
 
@@ -23,6 +29,11 @@ link to reflect your own platform.
     ecs-cli configure sockshop-ecs-cli
 
 <!-- deploy-doc-end -->
+
+Before doing the deploy please make sure that the correct permissions ECS permissions are set on your AWS account and that you
+have the following environment variables exported : AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION.
+
+### Deploy Sock Shop
 
 Now you can deploy Sock Shop via `ecs-cli` using the existing Docker Compose file.
 
