@@ -15,6 +15,7 @@ This page describes how to install Sock Shop via the AWS ECS cli.
 * [AWS Account](https://aws.amazon.com/)
 * [ECS permission for the AWS account](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/IAMPolicyExamples.html)
 * [ecs-cli](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html)
+* *Optional* [awscli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
 
 ### Installation
 
@@ -32,6 +33,17 @@ link to reflect your own platform.
 
 Before doing the deploy please make sure that the correct permissions ECS permissions are set on your AWS account and that you
 have the following environment variables exported : AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION.
+
+#### Create AWS key
+
+If you don't have a SSH key pair created yet, you can create one:
+
+<!-- deploy-doc-start create-infrastructure -->
+
+aws ec2 create-key-pair --key-name demo-sockshop-ecs --query 'KeyMaterial' --output text > ~/.ssh/demo-sockshop-ecs.pem
+chmod 600 ~/.ssh/demo-sockshop-ecs.pem
+
+<!-- deploy-doc-end -->
 
 ### Deploy Sock Shop
 
@@ -61,6 +73,8 @@ To tear down the containers and their associated AWS objects, run the cleanup sc
 
 <!-- deploy-doc-start destroy-infrastructure -->
 
-    ecs-cli down
+    ecs-cli down --force
+    aws ec2 delete-key-pair -\-key-name demo-sockshop-ecs
+    rm ~/.ssh/demo-sockshop-ecs.pem
 
 <!-- deploy-doc-end -->
