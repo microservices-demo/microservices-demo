@@ -51,7 +51,7 @@ Now you can deploy Sock Shop via `ecs-cli` using the existing Docker Compose fil
 
 <!-- deploy-doc-start create-infrastructure -->
 
-    ecs-cli up --capability-iam --keypair demo-sockshop-ecs
+    ecs-cli up --capability-iam --keypair demo-sockshop-ecs --instance-type t2.large
     curl https://raw.githubusercontent.com/microservices-demo/microservices-demo/master/deploy/docker-compose/docker-compose.yml
     ecs-cli compose --file backend.yml up
     ecs-cli compose --file frontend.yml up
