@@ -1,23 +1,44 @@
 version: '2'
 
 services:
+  orders:
+    image: weaveworksdemos/orders
+    hostname: orders
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    environment:
+      - reschedule=on-node-failure
+    links:
+      - orders-db
+    mem_limit: 1073741824
+  orders-db:
+    image: mongo
+    hostname: orders-db
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    environment:
+      - reschedule=on-node-failure
   shipping:
     image: weaveworksdemos/shipping
-    mem_limit: 512000000
     hostname: shipping
     restart: always
     cap_drop:
       - all
     cap_add:
       - NET_BIND_SERVICE
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
+    mem_limit: 1073741824
   queue-master:
     image: weaveworksdemos/queue-master
-    mem_limit: 512000000
     hostname: queue-master
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -26,14 +47,13 @@ services:
       - all
     cap_add:
       - NET_BIND_SERVICE
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
+    links:
+      - rabbitmq
+    mem_limit: 1073741824
   rabbitmq:
     image: rabbitmq:3
-    mem_limit: 128000000
     hostname: rabbitmq
     restart: always
     cap_drop:
@@ -43,37 +63,33 @@ services:
       - SETGID
       - SETUID
       - DAC_OVERRIDE
-    read_only: true
     environment:
       - reschedule=on-node-failure
   payment:
     image: weaveworksdemos/payment
-    mem_limit: 32000000
     hostname: payment
     restart: always
     cap_drop:
       - all
     cap_add:
       - NET_BIND_SERVICE
-    read_only: true
     environment:
       - reschedule=on-node-failure
   user:
     image: weaveworksdemos/user
-    mem_limit: 32000000
     hostname: user
     restart: always
     cap_drop:
       - all
     cap_add:
       - NET_BIND_SERVICE
-    read_only: true
     environment:
       - MONGO_HOST=user-db:27017
       - reschedule=on-node-failure
+    links:
+      - user-db
   user-db:
     image: weaveworksdemos/user-db
-    mem_limit: 128000000
     hostname: user-db
     restart: always
     cap_drop:
@@ -82,15 +98,5 @@ services:
       - CHOWN
       - SETGID
       - SETUID
-    read_only: true
-    tmpfs:
-      - /tmp:rw,noexec,nosuid
     environment:
       - reschedule=on-node-failure
-  user-sim:
-    image: weaveworksdemos/load-test
-    cap_drop:
-      - all
-    read_only: true
-    hostname: user-simulator
-    command: "-d 60 -r 200 -c 2 -h edge-router"
