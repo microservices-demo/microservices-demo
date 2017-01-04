@@ -19,7 +19,7 @@ else
   mv nomad /usr/bin/nomad
   rm nomad.zip
   useradd -d /var/lib/nomad nomad
-  usermod -a -G nomad $USERNAME
+  usermod -a -G nomad ubuntu
   mkhomedir_helper nomad
   chmod g+rw /var/lib/nomad
   mkdir -p /etc/nomad
@@ -28,7 +28,7 @@ else
   systemctl daemon-reload
   systemctl unmask nomad
   systemctl enable nomad
-  sudo -u $USERNAME echo "export NOMAD_ADDR=http://192.168.59.101:4646" >> /home/$USERNAME/.bash_profile
+  sudo -u ubuntu echo "export NOMAD_ADDR=http://192.168.59.101:4646" >> /home/ubuntu/.bash_profile
 fi
 EOF
 
@@ -41,7 +41,7 @@ if [ $count == 0 ]; then
   echo #{docker_daemon_config} > /etc/docker/daemon.json
   systemctl enable docker
   systemctl start docker
-  usermod -a -G docker $USERNAME
+  usermod -a -G docker ubuntu
 else
   echo docker is already installed
 fi
@@ -123,22 +123,22 @@ done
 EOF
 
 Vagrant.configure(2) do |config|
-  username = ENV["SSH_USERNAME"] || 'ubuntu'
 
   config.vm.provider "virtualbox" do |vb, override|
     override.vm.box = "ubuntu/xenial64"
     vb.memory = "6144"
+    $interface_name = "enp0s8"
   end
 
   config.vm.provider :aws do |aws, override|
     override.vm.box = "aws_dummy_box"
     override.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
 
-    override.ssh.username = "ec2-user"
+    override.ssh.username = "ubuntu"
     override.ssh.private_key_path = "~/.ssh/nomad.pem"
     override.nfs.functional = false
 
-    aws.ami = "ami-02ace471"
+    aws.ami = "ami-6f587e1c"
     aws.keypair_name = "microservices-demo-nomad"
     aws.instance_type = "m4.large"
     aws.region = "eu-west-1"
@@ -146,11 +146,11 @@ Vagrant.configure(2) do |config|
     aws.security_groups = [ENV["AWS_SECURITY_GROUP_ID"]]
     aws.subnet_id = ENV["AWS_SUBNET_ID"]
     aws.associate_public_ip = true
+    $interface_name = "ens3"
   end
 
-  config.vm.provision "shell", inline: "systemctl restart networking.service", run: "always"
-  config.vm.provision "shell", env: {"USERNAME" => username}, inline: nomad
-  config.vm.provision "shell", env: {"USERNAME" => username}, inline: docker
+  config.vm.provision "shell", inline: nomad
+  config.vm.provision "shell", inline: docker
   config.vm.provision "shell", inline: "sudo sysctl -w vm.max_map_count=262144"
   config.vm.provision "shell", inline: weave
   config.vm.provision "shell", inline: scope
@@ -175,20 +175,10 @@ Vagrant.configure(2) do |config|
       nomad_config << <<-EOF
       client {
         enabled = true
-      EOF
-      if username == "ec2-user"
-        nomad_config << <<-EOF
-          network_interface = "eth0"
-        EOF
-      else
-        nomad_config << <<-EOF
-          network_interface = "enp0s8"
-        EOF
-      end
-      nomad_config << <<-EOF
+        network_interface = "#{$interface_name}"
         servers = ["192.168.59.101"]
         options = {
-          driver.raw_exec.enable = "1
+          driver.raw_exec.enable = "1"
           docker.cleanup.image = false
         }
       }
@@ -205,6 +195,8 @@ Vagrant.configure(2) do |config|
         if name != "node1"
           aws.tags = {'Name' => 'nomad-node'}
         end
+        m.vm.provision "file", source: "../healthcheck.rb", destination: "/home/ubuntu/healthcheck.rb"
+        m.vm.provision "file", source: "../Dockerfile-healthcheck", destination: "/home/ubuntu/Dockerfile-healthcheck"
       end
 
       if name == "node1"
@@ -226,11 +218,10 @@ Vagrant.configure(2) do |config|
         end
 
         m.vm.provision "shell", name: "Create weave networks", inline: create_networks
-        m.vm.provision "file", source: "./jobs/netman.nomad", destination: "/home/#{username}/netman.nomad"
-        m.vm.provision "file", source: "./jobs/weavedemo.nomad", destination: "/home/#{username}/weavedemo.nomad"
-        m.vm.provision "file", source: "./jobs/logging-elk.nomad", destination: "/home/#{username}/logging-elk.nomad"
-        m.vm.provision "file", source: "./jobs/logging-fluentd.nomad", destination: "/home/#{username}/logging-fluentd.nomad"
-        m.vm.provision "file", source: "../healthcheck.rb", destination: "/home/#{username}/healthcheck.rb"
+        m.vm.provision "file", source: "./jobs/netman.nomad", destination: "/home/ubuntu/netman.nomad"
+        m.vm.provision "file", source: "./jobs/weavedemo.nomad", destination: "/home/ubuntu/weavedemo.nomad"
+        m.vm.provision "file", source: "./jobs/logging-elk.nomad", destination: "/home/ubuntu/logging-elk.nomad"
+        m.vm.provision "file", source: "./jobs/logging-fluentd.nomad", destination: "/home/ubuntu/logging-fluentd.nomad"
       else
         # Stuff the rest of the nodes should take care of
         m.vm.provision "shell", inline: "/usr/bin/weave connect 192.168.59.101"

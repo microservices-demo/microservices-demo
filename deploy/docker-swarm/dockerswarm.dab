@@ -4,7 +4,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "weaveworksdemos/cart@sha256:ef6988fa43d937498f5f56a4fedce78ea338b66960819f17ab37ba1808c9974b", 
+      "Image": "weaveworksdemos/cart@sha256:5a9caeb1b95efe33c510c4aeb4e0f2822153641cc3d45a6473a31e75dc341685", 
       "Networks": [
         "default"
       ]
@@ -13,7 +13,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "mongo@sha256:532a19da83ee0e4e2a2ec6bc4212fc4af26357c040675d5c2629a4e4c4563cef", 
+      "Image": "mongo@sha256:23e5cdbd9bc26a6d1ae4db8252a295d6bdba8332dec68483816d5b7bb2438d7d", 
       "Networks": [
         "default"
       ]
@@ -22,7 +22,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "weaveworksdemos/catalogue@sha256:72418de273e75bc3684232d97ff5c9376fc26ead544659fad349d0ee282dbe8c", 
+      "Image": "weaveworksdemos/catalogue@sha256:dc7a63aa0d9854c89862ab67ba341462db373744095a98df70aaa2c16888be77", 
       "Networks": [
         "default"
       ]
@@ -33,7 +33,7 @@
         "reschedule=on-node-failure", 
         "MYSQL_DATABASE=socksdb"
       ], 
-      "Image": "weaveworksdemos/catalogue-db@sha256:6d5552efda50deab2c903fad6c49c89d714731b9e4c1f84625b7aec2948985c9", 
+      "Image": "weaveworksdemos/catalogue-db@sha256:7ba74ec9adf88f6625b8d85d3323d1ee5232b39877e1590021ea485cf9457251", 
       "Networks": [
         "default"
       ]
@@ -42,7 +42,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "weaveworksdemos/front-end@sha256:bed617a6c944fae8722d8ba9b48682a509129ec9b79a0f5668248f820647fe5b", 
+      "Image": "weaveworksdemos/front-end@sha256:61e7579016f1f1346d174ef24113d7e97c50519162ecc884be338c99176e8910", 
       "Networks": [
         "default"
       ], 
@@ -57,7 +57,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "weaveworksdemos/orders@sha256:62841fddf3604f6df7a790413d4e8447d6701e4e0b24c9076206e818b157bfc2", 
+      "Image": "weaveworksdemos/orders@sha256:cd30a0d37a949a52c01d5f94039138b69e8ecbd4d472e56fba937cd0d477002c", 
       "Networks": [
         "default"
       ]
@@ -66,7 +66,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "mongo@sha256:532a19da83ee0e4e2a2ec6bc4212fc4af26357c040675d5c2629a4e4c4563cef", 
+      "Image": "mongo@sha256:23e5cdbd9bc26a6d1ae4db8252a295d6bdba8332dec68483816d5b7bb2438d7d", 
       "Networks": [
         "default"
       ]
@@ -75,7 +75,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "weaveworksdemos/payment@sha256:660e5f8cefb93cfbbc31a36a1316ef12abdf41831ff782c1747c84bc3196e5ae", 
+      "Image": "weaveworksdemos/payment@sha256:08ec84c1183c61d7241260d340f39b063e23a6f41759178a063daa4013d66c0e", 
       "Networks": [
         "default"
       ]
@@ -84,7 +84,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "rabbitmq@sha256:0eed7d52710144f2600b99d2a467d7444d86b0434b6a515f05bebd1049fd2bac", 
+      "Image": "rabbitmq@sha256:53c67c41323977870ad077c8a0e5ef52b2cc460206e6a965ced96ea130de1e12", 
       "Networks": [
         "default"
       ]
@@ -93,7 +93,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "weaveworksdemos/shipping@sha256:13ee378384e1e70cfcbe33a0aca36ef5a2b1a6e7620a4403665a63b558a4cba4", 
+      "Image": "weaveworksdemos/shipping@sha256:4bf86e2bee840776bf463c1c1e852d37073271f81feaff9053b9a45724519f07", 
       "Networks": [
         "default"
       ]
@@ -103,7 +103,7 @@
         "reschedule=on-node-failure", 
         "MONGO_HOST=user-db:27017"
       ], 
-      "Image": "weaveworksdemos/user@sha256:5e4cff43b77815b8b1d996b3d76ce6ddcabad778f30cd9351d625d5ac4e4861e", 
+      "Image": "weaveworksdemos/user@sha256:ecf2129d36c4715ec9df6e0864f81802499aab2d8519018d50badf27c2b2b919", 
       "Networks": [
         "default"
       ]
@@ -112,7 +112,7 @@
       "Env": [
         "reschedule=on-node-failure"
       ], 
-      "Image": "weaveworksdemos/user-db@sha256:695bc22c11396c7ae747118c56e619f3b3295d9d4cbec999d30230b3f399a389", 
+      "Image": "weaveworksdemos/user-db@sha256:b43f0f8a76e0c908805fcec74d1ad7f4af4d93c4612632bd6dc20a87508e0b68", 
       "Networks": [
         "default"
       ]
@@ -126,9 +126,9 @@
         "-c", 
         "2", 
         "-h", 
-        "edge-router"
+        "front-end"
       ], 
-      "Image": "weaveworksdemos/load-test@sha256:389c75f7722387aa3211102879e94142d2019c0a42c32dcd62a9edf68e690b3d", 
+      "Image": "weaveworksdemos/load-test@sha256:8f38522fd59ee5082279d0cbf2743089b6f686745976b2a13dc44f8ba3405046", 
       "Networks": [
         "default"
       ]

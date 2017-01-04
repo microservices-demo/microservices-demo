@@ -76,7 +76,6 @@ export AWS_SUBNET_ID=$AWS_SUBNET_ID
 export AWS_SECURITY_GROUP_ID=$AWS_SECURITY_GROUP_ID
 export VAGRANT_DEFAULT_PROVIDER=aws
 export NUM_NODES=3
-export SSH_USERNAME=ec2-user
 EOF
 
     . ~/.bash_profile
@@ -193,13 +192,18 @@ docker run --rm weaveworksdemos/load-test -d 300 -h 192.168.59.102 -c 3 -r 10
     public_dns=$(aws ec2 describe-instances -\-filter "Name=tag:Name,Values=nomad-node" "Name=instance-state-name,Values=running" | jq -r ".Reservations[].Instances[0].PublicIpAddress" | head -n1)
     docker run -\-rm weaveworksdemos/load-test -d 300 -h $public_dns -c 3 -r 10
 
-    vagrant ssh node1 -c "eval \$(weave env); nomad run weavedemo.nomad; docker create -\-name healthcheck -v \$PWD/healthcheck.rb:/healthcheck.rb andrius/alpine-ruby ./healthcheck.rb -s orders,cart,payment,user,catalogue,shipping,queue-master; docker network connect backoffice healthcheck; docker network connect internal healthcheck; docker network connect external healthcheck; docker network connect secure healthcheck; docker start -a healthcheck"
+    vagrant ssh node1 -c "docker build -t healthcheck -f Dockerfile-healthcheck ."
+    vagrant ssh node1 -c "eval \$(weave env); nomad run weavedemo.nomad; docker create -\-name healthcheck healthcheck -s orders,cart,payment,user,catalogue,shipping,queue-master -d 60 -r 5"
+    vagrant ssh node1 -c "docker network connect backoffice healthcheck; \
+        docker network connect internal healthcheck; \
+        docker network connect external healthcheck; \
+        docker network connect secure healthcheck;"
+    vagrant ssh node1 -c "docker start -a healthcheck"
     if [ $? -ne 0 ]; then
         vagrant ssh node1 -c "docker rm -f healthcheck"
         exit 1
-    else
-        vagrant ssh node1 -c "docker rm -f healthcheck"
     fi
+    vagrant ssh node1 -c "docker rm -f healthcheck"
 -->
 
 ### Cleaning Up
