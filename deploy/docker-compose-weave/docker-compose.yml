@@ -166,13 +166,14 @@ services:
   zipkin:
     image: openzipkin/zipkin 
     hostname: zipkin
+    dns: 172.17.0.1
+    dns_search: weave.local
     restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - CHOWN
-      - SETGID
-      - SETUID
+    networks:
+      - external
+      - secure
+      - internal
+      - backoffice
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
