@@ -26,6 +26,12 @@ resource "aws_security_group" "docker-swarm" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
+    from_port   = 9411
+    to_port     = 9411
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
     from_port   = 30000
     to_port     = 30000
     protocol    = "tcp"

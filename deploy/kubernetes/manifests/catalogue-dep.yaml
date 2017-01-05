@@ -16,7 +16,10 @@ spec:
       containers:
       - name: catalogue
         image: weaveworksdemos/catalogue:0.2.0
-        ports:
+        env:
+         - name: ZIPKIN
+           value: http://zipkin:9411/api/v1/spans
+       ports:
         - containerPort: 80
         securityContext:
           runAsNonRoot: true

@@ -109,6 +109,10 @@ job "weavedemo" {
         dns_search_domains = ["weave.local."]
       }
 
+      env {
+        ZIPKIN = "http://zipkin:9411/api/v1/spans"
+      }
+
       service {
         name = "${TASKGROUP}-user"
         tags = ["user"]
@@ -169,6 +173,10 @@ job "weavedemo" {
         network_mode = "external"
         dns_servers = ["172.17.0.1"]
         dns_search_domains = ["weave.local."]
+      }
+
+      env {
+        ZIPKIN = "http://zipkin:9411/api/v1/spans"
       }
 
       service {
@@ -340,6 +348,10 @@ job "weavedemo" {
         dns_search_domains = ["weave.local."]
       }
 
+      env {
+        ZIPKIN = "http://zipkin:9411/api/v1/spans"
+      }
+
       service {
         name = "${TASKGROUP}-payment"
         tags = ["payment"]
@@ -488,4 +500,39 @@ job "weavedemo" {
       }
     } # - end proc - #
   } # - end rabbitmq - #
+  # - zipkin - #
+  group "zipkin" {
+    count = 1
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay = "25s"
+      mode = "delay"
+    }
+
+    # - proc - #
+    task "zipkin" {
+      driver = "docker"
+
+      config {
+        image = "openzipkin/zipkin"
+        hostname = "zipkin.weave.local"
+        network_mode = "backoffice"
+      }
+
+      service {
+        name = "${TASKGROUP}-zipkin"
+        tags = ["tracing"]
+      }
+
+      resources {
+        cpu = 100 # 100 Mhz
+        memory = 160 # 160MB
+        network {
+          mbits = 10
+        }
+      }
+    } # - end proc - #
+  } # - end zipkin - #
 }
