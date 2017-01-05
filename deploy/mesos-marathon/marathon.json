@@ -170,6 +170,9 @@
           "id": "/weave-demo/service/payment",
           "cpus": 0.1,
           "mem": 128.0,
+          "env": {
+            "ZIPKIN": "http://zipkin:9411/api/v1/spans"
+          },
           "container": {
             "type": "DOCKER",
             "docker": {

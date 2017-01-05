@@ -454,7 +454,13 @@
             "Essential": true,
             "Image": "weaveworksdemos/catalogue",
             "Name": "catalogue",
-            "Memory": 512
+            "Memory": 512,
+            "Environment": [
+              {
+                "Name": "ZIPKIN",
+                "Value": "http://zipkin:9411/api/v1/spans"
+              }
+	    ]
           }
         ],
         "Volumes": []
@@ -548,7 +554,13 @@
             "Essential": true,
             "Image": "weaveworksdemos/user",
             "Name": "user",
-            "Memory": 512
+            "Memory": 512,
+            "Environment": [
+              {
+                "Name": "ZIPKIN",
+                "Value": "http://zipkin:9411/api/v1/spans"
+              }
+	    ]
           }
         ],
         "Volumes": []
@@ -660,7 +672,13 @@
             "Essential": true,
             "Image": "weaveworksdemos/payment",
             "Name": "payment",
-            "Memory": 512
+            "Memory": 512,
+            "Environment": [
+              {
+                "Name": "ZIPKIN",
+                "Value": "http://zipkin:9411/api/v1/spans"
+              }
+	    ]
           }
         ],
         "Volumes": []

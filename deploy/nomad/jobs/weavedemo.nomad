@@ -348,6 +348,10 @@ job "weavedemo" {
         dns_search_domains = ["weave.local."]
       }
 
+      env {
+        ZIPKIN = "http://zipkin:9411/api/v1/spans"
+      }
+
       service {
         name = "${TASKGROUP}-payment"
         tags = ["payment"]

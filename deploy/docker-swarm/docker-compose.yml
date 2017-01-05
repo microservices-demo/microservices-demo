@@ -46,7 +46,8 @@ services:
   payment:
     image: weaveworksdemos/payment
     environment:
-      - reschedule=on-node-failure
+     - ZIPKIN=http://zipkin:9411/api/v1/spans
+     - reschedule=on-node-failure
   user:
     image: weaveworksdemos/user
     environment:
