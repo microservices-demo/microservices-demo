@@ -1,0 +1,17 @@
+{
+    "family": "weavedemo-zipkin",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "openzipkin/zipkin",
+            "memory": 512,
+            "name": "zipkin",
+            "portMappings": [
+                {
+                    "containerPort": 9411,
+                    "hostPort": 9411
+                }
+            ]
+        }
+    ]
+}

@@ -21,6 +21,25 @@
       },
       "Description": "App frontend"
     },
+    "AppZipkin": {
+      "Condition": "DoDeployExampleApp",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "http://",
+            {
+              "Fn::GetAtt": [
+                "EcsFrontendElasticLoadBalancing",
+                "DNSName"
+              ]
+            },
+            ":9411"
+          ]
+        ]
+      },
+      "Description": "Zipkin UI"
+    },
     "WeaveScope": {
       "Condition": "UseWeaveScopeStandalone",
       "Value": {
@@ -586,6 +605,40 @@
         }
       }
     },
+    "ZipkinTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "openzipkin/zipkin",
+            "Name": "zipkin",
+            "Memory": 512,
+            "PortMappings": [
+              {
+                "HostPort": 9411,
+                "ContainerPort": 9411
+              }
+            ]
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "ZipkinService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "ZipkinTask"
+        }
+      }
+    },
     "Vpc": {
       "Type": "AWS::EC2::VPC",
       "Properties": {
@@ -735,6 +788,18 @@
         "IpProtocol": "tcp",
         "FromPort": "22",
         "ToPort": "22",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "EcsSecurityGroupIngressZipkinExtPort": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EcsSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "9411",
+        "ToPort": "9411",
         "CidrIp": "0.0.0.0/0"
       }
     },
@@ -1098,6 +1163,12 @@
               {
                 "InstancePort": "80",
                 "LoadBalancerPort": "80",
+                "InstanceProtocol": "HTTP",
+                "Protocol": "HTTP"
+              },
+              {
+                "InstancePort": "9411",
+                "LoadBalancerPort": "9411",
                 "InstanceProtocol": "HTTP",
                 "Protocol": "HTTP"
               },
