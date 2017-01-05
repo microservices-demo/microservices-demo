@@ -10,7 +10,7 @@ resource "google_compute_firewall" "default" {
 
     allow {
         protocol        = "tcp"
-        ports           = ["80", "30000", "22", "2377", "7946", "4789"]
+        ports           = ["80", "9411", "30000", "22", "2377", "7946", "4789"]
     }
 
     source_ranges   = ["0.0.0.0/0"]
