@@ -41,6 +41,7 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
   catalogue-db:
     image: weaveworksdemos/catalogue-db
     hostname: catalogue-db
@@ -159,6 +160,7 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
   user:
     image: weaveworksdemos/user
     hostname: user
@@ -170,6 +172,7 @@ services:
     read_only: true
     environment:
       - MONGO_HOST=user-db:27017
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
       - reschedule=on-node-failure
   user-db:
     image: weaveworksdemos/user-db
@@ -193,3 +196,20 @@ services:
     read_only: true
     hostname: user-simulator
     command: "-d 60 -r 200 -c 2 -h edge-router"
+  zipkin:
+    image: openzipkin/zipkin 
+    hostname: zipkin
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
+    environment:
+      - reschedule=on-node-failure
+    ports:
+      - "9411:9411"
