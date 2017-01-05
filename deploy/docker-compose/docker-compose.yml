@@ -160,6 +160,7 @@ services:
     read_only: true
     environment:
       - reschedule=on-node-failure
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
   user:
     image: weaveworksdemos/user
     hostname: user
