@@ -31,14 +31,15 @@ and [Weave Scope](https://www.weave.works/products/weave-scope/) to monitor the 
 -->
 
 ### Weave Cloud
-There are two options availbable here.
-* A local instance of Weave Scope which is already configured to run and become availabe on port 4040. 
-* Create a account at [cloud.weave.works](https://cloud.weave.works) and using the provided token set the environment variable `export SCOPE_TOKEN=<token>`
+There are two options available here.
+  * A local instance of Weave Scope which is already configured to run and become availabe on port 4040. 
+  * Create a account at [cloud.weave.works](https://cloud.weave.works) and using the provided token set the environment variable `export SCOPE_TOKEN=<token>`
 
 ### Getting Started
 _This example sets up a Nomad cluster with one server and three nodes. Make sure you have at least 6272MB of RAM available._
 
 The easiest way to get started is to simply run
+
 ```
 $ vagrant up
 ```
@@ -75,7 +76,6 @@ export AWS_SUBNET_ID=$AWS_SUBNET_ID
 export AWS_SECURITY_GROUP_ID=$AWS_SECURITY_GROUP_ID
 export VAGRANT_DEFAULT_PROVIDER=aws
 export NUM_NODES=3
-export SSH_USERNAME=ec2-user
 EOF
 
     . ~/.bash_profile
@@ -86,18 +86,32 @@ EOF
 
 -->
 
-### Starting the application
-To start the application you will need to ssh into the `node1` box and run the respective Nomad jobs:
+##### Run with Fluentd + ELK based logging
+
+Although this step is option, if you want to run the application using a more advanced logging setup based on Fluentd + ELK stack, 
+you can do so by running the following Nomad jobs:
+
 ```
 root@local:/# vagrant ssh node1
-vagrant@node1:/# nomad run netman.nomad
-vagrant@node1:/# nomad run weavedemo.nomad
+ubuntu@node1:/# nomad run logging-elk.nomad
+ubuntu@node1:/# nomad run logging-fluentd.nomad
+```
+
+Once both jobs finish starting you can view the Kibana interface by opening page http://192.168.59.102:5601.
+
+### Starting the application
+To start the application you will need to ssh into the `node1` box and run the respective Nomad jobs:
+
+```
+root@local:/# vagrant ssh node1
+ubuntu@node1:/# nomad run netman.nomad
+ubuntu@node1:/# nomad run weavedemo.nomad
 ```
 
 The output from the following commands should be similar to what's displayed below:
 
 ```
-vagrant@node1:/#  nomad run netman.nomad
+ubuntu@node1:/#  nomad run netman.nomad
 ==> Monitoring evaluation "858414a3"
     Evaluation triggered by job "netman"
     Allocation "0e3a6a5a" modified: node "9b8300f6", group "main"
@@ -105,7 +119,7 @@ vagrant@node1:/#  nomad run netman.nomad
 ==> Evaluation "858414a3" finished with status "complete"
 ```
 ```
-vagrant@node1:/# nomad run weavedemo.nomad
+ubuntu@node1:/# nomad run weavedemo.nomad
 ==> Monitoring evaluation "0ad17a84"
     Evaluation triggered by job "weavedemo"
     Allocation "5c1ebc22" modified: node "9b8300f6", group "frontend"
@@ -124,8 +138,9 @@ vagrant@node1:/# nomad run weavedemo.nomad
 
 ### Locating The Endpoint
 Taking the Allocation ID of the **frontend** task group above we can ask Nomad about its status:
+
 ```
-vagrant@node1:/# nomad alloc-status 5c1ebc22
+ubuntu@node1:/# nomad alloc-status 5c1ebc22
 ID            = 5c1ebc22
 Eval ID       = c318487e
 Name          = weavedemo.frontend[0]
@@ -177,13 +192,18 @@ docker run --rm weaveworksdemos/load-test -d 300 -h 192.168.59.102 -c 3 -r 10
     public_dns=$(aws ec2 describe-instances -\-filter "Name=tag:Name,Values=nomad-node" "Name=instance-state-name,Values=running" | jq -r ".Reservations[].Instances[0].PublicIpAddress" | head -n1)
     docker run -\-rm weaveworksdemos/load-test -d 300 -h $public_dns -c 3 -r 10
 
-    vagrant ssh node1 -c "eval \$(weave env); nomad run weavedemo.nomad; docker create -\-name healthcheck -v \$PWD/healthcheck.rb:/healthcheck.rb andrius/alpine-ruby ./healthcheck.rb -s orders,cart,payment,user,catalogue,shipping,queue-master; docker network connect backoffice healthcheck; docker network connect internal healthcheck; docker network connect external healthcheck; docker network connect secure healthcheck; docker start -a healthcheck"
+    vagrant ssh node1 -c "docker build -t healthcheck -f Dockerfile-healthcheck ."
+    vagrant ssh node1 -c "eval \$(weave env); nomad run weavedemo.nomad; docker create -\-name healthcheck healthcheck -s orders,cart,payment,user,catalogue,shipping,queue-master -d 60 -r 5"
+    vagrant ssh node1 -c "docker network connect backoffice healthcheck; \
+        docker network connect internal healthcheck; \
+        docker network connect external healthcheck; \
+        docker network connect secure healthcheck;"
+    vagrant ssh node1 -c "docker start -a healthcheck"
     if [ $? -ne 0 ]; then
         vagrant ssh node1 -c "docker rm -f healthcheck"
         exit 1
-    else
-        vagrant ssh node1 -c "docker rm -f healthcheck"
     fi
+    vagrant ssh node1 -c "docker rm -f healthcheck"
 -->
 
 ### Cleaning Up

@@ -94,20 +94,6 @@ export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
     aws ec2 describe-key-pairs -\-key-name docker-swarm &>/dev/null
     if [ $? -eq 0 ]; then aws ec2 delete-key-pair -\-key-name docker-swarm; fi
 
-    cat > /root/boot.sh <<EOF
-#!/usr/bin/env bash
-docker service create -\-constraint='node.role == manager' -\-network=dockerswarm_default -\-name healthcheck andrius/alpine-ruby sleep 1200
-sleep 30
-ID=\$(docker ps | grep healthcheck | awk '{print \$1}')
-docker cp /home/ubuntu/healthcheck.rb \$ID:/healthcheck.rb
-EOF
-
-    cat > /root/test.sh <<EOF
-#!/usr/bin/env bash
-ID=\$(docker ps | grep healthcheck | awk '{print \$1}')
-docker exec \$ID ruby /healthcheck.rb -s user,catalogue,cart,shipping,payment,orders -d 300
-EOF
-
 -->
 
 #### AWS
@@ -120,14 +106,6 @@ EOF
     terraform apply deploy/docker-swarm/infra/aws/
 
 <!-- deploy-doc-end -->
-
-<!-- deploy-doc-hidden create-infrastructure
-
-    master_ip=$(terraform output -json | jq -r '.master_address.value' )
-    scp -i ~/.ssh/docker-swarm.pem deploy/healthcheck.rb /root/boot.sh /root/test.sh ubuntu@$master_ip:/home/ubuntu/
-    ssh -i ~/.ssh/docker-swarm.pem ubuntu@$master_ip "chmod +x boot.sh; ./boot.sh"
-
--->
 
 #### gcloud
 
@@ -157,7 +135,7 @@ Using any IP from the command: `terraform output`
 <!-- deploy-doc-start run-tests -->
 
     master_ip=$(terraform output -json | jq -r '.master_address.value' )
-    docker run --rm weaveworksdemos/load-test -d 60 -h $master_ip:30000 -c 3 -r 10
+    docker run --rm weaveworksdemos/load-test -d 300 -h $master_ip:30000 -c 3 -r 10
 
 <!-- deploy-doc-end -->
 
@@ -167,8 +145,18 @@ Using any IP from the command: `terraform output`
 
 <!-- deploy-doc-hidden run-tests
 
+    cat > /root/boot.sh <<-EOF
+#!/usr/bin/env bash
+docker build -t healthcheck -f Dockerfile-healthcheck .
+docker service create -\-constraint='node.role == manager' -\-network=dockerswarm_default -\-name healthcheck healthcheck -s user,catalogue,cart,shipping,payment,orders -r 5
+sleep 60
+ID=\$(docker ps -a | grep healthcheck | awk '{print \$1}' | head -n1)
+docker logs -f \$ID
+EOF
+
     master_ip=$(terraform output -json | jq -r '.master_address.value' )
-    ssh -i ~/.ssh/docker-swarm.pem ubuntu@$master_ip "chmod +x test.sh; ./test.sh"
+    scp -i ~/.ssh/docker-swarm.pem /root/boot.sh deploy/healthcheck.rb deploy/Dockerfile-healthcheck ubuntu@$master_ip:/home/ubuntu/
+    ssh -i ~/.ssh/docker-swarm.pem ubuntu@$master_ip "chmod +x boot.sh; ./boot.sh"
 
     if [ $? -ne 0 ]; then
         exit 1;
