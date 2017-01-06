@@ -45,12 +45,11 @@ kubectl get pods --namespace="sock-shop"
 
 Once the application is deployed, navigate to http://192.168.99.100:30001 to see the Sock Shop home page.
 
-<<<<<<< HEAD
 ### Opentracing
 
 Zipkin is part of the deployment and has been written into some of the services.  While the system is up you can view the traces in
 Zipkin at http://192.168.99.100:30002.  Currently orders provide the most comprehensive traces, but this requires a user to place an order.
-=======
+
 ### Run tests
 
 There is a separate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).
@@ -61,7 +60,6 @@ also check what ip your minikube instance has been assigned and use that in the 
 minikube ip
 docker run --rm weaveworksdemos/load-test -d 5 -h 192.168.99.100:30001 -c 3 -r 10
 ```
->>>>>>> dd1370f005bb5c8fd397b26dbb2a6864408582f0
 
 ### Uninstall the Sock Shop application
 
