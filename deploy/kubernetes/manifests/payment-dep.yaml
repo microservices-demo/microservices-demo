@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment:0.3.0
+        image: weaveworksdemos/payment:0.4.0
         ports:
         - containerPort: 80
         securityContext:

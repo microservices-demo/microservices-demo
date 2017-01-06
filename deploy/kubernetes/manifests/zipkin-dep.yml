@@ -17,14 +17,3 @@ spec:
         image: openzipkin/zipkin
         ports:
         - containerPort: 9411
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
