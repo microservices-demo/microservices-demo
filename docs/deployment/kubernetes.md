@@ -32,7 +32,7 @@ cd microservices-demo
 
     cat > /root/healthcheck.sh <<-EOF
 #!/usr/bin/env bash
-kubectl run -\-namespace=sock-shop healthcheck -\-image=andrius/alpine-ruby sleep 10000
+kubectl run -\-namespace=sock-shop healthcheck -\-image=ruby:2.3 sleep 10000
 sleep 90
 kube_id=\$(kubectl get pods -\-namespace=sock-shop | grep healthcheck | awk '{print \$1}')
 kubectl exec -\-namespace=sock-shop \$kube_id -\- sh -c "curl -o healthcheck.rb \"https://raw.githubusercontent.com/microservices-demo/microservices-demo/master/deploy/healthcheck.rb\"; chmod +x ./healthcheck.rb; ./healthcheck.rb -s user,catalogue,queue-master,cart,shipping,payment,orders"

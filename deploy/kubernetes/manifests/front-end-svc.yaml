@@ -14,3 +14,4 @@ spec:
     nodePort: 30001
   selector:
     name: front-end
+  sessionAffinity: "ClientIP"
