@@ -27,7 +27,32 @@ Use the scripts in this directory to set up a Kubernetes cluster on AWS from a B
 * Install Weave Scope
 
   ```
-  kubectl apply -f ~/microservices-demo/deploy/kubernetes/definitions/weavescope.yaml --validate=false
+  kubectl apply -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml'
+  ```
+
+* Setup Weave Flux
+
+  Create flux.conf file as shown below
+  ```
+    git:
+      url: git@github.com:microservices-demo/microservices-demo
+      path: deploy/kubernetes/manifests
+      branch: master
+      key: |
+             <PASTE SECRETY KEY HERE>
+    slack:
+      hookURL: ""
+      username: ""
+    registry:
+      auths: {}
+  ```
+
+  Run the following commands
+  ```
+  master_ip=$(terraform output -json | jq -r '.master_address.value')
+  flux_port=$(kubectl describe service fluxsvc --template '{{ index .spec.ports 0 "nodePort" }}')
+  export FLUX_URL=$master_ip:$flux_port
+  ./flux_automate.sh
   ```
 
 * Get the NodePort of the sock-shop front-end service
@@ -50,4 +75,3 @@ Use the scripts in this directory to set up a Kubernetes cluster on AWS from a B
   ```
 
 * Access the Sock Shop front end and Weave Scope on any of the addresses output by `terraform output` on their respective ports.
-
