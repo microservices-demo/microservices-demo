@@ -65,7 +65,7 @@ cd microservices-demo
 
 ### Run tests
 
-There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest). 
+There is a separate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest). 
 This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud. 
 
 Feel free to run it by issuing the following command:
@@ -125,7 +125,7 @@ export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
 
 ### Run tests
 
-There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).  
+There is a separate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).  
 This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud. 
 
 #### AWS & gcloud
