@@ -96,7 +96,13 @@ else
         "export AWS_ACCESS_KEY=$DEPLOY_DOC_AWS_ACCESS_KEY",
         "export AWS_SECRET_ACCESS_KEY=$DEPLOY_DOC_AWS_SECRET_ACCESS_KEY",
         "deploy_doc $DEPLOY_DOC -r"
-      ]
+      ],
+
+      # Overwrite deploy step with a no-op.
+      deploy: {
+        provider: "script",
+        script: "true"
+      }
     })
   }
 
