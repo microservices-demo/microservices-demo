@@ -48,10 +48,12 @@ Once the application is deployed, navigate to http://192.168.99.100:30001 to see
 ### Run tests
 
 There is a separate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).
-This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud.
+This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud. You should
+also check what ip your minikube instance has been assigned and use that in the load test.
 
 ```
-docker run --rm weaveworksdemos/load-test -d 5 -h http://192.168.99.100:30001 -c 3 -r 10
+minikube ip
+docker run --rm weaveworksdemos/load-test -d 5 -h 192.168.99.100:30001 -c 3 -r 10
 ```
 
 ### Uninstall the Sock Shop application
