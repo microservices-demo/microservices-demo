@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
       - name: cart
-        image: weaveworksdemos/cart:0.3.0
+        image: weaveworksdemos/cart:0.4.0
         ports:
         - containerPort: 80
         securityContext:
@@ -125,7 +125,7 @@ spec:
     spec:
       containers:
       - name: catalogue-db
-        image: weaveworksdemos/catalogue-db:0.3.0
+        image: weaveworksdemos/catalogue-db:0.4.0
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password
@@ -310,7 +310,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.3.0
+        image: weaveworksdemos/orders:0.4.1
         ports:
         - containerPort: 80
         securityContext:
@@ -363,7 +363,7 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment:0.3.0
+        image: weaveworksdemos/payment:0.4.0
         ports:
         - containerPort: 80
         env:
@@ -492,7 +492,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.3.0
+        image: weaveworksdemos/shipping:0.4.0
         ports:
         - containerPort: 80
         securityContext:
@@ -653,17 +653,6 @@ spec:
         image: openzipkin/zipkin
         ports:
         - containerPort: 9411
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
 ---
 apiVersion: v1
 kind: Service
@@ -673,9 +662,12 @@ metadata:
     name: zipkin
   namespace: sock-shop
 spec:
+  type: NodePort
   ports:
     # the port that this service should serve on
   - port: 9411
     targetPort: 9411
+    nodePort: 30002
   selector:
     name: zipkin
+

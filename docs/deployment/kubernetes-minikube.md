@@ -45,6 +45,11 @@ kubectl get pods --namespace="sock-shop"
 
 Once the application is deployed, navigate to http://192.168.99.100:30001 to see the Sock Shop home page.
 
+### Opentracing
+
+Zipkin is part of the deployment and has been written into some of the services.  While the system is up you can view the traces in
+Zipkin at http://192.168.99.100:30002.  Currently orders provide the most comprehensive traces, but this requires a user to place an order.
+
 ### Uninstall the Sock Shop application
 
 ```
