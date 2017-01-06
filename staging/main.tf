@@ -111,6 +111,16 @@ resource "null_resource" "weave-kube" {
   }
 }
 
+resource "null_resource" "weave-flux" {
+  depends_on = [ "aws_instance.k8s-node" ]
+  provisioner "local-exec" {
+    command = <<EOT
+        kubectl apply -f https://raw.githubusercontent.com/weaveworks/flux/master/deploy/standalone/flux-deployment.yaml;
+        kubectl apply -f https://raw.githubusercontent.com/weaveworks/flux/master/deploy/standalone/flux-service.yaml
+    EOT
+  }
+}
+
 resource "aws_elb" "microservices-demo-staging-k8s" {
   depends_on = [ "aws_instance.k8s-node" ]
   name = "microservices-demo-staging-k8s"
