@@ -32,6 +32,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
       - reschedule=on-node-failure
     networks:
       - external
@@ -129,6 +130,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
       - reschedule=on-node-failure
     networks:
       - secure
@@ -139,6 +141,7 @@ services:
     dns_search: weave.local
     restart: always
     environment:
+      - ZIPKIN=http://zipkin:9411/api/v1/spans
       - MONGO_HOST=user-db:27017
       - reschedule=on-node-failure
     networks:
@@ -160,6 +163,24 @@ services:
     networks:
       - external
     command: "-d 60 -r 200 -c 2 -h edge-router"
+  zipkin:
+    image: openzipkin/zipkin 
+    hostname: zipkin
+    dns: 172.17.0.1
+    dns_search: weave.local
+    restart: always
+    networks:
+      - external
+      - secure
+      - internal
+      - backoffice
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
+    environment:
+      - reschedule=on-node-failure
+    ports:
+      - "9411:9411"
 networks:
   external:
     driver: weavemesh
