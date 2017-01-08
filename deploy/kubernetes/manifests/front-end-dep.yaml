@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: quay.io/abuehrle/front-end:next-release
+        image: weaveworksdemos/front-end:0.2.0
         resources:
           requests:
             cpu: 100m
