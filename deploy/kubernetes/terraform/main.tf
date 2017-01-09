@@ -24,8 +24,20 @@ resource "aws_security_group" "k8s-security-group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
+    from_port   = 9411
+    to_port     = 9411
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
     from_port   = 30001
     to_port     = 30001
+    protocol     = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 30002
+    to_port     = 30002
     protocol     = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -100,4 +112,13 @@ resource "aws_elb" "elb-sock-shop" {
     lb_protocol = "http"
     instance_protocol = "http"
   }
+
+  listener {
+    lb_port = 9411
+    instance_port = 30002
+    lb_protocol = "http"
+    instance_protocol = "http"
+  }
+
 }
+
