@@ -5,7 +5,14 @@
             "essential": true,
             "image": "weaveworksdemos/user",
             "memory": 256,
-            "name": "user"
+            "name": "user",
+            "environment": [
+              {
+                "name": "ZIPKIN",
+                "value": "http://zipkin:9411/api/v1/spans"
+              }
+            ]
+
         }
     ]
 }

@@ -5,7 +5,14 @@
             "essential": true,
             "image": "weaveworksdemos/payment",
             "memory": 256,
-            "name": "payment"
+            "name": "payment",
+            "environment": [
+              {
+                "name": "ZIPKIN",
+                "value": "http://zipkin:9411/api/v1/spans"
+              }
+            ]
+
         }
     ]
 }

@@ -1,0 +1,11 @@
+{
+    "family": "weavedemo-zipkin",
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "openzipkin/zipkin",
+            "memory": 256,
+            "name": "zipkin"
+        }
+    ]
+}
