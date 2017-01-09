@@ -229,7 +229,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/cart",
             "Name": "cart",
-            "Memory": 512
+            "Memory": 1024
           }
         ],
         "Volumes": []
@@ -455,7 +455,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/orders",
             "Name": "orders",
-            "Memory": 512
+            "Memory": 1024
           }
         ],
         "Volumes": []
@@ -586,7 +586,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/shipping",
             "Name": "shipping",
-            "Memory": 512
+            "Memory": 1024
           }
         ],
         "Volumes": []
@@ -614,7 +614,7 @@
             "Essential": true,
             "Image": "openzipkin/zipkin",
             "Name": "zipkin",
-            "Memory": 512,
+            "Memory": 1024,
             "PortMappings": [
               {
                 "HostPort": 9411,
