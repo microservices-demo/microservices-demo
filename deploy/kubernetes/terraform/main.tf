@@ -24,6 +24,12 @@ resource "aws_security_group" "k8s-security-group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
+    from_port   = 9411
+    to_port     = 9411
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
     from_port   = 30001
     to_port     = 30001
     protocol     = "tcp"
@@ -106,18 +112,13 @@ resource "aws_elb" "elb-sock-shop" {
     lb_protocol = "http"
     instance_protocol = "http"
   }
-}
 
-resource "aws_elb" "elb-sock-shop-zipkin" {
-  depends_on = [ "aws_instance.md-k8s-node" ]
-  name = "md-k8s-elb-sock-shop-zipkin"
-  instances = ["${aws_instance.md-k8s-node.*.id}"]
-  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  security_groups = ["${aws_security_group.k8s-security-group.id}"] 
   listener {
     lb_port = 9411
     instance_port = 30002
     lb_protocol = "http"
     instance_protocol = "http"
   }
+
 }
+
