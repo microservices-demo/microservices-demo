@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.3.0
+        image: weaveworksdemos/orders:0.4.1
         ports:
         - containerPort: 80
         securityContext:

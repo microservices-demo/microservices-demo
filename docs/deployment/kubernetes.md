@@ -177,6 +177,11 @@ This will send some traffic to the application, which will form the connection g
     fi
 
 -->
+### Opentracing
+
+Zipkin is part of the deployment and has been written into some of the services.  While the system is up you can view the traces in
+Zipkin at http://<loadbalancer>:9411.  Currently orders provide the most comprehensive traces.
+
 
 ### Uninstall App
 
