@@ -5,7 +5,14 @@
             "essential": true,
             "image": "openzipkin/zipkin",
             "memory": 256,
-            "name": "zipkin"
+            "name": "zipkin",
+            "portMappings": [
+                {
+                    "containerPort": 9411,
+                    "hostPort": 9411
+                }
+            ]
+
         }
     ]
 }
