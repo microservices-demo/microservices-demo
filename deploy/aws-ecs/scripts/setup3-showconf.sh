@@ -11,12 +11,22 @@ container_inst=$(aws ecs describe-tasks --cluster weave-ecs-demo-cluster --tasks
 instance_id=$(aws ecs describe-container-instances --cluster weave-ecs-demo-cluster --container-instances $container_inst --query 'containerInstances[0].ec2InstanceId'  --output text)
 dns_name=$(aws ec2 describe-instances --instance-ids $instance_id --query 'Reservations[0].Instances[*].PublicDnsName' --output text)
 
+# Find the container instance where zipkin is running
+zipkin_task=$(aws ecs list-tasks --cluster weave-ecs-demo-cluster --service-name weavedemo-zipkin-service  --query 'taskArns[0]' --output text)
+z_container_inst=$(aws ecs describe-tasks --cluster weave-ecs-demo-cluster --tasks $zipkin_task --query 'tasks[0].containerInstanceArn' --output text)
+z_instance_id=$(aws ecs describe-container-instances --cluster weave-ecs-demo-cluster --container-instances $z_container_inst --query 'containerInstances[0].ec2InstanceId'  --output text)
+zipkin_dns_name=$(aws ec2 describe-instances --instance-ids $z_instance_id --query 'Reservations[0].Instances[*].PublicDnsName' --output text)
 # Print information for the user
 
 echo "Setup is ready!"
 echo
 echo "Open your browser and go to this URL to view the demo:"
 echo "  http://$dns_name/"
+echo
+echo "Setup is ready!"
+echo
+echo "Open your browser and go to this URL to view zipkin:"
+echo "  http://$zipkin_dns_name:9411"
 echo
 if [ -z $SCOPE_TOKEN ]; then
     echo "To view the Weave Scope for the demo, go to this URL:"
