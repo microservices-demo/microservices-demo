@@ -46,3 +46,7 @@ variable "nodecount" {
 variable "private_key_file" {
   description = "The private key for connection to the instances as the user. Corresponds to the key_name variable."
 }
+
+variable "weave_cloud_token" {
+  description = "Token from Weave Cloud"
+}
