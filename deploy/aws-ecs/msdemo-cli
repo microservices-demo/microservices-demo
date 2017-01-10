@@ -30,7 +30,7 @@ function build
 		--capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
 		--parameters ParameterKey=KeyName,ParameterValue=$PEM
 
-	printf "Stack has been started, you can run ./$THIS_F status to get an updated version\n"
+	printf "Stack has been started, you can run './$THIS_F status' to get an update on the status\n"
 }
 
 function get_status
