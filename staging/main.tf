@@ -58,11 +58,6 @@ resource "aws_instance" "k8s-node" {
     private_key = "${file("${var.private_key_file}")}"
   }
 
-  provisioner "file" {
-    source = "~/microservices-demo/deploy/kubernetes/manifests/"
-    destination = "/home/ubuntu/microservices-demo/deploy/kubernetes/manifests/"
-  }
-
   provisioner "remote-exec" {
     inline = [
       "sudo sh -c 'curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -'",
@@ -94,6 +89,11 @@ resource "aws_instance" "k8s-master" {
   connection {
     user        = "${var.instance_user}"
     private_key = "${file("${var.private_key_file}")}"
+  }
+
+  provisioner "file" {
+    source = "~/microservices-demo/deploy/kubernetes/manifests/"
+    destination = "/home/ubuntu/microservices-demo/deploy/kubernetes/manifests"
   }
 
   provisioner "remote-exec" {
@@ -141,6 +141,12 @@ resource "null_resource" "sock-shop" {
     inline = [
       "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml -f ~/microservices-demo/deploy/kubernetes/manifests"
     ]
+  }
+}
+
+resource "null_resource" "cleanup" {
+  provisioner "local-exec" {
+    command = "rm join.cmd"
   }
 }
 
