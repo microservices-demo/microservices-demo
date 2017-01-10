@@ -1082,7 +1082,7 @@
                 "LoadBalancerPort": "80",
                 "InstanceProtocol": "HTTP",
                 "Protocol": "HTTP",
-		"PolicyNames" : "weave-sticky-cookie-policy"
+		"PolicyNames" : ["weave-sticky-cookie-policy"]
               },
               {
                 "Ref": "AWS::NoValue"
