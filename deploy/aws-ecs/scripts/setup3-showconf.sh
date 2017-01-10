@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+SCOPE_TOKEN=${1:-}
+STORE_DNS_NAME_HERE=${STORE_DNS_NAME_HERE:-}
+
 # Find the container instance where the frontend is running
 frontend_task=$(aws ecs list-tasks --cluster weave-ecs-demo-cluster --service-name weavedemo-edge-router-service  --query 'taskArns[0]' --output text)
 container_inst=$(aws ecs describe-tasks --cluster weave-ecs-demo-cluster --tasks $frontend_task --query 'tasks[0].containerInstanceArn' --output text)
@@ -15,8 +18,12 @@ echo
 echo "Open your browser and go to this URL to view the demo:"
 echo "  http://$dns_name/"
 echo
-echo "To view the Weave Scope for the demo, go to this URL:"
-echo "  http://${dns_name}:4040/"
+if [ -z $SCOPE_TOKEN ]; then
+    echo "To view the Weave Scope for the demo, go to this URL:"
+    echo "  http://${dns_name}:4040/"
+else
+    echo "To view the Weave Scope for the demo, go to cloud.weave.works"
+fi
 
 # And store it in a file, if requested.
 if [ "x$STORE_DNS_NAME_HERE" != "x" ]; then

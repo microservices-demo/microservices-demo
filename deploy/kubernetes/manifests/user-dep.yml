@@ -15,12 +15,14 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.3.0
+        image: weaveworksdemos/user:0.4.0
         ports:
         - containerPort: 80
         env:
         - name: MONGO_HOST
           value: user-db:27017
+        - name: ZIPKIN
+          value: http://zipkin:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001

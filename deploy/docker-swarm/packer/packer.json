@@ -1,7 +1,8 @@
 {
     "variables": {
         "aws_access_key": "",
-        "aws_secret_key": ""
+        "aws_secret_key": "",
+        "gcloud_project_id": "{{env `TF_VAR_project_name`}}"
     },
     "builders": [{
         "type": "amazon-ebs",
@@ -14,9 +15,10 @@
         "ami_name": "docker-swarm"
     },{
         "type": "googlecompute",
-        "project_id": "container-solutions",
+        "project_id": "{{user `gcloud_project_id`}}",
         "source_image": "ubuntu-1604-xenial-v20161020",
         "image_name": "docker-swarm",
+        "ssh_username": "ubuntu",
         "zone": "europe-west1-b"
     },{
         "type": "virtualbox-iso",

@@ -60,17 +60,18 @@ This will send some traffic to the application, which will form the connection g
 
 <!-- deploy-doc-hidden run-tests
 
-    docker run -td -\-net=dockercompose_default -\-name healthcheck andrius/alpine-ruby /bin/sh
-    docker cp deploy/healthcheck.rb healthcheck:/healthcheck.rb
-    docker exec -t healthcheck ruby /healthcheck.rb -s user,catalogue,queue-master,cart,shipping,payment,orders -d 90
+    docker build -t healthcheck -f deploy/Dockerfile-healthcheck deploy/.
+    docker run -\-rm -t -\-net=dockercompose_default healthcheck -s user,catalogue,queue-master,cart,shipping,payment,orders -d 90 -r 5
     if [ $? -ne 0 ]; then
-        docker rm -f healthcheck
         exit 1;
-    else
-        docker rm -f healthcheck
     fi
 
 -->
+
+### Opentracing
+Zipkin is part of the deployment and has been written into some of the services.  While the system is up you can view the traces in
+Zipkin at http://localhost:9411.  Currently orders provide the most comprehensive traces.
+
 
 ### Cleaning up
 

@@ -15,9 +15,12 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment:0.3.0
+        image: weaveworksdemos/payment:0.4.0
         ports:
         - containerPort: 80
+        env:
+        - name: ZIPKIN
+          value: http://zipkin:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001

@@ -60,9 +60,15 @@ To ensure that the application is running properly, you could perform some load 
     instance_id=$(aws ecs describe-container-instances -\-cluster weave-ecs-demo-cluster -\-container-instances $container_inst -\-query 'containerInstances[0].ec2InstanceId'  -\-output text)
     dns_name=$(aws ec2 describe-instances -\-instance-ids $instance_id -\-query 'Reservations[0].Instances[*].PublicDnsName' -\-output text)
 
-    scp -i deploy/aws-ecs/weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" deploy/healthcheck.rb ec2-user@$dns_name:/home/ec2-user/
+    cat >> /root/healthcheck.sh <<-EOF
+#!/usr/bin/env bash
+eval \$(weave env)
+docker build -t healthcheck -f Dockerfile-healthcheck .
+docker run -\-rm -t healthcheck -s user.weave.local,catalogue.weave.local,cart.weave.local,shipping.weave.local,payment.weave.local,orders.weave.local,queue-master.weave.local -r 5
+EOF
 
-    ssh -i deploy/aws-ecs/weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" ec2-user@$dns_name "eval \$(weave env); docker run -\-rm -v /home/ec2-user/healthcheck.rb:/healthcheck.rb -i andrius/alpine-ruby ruby /healthcheck.rb -s user.weave.local,catalogue.weave.local,cart.weave.local,shipping.weave.local,payment.weave.local,orders.weave.local,queue-master.weave.local"
+    scp -i deploy/aws-ecs/weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" /root/healthcheck.sh deploy/healthcheck.rb deploy/Dockerfile-healthcheck ec2-user@$dns_name:/home/ec2-user/
+    ssh -i deploy/aws-ecs/weave-ecs-demo-key.pem ec2-user@$dns_name "chmod +x healthcheck.sh; ./healthcheck.sh"
 
     if [ $? -ne 0 ]; then
         exit 1;
