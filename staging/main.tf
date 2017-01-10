@@ -119,7 +119,7 @@ resource "null_resource" "weave" {
     private_key = "${file("${var.private_key_file}")}"
   }
 
-  provisioner "local-exec" {
+  provisioner "remote-exec" {
     inline = [
       "kubectl apply -f https://git.io/weave-kube",
       "kubectl apply -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml?service-token=${var.weave_cloud_token}'",
