@@ -181,7 +181,7 @@ There is a separate load-test available to simulate user traffic to the applicat
 This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud.
 
 ```
-docker run --rm weaveworksdemos/load-test -d 300 -h 192.168.59.102 -c 3 -r 10
+docker run --rm weaveworksdemos/load-test -d 300 -h 192.168.59.102 -c 3 -r 50
 ```
 
 <!-- deploy-doc-hidden run-tests

@@ -58,7 +58,7 @@ also check what ip your minikube instance has been assigned and use that in the 
 
 ```
 minikube ip
-docker run --rm weaveworksdemos/load-test -d 5 -h 192.168.99.100:30001 -c 3 -r 10
+docker run --rm weaveworksdemos/load-test -d 5 -h 192.168.99.100:30001 -c 3 -r 50
 ```
 
 ### Uninstall the Sock Shop application
