@@ -103,7 +103,7 @@ resource "aws_instance" "k8s-master" {
 
   provisioner "file" {
     source = "~/microservices-demo/deploy/kubernetes/manifests/"
-    destination = "/home/ubuntu/microservices-demo/deploy/kubernetes/manifests"
+    destination = "/home/ubuntu/microservices-demo/deploy/kubernetes"
   }
 
   provisioner "local-exec" {
