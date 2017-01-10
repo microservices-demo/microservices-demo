@@ -145,6 +145,7 @@ resource "null_resource" "sock-shop" {
 }
 
 resource "null_resource" "cleanup" {
+  depends_on = [ "aws_instance.k8s-node" ]
   provisioner "local-exec" {
     command = "rm join.cmd"
   }
