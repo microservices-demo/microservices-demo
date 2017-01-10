@@ -91,18 +91,19 @@ resource "aws_instance" "k8s-master" {
     private_key = "${file("${var.private_key_file}")}"
   }
 
-  provisioner "file" {
-    source = "~/microservices-demo/deploy/kubernetes/manifests/"
-    destination = "/home/ubuntu/microservices-demo/deploy/kubernetes/manifests"
-  }
-
   provisioner "remote-exec" {
     inline = [
       "sudo sh -c 'curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -'",
       "sudo sh -c 'echo deb http://apt.kubernetes.io/ kubernetes-xenial main > /etc/apt/sources.list.d/kubernetes.list'",
       "sudo apt-get update",
       "sudo apt-get install -y docker.io kubelet kubeadm kubectl kubernetes-cni",
+      "mkdir -p /home/ubuntu/microservices-demo/deploy/kubernetes/manifests"
     ]
+  }
+
+  provisioner "file" {
+    source = "~/microservices-demo/deploy/kubernetes/manifests/"
+    destination = "/home/ubuntu/microservices-demo/deploy/kubernetes/manifests"
   }
 
   provisioner "local-exec" {
