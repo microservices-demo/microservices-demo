@@ -30,11 +30,11 @@
             "http://",
             {
               "Fn::GetAtt": [
-                "EcsFrontendElasticLoadBalancing",
+                "EcsScopeApplicationLoadBalancing",
                 "DNSName"
               ]
             },
-            ":4040"
+            ":80"
           ]
         ]
       },
@@ -1066,6 +1066,11 @@
             },
             "PropagateAtLaunch": "true"
           }
+        ],
+        "TargetGroupARNs": [
+            {
+                "Ref": "EcsScopeTargetGroup"
+            }
         ]
       }
     },
@@ -1083,20 +1088,6 @@
                 "InstanceProtocol": "HTTP",
                 "Protocol": "HTTP",
 		"PolicyNames" : ["weave-sticky-cookie-policy"]
-              },
-              {
-                "Ref": "AWS::NoValue"
-              }
-            ]
-          },
-          {
-            "Fn::If": [
-              "UseWeaveScopeStandalone",
-              {
-                "InstancePort": "4040",
-                "LoadBalancerPort": "4040",
-                "InstanceProtocol": "TCP",
-                "Protocol": "TCP"
               },
               {
                 "Ref": "AWS::NoValue"
@@ -1124,6 +1115,47 @@
 	  }
 	]
       }
+    },
+    "EcsScopeApplicationLoadBalancing": {
+        "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+        "DependsOn": "InternetGateway",
+        "Properties": {
+            "SecurityGroups": [
+              {
+                "Ref": "EcsSecurityGroup"
+              }
+            ],
+            "Subnets": [
+              {
+                "Ref": "PubSubnetAz1"
+              },
+              {
+                "Ref": "PubSubnetAz2"
+              }
+            ]
+        }
+    },
+    "EcsScopeApplicationLoadBalancerListener": {
+        "Type": "AWS::ElasticLoadBalancingV2::Listener",
+        "Properties": {
+            "DefaultActions": [{
+                "Type": "forward",
+                "TargetGroupArn": { "Ref": "EcsScopeTargetGroup" }
+            }],
+            "LoadBalancerArn": { "Ref": "EcsScopeApplicationLoadBalancing" },
+            "Port": 80,
+            "Protocol": "HTTP"
+        }
+    },
+    "EcsScopeTargetGroup": {
+        "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+        "Properties": {
+            "Name": "Scope-Target-Group",
+            "Port": 4040,
+            "Protocol": "HTTP",
+            "VpcId": { "Ref" : "Vpc" }
+        },
+        "DependsOn": [ "EcsScopeApplicationLoadBalancing" ]
     }
   }
 }
