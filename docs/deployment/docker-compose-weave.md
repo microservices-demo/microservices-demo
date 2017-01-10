@@ -51,7 +51,7 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 <!-- deploy-doc-start create-infrastructure -->
 
     weave launch
-    docker-compose -f deploy/docker-compose-weave/docker-compose.yml up -d
+    docker-compose -f deploy/docker-compose/docker-compose.yml up -d
 
 <!-- deploy-doc-end -->
 
@@ -79,12 +79,16 @@ This will send some traffic to the application, which will form the connection g
 
 -->
 
+### Opentracing
+
+Zipkin is part of the deployment and has been written into some of the services.  While the system is up you can view the traces in
+Zipkin at http://localhost:9411.  Currently orders provide the most comprehensive traces.
 
 ### Cleaning up
 
 <!-- deploy-doc-start destroy-infrastructure -->
 
-    docker-compose -f deploy/docker-compose-weave/docker-compose.yml down
+    docker-compose -f deploy/docker-compose/docker-compose.yml down
     weave stop
 
 <!-- deploy-doc-end -->

@@ -156,7 +156,7 @@ sock_shop_address = MD-k8s-elb-sock-shop-1211989270.eu-west-1.elb.amazonaws.com
 
 ### Run tests
 
-There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).
+There is a separate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).
 This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud.
 
 <!-- deploy-doc-start run-tests -->
@@ -177,6 +177,11 @@ This will send some traffic to the application, which will form the connection g
     fi
 
 -->
+### Opentracing
+
+Zipkin is part of the deployment and has been written into some of the services.  While the system is up you can view the traces in
+Zipkin at http://<loadbalancer>:9411.  Currently orders provide the most comprehensive traces.
+
 
 ### Uninstall App
 

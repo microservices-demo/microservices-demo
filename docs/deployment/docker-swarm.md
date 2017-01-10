@@ -7,19 +7,9 @@ deployDoc: true
 
 Please refer to the [new Docker Swarm introduction](http://container-solutions.com/hail-new-docker-swarm/)
 
-### Blockers
-
-Currently, new Docker Swarm does not support running containers in privileged mode.
-Maybe it will be allowed in the future.
-Please refer to the issue [1030](https://github.com/docker/swarmkit/issues/1030#issuecomment-232299819).
-This prevents running Weave Scope in a normal way, since it needs privileged mode.
-A work around exists documented [here](https://github.com/weaveworks/scope-global-swarm-service)
-
-Running global plugins is not supported either.
-
 ### Pre-requisities
 
-* [Docker v1.12.3+](https://www.docker.com/products/overview)
+* [Docker v1.12.3+](https://www.docker.com/products/overview) (IMPORTANT: Beta version is required)
 * [Docker Compose](https://docs.docker.com/compose/install/)
 * *Optional* [Vagrant](https://www.vagrantup.com/downloads.html)
 * *Optional* [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
@@ -58,14 +48,14 @@ cd microservices-demo
     docker swarm init
     docker-compose pull
     docker-compose bundle
-    docker deploy dockerswarm
+    docker deploy --bundle-file dockerswarm.dab sockshop
 ~~~~
 
 * Navigate to <a href="http://localhost:30000" target="_blank">http://localhost:30000</a> to verify that the demo works.
 
 ### Run tests
 
-There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest). 
+There is a separate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest). 
 This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud. 
 
 Feel free to run it by issuing the following command:
@@ -125,7 +115,7 @@ export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
 
 ### Run tests
 
-There is a seperate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).  
+There is a separate load-test available to simulate user traffic to the application. For more information see [Load Test](#loadtest).  
 This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud. 
 
 #### AWS & gcloud

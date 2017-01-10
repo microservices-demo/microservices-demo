@@ -92,7 +92,17 @@ else
         global: [ "SPAWNED_BY_CRON_BUILD=#{cron_build_number}" ],
         matrix: platforms_to_test.map { |platform| "DEPLOY_DOC=#{platform.markdown_file}" }
       },
-      script: ["deploy_doc $DEPLOY_DOC -r"]
+      script: [
+        "export AWS_ACCESS_KEY=$DEPLOY_DOC_AWS_ACCESS_KEY",
+        "export AWS_SECRET_ACCESS_KEY=$DEPLOY_DOC_AWS_SECRET_ACCESS_KEY",
+        "deploy_doc $DEPLOY_DOC -r"
+      ],
+
+      # Overwrite deploy step with a no-op.
+      deploy: {
+        provider: "script",
+        script: "true"
+      }
     })
   }
 

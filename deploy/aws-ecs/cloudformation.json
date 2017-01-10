@@ -87,7 +87,7 @@
     "EcsInstanceType": {
       "Type": "String",
       "Description": "Type of the EC2 instance(s) to deploy",
-      "Default": "t2.medium",
+      "Default": "t2.large",
       "AllowedValues": [
         "t2.micro",
         "t2.small",
@@ -210,7 +210,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/cart",
             "Name": "cart",
-            "Memory": 512
+            "Memory": 1024
           }
         ],
         "Volumes": []
@@ -424,7 +424,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/orders",
             "Name": "orders",
-            "Memory": 512
+            "Memory": 1024
           }
         ],
         "Volumes": []
@@ -549,7 +549,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/shipping",
             "Name": "shipping",
-            "Memory": 512
+            "Memory": 1024
           }
         ],
         "Volumes": []
@@ -1081,7 +1081,8 @@
                 "InstancePort": "80",
                 "LoadBalancerPort": "80",
                 "InstanceProtocol": "HTTP",
-                "Protocol": "HTTP"
+                "Protocol": "HTTP",
+		"PolicyNames" : ["weave-sticky-cookie-policy"]
               },
               {
                 "Ref": "AWS::NoValue"
@@ -1115,7 +1116,13 @@
           {
             "Ref": "PubSubnetAz2"
           }
-        ]
+        ],
+	"AppCookieStickinessPolicy" : [
+	  {
+	    "CookieName" : "md.sid",
+	    "PolicyName" : "weave-sticky-cookie-policy"
+	  }
+	]
       }
     }
   }
