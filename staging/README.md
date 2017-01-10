@@ -27,15 +27,23 @@ Use the scripts in this directory to set up a Kubernetes cluster on AWS from a B
 * Install Weave Scope
 
   ```
-  kubectl apply -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml'
+  kubectl apply -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml?service-token=<token>'
   ```
 
 * Setup Weave Flux
 
+  On the master node edit the file fluxd-dep.yaml with the Weave Cloud token and deploy.
+
+  ```
+  kubectl apply -f /tmp/fluxd-dep.yaml
+  ```
+
+  Locally
+
   Create flux.conf file as shown below
   ```
     git:
-      url: git@github.com:microservices-demo/microservices-demo
+      url: git@github.com:microservices-demo/flux-staging-deploy
       path: deploy/kubernetes/manifests
       branch: master
       key: |

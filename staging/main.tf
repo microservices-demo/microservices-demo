@@ -62,6 +62,11 @@ resource "aws_instance" "k8s-node" {
     source      = "install_kubeadm.sh"
     destination = "/tmp/install_kubeadm.sh"
   }
+
+  provisioner "file" {
+    source      = "fluxd-dep.yaml"
+    destination = "/tmp/fluxd-dep.yaml"
+  }
  
   provisioner "remote-exec" {
     inline = [
@@ -108,16 +113,6 @@ resource "null_resource" "weave-kube" {
   depends_on = [ "aws_instance.k8s-node" ]
   provisioner "local-exec" {
     command = "kubectl apply -f https://git.io/weave-kube"
-  }
-}
-
-resource "null_resource" "weave-flux" {
-  depends_on = [ "aws_instance.k8s-node" ]
-  provisioner "local-exec" {
-    command = <<EOT
-        kubectl apply -f https://raw.githubusercontent.com/weaveworks/flux/master/deploy/standalone/flux-deployment.yaml;
-        kubectl apply -f https://raw.githubusercontent.com/weaveworks/flux/master/deploy/standalone/flux-service.yaml
-    EOT
   }
 }
 
