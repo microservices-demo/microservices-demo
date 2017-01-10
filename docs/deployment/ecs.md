@@ -51,7 +51,7 @@ To ensure that the application is running properly, you could perform some load 
 
 <!-- deploy-doc-start run-tests -->
 
-    docker run weaveworksdemos/load-test -d 60 -h `cat deploy/aws-ecs/ecs-endpoint` -c 10 -r 100
+    docker run weaveworksdemos/load-test -d 60 -h `cat deploy/aws-ecs/ecs-endpoint` -c 2 -r 100
 
 <!-- deploy-doc-end -->
 
