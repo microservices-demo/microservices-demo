@@ -1081,7 +1081,8 @@
                 "InstancePort": "80",
                 "LoadBalancerPort": "80",
                 "InstanceProtocol": "HTTP",
-                "Protocol": "HTTP"
+                "Protocol": "HTTP",
+		"PolicyNames" : ["weave-sticky-cookie-policy"]
               },
               {
                 "Ref": "AWS::NoValue"
@@ -1115,7 +1116,13 @@
           {
             "Ref": "PubSubnetAz2"
           }
-        ]
+        ],
+	"AppCookieStickinessPolicy" : [
+	  {
+	    "CookieName" : "md.sid",
+	    "PolicyName" : "weave-sticky-cookie-policy"
+	  }
+	]
       }
     }
   }
