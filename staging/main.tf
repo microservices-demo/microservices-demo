@@ -96,18 +96,12 @@ resource "aws_instance" "k8s-master" {
     private_key = "${file("${var.private_key_file}")}"
   }
 
-  provisioner "file" {
-    source      = "fluxd-dep.yaml"
-    destination = "/tmp/fluxd-dep.yaml"
-  }
-
   provisioner "remote-exec" {
     inline = [
       "sudo sh -c 'curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -'",
       "sudo sh -c 'echo deb http://apt.kubernetes.io/ kubernetes-xenial main > /etc/apt/sources.list.d/kubernetes.list'",
       "sudo apt-get update",
       "sudo apt-get install -y docker.io kubelet kubeadm kubectl kubernetes-cni",
-      "sed -i 's/INSERTTOKENHERE/${var.weave_cloud_token}/g' /tmp/fluxd-dep.yaml"
     ]
   }
 
@@ -129,7 +123,7 @@ resource "null_resource" "weave" {
     inline = [
       "kubectl apply -f https://git.io/weave-kube",
       "kubectl apply -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml?service-token=${var.weave_cloud_token}'",
-      "kubectl apply -f /tmp/fluxd-dep.yaml"
+      "kubectl apply -f 'https://cloud.weave.works/k8s/flux.yaml?service-token=${var.weave_cloud_token}'"
     ]
   }
 }
