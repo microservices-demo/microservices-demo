@@ -1131,6 +1131,9 @@
         "LoadBalancerNames": [
           {
             "Ref": "EcsFrontendElasticLoadBalancing"
+          },
+          {
+            "Ref": "EcsZipkinElasticLoadBalancing"
           }
         ],
         "Tags": [
