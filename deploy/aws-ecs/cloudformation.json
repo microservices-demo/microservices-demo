@@ -1233,6 +1233,13 @@
             "Ref": "EcsSecurityGroup"
           }
         ],
+        "HealthCheck" :{
+          "HealthyThreshold" : "2",
+          "Interval" : "30",
+          "Target" : "HTTP:9411/",
+          "Timeout" : "5",
+          "UnhealthyThreshold" : "10"
+        },
         "Subnets": [
           {
             "Ref": "PubSubnetAz1"

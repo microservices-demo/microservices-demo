@@ -74,6 +74,12 @@ function dnsend
 	elbdns=$(aws elb describe-load-balancers --load-balancer-name $elbr \
 		| jq -r '.LoadBalancerDescriptions[0].DNSName' )
 	printf "Visit your site here: http://$elbdns\n"
+	elbr=$(aws cloudformation describe-stack-resources \
+	       	--stack-name $STACK_NAME --logical-resource-id EcsZipkinElasticLoadBalancing \
+		| jq -r '.StackResources[0].PhysicalResourceId' )
+	elbdns=$(aws elb describe-load-balancers --load-balancer-name $elbr \
+		| jq -r '.LoadBalancerDescriptions[0].DNSName' )
+	printf "Visit Zipkin here: http://$elbdns\n"
 }
 
 function loadtest
