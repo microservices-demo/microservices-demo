@@ -46,6 +46,7 @@ EOF
 ### Setup Kubernetes
 
 Begin by setting the appropriate AWS environment variables.
+
 ```
 export AWS_ACCESS_KEY_ID=[YOURACCESSKEYID]
 export AWS_SECRET_ACCESS_KEY=[YOURSECRETACCESSKEY]
@@ -186,10 +187,13 @@ Zipkin at http://<loadbalancer>:9411.  Currently orders provide the most compreh
 ### Uninstall App
 
 Remove all deployments (will also remove pods)
+
 ```
 ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl delete deployments --all
 ```
+
 Remove all services, except kubernetes
+
 ```
 ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl delete service $(kubectl get services | cut -d" " -f1 | grep -v NAME | grep -v kubernetes)
 ```
