@@ -79,7 +79,7 @@ function dnsend
 		| jq -r '.StackResources[0].PhysicalResourceId' )
 	elbdns=$(aws elb describe-load-balancers --load-balancer-name $elbr \
 		| jq -r '.LoadBalancerDescriptions[0].DNSName' )
-	printf "Visit Zipkin here: http://$elbdns\n"
+	printf "Visit Zipkin here: http://$elbdns:9411\n"
 }
 
 function loadtest
