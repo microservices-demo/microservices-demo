@@ -2,7 +2,9 @@ variable "aws_amis" {
   description = "The AMI to use for setting up the instances."
   default = {
     # Ubuntu Xenial 16.04 LTS
-    "eu-west-1" = "ami-844e0bf7"
+    "eu-west-1" = "ami-58b7972b"
+    "eu-west-2" = "ami-ede2e889"
+    "eu-central-1" = "ami-1535f57a"
   }
 }
 
