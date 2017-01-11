@@ -30,7 +30,7 @@
             "http://",
             {
               "Fn::GetAtt": [
-                "EcsFrontendElasticLoadBalancing",
+                "EcsZipkinElasticLoadBalancing",
                 "DNSName"
               ]
             },
