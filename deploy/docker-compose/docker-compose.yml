@@ -12,6 +12,7 @@ services:
     image: weaveworksdemos/edge-router
     ports:
       - '80:80'
+      - '8080:8080'
     cap_drop:
       - all
     cap_add:
@@ -22,7 +23,6 @@ services:
       - DAC_OVERRIDE
     read_only: true
     tmpfs:
-      - /var/cache/nginx:rw,noexec,nosuid
       - /var/run:rw,noexec,nosuid
     hostname: edge-router
     restart: always
@@ -165,13 +165,6 @@ services:
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
-  user-sim:
-    image: weaveworksdemos/load-test
-    cap_drop:
-      - all
-    read_only: true
-    hostname: user-simulator
-    command: "-d 60 -r 200 -c 2 -h edge-router"
   zipkin:
     image: openzipkin/zipkin 
     hostname: zipkin
@@ -187,3 +180,10 @@ services:
       - /tmp:rw,noexec,nosuid
     ports:
       - "9411:9411"
+  user-sim:
+    image: weaveworksdemos/load-test
+    cap_drop:
+      - all
+    read_only: true
+    hostname: user-simulator
+    command: "-d 60 -r 200 -c 2 -h edge-router"
