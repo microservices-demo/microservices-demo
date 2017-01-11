@@ -1173,26 +1173,47 @@
           },
           {
             "Fn::If": [
-              "DoDeployExampleApp",
-              {
-                "InstancePort": "9411",
-                "LoadBalancerPort": "9411",
-                "InstanceProtocol": "HTTP",
-                "Protocol": "HTTP"
-              },
-              {
-                "Ref": "AWS::NoValue"
-              }
-            ]
-          },
-          {
-            "Fn::If": [
               "UseWeaveScopeStandalone",
               {
                 "InstancePort": "4040",
                 "LoadBalancerPort": "4040",
                 "InstanceProtocol": "TCP",
                 "Protocol": "TCP"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "Ref": "EcsSecurityGroup"
+          }
+        ],
+        "Subnets": [
+          {
+            "Ref": "PubSubnetAz1"
+          },
+          {
+            "Ref": "PubSubnetAz2"
+          }
+        ]
+      }
+    },
+    "EcsZipkinElasticLoadBalancing": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "DependsOn": "InternetGateway",
+      "Properties": {
+        "Listeners": [
+          {
+            "Fn::If": [
+              "DoDeployExampleApp",
+              {
+                "InstancePort": "9411",
+                "LoadBalancerPort": "9411",
+                "InstanceProtocol": "HTTP",
+                "Protocol": "HTTP"
               },
               {
                 "Ref": "AWS::NoValue"
