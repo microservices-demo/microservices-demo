@@ -21,26 +21,17 @@
   </head>
   <body>
 
-    <div class="page-container container">
-      <div class="header clearfix">
-        <div class="header-home"><a href="{{site.main_url_prefix}}/">Socks Shop</a></div>
-        <nav>
-          <ul class="nav header-nav">
-            <li><a href="{{site.main_url_prefix}}/docs/quickstart.html">Quickstart</a></li>
-            <li class="active"><a href="{{site.main_url_prefix}}/docs/index.html">Docs</a></li>
-            <li><a href="http://github.com/microservices-demo" target="_blank">GitHub</a></li>
-          </ul>
-        </nav>
-      </div>
+    <div class="container">
+      {% include header.html docs="true" %}
 
       <div class="inner">
         <h1>Documentation</h1>
 
         <div class="row">
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             {% include doc_menu.html %}
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-9">
             {{ content }}
           </div>
         </div>
