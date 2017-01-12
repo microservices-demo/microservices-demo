@@ -52,6 +52,7 @@ Begin by setting the appropriate AWS environment variables.
 export AWS_ACCESS_KEY_ID=[YOURACCESSKEYID]
 export AWS_SECRET_ACCESS_KEY=[YOURSECRETACCESSKEY]
 export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
+export TF_VAR_aws_region=$AWS_DEFAULT_REGION
 ```
 
 Next we'll create a private key for use during this demo.
@@ -194,9 +195,7 @@ Remove all deployments (will also remove pods)
 ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl delete deployments --all
 ```
 
-```
 Remove all services, except kubernetes
-```
 
 ```
 ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl delete service $(kubectl get services | cut -d" " -f1 | grep -v NAME | grep -v kubernetes)
