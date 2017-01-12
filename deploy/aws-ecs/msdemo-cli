@@ -78,6 +78,11 @@ function dnsend
 
 function loadtest
 {
+        aws cloudformation wait stack-create-complete --stack-name $STACK_NAME
+        if [ $? -ne 0 ]; then
+            echo "Failed to create stack."
+            exit 1
+        fi
 	elbr=$(aws cloudformation describe-stack-resources \
 	       	--stack-name $STACK_NAME --logical-resource-id EcsFrontendElasticLoadBalancing \
 		| jq -r '.StackResources[0].PhysicalResourceId' )
