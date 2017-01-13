@@ -51,7 +51,7 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 <!-- deploy-doc-start create-infrastructure -->
 
     weave launch
-    docker-compose -f deploy/docker-compose/docker-compose.yml up -d
+    docker-compose -f deploy/docker-compose-weave/docker-compose.yml up -d
 
 <!-- deploy-doc-end -->
 
