@@ -88,7 +88,7 @@ Zipkin at http://localhost:9411.  Currently orders provide the most comprehensiv
 
 <!-- deploy-doc-start destroy-infrastructure -->
 
-    docker-compose -f deploy/docker-compose/docker-compose.yml down
+    docker-compose -f deploy/docker-compose-weave/docker-compose.yml down
     weave stop
 
 <!-- deploy-doc-end -->
