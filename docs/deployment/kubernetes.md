@@ -35,6 +35,7 @@ cd microservices-demo
 kubectl run -\-namespace=sock-shop healthcheck -\-image=ruby:2.3 sleep 10000
 sleep 90
 kube_id=\$(kubectl get pods -\-namespace=sock-shop | grep healthcheck | awk '{print \$1}')
+kubectl exec -\-namespace=sock-shop \$kube_id -\- sh -c "gem install awesome_print"
 kubectl exec -\-namespace=sock-shop \$kube_id -\- sh -c "curl -o healthcheck.rb \"https://raw.githubusercontent.com/microservices-demo/microservices-demo/master/deploy/healthcheck.rb\"; chmod +x ./healthcheck.rb; ./healthcheck.rb -s user,catalogue,queue-master,cart,shipping,payment,orders"
 
 EOF
@@ -165,7 +166,7 @@ This will send some traffic to the application, which will form the connection g
 <!-- deploy-doc-start run-tests -->
 
     elb_url=$(terraform output -json | jq -r '.sock_shop_address.value')
-    docker run --rm weaveworksdemos/load-test -d 300 -h $elb_url -c 3 -r 10
+    docker run --rm weaveworksdemos/load-test -d 300 -h $elb_url -c 2 -r 100
 
 <!-- deploy-doc-end -->
 
@@ -207,10 +208,10 @@ Destroying the entire infrastructure
 
     terraform destroy -force deploy/kubernetes/terraform/
     aws ec2 delete-key-pair -\-key-name deploy-docs-k8s
-    rm ~/.ssh/deploy-docs-k8s.pem
-    rm terraform.tfstate
-    rm terraform.tfstate.backup
-    rm k8s-init.log
-    rm join.cmd
+    rm -f ~/.ssh/deploy-docs-k8s.pem
+    rm -f terraform.tfstate
+    rm -f terraform.tfstate.backup
+    rm -f k8s-init.log
+    rm -f join.cmd
 
 <!-- deploy-doc-end -->
