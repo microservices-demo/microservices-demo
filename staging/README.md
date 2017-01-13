@@ -6,8 +6,6 @@ Use the scripts in this directory to set up a Kubernetes cluster on AWS from a B
 
 * Install terraform
 
-* Install kubectl
-
 * Clone this repository
 
 * Copy [terraform.tfvars.example](./terraform.tfvars.example) to terraform.tfvars and enter the missing information. Look for a description of the variables in [variables.tf](./variables.tf).
@@ -18,36 +16,20 @@ Use the scripts in this directory to set up a Kubernetes cluster on AWS from a B
 
   If it somehow fails, destroy the cluster with `terraform destroy -force` and try again.
 
-* Install the microservices demo
+* Setup Weave Flux
 
   ```
-  kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml -f ~/microservices-demo/deploy/kubernetes/manifests
+  fluxctl get-config > flux.conf
   ```
 
-* Install Weave Scope
+  Fill in missing values...
 
   ```
-  kubectl apply -f ~/microservices-demo/deploy/kubernetes/definitions/weavescope.yaml --validate=false
+  fluxctl set-config --file=flux.conf
+
+  for svc in front-end catalogue orders queue-master user cart catalogue user-db catalogue-db payment shipping; do
+    fluxctl automate --service=sock-shop/$svc
+  done
   ```
 
-* Get the NodePort of the sock-shop front-end service
-
-  ```
-  kubectl describe svc front-end --namespace sock-shop
-  ```
-
-* Get the NodePort of the scope service
-
-  ```
-  kubectl describe svc weavescope-app
-  ```
-
-* Add the NodePorts to the AWS Security Group
-
-  ```
-  aws ec2 authorize-security-group-ingress --group-name microservices-demo-staging-k8s --protocol tcp --port [front-end NodePort] --cidr 0.0.0.0/0
-  aws ec2 authorize-security-group-ingress --group-name microservices-demo-staging-k8s --protocol tcp --port [weavescope NodePort] --cidr 0.0.0.0/0
-  ```
-
-* Access the Sock Shop front end and Weave Scope on any of the addresses output by `terraform output` on their respective ports.
-
+* Access the Sock Shop via the elb url displayed when you run `terraform output`. Weave Scope/Flux should be visible from Weave Cloud.

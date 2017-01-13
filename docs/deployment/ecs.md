@@ -80,6 +80,14 @@ EOF
     fi
 -->
 
+### Opentracing
+
+Zipkin is part of the deployment and has been written into some of the services.  While the system is up you can view the traces.
+To get the endpoint for Zipkin you can run 
+
+./msdemo dns
+
+Currently orders provide the most comprehensive traces.
 
 #### Cleanup
 

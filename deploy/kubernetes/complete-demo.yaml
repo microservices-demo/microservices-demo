@@ -310,7 +310,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.4.1
+        image: weaveworksdemos/orders:0.4.2
         ports:
         - containerPort: 80
         securityContext:
