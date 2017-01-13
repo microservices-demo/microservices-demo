@@ -164,9 +164,9 @@ EOF
 
     terraform destroy -force deploy/docker-swarm/infra/aws/
     aws ec2 delete-key-pair -\-key-name docker-swarm
-    rm ~/.ssh/docker-swarm.pem
-    rm terraform.tfstate
-    rm terraform.tfstate.backup
+    rm -f ~/.ssh/docker-swarm.pem
+    rm -f terraform.tfstate
+    rm -f terraform.tfstate.backup
 
 <!-- deploy-doc-end -->
 
