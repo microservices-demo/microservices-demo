@@ -207,10 +207,10 @@ Destroying the entire infrastructure
 
     terraform destroy -force deploy/kubernetes/terraform/
     aws ec2 delete-key-pair -\-key-name deploy-docs-k8s
-    rm ~/.ssh/deploy-docs-k8s.pem
-    rm terraform.tfstate
-    rm terraform.tfstate.backup
-    rm k8s-init.log
-    rm join.cmd
+    rm -f ~/.ssh/deploy-docs-k8s.pem
+    rm -f terraform.tfstate
+    rm -f terraform.tfstate.backup
+    rm -f k8s-init.log
+    rm -f join.cmd
 
 <!-- deploy-doc-end -->
