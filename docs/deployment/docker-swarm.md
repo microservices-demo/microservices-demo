@@ -77,6 +77,7 @@ Begin by setting the appropriate AWS environment variables.
 export AWS_ACCESS_KEY_ID=[YOURACCESSKEYID]
 export AWS_SECRET_ACCESS_KEY=[YOURSECRETACCESSKEY]
 export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
+export TF_VAR_aws_region=$AWS_DEFAULT_REGION
 ```
 
 <!-- deploy-doc-hidden pre-install
