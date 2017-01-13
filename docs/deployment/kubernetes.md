@@ -165,7 +165,7 @@ This will send some traffic to the application, which will form the connection g
 <!-- deploy-doc-start run-tests -->
 
     elb_url=$(terraform output -json | jq -r '.sock_shop_address.value')
-    docker run --rm weaveworksdemos/load-test -d 300 -h $elb_url -c 3 -r 10
+    docker run --rm weaveworksdemos/load-test -d 300 -h $elb_url -c 2 -r 100
 
 <!-- deploy-doc-end -->
 
