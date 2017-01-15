@@ -8,15 +8,6 @@ deploymentScriptDir: "aws-ecs"
 
 <!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
 
-<!-- deploy-doc-hidden pre-install
-
-    mkdir -p ~/.ssh/
-    curl -sSL https://get.docker.com/ | sh
-    apt-get install -yq curl jq python-pip unzip build-essential python-dev
-    pip install awscli
-
--->
-
 ### Goal
 
 This directory contains the necessary tools to install an instance of the microservice demo application on [AWS ECS](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html).
@@ -54,26 +45,26 @@ To ensure that the application is running properly, you could perform some load 
 
 <!-- deploy-doc-start run-tests -->
 
-    cd deploy/aws-ecs/
     ./msdemo-cli loadtest
 
 <!-- deploy-doc-end -->
 
 <!-- deploy-doc-hidden run-tests
 
-    pem=microservices-demo-key
-    chmod 600 -R ~/.ssh/
-    instance=$(aws ec2 describe-instances -\-filter "Name=key-name,Values=microservices-demo-key" "Name=instance-state-name,Values=running" | jq -r ".Reservations[0].Instances[0].PublicIpAddress")
+    frontend_task=$(aws ecs list-tasks -\-cluster weave-ecs-demo-cluster -\-service-name weavedemo-edge-router-service  -\-query 'taskArns[0]' -\-output text)
+    container_inst=$(aws ecs describe-tasks -\-cluster weave-ecs-demo-cluster -\-tasks $frontend_task -\-query 'tasks[0].containerInstanceArn' -\-output text)
+    instance_id=$(aws ecs describe-container-instances -\-cluster weave-ecs-demo-cluster -\-container-instances $container_inst -\-query 'containerInstances[0].ec2InstanceId'  -\-output text)
+    dns_name=$(aws ec2 describe-instances -\-instance-ids $instance_id -\-query 'Reservations[0].Instances[*].PublicDnsName' -\-output text)
 
     cat >> /root/healthcheck.sh <<-EOF
 #!/usr/bin/env bash
 eval \$(weave env)
 docker build -t healthcheck -f Dockerfile-healthcheck .
-docker run -\-rm -t healthcheck -s user,catalogue,cart,shipping,payment,orders,queue-master -d 180 -r 5
+docker run -\-rm -t healthcheck -s user.weave.local,catalogue.weave.local,cart.weave.local,shipping.weave.local,payment.weave.local,orders.weave.local,queue-master.weave.local -r 5
 EOF
 
-    scp -i ~/.ssh/$pem.pem -o "StrictHostKeyChecking no" /root/healthcheck.sh deploy/healthcheck.rb deploy/Dockerfile-healthcheck ec2-user@$instance:/home/ec2-user/
-    ssh -i ~/.ssh/$pem.pem ec2-user@$instance "chmod +x healthcheck.sh; ./healthcheck.sh"
+    scp -i deploy/aws-ecs/weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" /root/healthcheck.sh deploy/healthcheck.rb deploy/Dockerfile-healthcheck ec2-user@$dns_name:/home/ec2-user/
+    ssh -i deploy/aws-ecs/weave-ecs-demo-key.pem ec2-user@$dns_name "chmod +x healthcheck.sh; ./healthcheck.sh"
 
     if [ $? -ne 0 ]; then
         exit 1;
@@ -95,7 +86,6 @@ To tear down the containers and their associated AWS objects, run the cleanup sc
 
 <!-- deploy-doc-start destroy-infrastructure -->
 
-    cd deploy/aws-ecs/
     ./msdemo-cli destroy
 
 <!-- deploy-doc-end -->
@@ -105,7 +95,7 @@ To tear down the containers and their associated AWS objects, run the cleanup sc
 ##### build
 Builds the deployment using cloud formation
 
-##### destroy
+##### destroy 
 Destroys the deployment
 
 ##### status
@@ -116,3 +106,5 @@ Get DNS endpoint
 
 ##### loadtest
 Run loadtest
+
+
