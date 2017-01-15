@@ -14,9 +14,9 @@ fi;
 docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
 
 for svc in openapi healthcheck; do
-    export REPO=${GROUP}/$(basename $svc); 
+    export REPO=${GROUP}/$(basename $svc);
     echo "Building ${REPO}:$TRAVIS_COMMIT";
-    docker build -t ${REPO}:$TRAVIS_COMMIT ./openapi; DOCKER_EXIT=$(echo $?); if [[ "$DOCKER_EXIT" > 0 ]] ; then
+    docker build -t ${REPO}:$TRAVIS_COMMIT ./$svc; DOCKER_EXIT=$(echo $?); if [[ "$DOCKER_EXIT" > 0 ]] ; then
       echo "Docker build failed with exit code $DOCKER_EXIT";
       exit 1;
     fi;
