@@ -6,15 +6,24 @@ deploymentScriptDir: "aws-ecs"
 
 ## Deployment on Amazon EC/2 Container Service
 
-<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
-
-### Goal
-
 This directory contains the necessary tools to install an instance of the microservice demo application on [AWS ECS](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html).
 
-### Installation
+### Pre-requisites
+* [AWS Account](https://aws.amazon.com/)
+* [awscli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
+* [Docker](https://www.docker.com/products/overview)
 
-To deploy, you will need an [Amazon Web Services (AWS)](http://aws.amazon.com) account.
+<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
+<!-- deploy-doc-start pre-install -->
+
+    curl -sSL https://get.docker.com/ | sh
+    apt-get update && apt-get install -yq jq python-pip curl unzip build-essential python-dev
+    pip install awscli
+
+<!-- deploy-doc-end -->
+
+
+### Installation
 
 #### Using CloudFormation
 
@@ -50,9 +59,9 @@ To ensure that the application is running properly, you could perform some load 
 
 <!-- deploy-doc-hidden run-tests
 
-    frontend_task=$(aws ecs list-tasks -\-cluster weave-ecs-demo-cluster -\-service-name weavedemo-edge-router-service  -\-query 'taskArns[0]' -\-output text)
-    container_inst=$(aws ecs describe-tasks -\-cluster weave-ecs-demo-cluster -\-tasks $frontend_task -\-query 'tasks[0].containerInstanceArn' -\-output text)
-    instance_id=$(aws ecs describe-container-instances -\-cluster weave-ecs-demo-cluster -\-container-instances $container_inst -\-query 'containerInstances[0].ec2InstanceId'  -\-output text)
+    frontend_task=$(aws ecs list-tasks -\-cluster microservices-demo-stack -\-service-name weavedemo-edge-router-service  -\-query 'taskArns[0]' -\-output text)
+    container_inst=$(aws ecs describe-tasks -\-cluster microservices-demo-stack -\-tasks $frontend_task -\-query 'tasks[0].containerInstanceArn' -\-output text)
+    instance_id=$(aws ecs describe-container-instances -\-cluster microservices-demo-stack -\-container-instances $container_inst -\-query 'containerInstances[0].ec2InstanceId'  -\-output text)
     dns_name=$(aws ec2 describe-instances -\-instance-ids $instance_id -\-query 'Reservations[0].Instances[*].PublicDnsName' -\-output text)
 
     cat >> /root/healthcheck.sh <<-EOF
@@ -62,8 +71,8 @@ docker build -t healthcheck -f Dockerfile-healthcheck .
 docker run -\-rm -t healthcheck -s user.weave.local,catalogue.weave.local,cart.weave.local,shipping.weave.local,payment.weave.local,orders.weave.local,queue-master.weave.local -r 5
 EOF
 
-    scp -i deploy/aws-ecs/weave-ecs-demo-key.pem -o "StrictHostKeyChecking no" /root/healthcheck.sh deploy/healthcheck.rb deploy/Dockerfile-healthcheck ec2-user@$dns_name:/home/ec2-user/
-    ssh -i deploy/aws-ecs/weave-ecs-demo-key.pem ec2-user@$dns_name "chmod +x healthcheck.sh; ./healthcheck.sh"
+    scp -i ~/.ssh/microservices-demo-key.pem -o "StrictHostKeyChecking no" /root/healthcheck.sh deploy/healthcheck.rb deploy/Dockerfile-healthcheck ec2-user@$dns_name:/home/ec2-user/
+    ssh -i ~/.ssh/microservices-demo-key.pem ec2-user@$dns_name "chmod +x healthcheck.sh; ./healthcheck.sh"
 
     if [ $? -ne 0 ]; then
         exit 1;
@@ -105,5 +114,3 @@ Get DNS endpoint
 
 ##### loadtest
 Run loadtest
-
-

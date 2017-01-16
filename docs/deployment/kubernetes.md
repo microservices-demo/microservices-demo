@@ -17,7 +17,7 @@ Weave Net and Weave Scope.
 <!-- deploy-doc-start pre-install -->
 
     curl -sSL https://get.docker.com/ | sh
-    apt-get install -yq jq python-pip curl unzip build-essential python-dev
+    apt-get update && apt-get install -yq jq python-pip curl unzip build-essential python-dev
     pip install awscli
     curl -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip
     unzip /tmp/terraform.zip -d /usr/bin
