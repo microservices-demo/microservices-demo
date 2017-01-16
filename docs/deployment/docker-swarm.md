@@ -26,10 +26,10 @@ cd microservices-demo
     curl -sSL https://get.docker.com/ | sh
     apt-get install -yq curl jq python-pip unzip build-essential python-dev
 
-    curl https://releases.hashicorp.com/packer/0.12.0/packer_0.12.0_linux_amd64.zip -o /root/packer.zip
+    curl https://releases.hashicorp.com/packer/0.12.1/packer_0.12.1_linux_amd64.zip -o /root/packer.zip
     unzip /root/packer.zip -d /usr/bin
 
-    curl https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip -o /root/terraform.zip
+    curl https://releases.hashicorp.com/terraform/0.8.4/terraform_0.8.4_linux_amd64.zip -o /root/terraform.zip
     unzip /root/terraform.zip -d /usr/bin
 
     pip install awscli
