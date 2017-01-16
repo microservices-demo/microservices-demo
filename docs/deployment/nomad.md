@@ -182,7 +182,7 @@ There is a separate load-test available to simulate user traffic to the applicat
 This will send some traffic to the application, which will form the connection graph that you can view in Scope or Weave Cloud.
 
 ```
-docker run --rm weaveworksdemos/load-test -d 300 -h 192.168.59.102 -c 3 -r 10
+docker run --rm weaveworksdemos/load-test -d 300 -h 192.168.59.102 -c 2 -r 100
 ```
 
 <!-- deploy-doc-hidden run-tests
@@ -191,7 +191,7 @@ docker run --rm weaveworksdemos/load-test -d 300 -h 192.168.59.102 -c 3 -r 10
     cd deploy/nomad
     vagrant ssh node1 -c "nomad run weavedemo.nomad"
     public_dns=$(aws ec2 describe-instances -\-filter "Name=tag:Name,Values=nomad-node" "Name=instance-state-name,Values=running" | jq -r ".Reservations[].Instances[0].PublicIpAddress" | head -n1)
-    docker run -\-rm weaveworksdemos/load-test -d 300 -h $public_dns -c 3 -r 10
+    docker run -\-rm weaveworksdemos/load-test -d 300 -h $public_dns -c 2 -r 100
 
     vagrant ssh node1 -c "docker build -t healthcheck -f Dockerfile-healthcheck ."
     vagrant ssh node1 -c "eval \$(weave env); nomad run weavedemo.nomad; docker create -\-name healthcheck healthcheck -s orders,cart,payment,user,catalogue,shipping,queue-master -d 60 -r 5"

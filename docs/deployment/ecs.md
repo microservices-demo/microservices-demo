@@ -41,7 +41,9 @@ Other required packages are:
 
 This may take a few minutes to complete. Once it's done, it will print the URL for the demo frontend, as well as the URL for the Weave Scope instance that can be used to visualize the containers and their connections.
 
-To ensure that the application is running properly, you could perform some load testing on it:
+### Run tests
+
+To ensure that the application is running properly, you could perform some load testing on it using the load-test container. This will send some traffic to the application and generate a report at the end:
 
 <!-- deploy-doc-start run-tests -->
 
