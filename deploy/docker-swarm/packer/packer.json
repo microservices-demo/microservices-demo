@@ -2,7 +2,7 @@
     "variables": {
         "aws_access_key": "",
         "aws_secret_key": "",
-        "aws_region": "{{env `TF_VAR_aws_region`}}",
+        "aws_region": "{{env `AWS_DEFAULT_REGION`}}",
         "gcloud_project_id": "{{env `TF_VAR_project_name`}}",
         "gcloud_zone": "europe-west1-b"
     },
@@ -11,7 +11,15 @@
         "access_key": "{{user `aws_access_key`}}",
         "secret_key": "{{user `aws_secret_key`}}",
         "region": "{{user `aws_region`}}",
-        "source_ami": "ami-0d77397e",
+        "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name": "*ubuntu-xenial-16.04-amd64-server-*",
+                "root-device-type": "ebs"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+        },
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
         "ami_name": "docker-swarm"
