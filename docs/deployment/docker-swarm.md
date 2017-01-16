@@ -69,7 +69,7 @@ Feel free to run it by issuing the following command:
 
 ## Docker Swarm (Multi-Node)
 
-<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
+<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION TF_VAR_aws_region -->
 
 Begin by setting the appropriate AWS environment variables.
 
