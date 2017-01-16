@@ -26,19 +26,15 @@ By clicking "Launch Stack" button above, you will get redirected to AWS CloudFor
 
 To use CLI, you also need to have the [AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html) set up and configured.
 
-To deploy and start the demo, run the setup script to deploy to ECS:
-<!-- deploy-doc-start pre-install -->
+Other required packages are:
+[jq](https://stedolan.github.io/jq/)
+[docker](https://docs.docker.com/engine/getstarted/step_one/)
 
-    curl -sSL https://get.docker.com/ | sh
-    apt-get install -yq jq python-pip build-essential python-dev
-    pip install awscli
-
-<!-- deploy-doc-end -->
 
 <!-- deploy-doc-start create-infrastructure -->
 
     cd deploy/aws-ecs/
-    STORE_DNS_NAME_HERE=ecs-endpoint ./setup.sh
+    ./msdemo-cli build
 
 <!-- deploy-doc-end -->
 
@@ -51,7 +47,7 @@ To ensure that the application is running properly, you could perform some load 
 
 <!-- deploy-doc-start run-tests -->
 
-    docker run weaveworksdemos/load-test -d 60 -h `cat deploy/aws-ecs/ecs-endpoint` -c 2 -r 100
+    ./msdemo-cli loadtest
 
 <!-- deploy-doc-end -->
 
@@ -77,6 +73,14 @@ EOF
     fi
 -->
 
+### Opentracing
+
+Zipkin is part of the deployment and has been written into some of the services.  While the system is up you can view the traces.
+To get the endpoint for Zipkin you can run 
+
+./msdemo dns
+
+Currently orders provide the most comprehensive traces.
 
 #### Cleanup
 
@@ -84,24 +88,25 @@ To tear down the containers and their associated AWS objects, run the cleanup sc
 
 <!-- deploy-doc-start destroy-infrastructure -->
 
-    cd deploy/aws-ecs/
-    ./cleanup.sh
+    ./msdemo-cli destroy
 
 <!-- deploy-doc-end -->
 
-#### Background
+#### ms-demo Commands
 
-This flow is based on the Weaveworks guide ["The Fastest Path to Docker on ECS: Microservice Deployment on Amazon EC2 Container Service with Weave Net"](https://www.weave.works/guides/service-discovery-and-load-balancing-with-weave-on-amazon-ecs-2/). The guide is accompanied by a sample project with installation scripts, found at [github.com/weaveworks/guides/aws-ecs](https://github.com/weaveworks/guides/tree/master/aws-ecs).
+##### build
+Builds the deployment using cloud formation
 
-The `setup.sh` and `cleanup.sh` scripts were taken from that repository and modified for the microservice demo application.
-This involved several steps, as detailed below.
+##### destroy 
+Destroys the deployment
 
-#### AWS ECS Task Definitions
+##### status
+Get status of deployment, will throw error if deployment was already destroyed
 
-[AWS ECS](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html) expects to be provided with a set of [task definitions](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_defintions.html), which describe how the various containers should be scheduled. Each task definition may include several container definitions (up to 10), which is meant to be used for scheduling tightly coupled containers. Our containers are loosely coupled by design (and we have more than 10 in any case), so we create a separate task definition for each container.
+##### dns
+Get DNS endpoint
 
-To create those task definitions, the Docker Compose file at [docker-swarm/docker-compose.yml](../docker-swarm/docker-compose.yml) was used as a starting point. It was converted to the ECS format with the [container-transform](https://github.com/micahhausler/container-transform) tool. Afterwards, a few manual adaptations were made to add the missing `memory` setting for each container, and to split the container definitions into [separate JSON files](task-definitions), one for every ECS task definition.
+##### loadtest
+Run loadtest
 
-#### Adapting the Scripts
 
-The `setup.sh` and `cleanup.sh` from the reference repository set up everything necessary to deploy a pair of containers with a single task definition. They were modified to create a task definition for each container, along with an [ECS Service](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html) scaled to a single instance of each container.

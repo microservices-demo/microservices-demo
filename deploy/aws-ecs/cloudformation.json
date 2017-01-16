@@ -21,6 +21,25 @@
       },
       "Description": "App frontend"
     },
+    "AppZipkin": {
+      "Condition": "DoDeployExampleApp",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "http://",
+            {
+              "Fn::GetAtt": [
+                "EcsZipkinElasticLoadBalancing",
+                "DNSName"
+              ]
+            },
+            ":9411"
+          ]
+        ]
+      },
+      "Description": "Zipkin UI"
+    },
     "WeaveScope": {
       "Condition": "UseWeaveScopeStandalone",
       "Value": {
@@ -87,7 +106,7 @@
     "EcsInstanceType": {
       "Type": "String",
       "Description": "Type of the EC2 instance(s) to deploy",
-      "Default": "t2.medium",
+      "Default": "t2.large",
       "AllowedValues": [
         "t2.micro",
         "t2.small",
@@ -210,7 +229,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/cart",
             "Name": "cart",
-            "Memory": 512
+            "Memory": 1024
           }
         ],
         "Volumes": []
@@ -238,7 +257,13 @@
             "Essential": true,
             "Image": "weaveworksdemos/catalogue",
             "Name": "catalogue",
-            "Memory": 32
+            "Memory": 32,
+            "Environment": [
+              {
+                "Name": "ZIPKIN",
+                "Value": "http://zipkin:9411/api/v1/spans"
+              }
+	    ]
           }
         ],
         "Volumes": []
@@ -340,7 +365,13 @@
             "Essential": true,
             "Image": "weaveworksdemos/user",
             "Name": "user",
-            "Memory": 32
+            "Memory": 32,
+            "Environment": [
+              {
+                "Name": "ZIPKIN",
+                "Value": "http://zipkin:9411/api/v1/spans"
+              }
+	    ]
           }
         ],
         "Volumes": []
@@ -424,7 +455,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/orders",
             "Name": "orders",
-            "Memory": 512
+            "Memory": 1024
           }
         ],
         "Volumes": []
@@ -452,7 +483,13 @@
             "Essential": true,
             "Image": "weaveworksdemos/payment",
             "Name": "payment",
-            "Memory": 32
+            "Memory": 32,
+            "Environment": [
+              {
+                "Name": "ZIPKIN",
+                "Value": "http://zipkin:9411/api/v1/spans"
+              }
+	    ]
           }
         ],
         "Volumes": []
@@ -480,7 +517,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/queue-master",
             "Name": "queue-master",
-            "Memory": 512,
+            "Memory": 768,
             "MountPoints": [
               {
                 "ContainerPath": "/var/run/docker.sock",
@@ -549,7 +586,7 @@
             "Essential": true,
             "Image": "weaveworksdemos/shipping",
             "Name": "shipping",
-            "Memory": 512
+            "Memory": 1024
           }
         ],
         "Volumes": []
@@ -565,6 +602,40 @@
         "DesiredCount": 1,
         "TaskDefinition": {
           "Ref": "ShippingTask"
+        }
+      }
+    },
+    "ZipkinTask": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "openzipkin/zipkin",
+            "Name": "zipkin",
+            "Memory": 1024,
+            "PortMappings": [
+              {
+                "HostPort": 9411,
+                "ContainerPort": 9411
+              }
+            ]
+          }
+        ],
+        "Volumes": []
+      }
+    },
+    "ZipkinService": {
+      "Condition": "DoDeployExampleApp",
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "EcsCluster"
+        },
+        "DesiredCount": 1,
+        "TaskDefinition": {
+          "Ref": "ZipkinTask"
         }
       }
     },
@@ -717,6 +788,18 @@
         "IpProtocol": "tcp",
         "FromPort": "22",
         "ToPort": "22",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "EcsSecurityGroupIngressZipkinExtPort": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "EcsSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "9411",
+        "ToPort": "9411",
         "CidrIp": "0.0.0.0/0"
       }
     },
@@ -1048,6 +1131,9 @@
         "LoadBalancerNames": [
           {
             "Ref": "EcsFrontendElasticLoadBalancing"
+          },
+          {
+            "Ref": "EcsZipkinElasticLoadBalancing"
           }
         ],
         "Tags": [
@@ -1081,7 +1167,8 @@
                 "InstancePort": "80",
                 "LoadBalancerPort": "80",
                 "InstanceProtocol": "HTTP",
-                "Protocol": "HTTP"
+                "Protocol": "HTTP",
+		"PolicyNames" : ["weave-sticky-cookie-policy"]
               },
               {
                 "Ref": "AWS::NoValue"
@@ -1108,6 +1195,54 @@
             "Ref": "EcsSecurityGroup"
           }
         ],
+        "Subnets": [
+          {
+            "Ref": "PubSubnetAz1"
+          },
+          {
+            "Ref": "PubSubnetAz2"
+          }
+        ],
+	"AppCookieStickinessPolicy" : [
+	  {
+	    "CookieName" : "md.sid",
+	    "PolicyName" : "weave-sticky-cookie-policy"
+	  }
+	]
+      }
+    },
+    "EcsZipkinElasticLoadBalancing": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "DependsOn": "InternetGateway",
+      "Properties": {
+        "Listeners": [
+          {
+            "Fn::If": [
+              "DoDeployExampleApp",
+              {
+                "InstancePort": "9411",
+                "LoadBalancerPort": "9411",
+                "InstanceProtocol": "HTTP",
+                "Protocol": "HTTP"
+              },
+              {
+                "Ref": "AWS::NoValue"
+              }
+            ]
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "Ref": "EcsSecurityGroup"
+          }
+        ],
+        "HealthCheck" :{
+          "HealthyThreshold" : "2",
+          "Interval" : "30",
+          "Target" : "HTTP:9411/",
+          "Timeout" : "5",
+          "UnhealthyThreshold" : "10"
+        },
         "Subnets": [
           {
             "Ref": "PubSubnetAz1"

@@ -1,6 +1,5 @@
 ---
 layout: default
-deployDoc: true
 ---
 
 ## Sock Shop via Docker Swarm + Weave Scope

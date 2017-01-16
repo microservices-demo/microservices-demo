@@ -72,6 +72,7 @@ Feel free to run it by issuing the following command:
 <!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
 
 Begin by setting the appropriate AWS environment variables.
+
 ```
 export AWS_ACCESS_KEY_ID=[YOURACCESSKEYID]
 export AWS_SECRET_ACCESS_KEY=[YOURSECRETACCESSKEY]

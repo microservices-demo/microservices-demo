@@ -35,6 +35,7 @@ cd microservices-demo
 kubectl run -\-namespace=sock-shop healthcheck -\-image=ruby:2.3 sleep 10000
 sleep 90
 kube_id=\$(kubectl get pods -\-namespace=sock-shop | grep healthcheck | awk '{print \$1}')
+kubectl exec -\-namespace=sock-shop \$kube_id -\- sh -c "gem install awesome_print"
 kubectl exec -\-namespace=sock-shop \$kube_id -\- sh -c "curl -o healthcheck.rb \"https://raw.githubusercontent.com/microservices-demo/microservices-demo/master/deploy/healthcheck.rb\"; chmod +x ./healthcheck.rb; ./healthcheck.rb -s user,catalogue,queue-master,cart,shipping,payment,orders"
 
 EOF
@@ -43,13 +44,16 @@ EOF
     aws ec2 describe-key-pairs -\-key-name deploy-docs-k8s &>/dev/null
     if [ $? -eq 0 ]; then aws ec2 delete-key-pair -\-key-name deploy-docs-k8s; fi
 -->
+
 ### Setup Kubernetes
 
 Begin by setting the appropriate AWS environment variables.
+
 ```
 export AWS_ACCESS_KEY_ID=[YOURACCESSKEYID]
 export AWS_SECRET_ACCESS_KEY=[YOURSECRETACCESSKEY]
 export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
+export TF_VAR_aws_region=$AWS_DEFAULT_REGION
 ```
 
 Next we'll create a private key for use during this demo.
@@ -177,19 +181,23 @@ This will send some traffic to the application, which will form the connection g
     fi
 
 -->
+
 ### Opentracing
 
 Zipkin is part of the deployment and has been written into some of the services.  While the system is up you can view the traces in
-Zipkin at http://<loadbalancer>:9411.  Currently orders provide the most comprehensive traces.
+Zipkin at http://\<loadbalancer\>:9411.  Currently orders provide the most comprehensive traces.
 
 
 ### Uninstall App
 
 Remove all deployments (will also remove pods)
+
 ```
 ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl delete deployments --all
 ```
+
 Remove all services, except kubernetes
+
 ```
 ssh -i ~/.ssh/deploy-docs-k8s.pem ubuntu@$master_ip kubectl delete service $(kubectl get services | cut -d" " -f1 | grep -v NAME | grep -v kubernetes)
 ```
@@ -200,10 +208,10 @@ Destroying the entire infrastructure
 
     terraform destroy -force deploy/kubernetes/terraform/
     aws ec2 delete-key-pair -\-key-name deploy-docs-k8s
-    rm ~/.ssh/deploy-docs-k8s.pem
-    rm terraform.tfstate
-    rm terraform.tfstate.backup
-    rm k8s-init.log
-    rm join.cmd
+    rm -f ~/.ssh/deploy-docs-k8s.pem
+    rm -f terraform.tfstate
+    rm -f terraform.tfstate.backup
+    rm -f k8s-init.log
+    rm -f join.cmd
 
 <!-- deploy-doc-end -->
