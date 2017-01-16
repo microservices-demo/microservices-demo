@@ -26,10 +26,10 @@ cd microservices-demo
     curl -sSL https://get.docker.com/ | sh
     apt-get install -yq curl jq python-pip unzip build-essential python-dev
 
-    curl https://releases.hashicorp.com/packer/0.12.0/packer_0.12.0_linux_amd64.zip -o /root/packer.zip
+    curl https://releases.hashicorp.com/packer/0.12.1/packer_0.12.1_linux_amd64.zip -o /root/packer.zip
     unzip /root/packer.zip -d /usr/bin
 
-    curl https://releases.hashicorp.com/terraform/0.7.11/terraform_0.7.11_linux_amd64.zip -o /root/terraform.zip
+    curl https://releases.hashicorp.com/terraform/0.8.4/terraform_0.8.4_linux_amd64.zip -o /root/terraform.zip
     unzip /root/terraform.zip -d /usr/bin
 
     pip install awscli
@@ -69,7 +69,7 @@ Feel free to run it by issuing the following command:
 
 ## Docker Swarm (Multi-Node)
 
-<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION -->
+<!-- deploy-doc require-env AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION TF_VAR_aws_region -->
 
 Begin by setting the appropriate AWS environment variables.
 
@@ -77,6 +77,7 @@ Begin by setting the appropriate AWS environment variables.
 export AWS_ACCESS_KEY_ID=[YOURACCESSKEYID]
 export AWS_SECRET_ACCESS_KEY=[YOURSECRETACCESSKEY]
 export AWS_DEFAULT_REGION=[YOURDEFAULTREGION]
+export TF_VAR_aws_region=$AWS_DEFAULT_REGION
 ```
 
 <!-- deploy-doc-hidden pre-install
@@ -163,9 +164,9 @@ EOF
 
     terraform destroy -force deploy/docker-swarm/infra/aws/
     aws ec2 delete-key-pair -\-key-name docker-swarm
-    rm ~/.ssh/docker-swarm.pem
-    rm terraform.tfstate
-    rm terraform.tfstate.backup
+    rm -f ~/.ssh/docker-swarm.pem
+    rm -f terraform.tfstate
+    rm -f terraform.tfstate.backup
 
 <!-- deploy-doc-end -->
 
