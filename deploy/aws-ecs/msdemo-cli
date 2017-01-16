@@ -1,7 +1,7 @@
 #!/bin/bash
 PEM=microservices-demo-key
 STACK_NAME=microservices-demo-stack
-CF_FILE="file://$(pwd)/cloudformation.json"
+CF_FILE="file://$( cd $(dirname $0) ; pwd -P )/cloudformation.json"
 THIS_F=`basename "$0"`
 function build
 {
@@ -97,7 +97,7 @@ function loadtest
 		| jq -r '.StackResources[0].PhysicalResourceId' )
 	elbdns=$(aws elb describe-load-balancers --load-balancer-name $elbr \
 		| jq -r '.LoadBalancerDescriptions[0].DNSName' )
-	docker run weaveworksdemos/load-test -d 60 -h $elbdns -c 10 -r 100
+	docker run weaveworksdemos/load-test -d 60 -h $elbdns -c 2 -r 100
 }
 
 function destroy
