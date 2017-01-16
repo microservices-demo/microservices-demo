@@ -33,8 +33,7 @@ Other required packages are:
 
 <!-- deploy-doc-start create-infrastructure -->
 
-    cd deploy/aws-ecs/
-    ./msdemo-cli build
+    ./deploy/aws-ecs/msdemo-cli build
 
 <!-- deploy-doc-end -->
 
@@ -45,7 +44,7 @@ To ensure that the application is running properly, you could perform some load 
 
 <!-- deploy-doc-start run-tests -->
 
-    ./msdemo-cli loadtest
+    ./deploy/aws-ecs/msdemo-cli loadtest
 
 <!-- deploy-doc-end -->
 
@@ -76,7 +75,7 @@ EOF
 Zipkin is part of the deployment and has been written into some of the services.  While the system is up you can view the traces.
 To get the endpoint for Zipkin you can run 
 
-./msdemo dns
+./deploy/aws-ecs/msdemo dns
 
 Currently orders provide the most comprehensive traces.
 
@@ -86,7 +85,7 @@ To tear down the containers and their associated AWS objects, run the cleanup sc
 
 <!-- deploy-doc-start destroy-infrastructure -->
 
-    ./msdemo-cli destroy
+    ./deploy/aws-ecs/msdemo-cli destroy
 
 <!-- deploy-doc-end -->
 
