@@ -2,14 +2,24 @@
     "variables": {
         "aws_access_key": "",
         "aws_secret_key": "",
-        "gcloud_project_id": "{{env `TF_VAR_project_name`}}"
+        "aws_region": "{{env `AWS_DEFAULT_REGION`}}",
+        "gcloud_project_id": "{{env `TF_VAR_project_name`}}",
+        "gcloud_zone": "europe-west1-b"
     },
     "builders": [{
         "type": "amazon-ebs",
         "access_key": "{{user `aws_access_key`}}",
         "secret_key": "{{user `aws_secret_key`}}",
-        "region": "eu-west-1",
-        "source_ami": "ami-0d77397e",
+        "region": "{{user `aws_region`}}",
+        "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name": "*ubuntu-xenial-16.04-amd64-server-*",
+                "root-device-type": "ebs"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+        },
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
         "ami_name": "docker-swarm"
@@ -19,7 +29,7 @@
         "source_image": "ubuntu-1604-xenial-v20161020",
         "image_name": "docker-swarm",
         "ssh_username": "ubuntu",
-        "zone": "europe-west1-b"
+        "zone": "{{user `gcloud_zone`}}"
     },{
         "type": "virtualbox-iso",
         "guest_os_type": "Ubuntu_64",
