@@ -1,0 +1,102 @@
+version: '2'
+
+services:
+  orders:
+    image: weaveworksdemos/orders
+    hostname: orders
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    environment:
+      - reschedule=on-node-failure
+    links:
+      - orders-db
+    mem_limit: 1073741824
+  orders-db:
+    image: mongo
+    hostname: orders-db
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    environment:
+      - reschedule=on-node-failure
+  shipping:
+    image: weaveworksdemos/shipping
+    hostname: shipping
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    environment:
+      - reschedule=on-node-failure
+    mem_limit: 1073741824
+  queue-master:
+    image: weaveworksdemos/queue-master
+    hostname: queue-master
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    environment:
+      - reschedule=on-node-failure
+    links:
+      - rabbitmq
+    mem_limit: 1073741824
+  rabbitmq:
+    image: rabbitmq:3
+    hostname: rabbitmq
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    environment:
+      - reschedule=on-node-failure
+  payment:
+    image: weaveworksdemos/payment
+    hostname: payment
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    environment:
+      - reschedule=on-node-failure
+  user:
+    image: weaveworksdemos/user
+    hostname: user
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    environment:
+      - MONGO_HOST=user-db:27017
+      - reschedule=on-node-failure
+    links:
+      - user-db
+  user-db:
+    image: weaveworksdemos/user-db
+    hostname: user-db
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    environment:
+      - reschedule=on-node-failure
