@@ -5,6 +5,9 @@ CF_FILE="file://$(pwd)/cloudformation.json"
 THIS_F=`basename "$0"`
 function build
 {
+
+	mkdir ~/.ssh/ &>/dev/null && chmod 700 ~/.ssh/
+
 	if [ -e "~/.ssh/$PEM.pem" ]
 	then
 		printf "You already have an existing key ~/.ssh/$PEM.pem, you can either delete your pem or update this script and rename the PEM\n"
