@@ -57,10 +57,15 @@ resource "aws_instance" "md-k8s-master" {
   tags {
     Name = "md-k8s-master"
   }
-  
+
   connection {
     user = "ubuntu"
     private_key = "${file("${var.private_key_path}")}"
+  }
+
+  provisioner "file" {
+    source = "deploy/kubernetes/manifests"
+    destination = "/tmp/"
   }
 
   provisioner "remote-exec" {

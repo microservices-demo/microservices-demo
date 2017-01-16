@@ -27,3 +27,15 @@ spec:
             drop:
               - all
           readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8079
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8079
+          initialDelaySeconds: 180
+          periodSeconds: 3
