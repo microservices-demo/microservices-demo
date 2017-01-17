@@ -6,37 +6,15 @@ jdk: [ oraclejdk8 ]
 
 env:
   global:
-  - PATH="${PATH}:${HOME}/.local/bin" AWS_DEFAULT_REGION="eu-central-1"
+  - PATH="${PATH}:${HOME}/.local/bin"
 
 install:
 - pip install --user awscli
 
 script:
 - set -o pipefail
-- if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
-    gem install travis-cron_tools;
-    ruby .travis-cron.rb;
-  fi;
-- if [ ! -z "$AWS_ACCESS_KEY" ]; then
-    aws cloudformation validate-template --template-body "file:////${PWD}/deploy/aws-ecs/cloudformation.json" | jq . ;
-  fi;
-
-after_success:
-- export GROUP=weaveworksdemos
-- ./push.sh
-
-deploy:
-  provider: s3
-  access_key_id: $AWS_ACCESS_KEY_ID
-  secret_access_key: $AWS_SECRET_ACCESS_KEY
-  bucket: weaveworks-cfn-public
-  skip_cleanup: true
-  local_dir: cfn-to-publish
-  upload_dir: microservices-demo
-  acl: public_read
-  on:
-    branch: master
-  condition: "\"$TRAVIS_EVENT_TYPE\" != \"cron\" && -z \"$DEPLOY_DOC\""
+- gem install travis-cron_tools;
+- ruby .travis-cron.rb;
 
 notifications:
   slack:
