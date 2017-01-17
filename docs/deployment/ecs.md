@@ -73,7 +73,7 @@ docker build -t healthcheck -f Dockerfile-healthcheck .
 docker run -\-rm -t healthcheck -s user.weave.local,catalogue.weave.local,cart.weave.local,shipping.weave.local,payment.weave.local,orders.weave.local,queue-master.weave.local -r 5
 EOF
 
-    scp -i ~/.ssh/microservices-demo-key.pem -o "StrictHostKeyChecking no" /root/healthcheck.sh deploy/healthcheck.rb deploy/Dockerfile-healthcheck ec2-user@$dns_name:/home/ec2-user/
+    scp -i ~/.ssh/microservices-demo-key.pem -o "StrictHostKeyChecking no" /root/healthcheck.sh deploy/healthcheck.rb deploy/Dockerfile-healthcheck ec2-user@$ip_address:/home/ec2-user/
     ssh -i ~/.ssh/microservices-demo-key.pem ec2-user@$ip_address "chmod +x healthcheck.sh; ./healthcheck.sh"
 
     if [ $? -ne 0 ]; then
