@@ -24,6 +24,7 @@ function build
 	fi
 
 	aws ec2 create-key-pair --key-name $PEM --query 'KeyMaterial' --output text > ~/.ssh/$PEM.pem
+	chmod 600 ~/.ssh/$PEM.pem
 
 
 	printf "Creating stack $STACK_NAME\n" 
