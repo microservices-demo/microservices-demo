@@ -59,10 +59,11 @@ To ensure that the application is running properly, you could perform some load 
 
 <!-- deploy-doc-hidden run-tests
 
-    frontend_task=$(aws ecs list-tasks -\-cluster microservices-demo-stack -\-service-name weavedemo-edge-router-service  -\-query 'taskArns[0]' -\-output text)
-    container_inst=$(aws ecs describe-tasks -\-cluster microservices-demo-stack -\-tasks $frontend_task -\-query 'tasks[0].containerInstanceArn' -\-output text)
-    instance_id=$(aws ecs describe-container-instances -\-cluster microservices-demo-stack -\-container-instances $container_inst -\-query 'containerInstances[0].ec2InstanceId'  -\-output text)
-    dns_name=$(aws ec2 describe-instances -\-instance-ids $instance_id -\-query 'Reservations[0].Instances[*].PublicDnsName' -\-output text)
+    frontend_service=$(aws ecs list-services -\-cluster microservices-demo-cluster -\-query 'serviceArns[?contains(@, `FrontEndService`) == `true`]' -\-output text)
+    frontend_task=$(aws ecs list-tasks -\-cluster microservices-demo-cluster -\-service-name $frontend_service  -\-query 'taskArns[0]' -\-output text)
+    container_inst=$(aws ecs describe-tasks -\-cluster microservices-demo-cluster -\-tasks $frontend_task -\-query 'tasks[0].containerInstanceArn' -\-output text)
+    instance_id=$(aws ecs describe-container-instances -\-cluster microservices-demo-cluster -\-container-instances $container_inst -\-query 'containerInstances[0].ec2InstanceId'  -\-output text)
+    ip_address=$(aws ec2 describe-instances -\-instance-ids $instance_id -\-query 'Reservations[0].Instances[*].PublicIpAddress' -\-output text)
 
     cat >> /root/healthcheck.sh <<-EOF
 #!/usr/bin/env bash
@@ -72,7 +73,7 @@ docker run -\-rm -t healthcheck -s user.weave.local,catalogue.weave.local,cart.w
 EOF
 
     scp -i ~/.ssh/microservices-demo-key.pem -o "StrictHostKeyChecking no" /root/healthcheck.sh deploy/healthcheck.rb deploy/Dockerfile-healthcheck ec2-user@$dns_name:/home/ec2-user/
-    ssh -i ~/.ssh/microservices-demo-key.pem ec2-user@$dns_name "chmod +x healthcheck.sh; ./healthcheck.sh"
+    ssh -i ~/.ssh/microservices-demo-key.pem ec2-user@$ip_address "chmod +x healthcheck.sh; ./healthcheck.sh"
 
     if [ $? -ne 0 ]; then
         exit 1;
