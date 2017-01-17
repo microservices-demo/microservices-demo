@@ -59,10 +59,11 @@ To ensure that the application is running properly, you could perform some load 
 
 <!-- deploy-doc-hidden run-tests
 
-    frontend_service=$(aws ecs list-services -\-cluster microservices-demo-cluster -\-query 'serviceArns[?contains(@, `FrontEndService`) == `true`]' -\-output text)
-    frontend_task=$(aws ecs list-tasks -\-cluster microservices-demo-cluster -\-service-name $frontend_service  -\-query 'taskArns[0]' -\-output text)
-    container_inst=$(aws ecs describe-tasks -\-cluster microservices-demo-cluster -\-tasks $frontend_task -\-query 'tasks[0].containerInstanceArn' -\-output text)
-    instance_id=$(aws ecs describe-container-instances -\-cluster microservices-demo-cluster -\-container-instances $container_inst -\-query 'containerInstances[0].ec2InstanceId'  -\-output text)
+    cluster_name=$(aws ecs list-clusters -\-query 'clusterArns[?contains(@, `microservices-demo-stack`) == `true`]' -\-output text)
+    frontend_service=$(aws ecs list-services -\-cluster $cluster_name -\-query 'serviceArns[?contains(@, `FrontEndService`) == `true`]' -\-output text)
+    frontend_task=$(aws ecs list-tasks -\-cluster $cluster_name -\-service-name $frontend_service  -\-query 'taskArns[0]' -\-output text)
+    container_inst=$(aws ecs describe-tasks -\-cluster $cluster_name -\-tasks $frontend_task -\-query 'tasks[0].containerInstanceArn' -\-output text)
+    instance_id=$(aws ecs describe-container-instances -\-cluster $cluster_name -\-container-instances $container_inst -\-query 'containerInstances[0].ec2InstanceId'  -\-output text)
     ip_address=$(aws ec2 describe-instances -\-instance-ids $instance_id -\-query 'Reservations[0].Instances[*].PublicIpAddress' -\-output text)
 
     cat >> /root/healthcheck.sh <<-EOF
