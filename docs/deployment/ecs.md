@@ -69,11 +69,11 @@ To ensure that the application is running properly, you could perform some load 
     cat >> /root/healthcheck.sh <<-EOF
 #!/usr/bin/env bash
 eval \$(weave env)
-docker build -t healthcheck -f Dockerfile-healthcheck .
+docker build -t healthcheck -f Dockerfile .
 docker run -\-rm -t healthcheck -s user.weave.local,catalogue.weave.local,cart.weave.local,shipping.weave.local,payment.weave.local,orders.weave.local,queue-master.weave.local -r 5
 EOF
 
-    scp -i ~/.ssh/microservices-demo-key.pem -o "StrictHostKeyChecking no" /root/healthcheck.sh deploy/healthcheck.rb deploy/Dockerfile-healthcheck ec2-user@$ip_address:/home/ec2-user/
+    scp -i ~/.ssh/microservices-demo-key.pem -o "StrictHostKeyChecking no" /root/healthcheck.sh healthcheck/healthcheck.rb healthcheck/Dockerfile ec2-user@$ip_address:/home/ec2-user/
     ssh -i ~/.ssh/microservices-demo-key.pem ec2-user@$ip_address "chmod +x healthcheck.sh; ./healthcheck.sh"
 
     if [ $? -ne 0 ]; then
