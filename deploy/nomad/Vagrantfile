@@ -195,8 +195,6 @@ Vagrant.configure(2) do |config|
         if name != "node1"
           aws.tags = {'Name' => 'nomad-node'}
         end
-        m.vm.provision "file", source: "../../healthcheck/healthcheck.rb", destination: "/home/ubuntu/healthcheck.rb"
-        m.vm.provision "file", source: "../../healthcheck/Dockerfile", destination: "/home/ubuntu/Dockerfile-healthcheck"
       end
 
       if name == "node1"
