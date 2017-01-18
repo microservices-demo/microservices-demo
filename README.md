@@ -20,12 +20,12 @@ We'd love to see community contributions. We like to keep it simple and use Gith
 
 ## Screenshot
 
-![Sock Shop frontend](./docs/assets/sockshop-frontend.png)
+![Sock Shop frontend](https://github.com/microservices-demo/microservices-demo.github.io/raw/master/assets/sockshop-frontend.png)
 
 ## Visualizing the application
 
 Use [Weave Scope](http://weave.works/products/weave-scope/) or [Weave Cloud](http://cloud.weave.works/) to visualize the application once it's running in the selected [target platform](./deploy/).
 
-![Sock Shop in Weave Scope](./docs/assets/sockshop-scope.png)
+![Sock Shop in Weave Scope](https://github.com/microservices-demo/microservices-demo.github.io/raw/master/assets/sockshop-scope.png)
 
 ## 
