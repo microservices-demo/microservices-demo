@@ -6,7 +6,7 @@ jdk: [ oraclejdk8 ]
 
 env:
   global:
-  - PATH="${PATH}:${HOME}/.local/bin" AWS_DEFAULT_REGION="eu-central-1"
+  - PATH="${PATH}:${HOME}/.local/bin"
 
 install:
 - pip install --user awscli
