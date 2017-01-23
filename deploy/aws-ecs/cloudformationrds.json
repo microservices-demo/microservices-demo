@@ -1,0 +1,168 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Weave-enabled AWS CloudFormation template to create resources required to run tasks on an ECS cluster.",
+    "Mappings": {
+        "VpcCidrs": {
+            "vpc": {
+                "cidr": "172.31.0.0/16"
+            },
+            "pubsubnet1": {
+                "cidr": "172.31.0.0/24"
+            },
+            "pubsubnet2": {
+                "cidr": "172.31.1.0/24"
+            }
+        }
+    },
+    "Resources": {
+        "CatalogueRDS": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+                "AllocatedStorage": "100",
+                "DBInstanceClass": "db.t2.medium",
+                "DBSubnetGroupName": {
+                    "Ref": "myDBSubnetGroup"
+                },
+                "DBName": "socksdb",
+                "Engine": "MySQL",
+                "MasterUsername": "socksuser",
+                "MasterUserPassword": "socksuserpass",
+                "DBSecurityGroups": [{
+                    "Ref": "DBSecurityGroup"
+                }]
+            }
+        },
+        "SQLImporter": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": "ami-effbd59c",
+                "SecurityGroupIds": [
+                  {
+                      "Fn::GetAtt": ["EcsSecurityGroup", "GroupId"]
+                  }
+                ]
+            },
+            "DependsOn": "CatalogueRDS",
+            "Metadata": {
+                "AWS::CloudFormation::Init": {
+                    "config": {
+                        "packages": {
+                            "apt": {
+                                "mysql-server": []
+                            }
+                        },
+                        "commands": {
+                            "get": {
+                                "command": "wget https://raw.githubusercontent.com/microservices-demo/catalogue/master/docker/catalogue-db/data/dump.sql"
+                            },
+                            "import": {
+                                "command": "mysql -u socksuser -p socksuserpass -h $SOCKS_DB",
+                                "env": {
+                                    "SOCKS_DB": {
+                                        "Fn::GetAtt": ["CatalogueRDS", "Endpoint.Address"]
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        },
+        "DBSecurityGroup": {
+            "Type": "AWS::RDS::DBSecurityGroup",
+            "Properties": {
+                "EC2VpcId": {
+                    "Ref": "Vpc"
+                },
+                "DBSecurityGroupIngress": {
+                    "EC2SecurityGroupId": {
+                        "Fn::GetAtt": ["EcsSecurityGroup", "GroupId"]
+                    }
+                },
+                "GroupDescription": "Connect import"
+            }
+        },
+        "EcsSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "ECS Allowed Ports",
+                "VpcId": {
+                    "Ref": "Vpc"
+                }
+            }
+        },
+        "myDBSubnetGroup": {
+            "Type": "AWS::RDS::DBSubnetGroup",
+            "Properties": {
+                "DBSubnetGroupDescription": "description",
+                "SubnetIds": [{
+                    "Ref": "PubSubnetAz1"
+                }, {
+                    "Ref": "PubSubnetAz2"
+                }]
+            },
+        },
+        "Vpc": {
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "CidrBlock": {
+                    "Fn::FindInMap": [
+                        "VpcCidrs",
+                        "vpc",
+                        "cidr"
+
+                    ]
+                }
+            }
+        },
+        "PubSubnetAz1": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "Vpc"
+                },
+                "CidrBlock": {
+                    "Fn::FindInMap": [
+                        "VpcCidrs",
+                        "pubsubnet1",
+                        "cidr"
+                    ]
+                },
+                "AvailabilityZone": {
+                    "Fn::Select": [
+                        "0", {
+                            "Fn::GetAZs": {
+                                "Ref": "AWS::Region"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "PubSubnetAz2": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "Vpc"
+                },
+                "CidrBlock": {
+                    "Fn::FindInMap": [
+                        "VpcCidrs",
+                        "pubsubnet2",
+                        "cidr"
+                    ]
+                },
+                "AvailabilityZone": {
+                    "Fn::Select": [
+                        "1", {
+                            "Fn::GetAZs": {
+                                "Ref": "AWS::Region"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
