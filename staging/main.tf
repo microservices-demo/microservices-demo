@@ -123,8 +123,8 @@ resource "null_resource" "weave" {
   provisioner "remote-exec" {
     inline = [
       "kubectl apply -f https://git.io/weave-kube",
-      "kubectl apply -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml?service-token=${var.weave_cloud_token}'",
-      "kubectl apply -f 'https://cloud.weave.works/k8s/flux.yaml?service-token=${var.weave_cloud_token}'",
+      "kubectl apply -f 'https://cloud.weave.works/k8s/scope.yaml?t=${var.weave_cloud_token}'",
+      "kubectl apply -f 'https://cloud.weave.works/k8s/flux.yaml?t=${var.weave_cloud_token}'",
       "kubectl apply -f 'https://cloud.weave.works/k8s/cortex.yaml?t=${var.weave_cloud_token}'"
     ]
   }
