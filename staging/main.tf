@@ -131,7 +131,7 @@ resource "null_resource" "weave" {
 }
 
 resource "null_resource" "sock-shop" {
-  depends_on = [ "aws_instance.k8s-node" ]
+  depends_on = [ "null_resource.weave" ]
 
   connection {
     host        = "${aws_instance.k8s-master.public_ip}"
