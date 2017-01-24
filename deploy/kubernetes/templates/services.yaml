@@ -1,0 +1,76 @@
+---
+common:
+  - &mongo
+    image: mongo
+    port: 27017
+    standard_probes: false,
+    security:
+      capabilities:
+        drop: [ all ]
+        add: [ CHOWN, SETGID, SETUID ]
+      readOnlyRootFilesystem: true
+  - &zipkin_env
+    ZIPKIN: "http://zipkin:9411/api/v1/spans"
+
+services:
+  - name: cart-db
+    <<: *mongo
+
+  - image: "weaveworksdemos/cart:0.4.0"
+    prometheus_path: /prometheus
+
+  - image: "weaveworksdemos/catalogue-db:0.3.0"
+    port: 3306
+    standard_probes: false
+    security: {}
+    env:
+      MYSQL_ROOT_PASSWORD: fake_password
+      MYSQL_DATABASE: socksdb
+  
+  - image: "weaveworksdemos/catalogue:0.3.0"
+    env: *zipkin_env
+  
+  - image: "weaveworksdemos/front-end:0.3.0"
+    port: 8079
+    service_port: 80
+    service_type: NodePort
+    service_session_affinity: ClientIP
+  
+  - name: orders-db
+    <<: *mongo
+  
+  - image: "weaveworksdemos/orders:0.4.2"
+    prometheus_path: /prometheus
+  
+  - image: "weaveworksdemos/payment:0.4.0"
+    env: *zipkin_env
+  
+  - image: "weaveworksdemos/queue-master:0.3.0"
+    security: {}
+    prometheus_path: /prometheus
+  
+  - image: "rabbitmq:3"
+    port: 5672
+    standard_probes: false
+    security:
+      capabilities:
+        drop: [ all ]
+        add: [ CHOWN, SETGID, SETUID, DAC_OVERRIDE ]
+      readOnlyRootFilesystem: true
+  
+  - image: "weaveworksdemos/shipping:0.4.0"
+    prometheus_path: /prometheus
+  
+  - image: "weaveworksdemos/user-db:0.3.0"
+    <<: *mongo
+  
+  - image: "weaveworksdemos/user:0.4.0"
+    env:
+      MONGO_HOST: "user-db:27017"
+      <<: *zipkin_env
+  
+  - image: openzipkin/zipkin
+    port: 9411
+    security: {}
+    standard_probes: false
+    service_type: NodePort

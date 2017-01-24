@@ -18,14 +18,18 @@ class MyApp
     DEFAULT_PORT = 80
     DEFAULT_REPLICAS = 1
 
+    def get(opts, key)
+      opts[key] || opts[key.to_s]
+    end
+
     def initialize(opts)
-      @image = opts[:image]
+      @image = get(opts, :image)
 
-      @name = opts[:name] || @image.split(':')[0].split('/').last
+      @name = get(opts, :name) || @image.split(':')[0].split('/').last
 
-      @namespace = opts[:namespace] || DEFAILT_NAMESPACE
-      @port = opts[:port] || DEFAULT_PORT
-      @replicas = opts[:replicas] || DEFAULT_REPLICAS
+      @namespace = get(opts, :namespace) || DEFAILT_NAMESPACE
+      @port = get(opts, :port) || DEFAULT_PORT
+      @replicas = get(opts, :replicas) || DEFAULT_REPLICAS
 
       @labels = { name: @name }
       @metadata = {
@@ -39,30 +43,30 @@ class MyApp
 
       @service = self.make_service!
 
-      if opts[:env].is_a? Hash
-        @container[:env] = opts[:env].map { |k,v| { name: k.to_s, value: v } }
+      if get(opts, :env).is_a? Hash
+        @container[:env] = get(opts, :env).map { |k,v| { name: k.to_s, value: v } }
       end
 
-      add_standard_probes unless opts[:standard_probes] == false
+      add_standard_probes unless get(opts, :standard_probes) == false
 
-      if opts[:security].is_a? Hash
-        @container[:securityContext] = opts[:security]
+      if get(opts, :security).is_a? Hash
+        @container[:securityContext] = get(opts, :security)
       end
 
-      if opts[:service_port]
-        @service[:spec][:ports][0][:port] = opts[:service_port]
+      if get(opts, :service_port)
+        @service[:spec][:ports][0][:port] = get(opts, :service_port)
       end
 
-      if opts[:service_type]
-        @service[:spec][:type] = opts[:service_type]
+      if get(opts, :service_type)
+        @service[:spec][:type] = get(opts, :service_type)
       end
 
-      if opts[:service_session_affinity]
-        @service[:spec][:sessionAffinity] = opts[:service_session_affinity]
+      if get(opts, :service_session_affinity)
+        @service[:spec][:sessionAffinity] = get(opts, :service_session_affinity)
       end
 
-      if opts[:prometheus_path]
-        @service[:metadata][:annotations] = { "prometheus.io/path" => opts[:prometheus_path] }
+      if get(opts, :prometheus_path)
+        @service[:metadata][:annotations] = { "prometheus.io/path" => get(opts, :prometheus_path) }
       end
     end
 
@@ -139,49 +143,101 @@ class MyApp
   end
 end
 
-mongo = {
-  image: "mongo",
-  port: 27017,
-  standard_probes: false,
-  security: {
-    capabilities: { drop: [ "all" ], add: [ "CHOWN", "SETGID", "SETUID" ] },
-    readOnlyRootFilesystem: true
-  }
-}
+#mongo = {
+#  image: "mongo",
+#  port: 27017,
+#  standard_probes: false,
+#  security: {
+#    capabilities: {
+#      drop: [ "all" ],
+#      add: [ "CHOWN", "SETGID", "SETUID" ]
+#    },
+#    readOnlyRootFilesystem: true
+#  }
+#}
+#
+#zipkin_env = {
+#  ZIPKIN: "http://zipkin:9411/api/v1/spans"
+#}
+#
+#sock_shop = MyApp.new(ENV['NAMESPACE'] || "sock-shop", [
+#  mongo.merge({
+#    name: "cart-db"
+#  }),
+#  {
+#    image: "weaveworksdemos/cart:0.4.0",
+#    prometheus_path: "/prometheus"
+#  },
+#  {
+#    image: "weaveworksdemos/catalogue-db:0.3.0",
+#    port: 3306,
+#    standard_probes: false,
+#    security: {},
+#    env: {
+#      MYSQL_ROOT_PASSWORD: "fake_password", MYSQL_DATABASE: "socksdb"
+#    }
+#  },
+#  {
+#    image: "weaveworksdemos/catalogue:0.3.0",
+#    env: zipkin_env
+#  },
+#  {
+#    image: "weaveworksdemos/front-end:0.3.0",
+#    port: 8079,
+#    service_port: 80,
+#    service_type: "NodePort",
+#    service_session_affinity: "ClientIP"
+#  },
+#  mongo.merge({
+#    name: "orders-db"
+#  }),
+#  {
+#    image: "weaveworksdemos/orders:0.4.2",
+#    prometheus_path: "/prometheus"
+#  },
+#  {
+#    image: "weaveworksdemos/payment:0.4.0",
+#    env: zipkin_env
+#  },
+#  {
+#    image: "weaveworksdemos/queue-master:0.3.0",
+#    security: {},
+#    prometheus_path: "/prometheus"
+#  },
+#  {
+#    image: "rabbitmq:3",
+#    port: 5672,
+#    standard_probes: false,
+#    security: {
+#      capabilities: {
+#        drop: [ "all" ],
+#        add: [ "CHOWN", "SETGID", "SETUID", "DAC_OVERRIDE" ]
+#      },
+#      readOnlyRootFilesystem: true
+#    }
+#  },
+#  {
+#    image: "weaveworksdemos/shipping:0.4.0",
+#    prometheus_path: "/prometheus"
+#  },
+#  mongo.merge({
+#    image: "weaveworksdemos/user-db:0.3.0"
+#  }),
+#  {
+#    image:
+#    "weaveworksdemos/user:0.4.0",
+#    env: zipkin_env.merge({
+#      MONGO_HOST: "user-db:27017"
+#    })
+#  },
+#  {
+#    image: "openzipkin/zipkin",
+#    port: 9411,
+#    security: {},
+#    standard_probes: false,
+#    service_type: "NodePort"
+#  }
+#])
 
-zipkin_env = { ZIPKIN: "http://zipkin:9411/api/v1/spans" }
-
-sock_shop = MyApp.new(ENV['NAMESPACE'] || "sock-shop", [
-  mongo.merge({ name: "cart-db" }),
-  { image: "weaveworksdemos/cart:0.4.0", prometheus_path: "/prometheus" },
-  {
-    image: "weaveworksdemos/catalogue-db:0.3.0",
-    port: 3306,
-    standard_probes: false,
-    security: {},
-    env: {
-      MYSQL_ROOT_PASSWORD: "fake_password", MYSQL_DATABASE: "socksdb"
-    }
-  },
-  { image: "weaveworksdemos/catalogue:0.3.0", env: zipkin_env },
-  { image: "weaveworksdemos/front-end:0.3.0", port: 8079, service_port: 80, service_type: "NodePort", service_session_affinity: "ClientIP" },
-  mongo.merge({ name: "orders-db" }),
-  { image: "weaveworksdemos/orders:0.4.2", prometheus_path: "/prometheus" },
-  { image: "weaveworksdemos/payment:0.4.0", env: zipkin_env },
-  { image: "weaveworksdemos/queue-master:0.3.0", security: {}, prometheus_path: "/prometheus" },
-  {
-    image: "rabbitmq:3",
-    port: 5672,
-    standard_probes: false,
-    security: {
-      capabilities: { drop: [ "all" ], add: [ "CHOWN", "SETGID", "SETUID", "DAC_OVERRIDE" ] },
-      readOnlyRootFilesystem: true
-    }
-  },
-  { image: "weaveworksdemos/shipping:0.4.0", prometheus_path: "/prometheus" },
-  mongo.merge({ image: "weaveworksdemos/user-db:0.3.0" }),
-  { image: "weaveworksdemos/user:0.4.0", env: zipkin_env.merge({ MONGO_HOST: "user-db:27017" }) },
-  { image: "openzipkin/zipkin", port: 9411, security: {}, standard_probes: false, service_type: "NodePort" }
-])
-
+sock_shop = MyApp.new(ENV['NAMESPACE'] || "sock-shop", YAML.load(File.open('services.yaml'))["services"])
 sock_shop.write_files!
