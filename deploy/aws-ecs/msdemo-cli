@@ -37,6 +37,15 @@ function build
 	printf "Stack has been started, you can run './$THIS_F status' to get an update on the status\n"
 }
 
+function updatestack
+{
+	aws cloudformation update-stack \
+		--stack-name $STACK_NAME \
+		--template-body $CF_FILE \
+		--capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
+		--parameters ParameterKey=KeyName,ParameterValue=$PEM
+}
+
 function get_status
 {
 	printf "Stack Status:\n"
@@ -78,6 +87,7 @@ function dnsend
 	elbdns=$(aws elb describe-load-balancers --load-balancer-name $elbr \
 		| jq -r '.LoadBalancerDescriptions[0].DNSName' )
 	printf "Visit your site here: http://$elbdns\n"
+	printf "Visit WeaveScope here: http://$elbdns:4040\n"
 	elbr=$(aws cloudformation describe-stack-resources \
 	       	--stack-name $STACK_NAME --logical-resource-id EcsZipkinElasticLoadBalancing \
 		| jq -r '.StackResources[0].PhysicalResourceId' )
@@ -129,6 +139,10 @@ case $1 in
                                 	;;
 
 	        loadtest )		loadtest
+					exit
+                                	;;
+
+	        updatestack )		updatestack
 					exit
                                 	;;
 
