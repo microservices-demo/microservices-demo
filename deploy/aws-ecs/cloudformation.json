@@ -248,18 +248,17 @@
                     "Command": [
                         "/app",
                         "-port=80", {
-                            "Fn::Join": [" ", [
-                                "-DSN", {
-                                    "Fn::Join": ["", [
-                                        "catalogue_user:default_password@tcp(", {
-                                            "Fn::GetAtt": ["CatalogueRDS", "Endpoint.Address"]
-                                        },
-                                        ":", {
-                                            "Fn::GetAtt": ["CatalogueRDS", "Endpoint.Port"]
-                                        },
-                                        ")/socksdb"
-                                    ]]
-                                }
+                            "Fn::Join": ["", [
+                                "-DSN=",
+                                "catalogue_user:default_password@tcp(",
+                                {
+                                    "Fn::GetAtt": ["CatalogueRDS", "Endpoint.Address"]
+                                },
+                                ":",
+                                {
+                                    "Fn::GetAtt": ["CatalogueRDS", "Endpoint.Port"]
+                                },
+                                ")/socksdb"
                             ]]
                         }
                     ],
