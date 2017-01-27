@@ -3,6 +3,7 @@ PEM=microservices-demo-key
 STACK_NAME=microservices-demo-stack
 CF_FILE="file://$( cd $(dirname $0) ; pwd -P )/cloudformation.json"
 THIS_F=`basename "$0"`
+WEAVETOKEN=$2
 function build
 {
 
@@ -27,13 +28,13 @@ function build
 	chmod 600 ~/.ssh/$PEM.pem
 
 
-	printf "Creating stack $STACK_NAME\n" 
+	printf "Creating stack $STACK_NAME\n"
+
 	aws cloudformation create-stack \
 		--stack-name $STACK_NAME \
 		--template-body $CF_FILE \
 		--capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
-		--parameters ParameterKey=KeyName,ParameterValue=$PEM
-
+		--parameters ParameterKey=KeyName,ParameterValue=$PEM ParameterKey=WeaveCloudServiceToken,ParameterValue=$WEAVETOKEN
 	printf "Stack has been started, you can run './$THIS_F status' to get an update on the status\n"
 }
 
@@ -87,7 +88,7 @@ function dnsend
 	elbdns=$(aws elb describe-load-balancers --load-balancer-name $elbr \
 		| jq -r '.LoadBalancerDescriptions[0].DNSName' )
 	printf "Visit your site here: http://$elbdns\n"
-	printf "Visit WeaveScope here: http://$elbdns:4040\n"
+	printf "Visit WeaveScope here if you are not using Weave Cloud: http://$elbdns:4040\n"
 	elbr=$(aws cloudformation describe-stack-resources \
 	       	--stack-name $STACK_NAME --logical-resource-id EcsZipkinElasticLoadBalancing \
 		| jq -r '.StackResources[0].PhysicalResourceId' )
@@ -98,17 +99,17 @@ function dnsend
 
 function loadtest
 {
-        aws cloudformation wait stack-create-complete --stack-name $STACK_NAME
-        if [ $? -ne 0 ]; then
-            echo "Failed to create stack."
-            exit 1
-        fi
+        #aws cloudformation wait stack-create-complete --stack-name $STACK_NAME
+        #if [ $? -ne 0 ]; then
+        #    echo "Failed to create stack."
+        #    exit 1
+        #fi
 	elbr=$(aws cloudformation describe-stack-resources \
 	       	--stack-name $STACK_NAME --logical-resource-id EcsFrontendElasticLoadBalancing \
 		| jq -r '.StackResources[0].PhysicalResourceId' )
 	elbdns=$(aws elb describe-load-balancers --load-balancer-name $elbr \
 		| jq -r '.LoadBalancerDescriptions[0].DNSName' )
-	docker run weaveworksdemos/load-test -d 60 -h $elbdns -c 2 -r 50
+	docker run weaveworksdemos/load-test -d 60 -h $elbdns -c 3 -r 1000
 }
 
 function destroy
