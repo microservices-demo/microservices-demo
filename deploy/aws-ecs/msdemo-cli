@@ -109,7 +109,7 @@ function loadtest
 		| jq -r '.StackResources[0].PhysicalResourceId' )
 	elbdns=$(aws elb describe-load-balancers --load-balancer-name $elbr \
 		| jq -r '.LoadBalancerDescriptions[0].DNSName' )
-	docker run weaveworksdemos/load-test -d 60 -h $elbdns -c 3 -r 1000
+	docker run weaveworksdemos/load-test -d 60 -h $elbdns -c 2 -r 50
 }
 
 function destroy
