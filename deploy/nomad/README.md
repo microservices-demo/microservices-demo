@@ -1,1 +1,1 @@
-See the [documentation](../../docs/deployment/nomad.md) on how to deploy Sock Shop using Nomad.
+See the [documentation](https://microservices-demo.github.io/microservices-demo/deployment/nomad.html) on how to deploy Sock Shop using Nomad.
