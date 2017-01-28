@@ -152,7 +152,7 @@ resource "null_resource" "sock-shop" {
 
   provisioner "remote-exec" {
     inline = [
-      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml -f ~/microservices-demo/deploy/kubernetes/manifests"
+      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests"
     ]
   }
 }
