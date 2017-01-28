@@ -1,6 +1,6 @@
 # Staging Environment for the Microservice Demo
 
-Use the scripts in this directory to set up a Kubernetes cluster on AWS from a Bastion host. 
+Use the scripts in this directory to set up a Kubernetes cluster on AWS from a Bastion host.
 
 * Create a bastion host in AWS
 
@@ -16,7 +16,13 @@ Use the scripts in this directory to set up a Kubernetes cluster on AWS from a B
 
   If it somehow fails, destroy the cluster with `terraform destroy -force` and try again.
 
-* Setup Weave Flux
+* kubectl should work from the bastion to control the kubernetes cluster
+
+* Setup/Control Weave Flux
+
+  ```
+  export FLUX_SERVICE_TOKEN=<sock shop weave cloud token>
+  ```
 
   ```
   fluxctl get-config > flux.conf
