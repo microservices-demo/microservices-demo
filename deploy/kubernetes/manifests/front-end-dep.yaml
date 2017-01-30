@@ -29,13 +29,13 @@ spec:
           readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
-            path: /health
+            path: /
             port: 8079
           initialDelaySeconds: 300
           periodSeconds: 3
         readinessProbe:
           httpGet:
-            path: /health
+            path: /
             port: 8079
           initialDelaySeconds: 180
           periodSeconds: 3
