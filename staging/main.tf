@@ -109,6 +109,17 @@ resource "aws_instance" "k8s-master" {
   provisioner "local-exec" {
     command = "ssh -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.public_ip} sudo kubeadm init | grep -e --token > join.cmd"
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo cp /etc/kubernetes/admin.conf ~/config",
+      "sudo chown ubuntu: ~/config"
+    ]
+  }
+
+  provisioner "local-exec" {
+    command = "scp -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.public_ip}:~/config ~/.kube/"
+  }
 }
 
 resource "null_resource" "weave" {
@@ -141,7 +152,7 @@ resource "null_resource" "sock-shop" {
 
   provisioner "remote-exec" {
     inline = [
-      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml -f ~/microservices-demo/deploy/kubernetes/manifests"
+      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests"
     ]
   }
 }
