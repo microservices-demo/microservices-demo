@@ -50,7 +50,6 @@ debug=false
 args=()
 cpu=0.3
 mem=1024
-tag="05614ae5523257ab04a1bf767e3ec8ff74c08e3e"
 
 # Logging
 # -----------------------------------
@@ -83,7 +82,6 @@ Caveats: This is using a RC version of Mesos, and may not work in the future. Th
   --force           Skip all user interaction.  Implied 'Yes' to all actions.
   -c, --cpu         Individual task CPUs
   -m, --mem         Individual task Mem
-  -t, --tag         Sets the tag of the docker images
   -q, --quiet       Quiet (no output)
   -l, --log         Print log to file
   -s, --strict      Exit script with null variables.  i.e 'set -o nounset'
@@ -142,7 +140,6 @@ while [[ $1 = -?* ]]; do
     --version) echo "$(basename $0) ${version}"; safeExit ;;
     -c|--cpu) shift; cpu=${1} ;;
     -m|--mem) shift; mem=${1} ;;
-    -t|--tag) shift; tag=${1} ;;
     -v|--verbose) verbose=true ;;
     -l|--log) printLog=true ;;
     -q|--quiet) quiet=true ;;
@@ -392,7 +389,7 @@ do_start() {
     # Provision Edge router first, so that it is always on all machines.
     curl -s -X POST -H "Content-type: application/json" ${MASTERS[0]}:8080/v2/apps -d '{
       "id": "edge-router",
-      "cmd": "while ! ping -c1 front-end.mesos-executeinstance.weave.local &>/dev/null; do : sleep 5; echo .; done ; sleep 10 ; echo \"Starting nginx\" ; sed -i \"s/.*proxy_pass.*/      proxy_pass      http:\\/\\/front-end.mesos-executeinstance.weave.local:8079;/\" /etc/nginx/nginx.conf ; nginx -g \"daemon off;\"",
+      "cmd": "while ! ping -c1 front-end.mesos-executeinstance.weave.local &>/dev/null; do : sleep 5; echo .; done ; sleep 10 ; echo \"Starting traefik\" ; sed -i \"s/front-end/front-end.mesos-executeinstance.weave.local/g\" /etc/traefik/traefik.toml ; traefik",
       "cpus": 0.2,
       "mem": 512,
       "disk": 0,
@@ -400,7 +397,7 @@ do_start() {
       "constraints": [["hostname", "UNIQUE"]],
       "container": {
         "docker": {
-          "image": "weaveworksdemos/edge-router:'$tag'",
+          "image": "weaveworksdemos/edge-router",
           "network": "HOST",
           "parameters": [],
           "privileged": true
