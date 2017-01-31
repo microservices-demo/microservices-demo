@@ -246,11 +246,8 @@ do_init_check() {
 ############## Start Commands ###################
 
 do_install() {
-    WEAVE_BINARY=$(ssh -i $KEY ubuntu@$MASTER 'which weave')
-    if [[ -n $WEAVE_BINARY ]]; then
-        WEAVE_CONNECTIONS=$(ssh $SSH_OPTS -i $KEY $USER@${AGENTS[0]} 'weave status connections | wc -l')
-    fi
-    if [[ -z $WEAVE_BINARY ]] || [ $WEAVE_CONNECTIONS -lt 3 ]; then
+    WEAVE_CONNECTIONS=$(ssh $SSH_OPTS -i $KEY $USER@${AGENTS[0]} 'weave status connections | wc -l')
+    if [ $WEAVE_CONNECTIONS -lt 3 ]; then
         info "Installing Weave"
         # Provision Weave CNI
         for HOST in ${MASTERS[*]}

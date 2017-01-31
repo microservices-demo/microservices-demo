@@ -70,13 +70,13 @@
               "parameters": [
                 {
                   "key": "hostname",
-                  "value": "catalogue-db-db.weave.local"
+                  "value": "catalogue-db.weave.local"
                 }
               ]
             }
           },
           "env": {
-            "MYSQL_ROOT_PASSWORD": "fake_password",
+            "MYSQL_ALLOW_EMPTY_PASSWORD": "true",
             "MYSQL_DATABASE": "socksdb"
           }
         }
@@ -233,7 +233,6 @@
       "apps": [
         {
           "id": "/weave-demo/external/edge-router",
-          "cmd": "while ! ping -c1 front-end ; do echo .; done ; echo \"worker_processes  5; worker_rlimit_nofile 8192; events { worker_connections  4096; } http { resolver 172.17.0.1 valid=5s; server { listen 80; set \\$endpoint front-end:8079; location / { proxy_pass http://\\$endpoint; }}}\" | tee /etc/nginx/nginx.conf ; cat /etc/nginx/nginx.conf ; nginx -g \"daemon off;\"",
           "cpus": 0.2,
           "mem": 512,
           "disk": 0,
