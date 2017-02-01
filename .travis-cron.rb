@@ -31,17 +31,20 @@ puts "(That is when the previous cron job started)"
 docker_images = Travis::CronTools::Contrib.find_images_in_k8s_manifest("deploy/kubernetes/complete-demo.yaml")
 
 # Find documented platforms
-deployment_platforms = Dir["docs/deployment/*.md"].map do |markdown_file|
-  name = File.basename(markdown_file).gsub(/\.md$/, "")
+# deployment_platforms = Dir["docs/deployment/*.md"].map do |markdown_file|
+#   name = File.basename(markdown_file).gsub(/\.md$/, "")
 
-  # Extract the yaml header from the top of the file
-  yaml = YAML.load(File.read(markdown_file).split("---")[1]) rescue {}
-  if yaml["deployDoc"] == true
-    DeploymentPlatform.new(name, markdown_file)
-  else
-    nil
-  end
-end.reject(&:nil?)
+#   # Extract the yaml header from the top of the file
+#   yaml = YAML.load(File.read(markdown_file).split("---")[1]) rescue {}
+#   if yaml["deployDoc"] == true
+#     DeploymentPlatform.new(name, markdown_file)
+#   else
+#     nil
+#   end
+# end.reject(&:nil?)
+
+DeploymentPlatform.new("ecs", "docs/deployment/ecs.md")
+
 
 ###############################################################################
 # Determine which tests to run
