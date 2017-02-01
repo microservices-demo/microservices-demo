@@ -158,13 +158,13 @@ Vagrant.configure(2) do |config|
 
   (1..num_nodes.to_i).each do |n|
     ip = "192.168.59.10#{n}"
-    name = "node#{n}"
+    name = "ci-sockshop-node#{n}"
     nomad_config = <<-EOF
     bind_addr = "#{ip}"
     data_dir = "/var/lib/nomad"
     EOF
 
-    if name == "node1"
+    if name == "ci-sockshop-node1"
       nomad_config << <<-EOF
       server {
         enabled = true
@@ -192,12 +192,12 @@ Vagrant.configure(2) do |config|
 
       m.vm.provider :aws do |aws, override|
         aws.private_ip_address = ip
-        if name != "node1"
-          aws.tags = {'Name' => 'nomad-node'}
+        if name != "ci-sockshop-node1"
+          aws.tags = {'Name' => 'ci-sockshop-nomad-node'}
         end
       end
 
-      if name == "node1"
+      if name == "ci-sockshop-node1"
         m.vm.provision "shell", name: "Start consul (bootstrapped)", inline: consul_initial
       else
         m.vm.provision "shell", name: "Start consul (join cluster)", env: {"IP" => ip}, inline: consul_joiner
@@ -210,7 +210,7 @@ Vagrant.configure(2) do |config|
       m.vm.provision "shell", name: "Launch scope", env: {"SCOPE_TOKEN" => ENV["SCOPE_TOKEN"] || ""}, inline: launch_scope
 
       # Stuff only the head node should take care of
-      if name == "node1"
+      if name == "ci-sockshop-node1"
         m.vm.provider "virtualbox" do |vb|
           vb.memory = "1024"
         end
