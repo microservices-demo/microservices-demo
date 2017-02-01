@@ -28,49 +28,45 @@ puts "(That is when the previous cron job started)"
 
 # In the contrib module, there are some helper methods.
 # Below for example, it extracts all image names from a k8s manifest file.
-# docker_images = Travis::CronTools::Contrib.find_images_in_k8s_manifest("deploy/kubernetes/complete-demo.yaml")
+docker_images = Travis::CronTools::Contrib.find_images_in_k8s_manifest("deploy/kubernetes/complete-demo.yaml")
 
 # Find documented platforms
-# deployment_platforms = Dir["docs/deployment/*.md"].map do |markdown_file|
-#   name = File.basename(markdown_file).gsub(/\.md$/, "")
+deployment_platforms = Dir["docs/deployment/*.md"].map do |markdown_file|
+  name = File.basename(markdown_file).gsub(/\.md$/, "")
 
-#   # Extract the yaml header from the top of the file
-#   yaml = YAML.load(File.read(markdown_file).split("---")[1]) rescue {}
-#   if yaml["deployDoc"] == true
-#     DeploymentPlatform.new(name, markdown_file)
-#   else
-#     nil
-#   end
-# end.reject(&:nil?)
-
-deployment_platforms = [DeploymentPlatform.new("ecs", "docs/deployment/ecs.md")]
-
+  # Extract the yaml header from the top of the file
+  yaml = YAML.load(File.read(markdown_file).split("---")[1]) rescue {}
+  if yaml["deployDoc"] == true
+    DeploymentPlatform.new(name, markdown_file)
+  else
+    nil
+  end
+end.reject(&:nil?)
 
 ###############################################################################
 # Determine which tests to run
 ###############################################################################
 
-platforms_to_test = deployment_platforms
+platforms_to_test = []
 
 # Implement custom logic to determine what  should be tested.
 # In this case, if any of the docker images has changed, we want to test
 # all different platforms we can deploy to.
-# if docker_images.any? { |image| image.created_since?(last_cron_job_start_time) }
-#   puts "Some of the docker images changed; building all platforms"
-#   platforms_to_test = deployment_platforms
-# else
-#   # Alternatively, if none of the images has changed, we check if any deployment has changed
-#  # in the git repository since the last successfull build.
-#  puts "None of the docker images changed."
-#  deployment_platforms.each do |platform| 
-#     git_dir = SpawnTravisBuild::Dependency::Git.new(platform.dir)
-#     if git_dir.changed_since?(last_cron_job_start_time)
-#       puts "However, deployment platform #{platform.name} changed"
-#       platforms_to_test.push platform
-#     end
-#   end
-# end
-
+if docker_images.any? { |image| image.created_since?(last_cron_job_start_time) }
+  puts "Some of the docker images changed; building all platforms"
+  platforms_to_test = deployment_platforms
+else
+  # Alternatively, if none of the images has changed, we check if any deployment has changed
+ # in the git repository since the last successfull build.
+ puts "None of the docker images changed."
+ deployment_platforms.each do |platform| 
+    git_dir = SpawnTravisBuild::Dependency::Git.new(platform.dir)
+    if git_dir.changed_since?(last_cron_job_start_time)
+      puts "However, deployment platform #{platform.name} changed"
+      platforms_to_test.push platform
+    end
+  end
+end
 
 ###############################################################################
 # Create Travis Build
