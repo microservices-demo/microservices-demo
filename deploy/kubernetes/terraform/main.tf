@@ -49,13 +49,13 @@ resource "aws_security_group" "k8s-security-group" {
   }
 }
 
-resource "aws_instance" "md-k8s-master" {
+resource "aws_instance" "ci-sockshop-k8s-master" {
   instance_type   = "${var.master_instance_type}"
   ami             = "${lookup(var.aws_amis, var.aws_region)}"
   key_name        = "${var.key_name}"
   security_groups = ["${aws_security_group.k8s-security-group.name}"]
   tags {
-    Name = "md-k8s-master"
+    Name = "ci-sockshop-k8s-master"
   }
 
   connection {
@@ -79,14 +79,14 @@ resource "aws_instance" "md-k8s-master" {
   }
 }
 
-resource "aws_instance" "md-k8s-node" {
+resource "aws_instance" "ci-sockshop-k8s-node" {
   instance_type   = "${var.node_instance_type}"
   count           = "${var.node_count}"
   ami             = "${lookup(var.aws_amis, var.aws_region)}"
   key_name        = "${var.key_name}"
   security_groups = ["${aws_security_group.k8s-security-group.name}"]
   tags {
-    Name = "md-k8s-node"
+    Name = "ci-sockshop-k8s-node"
   }
 
   connection {
@@ -105,10 +105,10 @@ resource "aws_instance" "md-k8s-node" {
   }
 }
 
-resource "aws_elb" "elb-sock-shop" {
-  depends_on = [ "aws_instance.md-k8s-node" ]
-  name = "md-k8s-elb-sock-shop"
-  instances = ["${aws_instance.md-k8s-node.*.id}"]
+resource "aws_elb" "ci-sockshop-k8s-elb" {
+  depends_on = [ "aws_instance.ci-sockshop-k8s-node" ]
+  name = "ci-sockshop-k8s-elb"
+  instances = ["${aws_instance.ci-sockshop-k8s-node.*.id}"]
   availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
   security_groups = ["${aws_security_group.k8s-security-group.id}"] 
   listener {
