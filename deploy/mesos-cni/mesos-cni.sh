@@ -50,7 +50,6 @@ debug=false
 args=()
 cpu=0.3
 mem=1024
-tag="05614ae5523257ab04a1bf767e3ec8ff74c08e3e"
 
 # Logging
 # -----------------------------------
@@ -83,7 +82,6 @@ Caveats: This is using a RC version of Mesos, and may not work in the future. Th
   --force           Skip all user interaction.  Implied 'Yes' to all actions.
   -c, --cpu         Individual task CPUs
   -m, --mem         Individual task Mem
-  -t, --tag         Sets the tag of the docker images
   -q, --quiet       Quiet (no output)
   -l, --log         Print log to file
   -s, --strict      Exit script with null variables.  i.e 'set -o nounset'
@@ -142,7 +140,6 @@ while [[ $1 = -?* ]]; do
     --version) echo "$(basename $0) ${version}"; safeExit ;;
     -c|--cpu) shift; cpu=${1} ;;
     -m|--mem) shift; mem=${1} ;;
-    -t|--tag) shift; tag=${1} ;;
     -v|--verbose) verbose=true ;;
     -l|--log) printLog=true ;;
     -q|--quiet) quiet=true ;;
@@ -240,7 +237,7 @@ launch_service() {
         if [ -z "$STATUS" ] ; then
             verbose "Retrying $1"
         fi
-        ssh	$SSH_OPTS -i $KEY $USER@${MASTERS[0]} 'nohup sudo mesos-execute --networks=weave --env={\"LC_ALL\":\"C\"} '$4' --resources=cpus:'$cpu'\;mem:'$mem' --name='$1' --command="'$2'" --docker_image='$3' --master='${MASTERS[0]}':5050 </dev/null >'$1'.log 2>&1 &'
+        ssh	$SSH_OPTS -i $KEY $USER@${MASTERS[0]} 'nohup sudo mesos-execute --networks=weave --env="{\"LC_ALL\":\"C\"'$5'}" '$4' --resources=cpus:'$cpu'\;mem:'$mem' --name='$1' --command="'$2'" --docker_image='$3' --master='${MASTERS[0]}':5050 </dev/null >'$1'.log 2>&1 &'
         sleep 1 # Give it a second to register in mesos
         wait_task_running $1
         STATUS=$(task_status $1)
@@ -392,7 +389,7 @@ do_start() {
     # Provision Edge router first, so that it is always on all machines.
     curl -s -X POST -H "Content-type: application/json" ${MASTERS[0]}:8080/v2/apps -d '{
       "id": "edge-router",
-      "cmd": "while ! ping -c1 front-end.mesos-executeinstance.weave.local &>/dev/null; do : sleep 5; echo .; done ; sleep 10 ; echo \"Starting nginx\" ; sed -i \"s/.*proxy_pass.*/      proxy_pass      http:\\/\\/front-end.mesos-executeinstance.weave.local:8079;/\" /etc/nginx/nginx.conf ; nginx -g \"daemon off;\"",
+      "cmd": "while ! ping -c1 front-end.mesos-executeinstance.weave.local &>/dev/null; do : sleep 5; echo .; done ; sleep 10 ; echo \"Starting traefik\" ; sed -i \"s/front-end/front-end.mesos-executeinstance.weave.local/g\" /etc/traefik/traefik.toml ; traefik",
       "cpus": 0.2,
       "mem": 512,
       "disk": 0,
@@ -400,7 +397,7 @@ do_start() {
       "constraints": [["hostname", "UNIQUE"]],
       "container": {
         "docker": {
-          "image": "weaveworksdemos/edge-router:'$tag'",
+          "image": "weaveworksdemos/edge-router",
           "network": "HOST",
           "parameters": [],
           "privileged": true
@@ -423,16 +420,16 @@ do_start() {
 
     launch_service cart-db      "echo ok"                                       mongo                               --no-shell
     launch_service orders-db    "echo ok"                                       mongo                               --no-shell
-    launch_service catalogue-db "echo ok"                                       weaveworksdemos/catalogue-db        --no-shell
+    launch_service catalogue-db "echo ok"                                       weaveworksdemos/catalogue-db        --no-shell ", \\\"MYSQL_ALLOW_EMPTY_PASSWORD\\\": \\\"true\\\", \\\"MYSQL_DATABASE\\\": \\\"socksdb\\\""
     launch_service user-db      "echo ok"                                       weaveworksdemos/user-db             --no-shell
 
-    launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"    weaveworksdemos/shipping:$tag       --shell
-    launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders:$tag         --shell
-    launch_service catalogue    "/app -port=80"                                       weaveworksdemos/catalogue:$tag      --no-shell
-    launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=cart-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/cart:$tag           --shell
-    launch_service payment      "/app -port=80"                                       weaveworksdemos/payment:$tag        --no-shell
-    launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"   weaveworksdemos/front-end:$tag --shell
-    launch_service user         "/user -port=80"                                       weaveworksdemos/user:$tag      --no-shell
+    launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"                            weaveworksdemos/shipping    --shell
+    launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders   --shell
+    launch_service catalogue    "./app -port=80 -DSN=catalogue_user:default_password@tcp\(catalogue-db.mesos-executeinstance.weave.local:3306\)/socksdb"                                    weaveworksdemos/catalogue   --shell
+    launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=cart-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"      weaveworksdemos/cart        --shell
+    launch_service payment      "echo ok"                                                                                                                                                   weaveworksdemos/payment     --no-shell
+    launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"                                                                                                   weaveworksdemos/front-end   --shell
+    launch_service user         "./user -port=80 -link-domain=user.mesos-executeinstance.weave.local -mongo-host=user-db.mesos-executeinstance.weave.local:27017"                           weaveworksdemos/user        --shell
 }
 
 do_stop() {
