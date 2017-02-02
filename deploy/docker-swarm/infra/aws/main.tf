@@ -6,7 +6,7 @@ data "aws_ami" "ci-sockshop-docker-swarm" {
   most_recent = true
   filter {
     name = "name"
-    values = ["ci-sockshop-docker-swarm"]
+    values = ["docker-swarm"]
   }
 }
 
@@ -67,9 +67,9 @@ resource "aws_instance" "ci-sockshop-docker-swarm-node" {
   depends_on      = [ "aws_instance.ci-sockshop-docker-swarm-master" ]
   count           = "${var.num_nodes}"
   instance_type   = "${var.instance_type}"
-  ami             = "${data.aws_ami.docker-swarm.id}"
+  ami             = "${data.aws_ami.ci-sockshop-docker-swarm.id}"
   key_name        = "${var.private_key_name}"
-  security_groups = ["${aws_security_group.docker-swarm.name}"]
+  security_groups = ["${aws_security_group.ci-sockshop-docker-swarm.name}"]
   tags {
     Name = "ci-sockshop-docker-swarm-node"
   }
@@ -95,9 +95,9 @@ resource "aws_instance" "ci-sockshop-docker-swarm-node" {
 
 resource "aws_instance" "ci-sockshop-docker-swarm-master" {
   instance_type   = "${var.instance_type}"
-  ami             = "${data.aws_ami.docker-swarm.id}"
+  ami             = "${data.aws_ami.ci-sockshop-docker-swarm.id}"
   key_name        = "${var.private_key_name}"
-  security_groups = ["${aws_security_group.docker-swarm.name}"]
+  security_groups = ["${aws_security_group.ci-sockshop-docker-swarm.name}"]
   tags {
     Name = "ci-sockshop-docker-swarm-master"
   }
