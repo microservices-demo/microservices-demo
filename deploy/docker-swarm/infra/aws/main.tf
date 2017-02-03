@@ -2,7 +2,7 @@ provider "aws" {
   region = "${var.region}"
 }
 
-data "aws_ami" "docker-swarm" {
+data "aws_ami" "ci-sockshop-docker-swarm" {
   most_recent = true
   filter {
     name = "name"
@@ -10,8 +10,8 @@ data "aws_ami" "docker-swarm" {
   }
 }
 
-resource "aws_security_group" "docker-swarm" {
-  name        = "docker-swarm"
+resource "aws_security_group" "ci-sockshop-docker-swarm" {
+  name        = "ci-sockshop-docker-swarm"
   description = "allow all internal traffic, all traffic http from anywhere"
   ingress {
     from_port   = 0
@@ -63,15 +63,15 @@ resource "aws_security_group" "docker-swarm" {
   }
 }
 
-resource "aws_instance" "docker-swarm-node" {
-  depends_on      = [ "aws_instance.docker-swarm-master" ] 
+resource "aws_instance" "ci-sockshop-docker-swarm-node" {
+  depends_on      = [ "aws_instance.ci-sockshop-docker-swarm-master" ]
   count           = "${var.num_nodes}"
   instance_type   = "${var.instance_type}"
-  ami             = "${data.aws_ami.docker-swarm.id}"
+  ami             = "${data.aws_ami.ci-sockshop-docker-swarm.id}"
   key_name        = "${var.private_key_name}"
-  security_groups = ["${aws_security_group.docker-swarm.name}"]
+  security_groups = ["${aws_security_group.ci-sockshop-docker-swarm.name}"]
   tags {
-    Name = "docker-swarm-node"
+    Name = "ci-sockshop-docker-swarm-node"
   }
 
   connection {
@@ -93,13 +93,13 @@ resource "aws_instance" "docker-swarm-node" {
   }
 }
 
-resource "aws_instance" "docker-swarm-master" {
+resource "aws_instance" "ci-sockshop-docker-swarm-master" {
   instance_type   = "${var.instance_type}"
-  ami             = "${data.aws_ami.docker-swarm.id}"
+  ami             = "${data.aws_ami.ci-sockshop-docker-swarm.id}"
   key_name        = "${var.private_key_name}"
-  security_groups = ["${aws_security_group.docker-swarm.name}"]
+  security_groups = ["${aws_security_group.ci-sockshop-docker-swarm.name}"]
   tags {
-    Name = "docker-swarm-master"
+    Name = "ci-sockshop-docker-swarm-master"
   }
 
   connection {
@@ -120,16 +120,16 @@ resource "aws_instance" "docker-swarm-master" {
   }
 
   provisioner "local-exec" {
-    command = "TOKEN=$(ssh -i ${var.private_key_path} -o StrictHostKeyChecking=no ubuntu@${aws_instance.docker-swarm-master.public_ip} docker swarm join-token -q worker); echo \"#!/usr/bin/env bash\ndocker swarm join --token $TOKEN ${aws_instance.docker-swarm-master.public_ip}:2377\" >| join.sh"
+    command = "TOKEN=$(ssh -i ${var.private_key_path} -o StrictHostKeyChecking=no ubuntu@${aws_instance.ci-sockshop-docker-swarm-master.public_ip} docker swarm join-token -q worker); echo \"#!/usr/bin/env bash\ndocker swarm join --token $TOKEN ${aws_instance.ci-sockshop-docker-swarm-master.public_ip}:2377\" >| join.sh"
   }
 }
 
 resource "null_resource" "docker-swarm" {
-  depends_on = [ "aws_instance.docker-swarm-node" ] 
+  depends_on = [ "aws_instance.ci-sockshop-docker-swarm-node" ]
   connection {
     user = "ubuntu"
     private_key = "${file("${var.private_key_path}")}"
-    host = "${aws_instance.docker-swarm-master.public_ip}"
+    host = "${aws_instance.ci-sockshop-docker-swarm-master.public_ip}"
   }
   provisioner "remote-exec" {
     inline = [
