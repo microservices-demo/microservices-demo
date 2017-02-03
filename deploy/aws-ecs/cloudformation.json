@@ -372,32 +372,6 @@
                 }
             }
         },
-        "OrdersDBTask": {
-            "Condition": "DoDeployExampleApp",
-            "Type": "AWS::ECS::TaskDefinition",
-            "Properties": {
-                "ContainerDefinitions": [{
-                    "Essential": true,
-                    "Image": "mongo",
-                    "Name": "orders-db",
-                    "Memory": 128
-                }],
-                "Volumes": []
-            }
-        },
-        "OrdersDBService": {
-            "Condition": "DoDeployExampleApp",
-            "Type": "AWS::ECS::Service",
-            "Properties": {
-                "Cluster": {
-                    "Ref": "EcsCluster"
-                },
-                "DesiredCount": 1,
-                "TaskDefinition": {
-                    "Ref": "OrdersDBTask"
-                }
-            }
-        },
         "OrdersTask": {
             "Condition": "DoDeployExampleApp",
             "Type": "AWS::ECS::TaskDefinition",
@@ -408,7 +382,8 @@
                     "Name": "orders",
                     "Memory": 1024
                 }],
-                "Volumes": []
+                "Volumes": [],
+                "TaskRoleArn": {"Fn::GetAtt" : ["OrdersDBRole", "Arn"] }
             }
         },
         "OrdersService": {
@@ -839,6 +814,46 @@
                 }]
             }
         },
+        "OrdersDBRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": [
+                                "ec2.amazonaws.com"
+                            ]
+                        },
+                        "Action": [
+                            "sts:AssumeRole"
+                        ]
+                    }]
+                },
+                "Policies": [{
+                    "PolicyName": "OrdersDBRole",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [{
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:BatchGetItem",
+                                "dynamodb:DescribeTable",
+                                "dynamodb:GetItem",
+                                "dynamodb:PutItem",
+                                "dynamodb:Query",
+                                "dynamodb:Scan",
+                                "dynamodb:UpdateTable"
+                            ],
+                            "Resource": [
+                                "*"
+                            ]
+                        }]
+                    }
+                }]
+            }
+        },
         "EcsInstanceProfile": {
             "Type": "AWS::IAM::InstanceProfile",
             "Properties": {
@@ -1201,6 +1216,34 @@
                         }
                     }
                 }
+            }
+        },
+        "OrdersTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "AttributeDefinitions": [{
+                        "AttributeName": "UserID",
+                        "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "OrderID",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [{
+                        "AttributeName": "UserID",
+                        "KeyType": "HASH"
+                    },
+                    {
+                        "AttributeName": "OrderID",
+                        "KeyType": "RANGE"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": "1",
+                    "WriteCapacityUnits": "1"
+                },
+                "TableName": "Orders",
             }
         }
     }
