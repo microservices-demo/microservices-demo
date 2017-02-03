@@ -4,7 +4,7 @@ version="1.0.0"
 SCRIPT_DIR=`dirname "$0"`
 SCRIPT_NAME=`basename "$0"`
 SSH_OPTS=-oStrictHostKeyChecking=no
-IMAGES=("weaveworksdemos/shipping" "weaveworksdemos/orders" "weaveworksdemos/catalogue" "weaveworksdemos/accounts" "weaveworksdemos/cart" "weaveworksdemos/payment" "weaveworksdemos/login" "weaveworksdemos/front-end" "weaveworksdemos/edge-router")
+IMAGES=("weaveworksdemos/shipping" "weaveworksdemos/orders" "weaveworksdemos/catalogue" "weaveworksdemos/user" "weaveworksdemos/cart" "weaveworksdemos/payment" "weaveworksdemos/catalogue-db" "weaveworksdemos/user-db" "weaveworksdemos/front-end" "weaveworksdemos/edge-router")
 MARATHON_FILE=../mesos-marathon/marathon.json
 VM_NAME=weave-demo
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -314,6 +314,15 @@ do_start() {
     if [[ -n $($DOCKER_CMD ps | grep -E 'weaveproxy|minimesos|weaveworksdemo') ]] ; then
         die "Some services are already running. Please run 'stop' first"
     fi
+
+    info "Pre-pulling containers. This may take a while..."
+    $DOCKER_CMD pull mesosphere/marathon:v1.3.5 >/dev/null
+    $DOCKER_CMD pull mongo >/dev/null
+    for SERVICE in ${IMAGES[*]} ; do
+        verbose "Pulling $SERVICE"
+        $DOCKER_CMD pull $SERVICE >/dev/null
+    done;
+
     info "Starting weave"
     $WEAVE_CMD launch-router
     $WEAVE_CMD launch-proxy -H unix:///var/run/weave/weave.sock
@@ -344,18 +353,12 @@ do_start() {
         --name=$OLD_NAME \
         -v=/var/run/weave/weave.sock:/var/run/weave/weave.sock \
         -v=/sys/fs/cgroup:/sys/fs/cgroup \
-        containersol/mesos-agent:0.25.0-0.2.70.ubuntu1404 \
+        containersol/mesos-agent:1.0.0-0.1.0 \
             --master=$MINIMESOS_ZOOKEEPER \
             --containerizers=docker,mesos \
             --resources="ports(*):[80-80, 31000-32000];cpus(*):12;mem(*):20960" \
-            --docker_socket=/var/run/weave/weave.sock
-
-    info "Pre-pulling containers. This may take a while..."
-    $DOCKER_CMD pull mongo >/dev/null
-    for SERVICE in ${IMAGES[*]} ; do
-        verbose "Pulling $SERVICE"
-        $DOCKER_CMD pull $SERVICE:snapshot >/dev/null
-    done;
+            --docker_socket=/var/run/weave/weave.sock \
+            --work_dir=/var/lib/mesos/agent
 
     info "Wait for Zookeeper, Mesos and Marathon to cluster."
 
