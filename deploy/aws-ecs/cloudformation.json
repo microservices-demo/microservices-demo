@@ -1126,7 +1126,13 @@
                 "DBName": "socksdb",
                 "Engine": "MySQL",
                 "MasterUsername": "catalogue_user",
-                "MasterUserPassword": "default_password"
+                "MasterUserPassword": "default_password",
+                "VPCSecurityGroups": [{
+                    "Ref": "DBEC2SecurityGroup"
+                }],
+                "DBSubnetGroupName": {
+                    "Ref": "myDBSubnetGroup"
+                }
             }
         },
         "SQLImporter": {
@@ -1142,6 +1148,19 @@
                     }],
                     "SubnetId": {
                         "Ref": "PubSubnetAz1"
+                    }
+                }],
+
+                "Tags": [{
+                    "Key": "Name",
+                    "Value": {
+                        "Fn::Join": [
+                            "", [
+                                "RDS Importer - ", {
+                                    "Ref": "AWS::StackName"
+                                }
+                            ]
+                        ]
                     }
                 }],
                 "KeyName": {
@@ -1201,6 +1220,35 @@
                         }
                     }
                 }
+            }
+        },
+        "DBEC2SecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Open database for access",
+                "SecurityGroupIngress": [{
+                    "IpProtocol": "tcp",
+                    "FromPort": "3306",
+                    "ToPort": "3306",
+                    "SourceSecurityGroupId": {
+                        "Ref": "EcsSecurityGroup"
+                    }
+                }],
+                "VpcId": {
+                    "Ref": "Vpc"
+                }
+
+            }
+        },
+        "myDBSubnetGroup": {
+            "Type": "AWS::RDS::DBSubnetGroup",
+            "Properties": {
+                "DBSubnetGroupDescription": "description",
+                "SubnetIds": [{
+                    "Ref": "PubSubnetAz1"
+                }, {
+                    "Ref": "PubSubnetAz2"
+                }]
             }
         }
     }
