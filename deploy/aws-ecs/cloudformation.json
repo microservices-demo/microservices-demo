@@ -100,12 +100,13 @@
         "EcsInstanceType": {
             "Type": "String",
             "Description": "Type of the EC2 instance(s) to deploy",
-            "Default": "t2.large",
+            "Default": "t2.xlarge",
             "AllowedValues": [
                 "t2.micro",
                 "t2.small",
                 "t2.medium",
                 "t2.large",
+                "t2.xlarge",
                 "m3.medium",
                 "m3.large",
                 "m3.xlarge",
@@ -140,7 +141,7 @@
         "Scale": {
             "Type": "Number",
             "Description": "Size of ECS cluster",
-            "Default": "3"
+            "Default": "4"
         },
         "KeyName": {
             "Type": "AWS::EC2::KeyPair::KeyName",
