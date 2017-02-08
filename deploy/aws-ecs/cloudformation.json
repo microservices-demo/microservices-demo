@@ -566,7 +566,7 @@
                     ]
                 }],
                 "Volumes": []
-            },
+            }
         },
         "ZipkinService": {
             "Condition": "DoDeployExampleApp",
@@ -624,9 +624,9 @@
                 "TaskDefinition": {
                     "Ref": "ZipkinCronTask"
                 }
-            }
+            },
+            "DependsOn": "ZipkinDBService"
         },
-
         "ZipkinDBTask": {
             "Condition": "DoDeployExampleApp",
             "Type": "AWS::ECS::TaskDefinition",
@@ -1124,7 +1124,7 @@
                     "PropagateAtLaunch": "true"
                 }],
                 "TargetGroupARNs": [{
-                    "Ref": "EcsScopeTargetGroup"
+                        "Ref": "EcsScopeTargetGroup"
                 }]
             }
         },
@@ -1300,10 +1300,13 @@
             "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
             "DependsOn": "InternetGateway",
             "Properties": {
-                "SecurityGroups": [{
-                    "Ref": "EcsSecurityGroup"
-                }],
-                "Subnets": [{
+                "SecurityGroups": [
+                    {
+                        "Ref": "EcsSecurityGroup"
+                    }
+                ],
+                "Subnets": [
+                    {
                         "Ref": "PubSubnetAz1"
                     },
                     {
@@ -1317,13 +1320,9 @@
             "Properties": {
                 "DefaultActions": [{
                     "Type": "forward",
-                    "TargetGroupArn": {
-                        "Ref": "EcsScopeTargetGroup"
-                    }
+                    "TargetGroupArn": { "Ref": "EcsScopeTargetGroup" }
                 }],
-                "LoadBalancerArn": {
-                    "Ref": "EcsScopeApplicationLoadBalancing"
-                },
+                "LoadBalancerArn": { "Ref": "EcsScopeApplicationLoadBalancing" },
                 "Port": 80,
                 "Protocol": "HTTP"
             }
@@ -1334,24 +1333,14 @@
                 "Name": "Scope-Target-Group",
                 "Port": 4040,
                 "Protocol": "HTTP",
-                "VpcId": {
-                    "Ref": "Vpc"
-                },
-                "TargetGroupAttributes": [{
-                        "Key": "stickiness.type",
-                        "Value": "lb_cookie"
-                    },
-                    {
-                        "Key": "stickiness.enabled",
-                        "Value": "true"
-                    },
-                    {
-                        "Key": "stickiness.lb_cookie.duration_seconds",
-                        "Value": "1860"
-                    }
+                "VpcId": { "Ref": "Vpc" },
+                "TargetGroupAttributes": [
+                    { "Key": "stickiness.type", "Value": "lb_cookie" },
+                    { "Key": "stickiness.enabled", "Value": "true" },
+                    { "Key": "stickiness.lb_cookie.duration_seconds", "Value": "1860" }
                 ]
             },
-            "DependsOn": ["EcsScopeApplicationLoadBalancing"]
+            "DependsOn": [ "EcsScopeApplicationLoadBalancing" ]
         },
         "DBEC2SecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
