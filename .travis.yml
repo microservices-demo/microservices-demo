@@ -13,8 +13,10 @@ install:
 
 script:
 - set -o pipefail
-- gem install travis-cron_tools;
-- ruby .travis-cron.rb;
+- if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
+    gem install travis-cron_tools;
+    ruby .travis-cron.rb;
+  fi;
 - if [ ! -z "$AWS_ACCESS_KEY" ]; then
     aws cloudformation validate-template --template-body "file:////${PWD}/deploy/aws-ecs/cloudformation.json" | jq . ;
   fi;
