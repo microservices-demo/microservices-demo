@@ -1,24 +1,27 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: zipkin
+  name: zipkin-cron
   labels:
-    name: zipkin
+    name: zipkin-cron
   namespace: sock-shop
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: zipkin
+        name: zipkin-cron
     spec:
       containers:
-      - name: zipkin
-        image: openzipkin/zipkin
-        ports:
-        - containerPort: 9411
+      - name: zipkin-cron
+        image: openzipkin/zipkin-dependencies:1.4.0
         env:
         - name: STORAGE_TYPE
           value: mysql
         - name: MYSQL_HOST
           value: zipkin-mysql
+        - name: MYSQL_USER
+          value: zipkin
+        - name: MYSQL_PASS
+          value: zipkin
+
