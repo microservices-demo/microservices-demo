@@ -100,12 +100,13 @@
         "EcsInstanceType": {
             "Type": "String",
             "Description": "Type of the EC2 instance(s) to deploy",
-            "Default": "t2.large",
+            "Default": "t2.xlarge",
             "AllowedValues": [
                 "t2.micro",
                 "t2.small",
                 "t2.medium",
                 "t2.large",
+                "t2.xlarge",
                 "m3.medium",
                 "m3.large",
                 "m3.xlarge",
@@ -140,7 +141,7 @@
         "Scale": {
             "Type": "Number",
             "Description": "Size of ECS cluster",
-            "Default": "3"
+            "Default": "4"
         },
         "KeyName": {
             "Type": "AWS::EC2::KeyPair::KeyName",
@@ -1118,7 +1119,13 @@
                 "DBName": "socksdb",
                 "Engine": "MySQL",
                 "MasterUsername": "catalogue_user",
-                "MasterUserPassword": "default_password"
+                "MasterUserPassword": "default_password",
+                "VPCSecurityGroups": [{
+                    "Ref": "DBEC2SecurityGroup"
+                }],
+                "DBSubnetGroupName": {
+                    "Ref": "myDBSubnetGroup"
+                }
             }
         },
         "SQLImporter": {
@@ -1134,6 +1141,19 @@
                     }],
                     "SubnetId": {
                         "Ref": "PubSubnetAz1"
+                    }
+                }],
+
+                "Tags": [{
+                    "Key": "Name",
+                    "Value": {
+                        "Fn::Join": [
+                            "", [
+                                "RDS Importer - ", {
+                                    "Ref": "AWS::StackName"
+                                }
+                            ]
+                        ]
                     }
                 }],
                 "KeyName": {
@@ -1240,6 +1260,35 @@
                 ]
             },
             "DependsOn": [ "EcsScopeApplicationLoadBalancing" ]
+        },
+        "DBEC2SecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Open database for access",
+                "SecurityGroupIngress": [{
+                    "IpProtocol": "tcp",
+                    "FromPort": "3306",
+                    "ToPort": "3306",
+                    "SourceSecurityGroupId": {
+                        "Ref": "EcsSecurityGroup"
+                    }
+                }],
+                "VpcId": {
+                    "Ref": "Vpc"
+                }
+
+            }
+        },
+        "myDBSubnetGroup": {
+            "Type": "AWS::RDS::DBSubnetGroup",
+            "Properties": {
+                "DBSubnetGroupDescription": "description",
+                "SubnetIds": [{
+                    "Ref": "PubSubnetAz1"
+                }, {
+                    "Ref": "PubSubnetAz2"
+                }]
+            }
         }
     }
 }
