@@ -1335,9 +1335,9 @@
                 "Protocol": "HTTP",
                 "VpcId": { "Ref" : "Vpc" },
                 "TargetGroupAttributes" : [
-                    { "Key" : "stickiness.type", "Value": "lb_cookie" },
-                    { "Key" : "stickiness.enabled", "Value": "true" },
-                    { "Key" : "stickiness.lb_cookie.duration_seconds", "Value": "1860" }
+                    { "Key" : "stickiness.type", "Value" : "lb_cookie" },
+                    { "Key" : "stickiness.enabled", "Value" : "true" },
+                    { "Key" : "stickiness.lb_cookie.duration_seconds", "Value" : "1860" }
                 ]
             },
             "DependsOn": [ "EcsScopeApplicationLoadBalancing" ]
