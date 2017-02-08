@@ -102,7 +102,7 @@ else
       deploy: {
         provider: "script",
         script: "true"
-      }
+      },
 
       notifications: {
         slack: {
