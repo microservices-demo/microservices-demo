@@ -554,10 +554,19 @@
                     "PortMappings": [{
                         "HostPort": 9411,
                         "ContainerPort": 9411
-                    }]
+                    }],
+                    "Environment": [{
+                            "Name": "STORAGE_TYPE",
+                            "Value": "mysql"
+                        },
+                        {
+                            "Name": "MYSQL_HOST",
+                            "Value": "zipkin-mysql"
+                        }
+                    ]
                 }],
                 "Volumes": []
-            }
+            },
         },
         "ZipkinService": {
             "Condition": "DoDeployExampleApp",
@@ -569,6 +578,78 @@
                 "DesiredCount": 1,
                 "TaskDefinition": {
                     "Ref": "ZipkinTask"
+                }
+            },
+            "DependsOn": "ZipkinDBService"
+        },
+        "ZipkinCronTask": {
+            "Condition": "DoDeployExampleApp",
+            "Type": "AWS::ECS::TaskDefinition",
+            "Properties": {
+                "ContainerDefinitions": [{
+                    "Essential": true,
+                    "Image": "openzipkin/zipkin-dependencies",
+                    "Name": "zipkin-cron",
+                    "Memory": 1024,
+                    "Environment": [{
+                            "Name": "STORAGE_TYPE",
+                            "Value": "mysql"
+                        },
+                        {
+                            "Name": "MYSQL_HOST",
+                            "Value": "zipkin-mysql"
+                        },
+                        {
+                            "Name": "MYSQL_USER",
+                            "Value": "zipkin"
+                        },
+                        {
+                            "Name": "MYSQL_PASS",
+                            "Value": "zipkin"
+                        }
+                    ],
+                    "EntryPoint" : ["crond", "-f"]
+                }],
+                "Volumes": []
+            }
+        },
+        "ZipkinCronService": {
+            "Condition": "DoDeployExampleApp",
+            "Type": "AWS::ECS::Service",
+            "Properties": {
+                "Cluster": {
+                    "Ref": "EcsCluster"
+                },
+                "DesiredCount": 1,
+                "TaskDefinition": {
+                    "Ref": "ZipkinCronTask"
+                }
+            }
+        },
+
+        "ZipkinDBTask": {
+            "Condition": "DoDeployExampleApp",
+            "Type": "AWS::ECS::TaskDefinition",
+            "Properties": {
+                "ContainerDefinitions": [{
+                    "Essential": true,
+                    "Image": "openzipkin/zipkin-mysql",
+                    "Name": "zipkin-mysql",
+                    "Memory": 1024
+                }],
+                "Volumes": []
+            }
+        },
+        "ZipkinDBService": {
+            "Condition": "DoDeployExampleApp",
+            "Type": "AWS::ECS::Service",
+            "Properties": {
+                "Cluster": {
+                    "Ref": "EcsCluster"
+                },
+                "DesiredCount": 1,
+                "TaskDefinition": {
+                    "Ref": "ZipkinDBTask"
                 }
             }
         },
@@ -1043,7 +1124,7 @@
                     "PropagateAtLaunch": "true"
                 }],
                 "TargetGroupARNs": [{
-                        "Ref": "EcsScopeTargetGroup"
+                    "Ref": "EcsScopeTargetGroup"
                 }]
             }
         },
@@ -1219,18 +1300,15 @@
             "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
             "DependsOn": "InternetGateway",
             "Properties": {
-                "SecurityGroups": [
-                {
+                "SecurityGroups": [{
                     "Ref": "EcsSecurityGroup"
-                }
-                ],
-                "Subnets": [
-                {
-                    "Ref": "PubSubnetAz1"
-                },
-                {
-                    "Ref": "PubSubnetAz2"
-                }
+                }],
+                "Subnets": [{
+                        "Ref": "PubSubnetAz1"
+                    },
+                    {
+                        "Ref": "PubSubnetAz2"
+                    }
                 ]
             }
         },
@@ -1239,9 +1317,13 @@
             "Properties": {
                 "DefaultActions": [{
                     "Type": "forward",
-                    "TargetGroupArn": { "Ref": "EcsScopeTargetGroup" }
+                    "TargetGroupArn": {
+                        "Ref": "EcsScopeTargetGroup"
+                    }
                 }],
-                "LoadBalancerArn": { "Ref": "EcsScopeApplicationLoadBalancing" },
+                "LoadBalancerArn": {
+                    "Ref": "EcsScopeApplicationLoadBalancing"
+                },
                 "Port": 80,
                 "Protocol": "HTTP"
             }
@@ -1252,14 +1334,24 @@
                 "Name": "Scope-Target-Group",
                 "Port": 4040,
                 "Protocol": "HTTP",
-                "VpcId": { "Ref" : "Vpc" },
-                "TargetGroupAttributes" : [
-                    { "Key" : "stickiness.type", "Value" : "lb_cookie" },
-                    { "Key" : "stickiness.enabled", "Value" : "true" },
-                    { "Key" : "stickiness.lb_cookie.duration_seconds", "Value" : "1860" }
+                "VpcId": {
+                    "Ref": "Vpc"
+                },
+                "TargetGroupAttributes": [{
+                        "Key": "stickiness.type",
+                        "Value": "lb_cookie"
+                    },
+                    {
+                        "Key": "stickiness.enabled",
+                        "Value": "true"
+                    },
+                    {
+                        "Key": "stickiness.lb_cookie.duration_seconds",
+                        "Value": "1860"
+                    }
                 ]
             },
-            "DependsOn": [ "EcsScopeApplicationLoadBalancing" ]
+            "DependsOn": ["EcsScopeApplicationLoadBalancing"]
         },
         "DBEC2SecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
