@@ -87,8 +87,13 @@ function dnsend
 		| jq -r '.StackResources[0].PhysicalResourceId' )
 	elbdns=$(aws elb describe-load-balancers --load-balancer-name $elbr \
 		| jq -r '.LoadBalancerDescriptions[0].DNSName' )
+	albr=$(aws cloudformation describe-stack-resources \
+                --stack-name $STACK_NAME --logical-resource-id EcsScopeApplicationLoadBalancing \
+		| jq -r '.StackResources[0].PhysicalResourceId')
+	albdns=$(aws elbv2 describe-load-balancers --load-balancer-arns $albr \
+		| jq -r '.LoadBalancers[0].DNSName' )
 	printf "Visit your site here: http://$elbdns\n"
-	printf "Visit WeaveScope here if you are not using Weave Cloud: http://$elbdns:4040\n"
+	printf "Visit WeaveScope here if you are not using Weave Cloud: http://$albdns\n"
 	elbr=$(aws cloudformation describe-stack-resources \
 	       	--stack-name $STACK_NAME --logical-resource-id EcsZipkinElasticLoadBalancing \
 		| jq -r '.StackResources[0].PhysicalResourceId' )
