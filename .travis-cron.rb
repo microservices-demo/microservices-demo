@@ -103,6 +103,18 @@ else
         provider: "script",
         script: "true"
       }
+
+      notifications: {
+        slack: {
+          rooms: {
+            secure: p9hoJ6bSxBNdRqrnOFQC+FHAkfhRAw+nxy27lCBwWRVTimB03Ja14RWUKIYkmmEt0WCAW7gQxPM4JHmoczIyaDjNmk5F+mw584ctqeBlKhdIq73RIKSilBwdo9aTCgTVPVuKyRqNIaESWmA95zs1NqTi1Hbf0ER22pFszetqfrQwdDpVK8siwLV6pOtqG+ugz9XWksCYbD+86PA9j9SNuVDTbBF2oI9xuXQ9tmubbJCoRTFBrDPiGMTd2pFqNUmL2naXVrNqNbhI5uTu2wKxGUTU9KZeRDN/a+M1nGh0Aegi+b8khioQ5/TmOfLALya/spLGqKGDK16TIAQXiVenaXlUkQ089td9jOMs8X/dk3fVsnq8hObLS5b//waSqU/x9miEGcDFiEWke8N+IG2e1PB/UjVyI02tdwQ/2XLMWuZIZtxHhcpLArCV/QZNvza0OhshvIQD+2e5kVD6er2iuXjJ3kex6rufAkMXNI1YzbHofLnmoH6XwZMaBWUa4yhivFp9vkggwEWUN/ZIgJnCmy8I9qM82IHlLDl3hdklRZlhexNhXnBxgc+bK0duMIC2qzQJq1Cfb555D5DWqph1PlrcMnrKmKvC2uJFhhsKHuo3jSa/WR/JHUg1WEWdh4gQVFIz0f/FgGM5wXm20pZn8l4rVkEoUT3KWztINNFjA9E=
+          },
+          on_success: always,
+          on_failure: always,
+          on_start: always,
+          on_pull_requests: false
+        }
+      }
     })
   }
 
