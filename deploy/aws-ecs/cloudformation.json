@@ -1212,7 +1212,7 @@
         "SQLImporter": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
-                "ImageId": "ami-c51e3eb6",
+                "ImageId": "ami-2830f947",
                 "InstanceType": "t2.micro",
                 "NetworkInterfaces": [{
                     "AssociatePublicIpAddress": "true",
