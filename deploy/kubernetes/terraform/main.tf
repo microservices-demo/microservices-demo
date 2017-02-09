@@ -109,7 +109,7 @@ resource "aws_elb" "ci-sockshop-k8s-elb" {
   depends_on = [ "aws_instance.ci-sockshop-k8s-node" ]
   name = "ci-sockshop-k8s-elb"
   instances = ["${aws_instance.ci-sockshop-k8s-node.*.id}"]
-  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  availability_zones = ["${data.aws_availability_zones.available.names}"]
   security_groups = ["${aws_security_group.k8s-security-group.id}"] 
   listener {
     lb_port = 80
