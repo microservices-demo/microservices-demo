@@ -141,8 +141,8 @@ Vagrant.configure(2) do |config|
     aws.ami = "ami-6f587e1c"
     aws.keypair_name = "microservices-demo-nomad"
     aws.instance_type = "m4.large"
-    aws.region = "eu-west-1"
-    aws.availability_zone = "eu-west-1c"
+    aws.region = "eu-central-1"
+    aws.availability_zone = "eu-central-1c"
     aws.security_groups = [ENV["AWS_SECURITY_GROUP_ID"]]
     aws.subnet_id = ENV["AWS_SUBNET_ID"]
     aws.associate_public_ip = true
