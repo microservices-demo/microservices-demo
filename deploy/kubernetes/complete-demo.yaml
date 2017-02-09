@@ -714,43 +714,30 @@ spec:
     name: zipkin-mysql
 
 ---
-
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: batch/v2alpha1
+kind: CronJob
 metadata:
   name: zipkin-cron
   labels:
     name: zipkin-cron
   namespace: sock-shop
 spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        name: zipkin-cron
+  schedule: "0 * * * *"
+  jobTemplate:
     spec:
-      containers:
-      - name: zipkin-cron
-        image: openzipkin/zipkin-dependencies:1.4.0
-        env:
-        - name: STORAGE_TYPE
-          value: mysql
-        - name: MYSQL_HOST
-          value: zipkin-mysql
-        - name: MYSQL_USER
-          value: zipkin
-        - name: MYSQL_PASS
-          value: zipkin
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: zipkin-cron
-  labels:
-    name: zipkin-cron
-  namespace: sock-shop
-spec:
-  selector:
-    name: zipkin-cron
----
+      template:
+        spec:
+          containers:
+          - name: zipkin-cron
+            image: openzipkin/zipkin-dependencies:1.4.0
+            env:
+            - name: STORAGE_TYPE
+              value: mysql
+            - name: MYSQL_HOST
+              value: zipkin-mysql
+            - name: MYSQL_USER
+              value: zipkin
+            - name: MYSQL_PASS
+              value: zipkin
+          restartPolicy: OnFailure
 
