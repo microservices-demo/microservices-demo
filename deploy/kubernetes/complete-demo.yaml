@@ -653,6 +653,11 @@ spec:
         image: openzipkin/zipkin
         ports:
         - containerPort: 9411
+        env:
+        - name: STORAGE_TYPE
+          value: mysql
+        - name: MYSQL_HOST
+          value: zipkin-mysql
 ---
 apiVersion: v1
 kind: Service
@@ -670,4 +675,69 @@ spec:
     nodePort: 30002
   selector:
     name: zipkin
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zipkin-mysql
+  labels:
+    name: zipkin-mysql
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: zipkin-mysql
+    spec:
+      containers:
+      - name: zipkin-mysql
+        image: openzipkin/zipkin-mysql:1.20.0
+        ports:
+        - name: mysql
+          containerPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin-mysql
+  labels:
+    name: zipkin-mysql
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 3306
+    targetPort: 3306
+  selector:
+    name: zipkin-mysql
+
+---
+apiVersion: batch/v2alpha1
+kind: CronJob
+metadata:
+  name: zipkin-cron
+  labels:
+    name: zipkin-cron
+  namespace: sock-shop
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: zipkin-cron
+            image: openzipkin/zipkin-dependencies:1.4.0
+            env:
+            - name: STORAGE_TYPE
+              value: mysql
+            - name: MYSQL_HOST
+              value: zipkin-mysql
+            - name: MYSQL_USER
+              value: zipkin
+            - name: MYSQL_PASS
+              value: zipkin
+          restartPolicy: OnFailure
 
