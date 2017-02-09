@@ -12,9 +12,11 @@ variable "aws_amis" {
   }
 }
 
+data "aws_availability_zones" "available" {}
+
 variable "aws_region" {
   description = "The AWS region to create things in."
-  default     = "eu-west-1"
+  default     = "eu-central-1"
 }
 
 variable "instance_user" {
