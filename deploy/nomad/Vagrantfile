@@ -138,7 +138,7 @@ Vagrant.configure(2) do |config|
     override.ssh.private_key_path = "~/.ssh/nomad.pem"
     override.nfs.functional = false
 
-    aws.ami = "ami-6f587e1c"
+    aws.ami = "ami-2830f947"
     aws.keypair_name = "microservices-demo-nomad"
     aws.instance_type = "m4.large"
     aws.region = "eu-central-1"
