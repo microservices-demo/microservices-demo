@@ -94,6 +94,35 @@
             "ap-southeast-2": {
                 "ImageId": "ami-5781be34"
             }
+        },
+        "SqlImporterAmiIds": {
+            "us-east-1": {
+                "ImageId": "ami-840910ee"
+            },
+            "us-east-2": {
+                "ImageId": "ami-42ecb727"
+            },
+            "us-west-1": {
+                "ImageId": "ami-d8e996b8"
+            },
+            "us-west-2": {
+                "ImageId": "ami-fa82739a"
+            },
+            "eu-west-1": {
+                "ImageId": "ami-c51e3eb6"
+            },
+            "eu-central-1": {
+                "ImageId": "ami-2830f947"
+            },
+            "ap-northeast-1": {
+                "ImageId": "ami-3c5f4152"
+            },
+            "ap-southeast-1": {
+                "ImageId": "ami-fbe83c98"
+            },
+            "ap-southeast-2": {
+                "ImageId": "ami-a5416cc6"
+            }
         }
     },
     "Parameters": {
@@ -1212,7 +1241,14 @@
         "SQLImporter": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
-                "ImageId": "ami-2830f947",
+                "ImageId": {
+                    "Fn::FindInMap": [
+                        "SqlImporterAmiIds", {
+                            "Ref": "AWS::Region"
+                        },
+                        "ImageId"
+                    ]
+                },
                 "InstanceType": "t2.micro",
                 "NetworkInterfaces": [{
                     "AssociatePublicIpAddress": "true",
