@@ -97,31 +97,31 @@
         },
         "SqlImporterAmiIds": {
             "us-east-1": {
-                "ImageId": "ami-840910ee"
+                "ImageId": "ami-0b33d91d"
             },
             "us-east-2": {
-                "ImageId": "ami-42ecb727"
+                "ImageId": "ami-c55673a0"
             },
             "us-west-1": {
-                "ImageId": "ami-d8e996b8"
+                "ImageId": "ami-f173cc91"
             },
             "us-west-2": {
-                "ImageId": "ami-fa82739a"
+                "ImageId": "ami-165a0876"
             },
             "eu-west-1": {
-                "ImageId": "ami-c51e3eb6"
+                "ImageId": "ami-70edb016"
             },
             "eu-central-1": {
-                "ImageId": "ami-2830f947"
+                "ImageId": "ami-af0fc0c0"
             },
             "ap-northeast-1": {
-                "ImageId": "ami-3c5f4152"
+                "ImageId": "ami-56d4ad31"
             },
             "ap-southeast-1": {
-                "ImageId": "ami-fbe83c98"
+                "ImageId": "ami-dc9339bf"
             },
             "ap-southeast-2": {
-                "ImageId": "ami-a5416cc6"
+                "ImageId": "ami-1c47407f"
             }
         }
     },
