@@ -222,6 +222,16 @@
                     "Essential": true,
                     "Image": "mongo",
                     "Name": "cart-db",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "cart-db"
+                         }
+                    },
                     "Memory": 128
                 }],
                 "Volumes": []
@@ -248,6 +258,16 @@
                     "Essential": true,
                     "Image": "weaveworksdemos/cart",
                     "Name": "cart",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "cart"
+                         }
+                    },
                     "Memory": 1024
                 }],
                 "Volumes": []
@@ -292,6 +312,16 @@
                             ]]
                         }
                     ],
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "catalogue"
+                         }
+                    },
                     "Environment": [{
                         "Name": "ZIPKIN",
                         "Value": "http://zipkin:9411/api/v1/spans"
@@ -322,6 +352,16 @@
                     "Essential": true,
                     "Image": "weaveworksdemos/front-end",
                     "Name": "front-end",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "frontend"
+                         }
+                    },
                     "Memory": 256,
                     "PortMappings": [{
                         "HostPort": 80,
@@ -354,6 +394,16 @@
                     "Essential": true,
                     "Image": "weaveworksdemos/user",
                     "Name": "user",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "user"
+                         }
+                    },
                     "Memory": 32,
                     "Environment": [{
                         "Name": "ZIPKIN",
@@ -384,6 +434,16 @@
                     "Essential": true,
                     "Image": "weaveworksdemos/user-db",
                     "Name": "user-db",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "user-db"
+                         }
+                    },
                     "Memory": 128
                 }],
                 "Volumes": []
@@ -410,6 +470,16 @@
                     "Essential": true,
                     "Image": "mongo",
                     "Name": "orders-db",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "orders-db"
+                         }
+                    },
                     "Memory": 128
                 }],
                 "Volumes": []
@@ -436,6 +506,16 @@
                     "Essential": true,
                     "Image": "weaveworksdemos/orders",
                     "Name": "orders",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "orders"
+                         }
+                    },
                     "Memory": 1024
                 }],
                 "Volumes": []
@@ -462,6 +542,16 @@
                     "Essential": true,
                     "Image": "weaveworksdemos/payment",
                     "Name": "payment",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "payment"
+                         }
+                    },
                     "Memory": 32,
                     "Environment": [{
                         "Name": "ZIPKIN",
@@ -492,6 +582,16 @@
                     "Essential": true,
                     "Image": "weaveworksdemos/queue-master",
                     "Name": "queue-master",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "queue-master"
+                         }
+                    },
                     "Memory": 768,
                     "MountPoints": [{
                         "ContainerPath": "/var/run/docker.sock",
@@ -527,6 +627,16 @@
                     "Essential": true,
                     "Image": "rabbitmq:3",
                     "Name": "rabbitmq",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "rabbitmq"
+                         }
+                    },
                     "Memory": 128
                 }],
                 "Volumes": []
@@ -553,6 +663,16 @@
                     "Essential": true,
                     "Image": "weaveworksdemos/shipping",
                     "Name": "shipping",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "shipping"
+                         }
+                    },
                     "Memory": 1024
                 }],
                 "Volumes": []
@@ -580,6 +700,16 @@
                     "Image": "openzipkin/zipkin",
                     "Name": "zipkin",
                     "Memory": 1024,
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "zipkin"
+                         }
+                    },
                     "PortMappings": [{
                         "HostPort": 9411,
                         "ContainerPort": 9411
@@ -620,6 +750,16 @@
                     "Image": "openzipkin/zipkin-dependencies",
                     "Name": "zipkin-cron",
                     "Memory": 1024,
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "zipkin-cron"
+                         }
+                    },
                     "Environment": [{
                             "Name": "STORAGE_TYPE",
                             "Value": "mysql"
@@ -664,6 +804,16 @@
                     "Essential": true,
                     "Image": "openzipkin/zipkin-mysql",
                     "Name": "zipkin-mysql",
+ 		    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "zipkin-db"
+                         }
+                    },
                     "Memory": 1024
                 }],
                 "Volumes": []
@@ -940,6 +1090,11 @@
                                 "ecs:DescribeServices",
                                 "ec2:DescribeInstances",
                                 "ec2:DescribeTags",
+                                "ecs:StartTelemetrySession",
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents",
+                                "logs:DescribeLogStreams",
                                 "autoscaling:DescribeAutoScalingInstances"
                             ],
                             "Resource": [
