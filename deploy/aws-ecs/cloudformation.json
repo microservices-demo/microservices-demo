@@ -1091,10 +1091,10 @@
                                 "ec2:DescribeInstances",
                                 "ec2:DescribeTags",
 				"ecs:StartTelemetrySession",
-                		"logs:CreateLogGroup",
-                		"logs:CreateLogStream",
-                		"logs:PutLogEvents",
-                		"logs:DescribeLogStreams",
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents",
+                                "logs:DescribeLogStreams",
                                 "autoscaling:DescribeAutoScalingInstances"
                             ],
                             "Resource": [

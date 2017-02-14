@@ -1,6 +1,6 @@
 #!/bin/bash
-PEM=microservices-demo-key-jrs
-STACK_NAME=microservices-demo-stack-jrs
+PEM=microservices-demo-key
+STACK_NAME=microservices-demo-stack
 ORG_FILE="$( cd $(dirname $0) ; pwd -P )/cloudformation.json"
 TMP_FILE="/tmp/cloudformation.json"
 CF_FILE="file://$TMP_FILE"
