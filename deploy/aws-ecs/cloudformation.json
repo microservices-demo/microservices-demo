@@ -1090,7 +1090,7 @@
                                 "ecs:DescribeServices",
                                 "ec2:DescribeInstances",
                                 "ec2:DescribeTags",
-				"ecs:StartTelemetrySession",
+                                "ecs:StartTelemetrySession",
                                 "logs:CreateLogGroup",
                                 "logs:CreateLogStream",
                                 "logs:PutLogEvents",
