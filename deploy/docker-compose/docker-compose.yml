@@ -70,19 +70,23 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
   orders:
-    image: weaveworksdemos/orders
+    image: weaveworksdemos/orders-aws
     hostname: orders
     restart: always
     cap_drop:
       - all
     cap_add:
       - NET_BIND_SERVICE
+    environment:
+      - AWS_SECRET_KEY=99
+      - AWS_ACCESS_KEY=luftballonnen
+      - AWS_DYNAMODB_ENDPOINT=http://orders-db-dynamo:8000
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
-  orders-db:
-    image: mongo
-    hostname: orders-db
+  orders-db-dynamo:
+    image: deangiberson/aws-dynamodb-local
+    hostname: orders-db-dynamo
     restart: always
     cap_drop:
       - all
@@ -90,6 +94,8 @@ services:
       - CHOWN
       - SETGID
       - SETUID
+    ports:
+      - 8000:8000  
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
