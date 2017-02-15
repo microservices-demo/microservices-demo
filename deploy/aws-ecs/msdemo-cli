@@ -1,7 +1,9 @@
 #!/bin/bash
 PEM=microservices-demo-key
 STACK_NAME=microservices-demo-stack
-CF_FILE="file://$( cd $(dirname $0) ; pwd -P )/cloudformation.json"
+ORG_FILE="$( cd $(dirname $0) ; pwd -P )/cloudformation.json"
+TMP_FILE="/tmp/cloudformation.json"
+CF_FILE="file://$TMP_FILE"
 THIS_F=`basename "$0"`
 WEAVETOKEN=$2
 function build
@@ -29,8 +31,9 @@ function build
 
 
 	printf "Creating stack $STACK_NAME\n"
-
-	aws cloudformation create-stack \
+	  aws logs create-log-group --log-group-name $STACK_NAME
+	  cat $ORG_FILE | jq -c '.' > $TMP_FILE
+	  aws cloudformation create-stack \
 		--stack-name $STACK_NAME \
 		--template-body $CF_FILE \
 		--capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
@@ -40,6 +43,7 @@ function build
 
 function updatestack
 {
+	cat $ORG_FILE | jq -c '.' > $TMP_FILE
 	aws cloudformation update-stack \
 		--stack-name $STACK_NAME \
 		--template-body $CF_FILE \
@@ -121,6 +125,7 @@ function destroy
 {
 	printf "Requesting stack be destroyed\n"
 	aws cloudformation delete-stack --stack-name $STACK_NAME
+	aws logs delete-log-group --log-group-name $STACK_NAME
 	printf "Deleting key pair '$PEM'\n"
 	aws ec2 delete-key-pair --key-name $PEM
 	printf "Removing pem file ~/.ssh/$PEM.pem\n"
