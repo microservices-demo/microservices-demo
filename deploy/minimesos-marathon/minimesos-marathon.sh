@@ -6,7 +6,6 @@ SCRIPT_NAME=`basename "$0"`
 SSH_OPTS=-oStrictHostKeyChecking=no
 IMAGES=("weaveworksdemos/shipping" "weaveworksdemos/orders" "weaveworksdemos/catalogue" "weaveworksdemos/user" "weaveworksdemos/cart" "weaveworksdemos/payment" "weaveworksdemos/catalogue-db" "weaveworksdemos/user-db" "weaveworksdemos/front-end" "weaveworksdemos/edge-router")
 MARATHON_FILE=../mesos-marathon/marathon.json
-VM_NAME=weave-demo
 if [[ "$OSTYPE" == "darwin"* ]]; then
     DOCKER_CMD=docker
     WEAVE_CMD=weave
@@ -74,14 +73,9 @@ do_usage() {
 
 Starts the weavedemo microservices application on minimesos.
 
-Requirements: Docker-machine, weave and minimesos must be installed.
-
-Tested on: docker-machine version 0.7.0, build a650a40. Weave 1.6.0. minimesos 0.9.0. Mesos 0.25.
+Requirements: Docker, weave and minimesos must be installed.
 
  ${bold}Commands:${reset}
-  install           Creates a new docker-machine VM.
-  route             Create a route towards the docker-machine
-  uninstall         Removes docker-machine VM.
   start             Starts weave, minimesos and the demo application
   stop              Stops weave, minimesos and the demo application
 
@@ -245,18 +239,6 @@ do_dependencies() {
     fi
 }
 
-do_init_check() {
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        VM_STATUS=$(docker-machine status $VM_NAME)
-        if [[ $VM_STATUS != "Running" ]]; then
-            die "VM is not running. Please run './SCRIPT_NAME install' first."
-        fi
-        eval $(docker-machine env $VM_NAME)
-    else
-        verbose "Running on Linux, no need for docker-machine"
-    fi
-}
-
 status_code() {
     if [ -z $1 ] ; then
         die "No URL. Please pass URL to status_code method."
@@ -265,7 +247,15 @@ status_code() {
 }
 
 minimesos_info() {
-    $MINIMESOS_CMD info | grep export
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        $MINIMESOS_CMD info | grep export
+    else
+        $MINIMESOS_CMD info | sed -e 's/172.[0-9]\{1,3\}.[0-9]\{1,3\}.[0-9]\{1,3\}/localhost/g' | grep export
+    fi
+}
+
+zookeeper_info() {
+    $MINIMESOS_CMD info | grep MINIMESOS_ZOOKEEPER | grep export
 }
 
 routable() {
@@ -286,30 +276,6 @@ aws_instance() {
 
 ############## Start Commands ###################
 
-do_install() {
-    if [[ -z $(docker-machine ls | grep weave-demo) ]] ; then
-        info "Creating docker machine VM"
-        docker-machine create $VM_NAME -d virtualbox --virtualbox-cpu-count "3" --virtualbox-memory "4096"
-    else
-        if [[ -z $(docker-machine ls | grep weave-demo | grep Stopped) ]] ; then
-            info "VM already running"
-        else
-            info "Starting docker machine VM"
-            docker-machine start $VM_NAME
-        fi
-    fi
-    info "Use 'eval \$(docker-machine env $VM_NAME)' to use this VM"
-}
-
-do_route() {
-    sudo route delete 172.17.0.0/16; sudo route -n add 172.17.0.0/16 $(docker-machine ip ${DOCKER_MACHINE_NAME})
-}
-
-do_uninstall() {
-    info "Removing VM"
-    docker-machine rm -y $VM_NAME
-}
-
 do_start() {
     if [[ -n $($DOCKER_CMD ps | grep -E 'weaveproxy|minimesos|weaveworksdemo') ]] ; then
         die "Some services are already running. Please run 'stop' first"
@@ -318,6 +284,7 @@ do_start() {
     info "Pre-pulling containers. This may take a while..."
     $DOCKER_CMD pull mesosphere/marathon:v1.3.5 >/dev/null
     $DOCKER_CMD pull mongo >/dev/null
+    $DOCKER_CMD pull rabbitmq:3 >/dev/null
     for SERVICE in ${IMAGES[*]} ; do
         verbose "Pulling $SERVICE"
         $DOCKER_CMD pull $SERVICE >/dev/null
@@ -332,6 +299,7 @@ do_start() {
     $MINIMESOS_CMD up
 
     eval $(minimesos_info)
+    eval $(zookeeper_info)
     if [[ $(status_code $MINIMESOS_MASTER) == "200" ]] ; then
         success "Minimesos is running"
     else
@@ -375,7 +343,7 @@ do_start() {
     elif [[ "$OSTYPE" == "linux-gnu" ]]; then
         UI=$(ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}' | head -n 1)
     elif [[ "$OSTYPE" == "darwin"* ]]; then
-        UI=$(docker-machine ip $VM_NAME)
+        UI=localhost
     else
         UI=$(hostname --ip-address)
     fi
@@ -410,21 +378,10 @@ do_status() {
 do_dependencies
 COMMAND="${args}"
 case "$COMMAND" in
-  install)
-    do_install
-    ;;
-  route)
-    do_route
-    ;;
-  uninstall)
-    do_uninstall
-    ;;
   start)
-    do_init_check
     do_start
     ;;
   stop)
-    do_init_check
     do_stop
     ;;
   status)
