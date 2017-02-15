@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 version="1.0.0"
 
@@ -8,7 +8,7 @@ USER=ubuntu
 MASTERS=($MASTER)
 AGENTS=($SLAVE0 $SLAVE1 $SLAVE2)
 SSH_OPTS=-oStrictHostKeyChecking=no
-SERVICES=("cart-db" "orders-db" "user-db" "shipping" "orders" "catalogue" "catalogue-db" "cart" "payment" "user" "front-end")
+SERVICES=("cart-db" "orders-db" "user-db" "shipping" "orders" "catalogue" "catalogue-db" "cart" "payment" "user" "front-end" "rabbitmq")
 
 
 ############## Begin Utilities ###################
@@ -422,8 +422,9 @@ do_start() {
     launch_service orders-db    "echo ok"                                       mongo                               --no-shell
     launch_service catalogue-db "echo ok"                                       weaveworksdemos/catalogue-db        --no-shell ", \\\"MYSQL_ALLOW_EMPTY_PASSWORD\\\": \\\"true\\\", \\\"MYSQL_DATABASE\\\": \\\"socksdb\\\""
     launch_service user-db      "echo ok"                                       weaveworksdemos/user-db             --no-shell
+    launch_service rabbitmq     "echo ok"                                       rabbitmq:3                          --no-shell
 
-    launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --queue.address=rabbitmq.mesos-executeinstance.weave.local"                            weaveworksdemos/shipping    --shell
+    launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --spring.rabbitmq.host=rabbitmq.mesos-executeinstance.weave.local"                     weaveworksdemos/shipping    --shell
     launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders   --shell
     launch_service catalogue    "./app -port=80 -DSN=catalogue_user:default_password@tcp\(catalogue-db.mesos-executeinstance.weave.local:3306\)/socksdb"                                    weaveworksdemos/catalogue   --shell
     launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=cart-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"      weaveworksdemos/cart        --shell

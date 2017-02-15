@@ -23,6 +23,24 @@
           }
         },
         {
+          "id": "/weave-demo/database/rabbitmq",
+          "cpus": 0.1,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "rabbitmq:3",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "rabbitmq.weave.local"
+                }
+              ]
+            }
+          }
+        },
+        {
           "id": "/weave-demo/database/cart-db",
           "cpus": 0.1,
           "mem": 1024.0,
@@ -175,6 +193,25 @@
                   "value": "shipping.weave.local"
                 }
               ]
+            }
+          }
+        },
+        {
+          "id": "/weave-demo/service/queue-master",
+          "cpus": 0.5,
+          "mem": 1024.0,
+          "container": {
+            "type": "DOCKER",
+            "docker": {
+              "image": "weaveworksdemos/queue-master:latest",
+              "network": "BRIDGE",
+              "parameters": [
+                {
+                  "key": "hostname",
+                  "value": "queue-master.weave.local"
+                }
+              ],
+              "privileged": true
             }
           }
         },
