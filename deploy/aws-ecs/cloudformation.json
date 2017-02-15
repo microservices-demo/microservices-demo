@@ -280,7 +280,7 @@
                 "Cluster": {
                     "Ref": "EcsCluster"
                 },
-                "DesiredCount": 1,
+                "DesiredCount": 3,
                 "TaskDefinition": {
                     "Ref": "CartTask"
                 }
@@ -337,7 +337,7 @@
                 "Cluster": {
                     "Ref": "EcsCluster"
                 },
-                "DesiredCount": 1,
+                "DesiredCount": 3,
                 "TaskDefinition": {
                     "Ref": "CatalogueTask"
                 }
@@ -420,7 +420,7 @@
                 "Cluster": {
                     "Ref": "EcsCluster"
                 },
-                "DesiredCount": 1,
+                "DesiredCount": 3,
                 "TaskDefinition": {
                     "Ref": "UserTask"
                 }
@@ -528,7 +528,7 @@
                 "Cluster": {
                     "Ref": "EcsCluster"
                 },
-                "DesiredCount": 1,
+                "DesiredCount": 3,
                 "TaskDefinition": {
                     "Ref": "OrdersTask"
                 }
@@ -568,7 +568,7 @@
                 "Cluster": {
                     "Ref": "EcsCluster"
                 },
-                "DesiredCount": 1,
+                "DesiredCount": 3,
                 "TaskDefinition": {
                     "Ref": "PaymentTask"
                 }
@@ -613,7 +613,7 @@
                 "Cluster": {
                     "Ref": "EcsCluster"
                 },
-                "DesiredCount": 1,
+                "DesiredCount": 3,
                 "TaskDefinition": {
                     "Ref": "QueueMasterTask"
                 }
@@ -685,7 +685,7 @@
                 "Cluster": {
                     "Ref": "EcsCluster"
                 },
-                "DesiredCount": 1,
+                "DesiredCount": 3,
                 "TaskDefinition": {
                     "Ref": "ShippingTask"
                 }
