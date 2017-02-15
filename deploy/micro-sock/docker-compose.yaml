@@ -1,0 +1,65 @@
+# minimal compose for a simulation of https://github.com/weaveworks/weaveDemo
+
+version: '2'
+
+services:
+  front_end:
+    image: rade/dummi
+    container_name: front_end
+    command: -l login catalogue orders
+  edge_router:
+    image: rade/dummi
+    container_name: edge_router
+    command: front_end
+  catalogue:
+    image: rade/dummi
+    container_name: catalogue
+    command: -l
+  accounts:
+    image: rade/dummi
+    container_name: accounts
+    command: -l accounts-db
+  accounts-db:
+    image: rade/dummi
+    container_name: accounts-db
+    command: -l
+  cart:
+    image: rade/dummi
+    container_name: cart
+    command: -l cart-db
+  cart-db:
+    image: rade/dummi
+    container_name: cart-db
+    command: -l
+  orders:
+    image: rade/dummi
+    container_name: orders
+    command: -l orders-db accounts cart payment shipping
+  orders-db:
+    image: rade/dummi
+    container_name: orders-db
+    command: -l
+  shipping:
+    image: rade/dummi
+    container_name: shipping
+    command: -l rabbitmq
+  queue-master:
+    image: rade/dummi
+    container_name: queue-master
+    command: -l rabbitmq
+  queue-worker:
+    image: rade/dummi
+    container_name: queue-worker
+    command: -l rabbitmq
+  rabbitmq:
+    image: rade/dummi
+    container_name: rabbitmq
+    command: -l
+  payment:
+    image: rade/dummi
+    container_name: payment
+    command: -l
+  login:
+    image: rade/dummi
+    container_name: login
+    command: -l
