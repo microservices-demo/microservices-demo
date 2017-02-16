@@ -291,8 +291,7 @@ do_start() {
     done;
 
     info "Starting weave"
-    $WEAVE_CMD launch-router
-    $WEAVE_CMD launch-proxy -H unix:///var/run/weave/weave.sock
+    $WEAVE_CMD launch
 
     info "Starting minimesos"
     $MINIMESOS_CMD init || true
