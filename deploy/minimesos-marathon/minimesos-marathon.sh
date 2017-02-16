@@ -78,6 +78,7 @@ Requirements: Docker, weave and minimesos must be installed.
  ${bold}Commands:${reset}
   start             Starts weave, minimesos and the demo application
   stop              Stops weave, minimesos and the demo application
+  ip                Returns the ip address of the demo application
 
  ${bold}Options:${reset}
   --force           Skip all user interaction.  Implied 'Yes' to all actions.
@@ -373,6 +374,19 @@ do_status() {
     curl $MINIMESOS_MARATHON/v2/groups/weave-demo\?force=true
 }
 
+do_ip() {
+    if [ $(aws_instance) == 0 ] ; then
+        local UI=$(curl -q http://instance-data/latest/meta-data/public-ipv4)
+    elif [[ "$OSTYPE" == "linux-gnu" ]]; then
+        local UI=$(ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}' | head -n 1)
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        local UI=localhost
+    else
+        local UI=$(hostname --ip-address)
+    fi
+    echo $UI
+}
+
 ############## End Commands ###################
 
 do_dependencies
@@ -386,6 +400,9 @@ case "$COMMAND" in
     ;;
   status)
     do_status
+    ;;
+  ip)
+    do_ip
     ;;
   *)
     do_usage
