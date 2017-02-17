@@ -16,6 +16,13 @@ spec:
       containers:
       - name: cart
         image: weaveworksdemos/cart:0.4.0
+        resources:
+          limits:
+            cpu: 300m
+            memory: 300Mi
+          requests:
+            cpu: 300m
+            memory: 300Mi
         ports:
         - containerPort: 80
         securityContext:

@@ -19,6 +19,13 @@ spec:
         env:
          - name: ZIPKIN
            value: http://zipkin:9411/api/v1/spans
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
         ports:
         - containerPort: 80
         securityContext:
