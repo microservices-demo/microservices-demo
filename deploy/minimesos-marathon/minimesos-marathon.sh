@@ -3,7 +3,6 @@
 version="1.0.0"
 SCRIPT_DIR=`dirname "$0"`
 SCRIPT_NAME=`basename "$0"`
-SSH_OPTS=-oStrictHostKeyChecking=no
 IMAGES=("weaveworksdemos/shipping" "weaveworksdemos/orders" "weaveworksdemos/catalogue" "weaveworksdemos/user" "weaveworksdemos/cart" "weaveworksdemos/payment" "weaveworksdemos/catalogue-db" "weaveworksdemos/user-db" "weaveworksdemos/front-end" "weaveworksdemos/edge-router")
 MARATHON_FILE=../mesos-marathon/marathon.json
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -73,7 +72,7 @@ do_usage() {
 
 Starts the weavedemo microservices application on minimesos.
 
-Requirements: Docker, weave and minimesos must be installed.
+Requirements: Docker/Docker for mac, weave and minimesos must be installed.
 
  ${bold}Commands:${reset}
   start             Starts weave, minimesos and the demo application
