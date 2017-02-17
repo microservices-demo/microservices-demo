@@ -18,8 +18,8 @@ spec:
         image: weaveworksdemos/user:0.4.0
         resources:
           limits:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 300m
+            memory: 300Mi
           requests:
             cpu: 100m
             memory: 100Mi
