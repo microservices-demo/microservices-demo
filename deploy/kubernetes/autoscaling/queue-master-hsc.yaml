@@ -2,14 +2,14 @@
 apiVersion: extensions/v1beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: front-end
+  name: queue-master
   namespace: sock-shop
 spec:
   scaleRef:
     kind: Deployment
-    name: front-end
+    name: queue-master
     subresource: scale
   minReplicas: 1
   maxReplicas: 10
   cpuUtilization:
-    targetPercentage: 70
+    targetPercentage: 50
