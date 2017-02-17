@@ -15,6 +15,9 @@ spec:
       - name: front-end
         image: weaveworksdemos/front-end:0.3.1
         resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
           requests:
             cpu: 100m
             memory: 100Mi
