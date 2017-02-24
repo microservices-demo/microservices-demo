@@ -477,7 +477,7 @@
                             "awslogs-region": {
                                 "Ref": "AWS::Region"
                             },
-                            "awslogs-stream-prefix": "orders-aws"
+                            "awslogs-stream-prefix": "orders"
                          }
                     },
                     "Memory": 1024,
