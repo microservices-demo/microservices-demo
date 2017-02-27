@@ -15,6 +15,9 @@ spec:
       - name: front-end
         image: weaveworksdemos/front-end:0.3.1
         resources:
+          limits:
+            cpu: 300m
+            memory: 300Mi
           requests:
             cpu: 100m
             memory: 100Mi
@@ -37,5 +40,5 @@ spec:
           httpGet:
             path: /
             port: 8079
-          initialDelaySeconds: 180
+          initialDelaySeconds: 30
           periodSeconds: 3

@@ -16,6 +16,13 @@ spec:
       containers:
       - name: queue-master
         image: weaveworksdemos/queue-master:0.3.0
+        resources:
+          limits:
+            cpu: 300m
+            memory: 1000Mi
+          requests:
+            cpu: 300m
+            memory: 1000Mi
         ports:
         - containerPort: 80
         livenessProbe:

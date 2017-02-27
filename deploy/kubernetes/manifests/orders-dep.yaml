@@ -16,6 +16,13 @@ spec:
       containers:
       - name: orders
         image: weaveworksdemos/orders:0.4.2
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2000Mi
+          requests:
+            cpu: 200m
+            memory: 1000Mi
         ports:
         - containerPort: 80
         securityContext:
