@@ -1,0 +1,15 @@
+---
+apiVersion: extensions/v1beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: catalogue
+  namespace: sock-shop
+spec:
+  scaleRef:
+    kind: Deployment
+    name: catalogue
+    subresource: scale
+  minReplicas: 1
+  maxReplicas: 10
+  cpuUtilization:
+    targetPercentage: 50
