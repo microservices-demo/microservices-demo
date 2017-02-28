@@ -4,6 +4,11 @@ kind: Namespace
 metadata:
   name: sock-shop
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zipkin
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -640,7 +645,7 @@ metadata:
   name: zipkin
   labels:
     name: zipkin
-  namespace: sock-shop
+  namespace: zipkin
 spec:
   replicas: 1
   template:
@@ -665,7 +670,7 @@ metadata:
   name: zipkin
   labels:
     name: zipkin
-  namespace: sock-shop
+  namespace: zipkin
 spec:
   type: NodePort
   ports:
@@ -683,7 +688,7 @@ metadata:
   name: zipkin-mysql
   labels:
     name: zipkin-mysql
-  namespace: sock-shop
+  namespace: zipkin
 spec:
   replicas: 1
   template:
@@ -704,7 +709,7 @@ metadata:
   name: zipkin-mysql
   labels:
     name: zipkin-mysql
-  namespace: sock-shop
+  namespace: zipkin
 spec:
   ports:
     # the port that this service should serve on
@@ -720,7 +725,7 @@ metadata:
   name: zipkin-cron
   labels:
     name: zipkin-cron
-  namespace: sock-shop
+  namespace: zipkin
 spec:
   replicas: 1
   template:

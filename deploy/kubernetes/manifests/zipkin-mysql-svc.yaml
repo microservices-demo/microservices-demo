@@ -4,7 +4,7 @@ metadata:
   name: zipkin-mysql
   labels:
     name: zipkin-mysql
-  namespace: sock-shop
+  namespace: zipkin
 spec:
   ports:
     # the port that this service should serve on
