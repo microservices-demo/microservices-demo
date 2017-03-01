@@ -375,6 +375,42 @@
                 "Volumes": []
             }
         },
+        "SessionDBTask": {
+            "Condition": "DoDeployExampleApp",
+            "Type": "AWS::ECS::TaskDefinition",
+            "Properties": {
+                "ContainerDefinitions": [{
+                    "Essential": true,
+                    "Image": "redis:alpine",
+                    "Name": "session-db",
+                    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "session-db"
+                         }
+                    },
+                    "Memory": 256
+                }],
+                "Volumes": []
+            }
+        },
+        "SessionDBService": {
+            "Condition": "DoDeployExampleApp",
+            "Type": "AWS::ECS::Service",
+            "Properties": {
+                "Cluster": {
+                    "Ref": "EcsCluster"
+                },
+                "DesiredCount": 1,
+                "TaskDefinition": {
+                    "Ref": "SessionDBTask"
+                }
+            }
+        },
         "FrontEndService": {
             "Condition": "DoDeployExampleApp",
             "Type": "AWS::ECS::Service",
@@ -396,7 +432,7 @@
                     "Essential": true,
                     "Image": "weaveworksdemos/user",
                     "Name": "user",
- 		    "LogConfiguration": {
+                    "LogConfiguration": {
                         "LogDriver": "awslogs",
                         "Options": {
                             "awslogs-group": { "Ref": "AWS::StackName"  },
