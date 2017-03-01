@@ -269,7 +269,7 @@
                          }
                     },
                     "Memory": 1024
-                }],fr
+                }],
                 "Volumes": []
             }
         },
@@ -378,9 +378,7 @@
                 "Cluster": {
                     "Ref": "EcsCluster"
                 },
-                "DesiredCount": {
-                    "Ref": "Scale"
-                },
+                "DesiredCount": 3,
                 "TaskDefinition": {
                     "Ref": "FrontEndTask"
                 }
@@ -1542,12 +1540,7 @@
                 "Name": "Scope-Target-Group",
                 "Port": 4040,
                 "Protocol": "HTTP",
-                "VpcId": { "Ref" : "Vpc" },
-                "TargetGroupAttributes" : [
-                    { "Key" : "stickiness.type", "Value" : "lb_cookie" },
-                    { "Key" : "stickiness.enabled", "Value" : "true" },
-                    { "Key" : "stickiness.lb_cookie.duration_seconds", "Value" : "1860" }
-                ]
+                "VpcId": { "Ref" : "Vpc" }
             },
             "DependsOn": [ "EcsScopeApplicationLoadBalancing" ]
         },
