@@ -363,6 +363,10 @@
                          }
                     },
                     "Memory": 256,
+                    "Environment": [{
+                        "Name": "SESSION_REDIS",
+                        "Value": "true"
+                    }],
                     "PortMappings": [{
                         "HostPort": 80,
                         "ContainerPort": 8079
