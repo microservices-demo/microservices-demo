@@ -462,61 +462,39 @@
                 }
             }
         },
-        "OrdersDBTask": {
-            "Condition": "DoDeployExampleApp",
-            "Type": "AWS::ECS::TaskDefinition",
-            "Properties": {
-                "ContainerDefinitions": [{
-                    "Essential": true,
-                    "Image": "mongo",
-                    "Name": "orders-db",
- 		    "LogConfiguration": {
-                        "LogDriver": "awslogs",
-                        "Options": {
-                            "awslogs-group": { "Ref": "AWS::StackName"  },
-                            "awslogs-region": {
-			        "Ref": "AWS::Region"
-                            },
-                            "awslogs-stream-prefix": "orders-db"
-                         }
-                    },
-                    "Memory": 128
-                }],
-                "Volumes": []
-            }
-        },
-        "OrdersDBService": {
-            "Condition": "DoDeployExampleApp",
-            "Type": "AWS::ECS::Service",
-            "Properties": {
-                "Cluster": {
-                    "Ref": "EcsCluster"
-                },
-                "DesiredCount": 1,
-                "TaskDefinition": {
-                    "Ref": "OrdersDBTask"
-                }
-            }
-        },
         "OrdersTask": {
             "Condition": "DoDeployExampleApp",
             "Type": "AWS::ECS::TaskDefinition",
             "Properties": {
                 "ContainerDefinitions": [{
                     "Essential": true,
-                    "Image": "weaveworksdemos/orders",
+                    "Image": "weaveworksdemos/orders-aws",
                     "Name": "orders",
- 		    "LogConfiguration": {
+                    "LogConfiguration": {
                         "LogDriver": "awslogs",
                         "Options": {
                             "awslogs-group": { "Ref": "AWS::StackName"  },
                             "awslogs-region": {
-			        "Ref": "AWS::Region"
+                                "Ref": "AWS::Region"
                             },
                             "awslogs-stream-prefix": "orders"
                          }
                     },
-                    "Memory": 1024
+                    "Memory": 1024,
+                    "Environment": [{
+                        "Name": "AWS_DYNAMODB_ENDPOINT",
+                        "Value": {
+                            "Fn::Join": [
+                                "", [
+                                    "dynamodb.",
+                                    {
+                                        "Ref": "AWS::Region"
+                                    },
+                                    ".amazonaws.com"
+                                ]
+                            ]
+                        }
+                    }]
                 }],
                 "Volumes": []
             }
@@ -1095,6 +1073,16 @@
                                 "logs:CreateLogStream",
                                 "logs:PutLogEvents",
                                 "logs:DescribeLogStreams",
+                                "dynamodb:BatchGetItem",
+                                "dynamodb:BatchWriteItem",
+                                "dynamodb:GetItem",
+                                "dynamodb:PutItem",
+                                "dynamodb:GetRecords",
+                                "dynamodb:DeleteItem",
+                                "dynamodb:ListTables",
+                                "dynamodb:Query",
+                                "dynamodb:Scan",
+                                "dynamodb:UpdateItem",
                                 "autoscaling:DescribeAutoScalingInstances"
                             ],
                             "Resource": [
@@ -1374,6 +1362,36 @@
                 }, {
                     "Ref": "PubSubnetAz2"
                 }]
+            }
+        },
+        "OrdersDynamoDB": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": "id",
+                        "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "customerId",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "AttributeName": "id",
+                        "KeyType": "HASH"
+                    },
+                    {
+                        "AttributeName": "customerId",
+                        "KeyType": "RANGE"
+                    }
+                ],
+                "ProvisionedThroughput" : {
+                    "ReadCapacityUnits" : "5",
+                    "WriteCapacityUnits" : "5"
+                },
+                "TableName": "orders"
             }
         },
         "CatalogueRDS": {
