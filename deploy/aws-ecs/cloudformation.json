@@ -363,12 +363,52 @@
                          }
                     },
                     "Memory": 256,
+                    "Environment": [{
+                        "Name": "SESSION_REDIS",
+                        "Value": "true"
+                    }],
                     "PortMappings": [{
                         "HostPort": 80,
                         "ContainerPort": 8079
                     }]
                 }],
                 "Volumes": []
+            }
+        },
+        "SessionDBTask": {
+            "Condition": "DoDeployExampleApp",
+            "Type": "AWS::ECS::TaskDefinition",
+            "Properties": {
+                "ContainerDefinitions": [{
+                    "Essential": true,
+                    "Image": "redis:alpine",
+                    "Name": "session-db",
+                    "LogConfiguration": {
+                        "LogDriver": "awslogs",
+                        "Options": {
+                            "awslogs-group": { "Ref": "AWS::StackName"  },
+                            "awslogs-region": {
+			        "Ref": "AWS::Region"
+                            },
+                            "awslogs-stream-prefix": "session-db"
+                         }
+                    },
+                    "Memory": 256
+                }],
+                "Volumes": []
+            }
+        },
+        "SessionDBService": {
+            "Condition": "DoDeployExampleApp",
+            "Type": "AWS::ECS::Service",
+            "Properties": {
+                "Cluster": {
+                    "Ref": "EcsCluster"
+                },
+                "DesiredCount": 1,
+                "TaskDefinition": {
+                    "Ref": "SessionDBTask"
+                }
             }
         },
         "FrontEndService": {
@@ -378,9 +418,7 @@
                 "Cluster": {
                     "Ref": "EcsCluster"
                 },
-                "DesiredCount": {
-                    "Ref": "Scale"
-                },
+                "DesiredCount": 3,
                 "TaskDefinition": {
                     "Ref": "FrontEndTask"
                 }
@@ -394,7 +432,7 @@
                     "Essential": true,
                     "Image": "weaveworksdemos/user",
                     "Name": "user",
- 		    "LogConfiguration": {
+                    "LogConfiguration": {
                         "LogDriver": "awslogs",
                         "Options": {
                             "awslogs-group": { "Ref": "AWS::StackName"  },
@@ -1542,12 +1580,7 @@
                 "Name": "Scope-Target-Group",
                 "Port": 4040,
                 "Protocol": "HTTP",
-                "VpcId": { "Ref" : "Vpc" },
-                "TargetGroupAttributes" : [
-                    { "Key" : "stickiness.type", "Value" : "lb_cookie" },
-                    { "Key" : "stickiness.enabled", "Value" : "true" },
-                    { "Key" : "stickiness.lb_cookie.duration_seconds", "Value" : "1860" }
-                ]
+                "VpcId": { "Ref" : "Vpc" }
             },
             "DependsOn": [ "EcsScopeApplicationLoadBalancing" ]
         },
