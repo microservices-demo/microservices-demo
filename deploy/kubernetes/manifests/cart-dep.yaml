@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: cart
-        image: weaveworksdemos/cart:0.4.0
+        image: weaveworksdemos/cart:0.4.1
         resources:
           limits:
             cpu: 300m

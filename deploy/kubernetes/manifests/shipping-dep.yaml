@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.4.0
+        image: weaveworksdemos/shipping:0.4.4
         resources:
           limits:
             cpu: 300m
