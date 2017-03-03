@@ -77,7 +77,7 @@ spec:
     spec:
       containers:
       - name: cart
-        image: weaveworksdemos/cart:0.4.0
+        image: weaveworksdemos/cart:0.4.1
         ports:
         - containerPort: 80
         securityContext:
@@ -315,7 +315,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.4.2
+        image: weaveworksdemos/orders:0.4.3
         ports:
         - containerPort: 80
         securityContext:
@@ -415,7 +415,7 @@ spec:
     spec:
       containers:
       - name: queue-master
-        image: weaveworksdemos/queue-master:0.3.0
+        image: weaveworksdemos/queue-master:0.3.1
         ports:
         - containerPort: 80
 ---
@@ -497,7 +497,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.4.0
+        image: weaveworksdemos/shipping:0.4.4
         ports:
         - containerPort: 80
         securityContext:
