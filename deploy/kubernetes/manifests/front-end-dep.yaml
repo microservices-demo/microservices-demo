@@ -13,13 +13,19 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: weaveworksdemos/front-end:0.2.0
+        image: weaveworksdemos/front-end:0.3.3
         resources:
+          limits:
+            cpu: 300m
+            memory: 300Mi
           requests:
             cpu: 100m
             memory: 100Mi
         ports:
         - containerPort: 8079
+        env:
+        - name: SESSION_REDIS
+          value: "true"
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -27,3 +33,15 @@ spec:
             drop:
               - all
           readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8079
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8079
+          initialDelaySeconds: 30
+          periodSeconds: 3

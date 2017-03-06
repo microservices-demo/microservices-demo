@@ -1,12 +1,13 @@
 # Staging Environment for the Microservice Demo
 
-Use the scripts in this directory to set up a Kubernetes cluster on AWS from a Bastion host. 
+
+# Setup cluster
+
+Use the scripts in this directory to set up a Kubernetes cluster on AWS from a Bastion host.
 
 * Create a bastion host in AWS
 
 * Install terraform
-
-* Install kubectl
 
 * Clone this repository
 
@@ -18,36 +19,33 @@ Use the scripts in this directory to set up a Kubernetes cluster on AWS from a B
 
   If it somehow fails, destroy the cluster with `terraform destroy -force` and try again.
 
-* Install the microservices demo
+* Access the Sock Shop via the elb url displayed when you run `terraform output`. Weave Scope/Flux should be visible from Weave Cloud.
+
+# Kubectl
+
+* kubectl should work from the bastion to control the kubernetes cluster
+
+# Setup/Control Weave Flux
+
+* To gain control of flux download the binary from [here](https://github.com/weaveworks/flux/releases/latest), and export the Weave Cloud flux token.
 
   ```
-  kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yml -f ~/microservices-demo/deploy/kubernetes/manifests
+  export FLUX_SERVICE_TOKEN=<sock shop weave cloud token>
   ```
 
-* Install Weave Scope
+* To make changes to the flux config you can run `get-config` to download the current config.
 
   ```
-  kubectl apply -f ~/microservices-demo/deploy/kubernetes/definitions/weavescope.yaml --validate=false
+  fluxctl get-config > flux.conf
   ```
 
-* Get the NodePort of the sock-shop front-end service
+* Fill in missing values, and run `fluxctl set-config --file=flux.conf`
+
+
+* To set sock-shop services to update automatically you can set it with the command below
 
   ```
-  kubectl describe svc front-end --namespace sock-shop
+  for svc in front-end catalogue orders queue-master user cart catalogue user-db catalogue-db payment shipping; do
+    fluxctl automate --service=sock-shop/$svc
+  done
   ```
-
-* Get the NodePort of the scope service
-
-  ```
-  kubectl describe svc weavescope-app
-  ```
-
-* Add the NodePorts to the AWS Security Group
-
-  ```
-  aws ec2 authorize-security-group-ingress --group-name microservices-demo-staging-k8s --protocol tcp --port [front-end NodePort] --cidr 0.0.0.0/0
-  aws ec2 authorize-security-group-ingress --group-name microservices-demo-staging-k8s --protocol tcp --port [weavescope NodePort] --cidr 0.0.0.0/0
-  ```
-
-* Access the Sock Shop front end and Weave Scope on any of the addresses output by `terraform output` on their respective ports.
-

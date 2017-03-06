@@ -208,7 +208,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 512 # 512MB
+        memory = 256 # 256MB
         network {
           mbits = 10
         }
@@ -445,7 +445,7 @@ job "weavedemo" {
 
       resources {
         cpu = 100 # 100 Mhz
-        memory = 512 # 512MB
+        memory = 256 # 256MB
         network {
           mbits = 10
         }

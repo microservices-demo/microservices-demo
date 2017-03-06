@@ -17,6 +17,7 @@ services:
     image: weaveworksdemos/edge-router
     ports:
       - '80:80'
+      - '8080:8080'
     hostname: edge-router
     dns: 172.17.0.1
     dns_search: weave.local

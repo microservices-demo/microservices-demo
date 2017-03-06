@@ -58,20 +58,17 @@ resource "aws_instance" "k8s-node" {
     private_key = "${file("${var.private_key_file}")}"
   }
 
-  provisioner "file" {
-    source      = "install_kubeadm.sh"
-    destination = "/tmp/install_kubeadm.sh"
-  }
- 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/install_kubeadm.sh", 
-      "/tmp/install_kubeadm.sh"
+      "sudo sh -c 'curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -'",
+      "sudo sh -c 'echo deb http://apt.kubernetes.io/ kubernetes-xenial main > /etc/apt/sources.list.d/kubernetes.list'",
+      "sudo apt-get update",
+      "sudo apt-get install -y docker.io kubelet kubeadm kubectl kubernetes-cni"
     ]
   }
 
   provisioner "local-exec" {
-    command = "sh join_node.sh ${self.private_ip}"
+    command = "ssh -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.private_ip} sudo `cat join.cmd`"
   }
 }
 
@@ -89,46 +86,87 @@ resource "aws_instance" "k8s-master" {
     volume_size = "32"
   }
 
+  connection {
+    user        = "${var.instance_user}"
+    private_key = "${file("${var.private_key_file}")}"
+  }
+
   provisioner "remote-exec" {
-    connection {
-      user        = "${var.instance_user}"
-      private_key = "${file("${var.private_key_file}")}"
-    }
-    scripts = [ 
-      "install_kubeadm.sh"
+    inline = [
+      "sudo sh -c 'curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -'",
+      "sudo sh -c 'echo deb http://apt.kubernetes.io/ kubernetes-xenial main > /etc/apt/sources.list.d/kubernetes.list'",
+      "sudo apt-get update",
+      "sudo apt-get install -y docker.io kubelet kubeadm kubectl kubernetes-cni",
+      "mkdir -p /home/ubuntu/microservices-demo/deploy/kubernetes/manifests"
+    ]
+  }
+
+  provisioner "file" {
+    source = "~/microservices-demo/deploy/kubernetes/manifests/"
+    destination = "/home/ubuntu/microservices-demo/deploy/kubernetes"
+  }
+
+  provisioner "local-exec" {
+    command = "ssh -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.public_ip} sudo kubeadm init | grep -e --token > join.cmd"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo cp /etc/kubernetes/admin.conf ~/config",
+      "sudo chown ubuntu: ~/config"
     ]
   }
 
   provisioner "local-exec" {
-    command = "sh init_master.sh ${self.public_ip}"
+    command = "scp -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.public_ip}:~/config ~/.kube/"
   }
 }
 
-resource "null_resource" "weave-kube" {
+resource "null_resource" "weave" {
+  depends_on = [ "aws_instance.k8s-node" ]
+
+  connection {
+    host        = "${aws_instance.k8s-master.public_ip}"
+    user        = "${var.instance_user}"
+    private_key = "${file("${var.private_key_file}")}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "kubectl apply -f https://git.io/weave-kube",
+      "kubectl apply -f 'https://cloud.weave.works/k8s/scope.yaml?t=${var.weave_cloud_token}'",
+      "kubectl apply -f 'https://cloud.weave.works/k8s/flux.yaml?t=${var.weave_cloud_token}'",
+      "kubectl apply -f 'https://cloud.weave.works/k8s/cortex.yaml?t=${var.weave_cloud_token}'"
+    ]
+  }
+}
+
+resource "null_resource" "sock-shop" {
+  depends_on = [ "null_resource.weave" ]
+
+  connection {
+    host        = "${aws_instance.k8s-master.public_ip}"
+    user        = "${var.instance_user}"
+    private_key = "${file("${var.private_key_file}")}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests"
+    ]
+  }
+}
+
+resource "null_resource" "cleanup" {
   depends_on = [ "aws_instance.k8s-node" ]
   provisioner "local-exec" {
-    command = "kubectl apply -f https://git.io/weave-kube"
+    command = "rm join.cmd"
   }
 }
 
 resource "aws_elb" "microservices-demo-staging-k8s" {
   depends_on = [ "aws_instance.k8s-node" ]
   name = "microservices-demo-staging-k8s"
-  instances = ["${aws_instance.k8s-node.*.id}"]
-  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  security_groups = ["${aws_security_group.microservices-demo-staging-k8s.id}"]
-
-  listener {
-    lb_port = 80
-    instance_port = 30000
-    lb_protocol = "http"
-    instance_protocol = "http"
-  }
-}
-
-resource "aws_elb" "microservicesdemo-staging-scope" {
-  depends_on = [ "aws_instance.k8s-node" ]
-  name = "microservicesdemo-staging-scope"
   instances = ["${aws_instance.k8s-node.*.id}"]
   availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
   security_groups = ["${aws_security_group.microservices-demo-staging-k8s.id}"]

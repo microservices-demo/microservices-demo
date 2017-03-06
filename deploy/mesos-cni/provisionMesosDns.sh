@@ -42,7 +42,7 @@ do_provision() {
          echo "/etc/hosts not empty. Skipping."
     else
         # Workaround to fix strange localhost hostname issue
-        echo "$(ifconfig eth0 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}') $(hostname)" | sudo tee -a /etc/hosts
+        echo "$(ifconfig ens3 | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}') $(hostname)" | sudo tee -a /etc/hosts
     fi
 }
 

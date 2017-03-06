@@ -4,6 +4,11 @@ kind: Namespace
 metadata:
   name: sock-shop
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zipkin
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -72,7 +77,7 @@ spec:
     spec:
       containers:
       - name: cart
-        image: weaveworksdemos/cart:0.3.0
+        image: weaveworksdemos/cart:0.4.1
         ports:
         - containerPort: 80
         securityContext:
@@ -125,7 +130,7 @@ spec:
     spec:
       containers:
       - name: catalogue-db
-        image: weaveworksdemos/catalogue-db:0.2.0
+        image: weaveworksdemos/catalogue-db:0.3.0
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password
@@ -166,7 +171,10 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue:0.2.0
+        image: weaveworksdemos/catalogue:0.3.0
+        env:
+          - name: ZIPKIN
+            value: http://zipkin:9411/api/v1/spans
         ports:
         - containerPort: 80
         securityContext:
@@ -208,7 +216,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: weaveworksdemos/front-end:0.2.0
+        image: weaveworksdemos/front-end:0.3.1
         resources:
           requests:
             cpu: 100m
@@ -235,7 +243,7 @@ spec:
   ports:
   - port: 80
     targetPort: 8079
-    nodePort: 31500
+    nodePort: 30001
   selector:
     name: front-end
 ---
@@ -307,7 +315,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.3.0
+        image: weaveworksdemos/orders:0.4.3
         ports:
         - containerPort: 80
         securityContext:
@@ -360,9 +368,12 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment:0.3.0
+        image: weaveworksdemos/payment:0.4.1
         ports:
         - containerPort: 80
+        env:
+        - name: ZIPKIN
+          value: http://zipkin:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -404,7 +415,7 @@ spec:
     spec:
       containers:
       - name: queue-master
-        image: weaveworksdemos/queue-master:0.3.0
+        image: weaveworksdemos/queue-master:0.3.1
         ports:
         - containerPort: 80
 ---
@@ -486,7 +497,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.3.0
+        image: weaveworksdemos/shipping:0.4.4
         ports:
         - containerPort: 80
         securityContext:
@@ -540,8 +551,7 @@ spec:
     spec:
       containers:
       - name: user-db
-        image: weaveworksdemos/user-db:0.3.0
-
+        image: weaveworksdemos/user-db:0.4.0
         ports:
         - name: mongo
           containerPort: 27017
@@ -593,12 +603,14 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.3.0
+        image: weaveworksdemos/user:0.4.0
         ports:
         - containerPort: 80
         env:
         - name: MONGO_HOST
           value: user-db:27017
+        - name: ZIPKIN
+          value: http://zipkin:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -623,3 +635,115 @@ spec:
     targetPort: 80
   selector:
     name: user
+
+
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zipkin
+  labels:
+    name: zipkin
+  namespace: zipkin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: zipkin
+    spec:
+      containers:
+      - name: zipkin
+        image: openzipkin/zipkin
+        ports:
+        - containerPort: 9411
+        env:
+        - name: STORAGE_TYPE
+          value: mysql
+        - name: MYSQL_HOST
+          value: zipkin-mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  labels:
+    name: zipkin
+  namespace: zipkin
+spec:
+  type: NodePort
+  ports:
+    # the port that this service should serve on
+  - port: 9411
+    targetPort: 9411
+    nodePort: 30002
+  selector:
+    name: zipkin
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zipkin-mysql
+  labels:
+    name: zipkin-mysql
+  namespace: zipkin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: zipkin-mysql
+    spec:
+      containers:
+      - name: zipkin-mysql
+        image: openzipkin/zipkin-mysql:1.20.0
+        ports:
+        - name: mysql
+          containerPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin-mysql
+  labels:
+    name: zipkin-mysql
+  namespace: zipkin
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 3306
+    targetPort: 3306
+  selector:
+    name: zipkin-mysql
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zipkin-cron
+  labels:
+    name: zipkin-cron
+  namespace: zipkin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: zipkin-cron
+    spec:
+      containers:
+      - name: zipkin-cron
+        image: openzipkin/zipkin-dependencies:1.4.0
+        env:
+        - name: STORAGE_TYPE
+          value: mysql
+        - name: MYSQL_HOST
+          value: zipkin-mysql
+        - name: MYSQL_USER
+          value: zipkin
+        - name: MYSQL_PASS
+          value: zipkin
+        command: ["crond"]
+        args: ["-f"]

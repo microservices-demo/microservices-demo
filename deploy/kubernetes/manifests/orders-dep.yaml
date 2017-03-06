@@ -15,7 +15,14 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.3.0
+        image: weaveworksdemos/orders:0.4.3
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2000Mi
+          requests:
+            cpu: 200m
+            memory: 1000Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -30,7 +37,20 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 180
+          periodSeconds: 3
       volumes:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+

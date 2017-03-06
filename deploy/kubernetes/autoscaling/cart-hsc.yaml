@@ -1,0 +1,15 @@
+---
+apiVersion: extensions/v1beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: cart
+  namespace: sock-shop
+spec:
+  scaleRef:
+    kind: Deployment
+    name: cart
+    subresource: scale
+  minReplicas: 1
+  maxReplicas: 10
+  cpuUtilization:
+    targetPercentage: 50

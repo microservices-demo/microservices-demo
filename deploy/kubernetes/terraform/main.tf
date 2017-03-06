@@ -24,14 +24,25 @@ resource "aws_security_group" "k8s-security-group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
+    from_port   = 9411
+    to_port     = 9411
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
     from_port   = 30001
     to_port     = 30001
     protocol     = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
+<<<<<<< HEAD
     from_port   = 31601
     to_port     = 31601
+=======
+    from_port   = 30002
+    to_port     = 30002
+>>>>>>> master
     protocol     = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -43,18 +54,23 @@ resource "aws_security_group" "k8s-security-group" {
   }
 }
 
-resource "aws_instance" "md-k8s-master" {
+resource "aws_instance" "ci-sockshop-k8s-master" {
   instance_type   = "${var.master_instance_type}"
   ami             = "${lookup(var.aws_amis, var.aws_region)}"
   key_name        = "${var.key_name}"
   security_groups = ["${aws_security_group.k8s-security-group.name}"]
   tags {
-    Name = "md-k8s-master"
+    Name = "ci-sockshop-k8s-master"
   }
-  
+
   connection {
     user = "ubuntu"
     private_key = "${file("${var.private_key_path}")}"
+  }
+
+  provisioner "file" {
+    source = "deploy/kubernetes/manifests"
+    destination = "/tmp/"
   }
 
   provisioner "remote-exec" {
@@ -68,14 +84,14 @@ resource "aws_instance" "md-k8s-master" {
   }
 }
 
-resource "aws_instance" "md-k8s-node" {
+resource "aws_instance" "ci-sockshop-k8s-node" {
   instance_type   = "${var.node_instance_type}"
   count           = "${var.node_count}"
   ami             = "${lookup(var.aws_amis, var.aws_region)}"
   key_name        = "${var.key_name}"
   security_groups = ["${aws_security_group.k8s-security-group.name}"]
   tags {
-    Name = "md-k8s-node"
+    Name = "ci-sockshop-k8s-node"
   }
 
   connection {
@@ -95,16 +111,25 @@ resource "aws_instance" "md-k8s-node" {
   }
 }
 
-resource "aws_elb" "elb-sock-shop" {
-  depends_on = [ "aws_instance.md-k8s-node" ]
-  name = "md-k8s-elb-sock-shop"
-  instances = ["${aws_instance.md-k8s-node.*.id}"]
-  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+resource "aws_elb" "ci-sockshop-k8s-elb" {
+  depends_on = [ "aws_instance.ci-sockshop-k8s-node" ]
+  name = "ci-sockshop-k8s-elb"
+  instances = ["${aws_instance.ci-sockshop-k8s-node.*.id}"]
+  availability_zones = ["${data.aws_availability_zones.available.names}"]
   security_groups = ["${aws_security_group.k8s-security-group.id}"] 
   listener {
     lb_port = 80
-    instance_port = 31500
+    instance_port = 30001
     lb_protocol = "http"
     instance_protocol = "http"
   }
+
+  listener {
+    lb_port = 9411
+    instance_port = 30002
+    lb_protocol = "http"
+    instance_protocol = "http"
+  }
+
 }
+
