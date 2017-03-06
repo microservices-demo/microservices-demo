@@ -32,20 +32,21 @@ resource "aws_security_group" "k8s-security-group" {
   ingress {
     from_port   = 30001
     to_port     = 30001
-    protocol     = "tcp"
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-<<<<<<< HEAD
-    from_port   = 31601
-    to_port     = 31601
-=======
     from_port   = 30002
     to_port     = 30002
->>>>>>> master
-    protocol     = "tcp"
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+   from_port   = 31601
+   to_port     = 31601
+   protocol    = "tcp"
+   cidr_blocks = ["0.0.0.0/0"]
+ }
   egress {
     from_port   = 0
     to_port     = 0
