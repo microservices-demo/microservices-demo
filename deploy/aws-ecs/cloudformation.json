@@ -1121,6 +1121,7 @@
                                 "dynamodb:Query",
                                 "dynamodb:Scan",
                                 "dynamodb:UpdateItem",
+                                "dynamodb:DescribeTable",
                                 "autoscaling:DescribeAutoScalingInstances"
                             ],
                             "Resource": [
