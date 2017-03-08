@@ -250,14 +250,14 @@
                 }
             }
         },
-        "CartTask": {
+        "CartsTask": {
             "Condition": "DoDeployExampleApp",
             "Type": "AWS::ECS::TaskDefinition",
             "Properties": {
                 "ContainerDefinitions": [{
                     "Essential": true,
-                    "Image": "weaveworksdemos/cart",
-                    "Name": "cart",
+                    "Image": "weaveworksdemos/carts",
+                    "Name": "carts",
  		    "LogConfiguration": {
                         "LogDriver": "awslogs",
                         "Options": {
@@ -265,7 +265,7 @@
                             "awslogs-region": {
 			        "Ref": "AWS::Region"
                             },
-                            "awslogs-stream-prefix": "cart"
+                            "awslogs-stream-prefix": "carts"
                          }
                     },
                     "Memory": 1024
@@ -273,7 +273,7 @@
                 "Volumes": []
             }
         },
-        "CartService": {
+        "CartsService": {
             "Condition": "DoDeployExampleApp",
             "Type": "AWS::ECS::Service",
             "Properties": {
@@ -282,7 +282,7 @@
                 },
                 "DesiredCount": 3,
                 "TaskDefinition": {
-                    "Ref": "CartTask"
+                    "Ref": "CartsTask"
                 }
             }
         },
