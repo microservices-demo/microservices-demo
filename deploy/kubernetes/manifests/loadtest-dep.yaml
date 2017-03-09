@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: load-test
+  labels:
+    name: load-test
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: load-test
+    spec:
+      containers:
+      - name: load-test
+        image: weaveworksdemos/load-test
+        args: ["-d", "300", "-h", "front-end", "-c", "2", "-r", "100"]
