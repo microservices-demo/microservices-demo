@@ -79,6 +79,9 @@ spec:
       - name: carts
         image: weaveworksdemos/carts:0.4.3
         ports:
+        env:
+         - name: ZIPKIN
+           value: zipkin.zipkin.svc.cluster.local
         - containerPort: 80
         securityContext:
           runAsNonRoot: true
@@ -174,7 +177,7 @@ spec:
         image: weaveworksdemos/catalogue:0.3.0
         env:
           - name: ZIPKIN
-            value: http://zipkin:9411/api/v1/spans
+            value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         ports:
         - containerPort: 80
         securityContext:
@@ -316,6 +319,9 @@ spec:
       containers:
       - name: orders
         image: weaveworksdemos/orders:0.4.3
+        env:
+         - name: ZIPKIN
+           value: zipkin.zipkin.svc.cluster.local
         ports:
         - containerPort: 80
         securityContext:
@@ -373,7 +379,7 @@ spec:
         - containerPort: 80
         env:
         - name: ZIPKIN
-          value: http://zipkin:9411/api/v1/spans
+          value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -498,6 +504,9 @@ spec:
       containers:
       - name: shipping
         image: weaveworksdemos/shipping:0.4.4
+        env:
+         - name: ZIPKIN
+           value: zipkin.zipkin.svc.cluster.local
         ports:
         - containerPort: 80
         securityContext:
@@ -603,14 +612,14 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.4.0
+        image: weaveworksdemos/user:0.4.1
         ports:
         - containerPort: 80
         env:
         - name: MONGO_HOST
           value: user-db:27017
         - name: ZIPKIN
-          value: http://zipkin:9411/api/v1/spans
+          value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001

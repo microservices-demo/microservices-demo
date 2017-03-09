@@ -16,6 +16,9 @@ spec:
       containers:
       - name: shipping
         image: weaveworksdemos/shipping:0.4.4
+        env:
+         - name: ZIPKIN
+           value: zipkin.zipkin.svc.cluster.local
         resources:
           limits:
             cpu: 300m

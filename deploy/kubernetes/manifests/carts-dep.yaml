@@ -16,6 +16,9 @@ spec:
       containers:
       - name: carts
         image: weaveworksdemos/carts:0.4.3
+        env:
+         - name: ZIPKIN
+           value: zipkin.zipkin.svc.cluster.local
         resources:
           limits:
             cpu: 300m
