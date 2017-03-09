@@ -8,7 +8,7 @@ USER=ubuntu
 MASTERS=($MASTER)
 AGENTS=($SLAVE0 $SLAVE1 $SLAVE2)
 SSH_OPTS=-oStrictHostKeyChecking=no
-SERVICES=("cart-db" "orders-db" "user-db" "shipping" "orders" "catalogue" "catalogue-db" "cart" "payment" "user" "front-end" "rabbitmq")
+SERVICES=("cart-db" "orders-db" "user-db" "shipping" "orders" "catalogue" "catalogue-db" "carts" "payment" "user" "front-end" "rabbitmq")
 
 
 ############## Begin Utilities ###################
@@ -427,7 +427,7 @@ do_start() {
     launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --spring.rabbitmq.host=rabbitmq.mesos-executeinstance.weave.local"                     weaveworksdemos/shipping    --shell
     launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders   --shell
     launch_service catalogue    "./app -port=80 -DSN=catalogue_user:default_password@tcp\(catalogue-db.mesos-executeinstance.weave.local:3306\)/socksdb"                                    weaveworksdemos/catalogue   --shell
-    launch_service cart         "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=cart-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"      weaveworksdemos/cart        --shell
+    launch_service carts        "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=cart-db.mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"      weaveworksdemos/carts       --shell
     launch_service payment      "echo ok"                                                                                                                                                   weaveworksdemos/payment     --no-shell
     launch_service front-end    "npm start -- --domain=mesos-executeinstance.weave.local"                                                                                                   weaveworksdemos/front-end   --shell
     launch_service user         "./user -port=80 -link-domain=user.mesos-executeinstance.weave.local -mongo-host=user-db.mesos-executeinstance.weave.local:27017"                           weaveworksdemos/user        --shell

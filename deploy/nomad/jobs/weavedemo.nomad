@@ -217,8 +217,8 @@ job "weavedemo" {
     } # - end db - #
   } # - end catalogue - #
 
-  # - cart - #
-  group "cart" {
+  # - carts - #
+  group "carts" {
     count = 1
 
     restart {
@@ -229,20 +229,20 @@ job "weavedemo" {
     }
 
     # - app - #
-    task "cart" {
+    task "carts" {
       driver = "docker"
 
       config {
-        image = "weaveworksdemos/cart"
-        hostname = "cart.weave.local"
+        image = "weaveworksdemos/carts"
+        hostname = "carts.weave.local"
         network_mode = "internal"
         dns_servers = ["172.17.0.1"]
         dns_search_domains = ["weave.local."]
       }
 
       service {
-        name = "${TASKGROUP}-cart"
-        tags = ["cart"]
+        name = "${TASKGROUP}-carts"
+        tags = ["carts"]
       }
 
       resources {
@@ -266,7 +266,7 @@ job "weavedemo" {
 
       service {
         name = "${TASKGROUP}-cartdb"
-        tags = ["db", "cart", "cartdb"]
+        tags = ["db", "carts", "cartdb"]
       }
 
       resources {
@@ -277,7 +277,7 @@ job "weavedemo" {
         }
       }
     } # - end db - #
-  } # - end cart - #
+  } # - end carts - #
 
   # - shipping - #
   group "shipping" {

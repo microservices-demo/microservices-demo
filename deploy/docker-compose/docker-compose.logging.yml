@@ -38,7 +38,7 @@ services:
       driver: fluentd
     depends_on:
       - log-server
-  cart:
+  carts:
     logging:
       driver: fluentd
     depends_on:
