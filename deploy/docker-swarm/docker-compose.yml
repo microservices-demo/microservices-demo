@@ -18,8 +18,8 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=socksdb
-  cart:
-    image: weaveworksdemos/cart
+  carts:
+    image: weaveworksdemos/carts
     environment:
       - reschedule=on-node-failure
   cart-db:
