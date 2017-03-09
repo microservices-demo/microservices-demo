@@ -2,12 +2,12 @@
 apiVersion: extensions/v1beta1
 kind: NetworkPolicy
 metadata:
-  name: cart-db-access
+  name: carts-db-access
   namespace: sock-shop
 spec:
   podSelector:
     matchLabels:
-      name: cart-db
+      name: carts-db
   ingress:
     - from:
         - podSelector:

@@ -41,7 +41,7 @@
           }
         },
         {
-          "id": "/weave-demo/database/cart-db",
+          "id": "/weave-demo/database/carts-db",
           "cpus": 0.1,
           "mem": 1024.0,
           "container": {
@@ -52,7 +52,7 @@
               "parameters": [
                 {
                   "key": "hostname",
-                  "value": "cart-db.weave.local"
+                  "value": "carts-db.weave.local"
                 }
               ]
             }

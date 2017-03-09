@@ -397,7 +397,7 @@
           {
             "Essential": true,
             "Image": "mongo",
-            "Name": "cart-db",
+            "Name": "carts-db",
             "Memory": 256
           }
         ],

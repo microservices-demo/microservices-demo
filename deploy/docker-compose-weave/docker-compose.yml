@@ -59,9 +59,9 @@ services:
       - reschedule=on-node-failure
     networks:
       - internal
-  cart-db:
+  carts-db:
     image: mongo
-    hostname: cart-db
+    hostname: carts-db
     dns: 172.17.0.1
     dns_search: weave.local
     restart: always

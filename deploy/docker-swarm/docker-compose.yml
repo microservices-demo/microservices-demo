@@ -22,7 +22,7 @@ services:
     image: weaveworksdemos/carts
     environment:
       - reschedule=on-node-failure
-  cart-db:
+  carts-db:
     image: mongo
     environment:
       - reschedule=on-node-failure

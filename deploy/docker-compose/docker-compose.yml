@@ -56,9 +56,9 @@ services:
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
-  cart-db:
+  carts-db:
     image: mongo
-    hostname: cart-db
+    hostname: carts-db
     restart: always
     cap_drop:
       - all
