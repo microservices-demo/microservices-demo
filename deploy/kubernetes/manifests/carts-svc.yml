@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: cart
+  name: carts
   labels:
-    name: cart
+    name: carts
   annotations:
     prometheus.io/path: "/prometheus"
   namespace: sock-shop
@@ -14,4 +14,4 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: cart
+    name: carts

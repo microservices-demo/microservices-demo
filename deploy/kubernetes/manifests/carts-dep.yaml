@@ -2,20 +2,20 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: cart
+  name: carts
   labels:
-    name: cart
+    name: carts
   namespace: sock-shop
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: cart
+        name: carts
     spec:
       containers:
-      - name: cart
-        image: weaveworksdemos/cart:0.4.1
+      - name: carts
+        image: weaveworksdemos/carts:0.4.2
         resources:
           limits:
             cpu: 300m
