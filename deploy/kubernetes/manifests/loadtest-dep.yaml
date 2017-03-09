@@ -15,4 +15,4 @@ spec:
       containers:
       - name: load-test
         image: weaveworksdemos/load-test
-        args: ["-d", "300", "-h", "front-end", "-c", "2", "-r", "100"]
+        args: ["-h", "front-end", "-c", "5", "-r", "100"]
