@@ -29,7 +29,7 @@ spec:
         - name: MONGO_HOST
           value: user-db:27017
         - name: ZIPKIN
-          value: http://zipkin:9411/api/v1/spans
+          value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
