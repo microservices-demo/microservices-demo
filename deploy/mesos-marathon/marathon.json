@@ -125,18 +125,18 @@
           }
         },
         {
-          "id": "/weave-demo/service/cart",
+          "id": "/weave-demo/service/carts",
           "cpus": 0.5,
           "mem": 1024.0,
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "weaveworksdemos/cart:latest",
+              "image": "weaveworksdemos/carts:latest",
               "network": "BRIDGE",
               "parameters": [
                 {
                   "key": "hostname",
-                  "value": "cart.weave.local"
+                  "value": "carts.weave.local"
                 }
               ]
             }
