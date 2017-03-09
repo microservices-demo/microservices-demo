@@ -26,10 +26,10 @@ services:
   cart:
     image: weaveworksdemos/micro-sock
     container_name: cart
-    command: -l cart-db
-  cart-db:
+    command: -l carts-db
+  carts-db:
     image: weaveworksdemos/micro-sock
-    container_name: cart-db
+    container_name: carts-db
     command: -l
   orders:
     image: weaveworksdemos/micro-sock

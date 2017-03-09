@@ -214,14 +214,14 @@
         "EcsCluster": {
             "Type": "AWS::ECS::Cluster"
         },
-        "CartDBTask": {
+        "CartsDBTask": {
             "Condition": "DoDeployExampleApp",
             "Type": "AWS::ECS::TaskDefinition",
             "Properties": {
                 "ContainerDefinitions": [{
                     "Essential": true,
                     "Image": "mongo",
-                    "Name": "cart-db",
+                    "Name": "carts-db",
  		    "LogConfiguration": {
                         "LogDriver": "awslogs",
                         "Options": {
@@ -229,7 +229,7 @@
                             "awslogs-region": {
 			        "Ref": "AWS::Region"
                             },
-                            "awslogs-stream-prefix": "cart-db"
+                            "awslogs-stream-prefix": "carts-db"
                          }
                     },
                     "Memory": 128
@@ -237,7 +237,7 @@
                 "Volumes": []
             }
         },
-        "CartDBService": {
+        "CartsDBService": {
             "Condition": "DoDeployExampleApp",
             "Type": "AWS::ECS::Service",
             "Properties": {
@@ -246,7 +246,7 @@
                 },
                 "DesiredCount": 1,
                 "TaskDefinition": {
-                    "Ref": "CartDBTask"
+                    "Ref": "CartsDBTask"
                 }
             }
         },

@@ -260,7 +260,7 @@ job "weavedemo" {
 
       config {
         image = "mongo"
-        hostname = "cart-db.weave.local"
+        hostname = "carts-db.weave.local"
         network_mode = "internal"
       }
 
