@@ -64,20 +64,20 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: cart
+  name: carts
   labels:
-    name: cart
+    name: carts
   namespace: sock-shop
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: cart
+        name: carts
     spec:
       containers:
-      - name: cart
-        image: weaveworksdemos/cart:0.4.1
+      - name: carts
+        image: weaveworksdemos/carts:0.4.2
         ports:
         - containerPort: 80
         securityContext:
@@ -100,9 +100,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cart
+  name: carts
   labels:
-    name: cart
+    name: carts
   annotations:
     prometheus.io/path: "/prometheus"
   namespace: sock-shop
@@ -112,7 +112,7 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: cart
+    name: carts
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -216,7 +216,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: weaveworksdemos/front-end:0.3.1
+        image: weaveworksdemos/front-end:0.3.5
         resources:
           requests:
             cpu: 100m
