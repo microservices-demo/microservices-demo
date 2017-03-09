@@ -79,10 +79,10 @@ spec:
       - name: carts
         image: weaveworksdemos/carts:0.4.3
         ports:
+         - containerPort: 80
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
-        - containerPort: 80
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
