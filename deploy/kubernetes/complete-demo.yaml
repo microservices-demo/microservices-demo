@@ -174,7 +174,7 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue:0.3.2
+        image: weaveworksdemos/catalogue:0.3.3
         env:
           - name: ZIPKIN
             value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
@@ -612,7 +612,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.4.1
+        image: weaveworksdemos/user:0.4.2
         ports:
         - containerPort: 80
         env:
