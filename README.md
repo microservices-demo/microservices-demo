@@ -6,7 +6,7 @@ The application is the user-facing part of an online shop that sells socks. It i
 
 It is built using [Spring Boot](http://projects.spring.io/spring-boot/), [Go kit](http://gokit.io) and [Node.js](https://nodejs.org/) and is packaged in Docker containers.
 
-You can read more about the [application design](./internal-docs/internal-docs/design.md).
+You can read more about the [application design](./internal-docs/design.md).
 
 ## Deployment Platforms
 
