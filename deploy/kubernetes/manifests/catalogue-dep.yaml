@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue:0.3.0
+        image: weaveworksdemos/catalogue:0.3.2
         env:
          - name: ZIPKIN
            value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
