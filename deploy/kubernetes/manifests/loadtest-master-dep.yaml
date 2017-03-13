@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: load-test-master
+  labels:
+    name: load-test-master
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: load-test-master
+    spec:
+      containers:
+      - name: load-test
+        image: weaveworksdemos/load-test
+        command: ["locust", "--host", "http://front-end", "-f", "/config/locustfile.py", "--master"]

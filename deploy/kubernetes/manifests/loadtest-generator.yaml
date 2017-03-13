@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: load-test-generator
+  labels:
+    name: load-test-generator
+  namespace: sock-shop
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: load-test-generator
+    spec:
+      containers:
+      - name: load-test
+        image: weaveworksdemos/load-test
+        command: ["curl", "--data", "locust_count=100&hatch_rate=5", "load-test-master:8089/swarm"]
