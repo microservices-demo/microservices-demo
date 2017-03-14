@@ -77,7 +77,7 @@ spec:
     spec:
       containers:
       - name: carts
-        image: weaveworksdemos/carts:0.4.3
+        image: weaveworksdemos/carts:0.4.5
         ports:
          - containerPort: 80
         env:
@@ -106,8 +106,6 @@ metadata:
   name: carts
   labels:
     name: carts
-  annotations:
-    prometheus.io/path: "/prometheus"
   namespace: sock-shop
 spec:
   ports:
@@ -318,7 +316,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.4.3
+        image: weaveworksdemos/orders:0.4.4
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
@@ -347,8 +345,6 @@ metadata:
   name: orders
   labels:
     name: orders
-  annotations:
-    prometheus.io/path: "/prometheus"
   namespace: sock-shop
 spec:
   ports:
@@ -503,7 +499,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.4.4
+        image: weaveworksdemos/shipping:0.4.5
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
@@ -533,8 +529,6 @@ metadata:
   name: shipping
   labels:
     name: shipping
-  annotations:
-    prometheus.io/path: "/prometheus"
   namespace: sock-shop
 spec:
   ports:
