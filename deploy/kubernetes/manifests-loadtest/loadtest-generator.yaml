@@ -4,9 +4,9 @@ metadata:
   name: load-test-generator
   labels:
     name: load-test-generator
-  namespace: sock-shop
+  namespace: loadtest
 spec:
-  replicas: 1
+  replicas: 5
   template:
     metadata:
       labels:

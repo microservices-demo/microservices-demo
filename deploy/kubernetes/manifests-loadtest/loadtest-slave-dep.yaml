@@ -4,7 +4,7 @@ metadata:
   name: load-test-slave
   labels:
     name: load-test-slave
-  namespace: sock-shop
+  namespace: loadtest
 spec:
   replicas: 5
   template:

@@ -5,7 +5,7 @@ metadata:
   name: load-test-master
   labels:
     name: load-test-master
-  namespace: sock-shop
+  namespace: loadtest
 spec:
   ports:
   - name: slave0
