@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.4.3
+        image: weaveworksdemos/orders:0.4.6
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
@@ -25,7 +25,7 @@ spec:
             memory: 2000Mi
           requests:
             cpu: 200m
-            memory: 1000Mi
+            memory: 2000Mi
         ports:
         - containerPort: 80
         securityContext:

@@ -56,6 +56,8 @@ services:
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
+    environment:
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
   carts-db:
     image: mongo
     hostname: carts-db
@@ -80,6 +82,8 @@ services:
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
+    environment:
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
   orders-db:
     image: mongo
     hostname: orders-db
@@ -104,6 +108,8 @@ services:
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
+    environment:
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
   queue-master:
     image: weaveworksdemos/queue-master
     hostname: queue-master
@@ -166,7 +172,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
   zipkin:
-    image: openzipkin/zipkin 
+    image: openzipkin/zipkin
     hostname: zipkin
     restart: always
     cap_drop:

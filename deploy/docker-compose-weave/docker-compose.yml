@@ -49,9 +49,9 @@ services:
       - MYSQL_DATABASE=socksdb
     networks:
       - external
-  cart:
-    image: weaveworksdemos/cart
-    hostname: cart
+  carts:
+    image: weaveworksdemos/carts
+    hostname: carts
     dns: 172.17.0.1
     dns_search: weave.local
     restart: always
