@@ -83,6 +83,8 @@ spec:
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
+         - name: JAVA_OPTS
+           value: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -320,6 +322,8 @@ spec:
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
+         - name: JAVA_OPTS
+           value: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
         ports:
         - containerPort: 80
         securityContext:
@@ -503,6 +507,8 @@ spec:
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
+         - name: JAVA_OPTS
+           value: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
         ports:
         - containerPort: 80
         securityContext:
