@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.4.6
+        image: weaveworksdemos/shipping:0.4.7
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local

@@ -77,7 +77,7 @@ spec:
     spec:
       containers:
       - name: carts
-        image: weaveworksdemos/carts:0.4.6
+        image: weaveworksdemos/carts:0.4.7
         ports:
          - containerPort: 80
         env:
@@ -316,7 +316,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.4.5
+        image: weaveworksdemos/orders:0.4.6
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
@@ -499,7 +499,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.4.6
+        image: weaveworksdemos/shipping:0.4.7
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
