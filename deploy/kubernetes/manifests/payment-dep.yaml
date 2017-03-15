@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment:0.4.1
+        image: weaveworksdemos/payment:0.4.2
         resources:
           limits:
             cpu: 100m
@@ -27,7 +27,7 @@ spec:
         - containerPort: 80
         env:
         - name: ZIPKIN
-          value: http://zipkin:9411/api/v1/spans
+          value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001

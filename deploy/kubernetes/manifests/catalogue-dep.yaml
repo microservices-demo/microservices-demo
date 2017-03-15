@@ -15,10 +15,10 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue:0.3.0
+        image: weaveworksdemos/catalogue:0.3.3
         env:
          - name: ZIPKIN
-           value: http://zipkin:9411/api/v1/spans
+           value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         resources:
           limits:
             cpu: 100m
