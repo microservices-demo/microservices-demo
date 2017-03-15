@@ -22,6 +22,7 @@ services:
     image: weaveworksdemos/carts
     environment:
       - reschedule=on-node-failure
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
   carts-db:
     image: mongo
     environment:
@@ -30,6 +31,7 @@ services:
     image: weaveworksdemos/orders
     environment:
       - reschedule=on-node-failure
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
   orders-db:
     image: mongo
     environment:
@@ -38,6 +40,7 @@ services:
     image: weaveworksdemos/shipping
     environment:
       - reschedule=on-node-failure
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
   rabbitmq:
     image: rabbitmq:3
     environment:
