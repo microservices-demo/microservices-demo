@@ -11,10 +11,6 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "bastion_cidr_block" {
-  descritpion = "The public ip of the bastion host, in cidr notation."
-}
-
 variable "bastion_security_group" {
   description = "The id of the security group where the bastion host resides."
 }
@@ -30,17 +26,17 @@ variable "key_name" {
 
 variable "master_instance_type" {
   description = "The instance type to use for the Kubernetes master."
-  default     = "m3.medium"
+  default     = "m3.large"
 }
 
 variable "node_instance_type" {
   description = "The instance type to use for the Kubernetes nodes."
-  default     = "m4.large"
+  default     = "m4.xlarge"
 }
 
 variable "nodecount" {
   description = "The number of nodes in the cluster."
-  default     = "3"
+  default     = "4"
 }
 
 variable "private_key_file" {
