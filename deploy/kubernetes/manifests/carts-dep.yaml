@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: carts
-        image: weaveworksdemos/carts:0.4.7
+        image: weaveworksdemos/carts:0.4.8
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
