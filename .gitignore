@@ -124,8 +124,6 @@ coverage/
 # docker-swarm infra
 packer_cache
 docker-swarm.box
-*.tfstate
-*.tfstate.backup
 *.tfvars
 join.sh
 output-virtualbox-iso
