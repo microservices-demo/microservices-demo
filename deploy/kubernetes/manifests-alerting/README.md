@@ -2,5 +2,5 @@ In order for the alerting component to work, a Kubernetes secret called "slack-h
 
 For more information see
 
-https://kubernetes.io/docs/user-guide/secrets/
-https://api.slack.com/incoming-webhooks
+1. https://kubernetes.io/docs/user-guide/secrets/
+2. https://api.slack.com/incoming-webhooks
