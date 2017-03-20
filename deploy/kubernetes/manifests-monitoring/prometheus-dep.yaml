@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: prometheus-deployment
+  namespace: monitoring
 spec:
   replicas: 1
   strategy:
@@ -20,7 +21,7 @@ spec:
     spec:
       containers:
       - name: prometheus
-        image: 'prom/prometheus:v1.5.2'
+        image: prom/prometheus:v1.5.2
         args:
           - '-storage.local.retention=360h'
           - '-storage.local.memory-chunks=1048576'
