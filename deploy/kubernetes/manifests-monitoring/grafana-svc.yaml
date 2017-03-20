@@ -9,7 +9,11 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 3000
+  - name: prometheus
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+    nodePort: 31300
   selector:
     app: grafana
     component: core
