@@ -12,12 +12,6 @@ resource "aws_security_group" "microservices-demo-staging-k8s" {
     self        = "true"
   }
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["${var.bastion_cidr_block}"]
-  }
-  ingress {
     from_port       = 0
     to_port         = 0
     protocol        = "-1"
@@ -50,12 +44,13 @@ resource "aws_instance" "k8s-node" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "32"
+    volume_size = "50"
   }
 
   connection {
     user        = "${var.instance_user}"
     private_key = "${file("${var.private_key_file}")}"
+    host        = "${self.private_ip}"
   }
 
   provisioner "remote-exec" {
@@ -83,12 +78,13 @@ resource "aws_instance" "k8s-master" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "32"
+    volume_size = "50"
   }
 
   connection {
     user        = "${var.instance_user}"
     private_key = "${file("${var.private_key_file}")}"
+    host        = "${self.private_ip}"
   }
 
   provisioner "remote-exec" {
@@ -107,7 +103,7 @@ resource "aws_instance" "k8s-master" {
   }
 
   provisioner "local-exec" {
-    command = "ssh -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.public_ip} sudo kubeadm init | grep -e --token > join.cmd"
+    command = "ssh -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.private_ip} sudo kubeadm init | grep -e --token > join.cmd"
   }
 
   provisioner "remote-exec" {
@@ -118,7 +114,7 @@ resource "aws_instance" "k8s-master" {
   }
 
   provisioner "local-exec" {
-    command = "scp -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.public_ip}:~/config ~/.kube/"
+    command = "scp -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.private_ip}:~/config ~/.kube/"
   }
 }
 
@@ -126,7 +122,7 @@ resource "null_resource" "weave" {
   depends_on = [ "aws_instance.k8s-node" ]
 
   connection {
-    host        = "${aws_instance.k8s-master.public_ip}"
+    host        = "${aws_instance.k8s-master.private_ip}"
     user        = "${var.instance_user}"
     private_key = "${file("${var.private_key_file}")}"
   }
@@ -145,14 +141,14 @@ resource "null_resource" "sock-shop" {
   depends_on = [ "null_resource.weave" ]
 
   connection {
-    host        = "${aws_instance.k8s-master.public_ip}"
+    host        = "${aws_instance.k8s-master.private_ip}"
     user        = "${var.instance_user}"
     private_key = "${file("${var.private_key_file}")}"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests"
+      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests/zipkin-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests"
     ]
   }
 }

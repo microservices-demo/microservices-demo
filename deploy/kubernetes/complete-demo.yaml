@@ -77,7 +77,7 @@ spec:
     spec:
       containers:
       - name: carts
-        image: weaveworksdemos/carts:0.4.7
+        image: weaveworksdemos/carts:0.4.8
         ports:
          - containerPort: 80
         env:
@@ -219,7 +219,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: weaveworksdemos/front-end:0.3.8
+        image: weaveworksdemos/front-end:0.3.10
         resources:
           requests:
             cpu: 100m
@@ -318,7 +318,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.4.6
+        image: weaveworksdemos/orders:0.4.7
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
@@ -503,7 +503,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.4.7
+        image: weaveworksdemos/shipping:0.4.8
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
