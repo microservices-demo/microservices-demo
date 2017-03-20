@@ -1,0 +1,9 @@
+# Alert for high error rate in the Sock Shop.
+ALERT HighErrorRate
+  IF rate(request_duration_seconds_count{status_code="500"}[1m]) > .1
+  FOR 1m
+  LABELS { severity = "email" }
+  ANNOTATIONS {
+    summary = "High HTTP 500 error rates",
+    description = "Rate of HTTP 500 errors per 1 minutes: {{ $value }}",
+  }
