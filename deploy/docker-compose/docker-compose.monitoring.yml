@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+    prometheus:
+        image: prom/prometheus
+        container_name: prometheus
+        volumes:
+          - ./prometheus.yml:/etc/prometheus/prometheus.yml
+          - ./alert.rules:/etc/prometheus/alert.rules
+        command:
+          - '-config.file=/etc/prometheus/prometheus.yml'
+          - '-storage.local.path=/prometheus'
+          - '-alertmanager.url=http://alertmanager:9093'
+        expose:
+          - 9090
+        ports:
+          - 9090:9090
+        links:
+          - alertmanager:alertmanager
+    alertmanager:
+        image: prom/alertmanager
+        ports:
+          - 9093:9093
+        volumes:
+          - ./alertmanager.yml:/etc/alertmanager/config.yml
+        command:
+          - '-config.file=/etc/alertmanager/config.yml'
+          - '-storage.path=/alertmanager'
+    grafana:
+        image: grafana/grafana
+        depends_on:
+          - prometheus
+        ports:
+          - 3000:3000
+        environment:
+          - GF_SECURITY_ADMIN_PASSWORD=foobar
+          - GF_USERS_ALLOW_SIGN_UP=false
