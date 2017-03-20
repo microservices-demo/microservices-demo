@@ -1,10 +1,12 @@
 # Useful examples on how to configure Prometheus
 # * https://www.weave.works/prometheus-and-kubernetes-monitoring-your-applications/
 # * https://grafana.net/dashboards/162
+# * https://raw.githubusercontent.com/prometheus/prometheus/master/documentation/examples/prometheus-kubernetes.yml
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-configmap
+  namespace: monitoring
 data:
   prometheus.yml: |
     global:

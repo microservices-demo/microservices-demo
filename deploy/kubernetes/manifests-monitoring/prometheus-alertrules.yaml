@@ -5,6 +5,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-alertrules
+  namespace: monitoring
 data:
   alert.rules: |
     # Alert for high error rate in the Sock Shop.

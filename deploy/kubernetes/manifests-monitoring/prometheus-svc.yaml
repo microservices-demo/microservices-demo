@@ -4,9 +4,9 @@ metadata:
   annotations:
     prometheus.io/scrape: 'true'
   labels:
-    name: prometheus-svc # ! DO NOT USE prometheus as a name: https://github.com/kubernetes/kubernetes/issues/25573
-    kubernetes.io/name: "Prometheus"
-  name: prometheus-svc
+    name: prometheus
+  name: prometheus
+  namespace: monitoring
 spec:
   selector:
     app: prometheus
