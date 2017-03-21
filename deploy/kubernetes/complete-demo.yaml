@@ -219,7 +219,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: weaveworksdemos/front-end:0.3.11
+        image: weaveworksdemos/front-end:0.3.12
         resources:
           requests:
             cpu: 100m
@@ -612,7 +612,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.4.2
+        image: weaveworksdemos/user:0.4.3
         ports:
         - containerPort: 80
         env:
