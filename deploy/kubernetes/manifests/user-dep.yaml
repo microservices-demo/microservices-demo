@@ -19,10 +19,10 @@ spec:
         resources:
           limits:
             cpu: 300m
-            memory: 600Mi
+            memory: 1000Mi
           requests:
             cpu: 100m
-            memory: 100Mi
+            memory: 400Mi
         ports:
         - containerPort: 80
         env:
