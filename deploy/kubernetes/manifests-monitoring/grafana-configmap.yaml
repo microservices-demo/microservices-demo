@@ -2923,7 +2923,7 @@ data:
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "histogram_quantile(0.95, rate(request_duration_seconds_bucket{service=\"orders\"}[1m]))",
+                  "expr": "histogram_quantile(0.95, rate(request_duration_seconds_bucket{name=\"orders\"}[1m]))",
                   "intervalFactor": 2,
                   "legendFormat": "{{ method }}: {{ route }}",
                   "refId": "A",
@@ -3114,7 +3114,7 @@ data:
               },
               "targets": [
                 {
-                  "expr": "request_duration_seconds_count{service=\"orders\",method=\"POST\"}",
+                  "expr": "request_duration_seconds_count{name=\"orders\",method=\"POST\"}",
                   "intervalFactor": 1,
                   "refId": "A",
                   "step": 30
@@ -3188,7 +3188,7 @@ data:
               },
               "targets": [
                 {
-                  "expr": "rate(request_duration_seconds_count{service=\"orders\",method=\"POST\"}[1h]) *24*60*60",
+                  "expr": "rate(request_duration_seconds_count{name=\"orders\",method=\"POST\"}[1h]) *24*60*60",
                   "intervalFactor": 1,
                   "refId": "A",
                   "step": 30
@@ -3262,7 +3262,7 @@ data:
               },
               "targets": [
                 {
-                  "expr": "request_duration_seconds_count{service=\"user\", route=\"login\",status_code=\"200\"}",
+                  "expr": "request_duration_seconds_count{name=\"user\", route=\"login\",status_code=\"200\"}",
                   "intervalFactor": 1,
                   "refId": "A",
                   "step": 30
