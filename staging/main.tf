@@ -148,7 +148,8 @@ resource "null_resource" "sock-shop" {
 
   provisioner "remote-exec" {
     inline = [
-      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests/zipkin-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests"
+      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests/zipkin-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests",
+      "for svc in front-end carts catalogue orders payment queue-master shipping user; do kubectl --namespace sock-shop scale --replicas=3 deployment/$svc; done"
     ]
   }
 }
