@@ -121,36 +121,23 @@ resource "aws_instance" "k8s-master" {
 resource "null_resource" "weave" {
   depends_on = [ "aws_instance.k8s-node" ]
 
-  connection {
-    host        = "${aws_instance.k8s-master.private_ip}"
-    user        = "${var.instance_user}"
-    private_key = "${file("${var.private_key_file}")}"
+  provisioner "local-exec" {
+    command = "kubectl apply -f 'https://git.io/weave-kube-1.6'"
   }
-
-  provisioner "remote-exec" {
-    inline = [
-      "kubectl apply -f https://git.io/weave-kube",
-      "kubectl apply -f 'https://cloud.weave.works/k8s/scope.yaml?t=${var.weave_cloud_token}'",
-      "kubectl apply -f 'https://cloud.weave.works/k8s/flux.yaml?t=${var.weave_cloud_token}'",
-      "kubectl apply -f 'https://cloud.weave.works/k8s/cortex.yaml?t=${var.weave_cloud_token}'"
-    ]
+  provisioner "local-exec" {
+    command = "kubectl apply -f 'https://cloud.weave.works/k8s/scope.yaml?t=${var.weave_cloud_token}'"
   }
-}
-
-resource "null_resource" "sock-shop" {
-  depends_on = [ "null_resource.weave" ]
-
-  connection {
-    host        = "${aws_instance.k8s-master.private_ip}"
-    user        = "${var.instance_user}"
-    private_key = "${file("${var.private_key_file}")}"
+  provisioner "local-exec" {
+    command = "kubectl apply -f 'https://cloud.weave.works/k8s/flux.yaml?t=${var.weave_cloud_token}'"
   }
-
-  provisioner "remote-exec" {
-    inline = [
-      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests/zipkin-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests",
-      "for svc in front-end carts catalogue orders payment queue-master shipping user; do kubectl --namespace sock-shop scale --replicas=3 deployment/$svc; done"
-    ]
+  provisioner "local-exec" {
+    command = "kubectl apply -f 'https://cloud.weave.works/k8s/cortex.yaml?t=${var.weave_cloud_token}'"
+  }
+  provisioner "local-exec" {
+    command = "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests/zipkin-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests"
+  }
+  provisioner "local-exec" {
+    command = "for svc in front-end carts catalogue orders payment queue-master shipping user; do kubectl --namespace sock-shop scale --replicas=3 deployment/$svc; done"
   }
 }
 
