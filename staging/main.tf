@@ -108,36 +108,35 @@ resource "aws_instance" "k8s-master" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo cp /etc/kubernetes/admin.conf ~/config",
-      "sudo chown ubuntu: ~/config"
+      "mkdir ~/.kube",
+      "sudo cp /etc/kubernetes/admin.conf ~/.kube/config",
+      "sudo chown ubuntu: ~/.kube/config"
     ]
   }
 
   provisioner "local-exec" {
-    command = "scp -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.private_ip}:~/config ~/.kube/"
+    command = "scp -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.private_ip}:~/.kube/config ~/.kube/"
   }
 }
 
-resource "null_resource" "weave" {
+resource "null_resource" "provision" {
   depends_on = [ "aws_instance.k8s-node" ]
 
-  provisioner "local-exec" {
-    command = "kubectl apply -f 'https://git.io/weave-kube-1.6'"
+  connection {
+    host        = "${aws_instance.k8s-master.private_ip}"
+    user        = "${var.instance_user}"
+    private_key = "${file("${var.private_key_file}")}"
   }
-  provisioner "local-exec" {
-    command = "kubectl apply -f 'https://cloud.weave.works/k8s/scope.yaml?t=${var.weave_cloud_token}'"
-  }
-  provisioner "local-exec" {
-    command = "kubectl apply -f 'https://cloud.weave.works/k8s/flux.yaml?t=${var.weave_cloud_token}'"
-  }
-  provisioner "local-exec" {
-    command = "kubectl apply -f 'https://cloud.weave.works/k8s/cortex.yaml?t=${var.weave_cloud_token}'"
-  }
-  provisioner "local-exec" {
-    command = "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests/zipkin-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests"
-  }
-  provisioner "local-exec" {
-    command = "for svc in front-end carts catalogue orders payment queue-master shipping user; do kubectl --namespace sock-shop scale --replicas=3 deployment/$svc; done"
+
+  provisioner "remote-exec" {
+    inline = [
+      "kubectl apply -f https://git.io/weave-kube",
+      "kubectl apply -f 'https://cloud.weave.works/k8s/scope.yaml?t=${var.weave_cloud_token}'",
+      "kubectl apply -f 'https://cloud.weave.works/k8s/flux.yaml?t=${var.weave_cloud_token}'",
+      "kubectl apply -f 'https://cloud.weave.works/k8s/cortex.yaml?t=${var.weave_cloud_token}'"
+      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests/zipkin-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests",
+      "for svc in front-end carts catalogue orders payment queue-master shipping user; do kubectl --namespace sock-shop scale --replicas=3 deployment/$svc; done"
+    ]
   }
 }
 
