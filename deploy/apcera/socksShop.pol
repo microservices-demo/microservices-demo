@@ -1,0 +1,31 @@
+job::/sandbox/[name]/socksshop {
+  if (auth_server@apcera.me->name beginsWith "[name]") {
+    permit create, read, update, delete
+    permit start, stop, promote
+    permit map, link, bind, ssh
+    docker.allow "*"
+    package.allow "package::/apcera"
+    package.allow "package::/demos/socksshop"
+  }
+  if (network beginsWith "network::/sandbox/[name]/socksshop") {
+        permit join
+  }
+}
+
+package::/sandbox/[name]/socksshop {
+  if (auth_server@apcera.me->name beginsWith "[name]") {
+    permit create, read, update, delete, use
+  }
+}
+
+network::/sandbox/[name]/socksshop {
+  if (auth_server@apcera.me->name beginsWith "[name]") {
+    permit create, join, read, delete
+  }
+}
+
+route::/http {
+  if (job beginsWith "job::/sandbox/") {
+    permit map
+  }
+}
