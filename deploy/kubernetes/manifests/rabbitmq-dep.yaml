@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: rabbitmq
-        image: rabbitmq:3
+        image: rabbitmq:3.6.8
         ports:
         - containerPort: 5672
         securityContext:

@@ -283,7 +283,7 @@ do_start() {
     info "Pre-pulling containers. This may take a while..."
     $DOCKER_CMD pull mesosphere/marathon:v1.3.5 >/dev/null
     $DOCKER_CMD pull mongo >/dev/null
-    $DOCKER_CMD pull rabbitmq:3 >/dev/null
+    $DOCKER_CMD pull rabbitmq:3.6.8 >/dev/null
     for SERVICE in ${IMAGES[*]} ; do
         verbose "Pulling $SERVICE"
         $DOCKER_CMD pull $SERVICE >/dev/null
