@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  user-db:
+    image: weaveworksdemos/user-db
+    environment:
+      - reschedule=on-node-failure

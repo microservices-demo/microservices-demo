@@ -1,0 +1,8 @@
+version: '3'
+
+services: 
+  user:
+    image: weaveworksdemos/user
+    environment:
+      - MONGO_HOST=user-db:27017
+      - reschedule=on-node-failure

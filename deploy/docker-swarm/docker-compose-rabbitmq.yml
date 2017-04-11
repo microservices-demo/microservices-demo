@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3
+    environment:
+      - reschedule=on-node-failure

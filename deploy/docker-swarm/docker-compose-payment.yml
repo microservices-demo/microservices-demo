@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  payment:
+    image: weaveworksdemos/payment
+    environment:
+      - reschedule=on-node-failure

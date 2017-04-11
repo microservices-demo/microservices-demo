@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  orders-db:
+    image: mongo
+    environment:
+      - reschedule=on-node-failure

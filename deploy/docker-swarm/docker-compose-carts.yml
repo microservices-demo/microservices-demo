@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  carts:
+    image: weaveworksdemos/carts
+    environment:
+      - reschedule=on-node-failure
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom

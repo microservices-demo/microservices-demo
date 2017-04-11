@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  carts-db:
+    image: mongo
+    environment:
+      - reschedule=on-node-failure

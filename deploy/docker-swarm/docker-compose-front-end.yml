@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  front-end:
+    image: weaveworksdemos/front-end
+      ports:
+        - '80:8079'
+        environment:
+        - reschedule=on-node-failure

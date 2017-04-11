@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  catalogue-db:
+    image: weaveworksdemos/catalogue-db
+    environment:
+      - reschedule=on-node-failure
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=socksdb
