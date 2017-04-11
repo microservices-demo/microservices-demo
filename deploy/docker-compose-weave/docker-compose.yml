@@ -117,7 +117,7 @@ services:
     networks:
       - backoffice
   rabbitmq:
-    image: rabbitmq:3
+    image: rabbitmq:3.6.8
     hostname: rabbitmq
     dns: 172.17.0.1
     dns_search: weave.local

@@ -422,7 +422,7 @@ do_start() {
     launch_service orders-db    "echo ok"                                       mongo                               --no-shell
     launch_service catalogue-db "echo ok"                                       weaveworksdemos/catalogue-db        --no-shell ", \\\"MYSQL_ALLOW_EMPTY_PASSWORD\\\": \\\"true\\\", \\\"MYSQL_DATABASE\\\": \\\"socksdb\\\""
     launch_service user-db      "echo ok"                                       weaveworksdemos/user-db             --no-shell
-    launch_service rabbitmq     "echo ok"                                       rabbitmq:3                          --no-shell
+    launch_service rabbitmq     "echo ok"                                       rabbitmq:3.6.8                          --no-shell
 
     launch_service shipping     "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --spring.rabbitmq.host=rabbitmq.mesos-executeinstance.weave.local"                     weaveworksdemos/shipping    --shell
     launch_service orders       "java -Djava.security.egd=file:/dev/urandom -jar ./app.jar --port=80 --db=orders-db.mesos-executeinstance.weave.local --domain=mesos-executeinstance.weave.local --logging.level.works.weave=DEBUG"    weaveworksdemos/orders   --shell
