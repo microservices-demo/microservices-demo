@@ -165,7 +165,7 @@
     },
     "job::${NAMESPACE}::user": {
       "docker": {
-        "image": "weaveworksdemos/user:0.4.3"
+        "image": "weaveworksdemos/user:master-5e88df65"
       },
       "restart_mode": "yes",
       "state": "ready",
@@ -193,10 +193,14 @@
     },
     "job::${NAMESPACE}::user-db": {
       "docker": {
-        "image": "weaveworksdemos/user-db:0.4.3"
+        "image": "weaveworksdemos/user-db:master-5e88df65"
       },
       "restart_mode": "yes",
       "state": "ready",
+      "start": {
+        "cmd": "mongod --config /etc/mongodb.conf --smallfiles",
+        "timeout": 60
+      },
       "ssh": false,
       "exposed_ports": [ 27017 ],
       "resources": {
@@ -269,7 +273,7 @@
     },
     "job::${NAMESPACE}::queue-master": {
       "docker": {
-        "image": "weaveworksdemos/queue-master:0.3.1"
+        "image": "weaveworksdemos/queue-master:master-48d63b59"
       },
       "restart_mode": "yes",
       "state": "ready",
