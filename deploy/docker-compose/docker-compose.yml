@@ -124,7 +124,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
   rabbitmq:
-    image: rabbitmq:3
+    image: rabbitmq:3.6.8
     hostname: rabbitmq
     restart: always
     cap_drop:
