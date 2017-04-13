@@ -1,11 +1,11 @@
-# Stops all the Socks Shop apps
+# Stops all the Sock Shop apps
 
 # Set namespace to user's default namespace
 apc namespace -d
 
 # append /sockshop to user's default namespace returned by apc namespace
 OUT=`apc namespace`
-NAMESPACE=`echo $OUT | cut -f3 -d" " | sed "s/'//g"`/socksshop
+NAMESPACE=`echo $OUT | cut -f3 -d" " | sed "s/'//g"`/sockshop
 echo ${NAMESPACE}
 
 # Change NAMESPACE if you don't like the default generated above
@@ -15,7 +15,7 @@ echo ${NAMESPACE}
 # set actual namespace to $NAMESPACE
 apc namespace ${NAMESPACE}
 
-echo "Stopping Socks Shop apps in namespace: ${NAMESPACE}"
+echo "Stopping Sock Shop apps in namespace: ${NAMESPACE}"
 
 apc app stop user-sim
 apc app stop front-end

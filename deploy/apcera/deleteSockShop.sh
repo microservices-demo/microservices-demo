@@ -1,4 +1,4 @@
-# Deletes all the Socks Shop apps
+# Deletes all the Sock Shop apps
 # Automatically detects correct namespace
 
 # Set namespace to user's default namespace
@@ -6,7 +6,7 @@ apc namespace -d
 
 # append /sockshop to user's default namespace returned by apc namespace
 OUT=`apc namespace`
-NAMESPACE=`echo $OUT | cut -f3 -d" " | sed "s/'//g"`/socksshop
+NAMESPACE=`echo $OUT | cut -f3 -d" " | sed "s/'//g"`/sockshop
 echo ${NAMESPACE}
 
 # Change NAMESPACE if you don't like the default generated above
@@ -16,7 +16,7 @@ echo ${NAMESPACE}
 # set actual namespace to $NAMESPACE
 apc namespace ${NAMESPACE}
 
-echo "Deleting Socks Shop apps in namespace: ${NAMESPACE}"
+echo "Deleting Sock Shop apps in namespace: ${NAMESPACE}"
 
 apc app delete user-sim --batch
 apc app delete front-end --batch
@@ -38,6 +38,6 @@ apc app delete zipkin --batch
 echo "Here are the remaining apps in namespace: ${NAMESPACE}"
 apc app list
 
-# Delete the socksshop-network too
-echo "Deleting the socksshop network in namespace: ${NAMESPACE}"
-apc network delete socksshop-network -- batch
+# Delete the sockshop-network too
+echo "Deleting the sockshop network in namespace: ${NAMESPACE}"
+apc network delete sockshop-network -- batch
