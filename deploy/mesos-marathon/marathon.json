@@ -29,7 +29,7 @@
           "container": {
             "type": "DOCKER",
             "docker": {
-              "image": "rabbitmq:3",
+              "image": "rabbitmq:3.6.8",
               "network": "BRIDGE",
               "parameters": [
                 {

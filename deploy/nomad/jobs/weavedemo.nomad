@@ -469,7 +469,7 @@ job "weavedemo" {
       driver = "docker"
 
       config {
-        image = "rabbitmq:3"
+        image = "rabbitmq:3.6.8"
         hostname = "rabbitmq.weave.local"
         network_mode = "backoffice"
       }
