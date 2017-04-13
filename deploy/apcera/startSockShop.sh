@@ -1,4 +1,4 @@
-# Starts all the Socks Shop apps
+# Starts all the Sock Shop apps
 
 # Automatically detects correct namespace
 
@@ -7,7 +7,7 @@ apc namespace -d
 
 # append /sockshop to user's default namespace returned by apc namespace
 OUT=`apc namespace`
-NAMESPACE=`echo $OUT | cut -f3 -d" " | sed "s/'//g"`/socksshop
+NAMESPACE=`echo $OUT | cut -f3 -d" " | sed "s/'//g"`/sockshop
 echo ${NAMESPACE}
 
 # Change NAMESPACE if you don't like the default generated above
@@ -17,7 +17,7 @@ echo ${NAMESPACE}
 # set actual namespace to $NAMESPACE
 apc namespace ${NAMESPACE}
 
-echo "Starting Socks Shop apps in namespace: ${NAMESPACE}"
+echo "Starting Sock Shop apps in namespace: ${NAMESPACE}"
 
 # If any of the apps have trouble connecting to other apps or
 # databases, you could increase the sleep times below or add more of them.
