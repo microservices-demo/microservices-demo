@@ -345,7 +345,7 @@
     }
   },
   "networks": {
-    "network::${NAMESPACE}::socksshop-network": {
+    "network::${NAMESPACE}::sockshop-network": {
       "jobs": [
         {
           "fqn": "job::${NAMESPACE}::front-end",
