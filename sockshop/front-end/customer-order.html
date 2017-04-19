@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks Demo App">
+    <meta name="author" content="Ondrej Svestka | ondrejsvestka.cz">
+    <meta name="keywords" content="">
+
+    <title>
+        WeaveSocks
+    </title>
+
+    <meta name="keywords" content="">
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100'
+          rel='stylesheet' type='text/css'>
+
+    <!-- styles -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/owl.carousel.css" rel="stylesheet">
+    <link href="css/owl.theme.css" rel="stylesheet">
+
+    <!-- theme stylesheet -->
+    <link href="css/style.blue.css" rel="stylesheet" id="theme-stylesheet">
+
+    <!-- your stylesheet with modifications -->
+    <link href="css/custom.css" rel="stylesheet">
+
+    <script src="js/respond.min.js"></script>
+
+    <link rel="shortcut icon" href="favicon.png">
+
+
+</head>
+
+<body>
+<div id="topbar"></div>
+<div id="navbar"></div>
+
+<div id="all">
+
+    <div id="content">
+        <div class="container">
+
+            <div class="col-md-12">
+
+                <ul class="breadcrumb">
+                    <li><a href="index.html">Home</a>
+                    </li>
+                    <li><a href="customer-orders.html">My orders</a>
+                    </li>
+                    <li>Order</li>
+                </ul>
+
+            </div>
+
+            <div class="col-md-3">
+                <!-- *** CUSTOMER MENU ***
+_________________________________________________________ -->
+                <div class="panel panel-default sidebar-menu">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Customer section</h3>
+                    </div>
+
+                    <div class="panel-body">
+
+                        <ul class="nav nav-pills nav-stacked">
+                            <li class="active">
+                                <a href="customer-orders.html"><i
+                                        class="fa fa-list"></i> My orders</a>
+                            </li>
+                            <!--<li>-->
+                            <!--<a href="customer-wishlist.html"><i-->
+                            <!--class="fa fa-heart"></i> My wishlist</a>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                            <!--<a href="customer-account.html"><i-->
+                            <!--class="fa fa-user"></i> My account</a>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                            <!--<a href="index.html"><i-->
+                            <!--class="fa fa-sign-out"></i> Logout</a>-->
+                            <!--</li>-->
+                        </ul>
+                    </div>
+
+                </div>
+                <!-- /.col-md-3 -->
+
+                <!-- *** CUSTOMER MENU END *** -->
+            </div>
+
+            <div class="col-md-9" id="customer-order">
+                <div class="box">
+                    <h2>Order #<span id="orderNumber"></span></h2>
+
+                    <p class="lead">Order was placed on
+                        <strong id="orderDate"></strong> and is currently <strong id="orderStatus"></strong>.</p>
+                    <p class="text-muted">If you have any questions, please feel
+                        free to <a href="#">contact us</a>, our
+                        customer service center is working for you 24/7.</p>
+
+                    <hr>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th colspan="2">Product</th>
+                                <th>Quantity</th>
+                                <th>Unit price</th>
+                                <th>Discount</th>
+                                <th>Total</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tableOrder">
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th colspan="5" class="text-right">Order
+                                    subtotal
+                                </th>
+                                <th id="orderSubtotal"></th>
+                            </tr>
+                            <tr>
+                                <th colspan="5" class="text-right">Shipping and
+                                    handling
+                                </th>
+                                <th id="orderShipping"></th>
+                            </tr>
+                            <tr>
+                                <th colspan="5" class="text-right">Total</th>
+                                <th id="orderTotal"></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                    <!-- /.table-responsive -->
+
+                    <div class="row addresses">
+                        <div class="col-md-6">
+                            <h2>Invoice address</h2>
+                            <span id="addressInvoice"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <h2>Shipping address</h2>
+                            <span id="addressShipping"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /#content -->
+
+
+
+
+</div>
+<!-- /#all -->
+
+
+<!-- *** SCRIPTS TO INCLUDE ***
+_________________________________________________________ -->
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/waypoints.min.js"></script>
+<script src="js/modernizr.js"></script>
+<script src="js/bootstrap-hover-dropdown.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/front.js"></script>
+<script src="js/jquery.query-object.js"></script>
+<script src="js/client.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $.ajaxSetup({
+            contentType: "application/json; charset=utf-8"
+        });
+
+        console.log("Loading components for category.html");
+        $("#topbar").load("topbar.html");
+        $("#navbar").load("navbar.html");
+        $("#footer").load("footer.html");
+    })
+</script>
+
+<script>
+    $(document).ready(function () {
+        var orderUrl = $.query.get('order') ? $.query.get('order') : "#";
+        console.log("getting " + orderUrl);
+        $.getJSON(orderUrl, {}, function (data) {
+            var selfRef = data._links.self.href;
+            var split = selfRef.split("/");
+            var id = split[split.length - 1];
+            var cartTotal = 0;
+            var numItemsInCart = 0;
+            var shipping = 4.99;
+            //$('#orderTotal').text('$' + data.total.toFixed(2));
+            $('#orderNumber').text(id);
+            $('#orderDate').text(data.date.split(".")[0].replace("T", " "));
+            $('#orderStatus').text("shipped");
+            $.each(data.items, function (index, item) {
+                $.getJSON('/catalogue/' + item.itemId, function (data) {
+                    console.log(JSON.stringify(data));
+                    $('#tableOrder').append(' <tr>\
+                                                <td>\
+                                                    <a href="#">\
+                                                        <img src="' + data.imageUrl[0] + '" alt="' + data.namex + '">\
+                                                    </a>\
+                                                </td>\
+                                                <td>\
+                                                    <a href="#">' + data.name + '</a>\
+                                                </td>\
+                                                <td>' + item.quantity + '</td>\
+                                                <td>$' + data.price.toFixed(2) + '</td>\
+                                                <td>$0.00</td>\
+                                                <td>$' + (item.quantity * data.price).toFixed(2) + '</td>\
+                                            </tr>');
+                    cartTotal = cartTotal + item.quantity * data.price;
+                    console.log("Cur total: " + cartTotal);
+                    numItemsInCart = numItemsInCart + item.quantity;
+                }).always(function () {
+                    console.log("Final counts: $" + cartTotal + ", with " + numItemsInCart + " items.");
+                    $('#orderSubtotal').text('$' + cartTotal.toFixed(2));
+                    $('#orderShipping').text('$' + shipping.toFixed(2));
+                    $('#orderTotal').text('$' + (cartTotal + shipping).toFixed(2));
+                });
+            })
+            $('#addressInvoice').replaceWith('\
+                <p>' + data.customer.firstName + ' ' + data.customer.lastName + '\
+                    <br>' + data.address.number + ' ' + data.address.street + '\
+                    <br>' + data.address.city + '\
+                    <br>' + data.address.country + '\
+                    <br>' + data.address.postcode + '\
+                </p>');
+            $('#addressShipping').replaceWith('\
+                <p>' + data.customer.firstName + ' ' + data.customer.lastName + '\
+                    <br>' + data.address.number + ' ' + data.address.street + '\
+                    <br>' + data.address.city + '\
+                    <br>' + data.address.country + '\
+                    <br>' + data.address.postcode + '\
+                </p>');
+        });
+    });
+</script>
+
+</body>
+
+</html>

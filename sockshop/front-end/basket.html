@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks Demo App">
+    <meta name="author" content="Ondrej Svestka | ondrejsvestka.cz">
+    <meta name="keywords" content="">
+
+    <title>
+        WeaveSocks
+    </title>
+
+    <meta name="keywords" content="">
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100'
+          rel='stylesheet' type='text/css'>
+
+    <!-- styles -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/owl.carousel.css" rel="stylesheet">
+    <link href="css/owl.theme.css" rel="stylesheet">
+
+    <!-- theme stylesheet -->
+    <link href="css/style.blue.css" rel="stylesheet" id="theme-stylesheet">
+
+    <!-- your stylesheet with modifications -->
+    <link href="css/custom.css" rel="stylesheet">
+
+    <script src="js/respond.min.js"></script>
+
+    <link rel="shortcut icon" href="favicon.png">
+
+
+</head>
+
+<body>
+<div id="topbar"></div>
+<div id="navbar"></div>
+
+
+<div id="all">
+
+    <div id="content">
+        <div class="container">
+
+            <div class="col-md-12">
+                <ul class="breadcrumb">
+                    <li><a href="index.html">Home</a>
+                    </li>
+                    <li>Shopping cart</li>
+                </ul>
+            </div>
+
+            <div class="col-md-9" id="basket">
+
+                <div class="box">
+
+                    <form action="customer-orders.html">
+                        <h1>Shopping cart</h1>
+                        <p class="text-muted" id="numItemsInCart"></p>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th colspan="2">Product</th>
+                                    <th>Quantity</th>
+                                    <th>Unit price</th>
+                                    <th>Discount</th>
+                                    <th colspan="2">Total</th>
+                                </tr>
+                                </thead>
+                                <tbody id="cart-list">
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th colspan="5">Total</th>
+                                    <th colspan="2" id="cartTotal"></th>
+                                </tr>
+                                </tfoot>
+                            </table>
+
+                        </div>
+                        <!-- /.table-responsive -->
+
+                        <div class="box-footer">
+                            <div class="pull-left">
+                                <a href="category.html" class="btn btn-default"><i
+                                        class="fa fa-chevron-left"></i> Continue
+                                    shopping</a>
+                            </div>
+                            <div class="pull-right">
+                                <a class="btn btn-default" onclick="alert('Stub. Todo.')"><i
+                                        class="fa fa-refresh"></i> Update basket
+                                </a>
+                                <button id="orderButton" type="submit" class="btn btn-primary" onclick="return order();" disabled>
+                                    Proceed to checkout <i
+                                        class="fa fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+                <!-- /.box -->
+
+
+                <div class="row same-height-row" id="youMayAlsoLike">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="box same-height">
+                            <h3>You may also like these products</h3>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <!-- /.col-md-9 -->
+
+            <div class="col-md-3">
+                <div class="box" id="order-summary">
+                    <div class="box-header">
+                        <h3>Order summary</h3>
+                    </div>
+                    <p class="text-muted">Shipping and additional costs are
+                        calculated based on the values you have entered.</p>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <td>Order subtotal</td>
+                                <th id="orderSubtotal">$0.00</th>
+                            </tr>
+                            <tr>
+                                <td>Shipping and handling</td>
+                                <th id="orderShipping">$0.00</th>
+                            </tr>
+                            <tr>
+                                <td>Tax</td>
+                                <th id="orderTax">$0.00</th>
+                            </tr>
+                            <tr class="total">
+                                <td>Total</td>
+                                <th id="orderGrandTotal">$0.00</th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+
+                <div class="box">
+                    <div class="box-header">
+                        <h4>Coupon code</h4>
+                    </div>
+                    <p class="text-muted">If you have a coupon code, please
+                        enter it in the box below.</p>
+                    <form>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control">
+
+                                <span class="input-group-btn">
+
+					<button class="btn btn-primary" type="button"><i
+                            class="fa fa-gift"></i></button>
+
+				    </span>
+                        </div>
+                        <!-- /input-group -->
+                    </form>
+                </div>
+
+            </div>
+            <!-- /.col-md-3 -->
+
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /#content -->
+    <div id="footer"></div>
+
+</div>
+<!-- /#all -->
+
+
+<!-- *** SCRIPTS TO INCLUDE ***
+_________________________________________________________ -->
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/waypoints.min.js"></script>
+<script src="js/modernizr.js"></script>
+<script src="js/bootstrap-hover-dropdown.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/front.js"></script>
+<script src="js/jquery.query-object.js"></script>
+<script src="js/client.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $.ajaxSetup({
+            contentType: "application/json; charset=utf-8"
+        });
+
+        console.log("Loading components for basket.html");
+        $("#topbar").load("topbar.html");
+        $("#navbar").load("navbar.html");
+        $("#footer").load("footer.html");
+    })
+</script>
+<script>
+    function deleteFromCart(id) {
+        console.log("Sending request to delete: " + id);
+        $.ajax({
+            url: "cart/" + id,
+            type: "DELETE",
+            success: function (data, textStatus, jqXHR) {
+                console.log('Item deleted: ' + id + ', ' + textStatus);
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('Could not delete item: ' + id + ', due to: ' + textStatus + ' | ' + errorThrown);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $.ajaxSetup({
+            contentType: "application/json; charset=utf-8"
+        });
+
+        $.getJSON('/cart', {}, function (data) {
+            if (data != null) {
+                var cartTotal = 0;
+                var numItemsInCart = 0;
+                var shipping = 4.99;
+                $.each(data, function (index, element) {
+                    if (element != null && element.itemId != null && element.itemId != "null") {
+                        $.getJSON('/catalogue/' + element.itemId, function (data) {
+                            console.log(JSON.stringify(data));
+                            // {"Id":"574dad8b0329ff0f9ce4173a","name":"Herrera","description":"reprehenderit sit nostrud voluptate sit tempor laborum tempor officia eiusmod","imageUrl":"http://192.168.99.103:32769/images/sock.jpeg","Price":9,"count":409,"tag":["blue","large","green"]}%
+                            $('#cart-list').append(' <tr>\
+                                                <td>\
+                                                    <a href="#">\
+                                                        <img src="' + data.imageUrl[0] + '" alt="' + data.namex + '">\
+                                                    </a>\
+                                                </td>\
+                                                <td>\
+                                                    <a href="#">' + data.name + '</a>\
+                                                </td>\
+                                                <td>\
+                                                    <input type="number" min="0" value="' + element.quantity + '" class="form-control">\
+                                                </td>\
+                                                <td>$' + data.price.toFixed(2) + '</td>\
+                                                <td>$0.00</td>\
+                                                <td>$' + (element.quantity * data.price).toFixed(2) + '</td>\
+                                                <td>\
+                                                    <a href="#" onclick="deleteFromCart(\'' + data.id + '\')"><i class="fa fa-trash-o"></i></a>\
+                                                </td>\
+                                            </tr>');
+                            cartTotal = cartTotal + element.quantity * data.price;
+                            console.log("Cur total: " + cartTotal);
+                            numItemsInCart = numItemsInCart + element.quantity;
+                        }).always(function () {
+                            console.log("Final counts: $" + cartTotal + ", with " + numItemsInCart + " items.");
+                            $('#orderButton').prop('disabled', false);
+                            $('#numItemsInCart').text('You currently have ' + numItemsInCart + ' item(s) in your cart.');
+                            $('#cartTotal').text('$' + cartTotal.toFixed(2));
+                            $('#orderSubtotal').text('$' + cartTotal.toFixed(2));
+                            $('#orderShipping').text('$' + shipping.toFixed(2));
+                            $('#orderGrandTotal').text('$' + (cartTotal + shipping).toFixed(2));
+                        });
+                    }
+                });
+
+            }
+        });
+
+        $.getJSON('/catalogue', {size: 3}, function (data) {
+            if (data != null) {
+                $.each(data, function (index, element) {
+                    $('#youMayAlsoLike').append(
+                            '<div class="col-md-3 col-sm-6">\
+                                <div class="product same-height">\
+                                    <div class="flip-container">\
+                                        <div class="flipper">\
+                                            <div class="front">\
+                                                <a href="detail.html?id=' + element.id + '">\
+                                                    <img src="' + element.imageUrl[0] + '" alt="" class="img-responsive">\
+                                                </a>\
+                                            </div>\
+                                            <div class="back">\
+                                                <a href="detail.html?id=' + element.id + '">\
+                                                    <img src="' + element.imageUrl[1] + '" alt="" class="img-responsive">\
+                                                </a>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <a href="detail.html" class="invisible">\
+                                        <img src="' + element.imageUrl[0] + '" alt="" class="img-responsive">\
+                                    </a>\
+                                    <div class="text">\
+                                        <h3><a href="detail.html?id=' + element.id + '">' + element.name + '</a></h3>\
+                                        <p class="price">$' + element.price + '</p>\
+                                    </div>\
+                                </div>\
+                            </div>'
+                    );
+                });
+            }
+        }).always(
+                $(window).trigger('resize')
+        );
+    });
+
+</script>
+
+</body>
+
+</html>

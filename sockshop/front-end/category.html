@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks Demo App">
+    <meta name="author" content="Ondrej Svestka | ondrejsvestka.cz">
+    <meta name="keywords" content="">
+
+    <title>
+        WeaveSocks
+    </title>
+
+    <meta name="keywords" content="">
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100'
+          rel='stylesheet' type='text/css'>
+
+    <!-- styles -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/owl.carousel.css" rel="stylesheet">
+    <link href="css/owl.theme.css" rel="stylesheet">
+
+    <!-- theme stylesheet -->
+    <link href="css/style.blue.css" rel="stylesheet" id="theme-stylesheet">
+
+    <!-- your stylesheet with modifications -->
+    <link href="css/custom.css" rel="stylesheet">
+
+    <script src="js/respond.min.js"></script>
+
+    <link rel="shortcut icon" href="favicon.png">
+
+
+</head>
+
+<body>
+
+<div id="topbar"></div>
+<div id="navbar"></div>
+
+<div id="all">
+
+    <div id="content">
+        <div class="container">
+
+            <div class="col-md-12">
+                <ul class="breadcrumb">
+                    <li><a href="index.html">Home</a>
+                    </li>
+                    <li>Catalogue</li>
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <!-- *** MENUS AND FILTERS ***
+_________________________________________________________ -->
+                <div class="panel panel-default sidebar-menu">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Filters <a
+                                class="btn btn-xs btn-danger pull-right"
+                                href="#" onclick='resetTags()'><i class="fa fa-times-circle"></i>
+                            Clear</a></h3>
+                    </div>
+
+                    <div class="panel-body">
+
+                        <form id="filters-form">
+                            <div id="filters" class="form-group">
+                            </div>
+
+                            <a class="btn btn-default btn-sm btn-primary" href="#"
+                               onclick='setNewTags($("input:checkbox:checked").map(function () {return this.value;}).get().join(","));'>
+                                <i class="fa fa-pencil"></i> Apply
+                            </a>
+
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- *** MENUS AND FILTERS END *** -->
+            </div>
+
+            <div class="col-md-9">
+                <div class="box info-bar">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4 products-showing">
+                            <div id="totalProducts"></div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-8  products-number-sort">
+                            <div class="row">
+                                <form class="form-inline">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div id="products-number" class="products-number">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="products-sort-by">
+                                            <strong>Sort by</strong>
+                                            <select name="sort-by"
+                                                    class="form-control">
+                                                <option>Price</option>
+                                                <option>Name</option>
+                                                <option>Sales first</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- *** PRODUCTS *** -->
+
+                <div id="row products">
+                    <div id="products"></div>
+                </div>
+                <!-- /.products -->
+
+                <div class="pages">
+
+                    <!--<p class="loadMore">-->
+                    <!--<a href="#" class="btn btn-primary btn-lg"><i-->
+                    <!--class="fa fa-chevron-down"></i> Load more</a>-->
+                    <!--</p>-->
+
+                    <ul id="pagination" class="pagination">
+                    </ul>
+                </div>
+
+
+            </div>
+            <!-- /.col-md-9 -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /#content -->
+    <div id="footer"></div>
+</div>
+<!-- /#all -->
+
+
+<!-- *** SCRIPTS TO INCLUDE ***
+_________________________________________________________ -->
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/waypoints.min.js"></script>
+<script src="js/modernizr.js"></script>
+<script src="js/bootstrap-hover-dropdown.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/front.js"></script>
+<script src="js/jquery.query-object.js"></script>
+<script src="js/client.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $.ajaxSetup({
+            contentType: "application/json; charset=utf-8"
+        });
+
+        console.log("Loading components for category.html");
+        $("#topbar").load("topbar.html");
+        $("#navbar").load("navbar.html");
+        $("#footer").load("footer.html");
+    })
+</script>
+<script>
+            $(document).ready(function() {
+
+                $.ajaxSetup({
+                    contentType: "application/json; charset=utf-8"
+                });
+		var baseSize = 3;
+                var size = $.query.get('size') ? $.query.get('size') : 6;
+                var page = $.query.get('page') ? $.query.get('page') : 1;
+                var tags = $.query.get('tags') ? $.query.get('tags') : "";
+
+                $.getJSON('/catalogue/size', {tags: tags}, function (data) {
+		    if (data.size <= size) {
+			size = data.size;
+			}
+                    $('#totalProducts').append('Showing <strong>' + size + '</strong> of <strong>' + data.size + '</strong> products');
+                    var totalNumPages = Math.ceil(data.size / size);
+                    console.log("Total pages: " + totalNumPages);
+                    var pagination = "";
+                    for (var i = 1; i <= totalNumPages; i++) {
+                        if (page == i) {
+                            pagination = pagination + '<li class="active"><a href="#" onclick=setNewPage(' + i + ')>' + i + '</a></li>';
+                        } else {
+                            pagination = pagination + '<li><a href="#" onclick=setNewPage(' + i + ')>' + i + '</a></li>';
+                        }
+                    }
+                    console.log("Pagination: " + pagination);
+                    $('#pagination').append(pagination);
+		    var pageSize = [];
+                    for (var i = baseSize; i < data.size; i=i+3) {
+                        pageSize.push(i);
+                    }	
+                    pageSize.push(data.size);
+                    var pageSizeHtml = "<strong>Show</strong>"
+                    pageSize.forEach(function (p) {
+                        if (size == p) {
+                            pageSizeHtml = pageSizeHtml + '<a href="#" onclick=setNewPageSize(' + p + ') class="btn btn-primary btn-sm">' + p + '</a>';
+                        } else {
+                            pageSizeHtml = pageSizeHtml + '<a href="#" onclick=setNewPageSize(' + p + ') class="btn btn-default btn-sm">' + p + '</a>';
+                        }
+                    })
+                    $('#products-number').append(pageSizeHtml);
+                });
+
+                $.getJSON('/tags', function (data) {
+                    $.each(data, function (index, element) {
+                        console.log("Current tags: " + tags);
+                        if (tags != null && tags != "" && tags != true && tags.indexOf(element) > -1) {
+                            $('#filters').append('<div class="checkbox"><label><input type="checkbox" checked="true" value="' + element + '">' + element + '</label></div>');
+                        } else {
+                            $('#filters').append('<div class="checkbox"><label><input type="checkbox" value="' + element + '">' + element + '</label></div>');
+                        }
+                    })
+                });
+
+
+                $.getJSON('/catalogue', {page: page, size: size, tags: tags}, function (data) {
+                    if (data != null) {
+                        $.each(data, function (index, element) {
+                            $('#products').append('<div class="col-md-4 col-sm-6">\
+                            <div class="product">\
+                                    <div class="flip-container">\
+                                        <div class="flipper">\
+                                            <div class="front">\
+                                                <a href="detail.html?id=' + element.id + '">\
+                                                    <img src="' + element.imageUrl[0] + '" alt="" class="img-responsive">\
+                                                </a>\
+                                            </div>\
+                                            <div class="back">\
+                                                <a href="detail.html?id=' + element.id + '">\
+                                                    <img src="' + element.imageUrl[1] + '" alt="" class="img-responsive">\
+                                                </a>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <a href="detail.html?id=' + element.id + '" class="invisible">\
+                                        <img src="img/product1.jpg" alt="" class="img-responsive">\
+                                    </a>\
+                                    <div class="text">\
+                                        <h3><a href="detail.html?id=' + element.id + '">' + element.name + '</a></h3>\
+                                        <p class="price">$' + element.price + '</p>\
+                                        <p class="buttons">\
+                                            <a href="detail.html?id=' + element.id + '" class="btn btn-default">View detail</a>\
+                                            <a href="#" onclick="addToCart(\'' + element.id + '\')" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>\
+                                        </p>\
+                                    </div>\
+                                </div>\
+                            </div>');
+                        });
+                    }
+                });
+            } );
+
+</script>
+
+
+</body>
+
+</html>

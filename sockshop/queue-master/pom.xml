@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>works.weave.socks</groupId>
+    <artifactId>queue-master</artifactId>
+    <packaging>jar</packaging>
+
+    <name>queue-master</name>
+    <description>Shipping queue master for socks eCommerce application
+    </description>
+
+    <parent>
+        <groupId>works.weave</groupId>
+        <artifactId>socks</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>com.github.docker-java</groupId>
+          <artifactId>docker-java</artifactId>
+          <version>3.0.0</version>
+        </dependency>
+    </dependencies>
+</project>

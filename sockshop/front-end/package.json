@@ -1,0 +1,26 @@
+{
+  "name": "weave-demo-frontend",
+  "version": "0.0.1",
+  "description": "Front end for weave demo application.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ContainerSolutions/weaveDemo/frontEnd"
+  },
+  "author": "Ian Crosby",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^1.5.2",
+    "body-parser": "^1.15.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "finalhandler": "^0.4.1",
+    "request": "^2.72.0",
+    "serve-static": "^1.10.2"
+  }
+}

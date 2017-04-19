@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WeaveSocks Demo App">
+    <meta name="author" content="Ondrej Svestka | ondrejsvestka.cz">
+    <meta name="keywords" content="">
+
+    <title>
+        WeaveSocks
+    </title>
+
+    <meta name="keywords" content="">
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100'
+          rel='stylesheet' type='text/css'>
+
+    <!-- styles -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/owl.carousel.css" rel="stylesheet">
+    <link href="css/owl.theme.css" rel="stylesheet">
+
+    <!-- theme stylesheet -->
+    <link href="css/style.blue.css" rel="stylesheet" id="theme-stylesheet">
+
+    <!-- your stylesheet with modifications -->
+    <link href="css/custom.css" rel="stylesheet">
+
+    <script src="js/respond.min.js"></script>
+
+    <link rel="shortcut icon" href="favicon.png">
+
+
+</head>
+
+<body>
+
+<div id="topbar"></div>
+<div id="navbar"></div>
+
+<div id="all">
+
+    <div id="content">
+        <div class="container">
+
+            <div class="col-md-12">
+                <ul class="breadcrumb">
+                    <li><a href="/">Home</a>
+                    </li>
+                    <li><a href="category.html">Catalogue</a>
+                    </li>
+                    <li id="breadcrumb"></li>
+                </ul>
+
+            </div>
+
+            <div class="col-md-12">
+
+                <div class="row" id="productMain">
+                    <div class="col-sm-6">
+                        <div id="mainImage">
+                            <img id="imageMain" alt=""
+                                 class="img-responsive">
+                        </div>
+
+                        <div class="ribbon sale">
+                            <div class="theribbon">SALE</div>
+                            <div class="ribbon-background"></div>
+                        </div>
+                        <!-- /.ribbon -->
+
+                        <div class="ribbon new">
+                            <div class="theribbon">NEW</div>
+                            <div class="ribbon-background"></div>
+                        </div>
+                        <!-- /.ribbon -->
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="box">
+                            <h1 id="title" class="text-center"></h1>
+                            <p class="goToDescription"><a href="#productDetails"
+                                                          class="scroll-to">Scroll
+                                to product details, material & care and
+                                sizing</a>
+                            </p>
+                            <p id="price" class="price"></p>
+
+                            <p class="text-center buttons">
+                                <a id="buttonCart" class="btn btn-primary"><i
+                                        class="fa fa-shopping-cart"></i> Add to
+                                    cart</a>
+                                <a href="basket.html" class="btn btn-default"><i
+                                        class="fa fa-heart"></i> Add to wishlist</a>
+                            </p>
+
+
+                        </div>
+
+                        <div class="row" id="thumbs">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="box" id="productDetails">
+                    <p>
+                    <h4>Product details</h4>
+                    <p id="description">White lace top, woven, has a round neck, short sleeves,
+                        has knitted lining attached</p>
+                    <h4>Material & care</h4>
+                    <ul>
+                        <li>Polyester</li>
+                        <li>Machine wash</li>
+                    </ul>
+                    <h4>Size & Fit</h4>
+                    <ul>
+                        <li>Regular fit</li>
+                    </ul>
+
+                    <blockquote>
+                        <p><em>Add more socks, you need more socks!</em>
+                        </p>
+                    </blockquote>
+
+                    <hr>
+                    <div class="social">
+                        <h4>Show it to your friends</h4>
+                        <p>
+                            <a href="#" class="external facebook"
+                               data-animate-hover="pulse"><i
+                                    class="fa fa-facebook"></i></a>
+                            <a href="#" class="external gplus"
+                               data-animate-hover="pulse"><i
+                                    class="fa fa-google-plus"></i></a>
+                            <a href="#" class="external twitter"
+                               data-animate-hover="pulse"><i
+                                    class="fa fa-twitter"></i></a>
+                            <a href="#" class="email"
+                               data-animate-hover="pulse"><i
+                                    class="fa fa-envelope"></i></a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row same-height-row">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="box same-height">
+                            <h3>You may also like these products</h3>
+                        </div>
+                    </div>
+                    <div id="products"></div>
+                </div>
+
+            </div>
+            <!-- /.col-md-9 -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /#content -->
+
+    <div id="footer"></div>
+</div>
+<!-- /#all -->
+
+
+<!-- *** SCRIPTS TO INCLUDE ***
+_________________________________________________________ -->
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/waypoints.min.js"></script>
+<script src="js/modernizr.js"></script>
+<script src="js/bootstrap-hover-dropdown.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/front.js"></script>
+<script src="js/jquery.query-object.js"></script>
+<script src="js/client.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $.ajaxSetup({
+            contentType: "application/json; charset=utf-8"
+        });
+
+        console.log("Loading components for category.html");
+        $("#topbar").load("topbar.html");
+        $("#navbar").load("navbar.html");
+        $("#footer").load("footer.html");
+
+        var id = $.query.get('id') ? $.query.get('id') : "";
+        if (id == null || id == "") {
+            document.location.href = "/";
+        }
+        $.getJSON('/catalogue/' + id, function (data) {
+            $("#title").text(data.name);
+            $("#breadcrumb").text(data.name);
+            $("#price").text("$" + data.price.toFixed(2));
+            $("#imageMain").attr("src", data.imageUrl[0]);
+            $("#buttonCart").attr("onClick", "addToCart(\'" + data.id + "\')");
+            var thumbHtml = "";
+            for (var i = 0; i < data.imageUrl.length; i++) {
+                thumbHtml = thumbHtml +
+                        '<div class="col-xs-4">\
+                            <a href="' + data.imageUrl[i] + '" class="thumb">\
+                    <img src="' + data.imageUrl[i] + '" alt="" class="img-responsive">\
+                    </a>\
+                </div>'
+            }
+            $("#thumbs").append(thumbHtml);
+            $("#description").text(data.description);
+
+            $.getJSON('/catalogue', {sort: "id", size: 3, tags: data.tag[0]}, function (data) {
+                if (data != null) {
+                    $.each(data, function (index, element) {
+                        $('#products').append('<div class="col-md-3 col-sm-4">\
+                            <div class="product same-height">\
+                                    <div class="flip-container">\
+                                        <div class="flipper">\
+                                            <div class="front">\
+                                                <a href="detail.html?id=' + element.id + '">\
+                                                    <img src="' + element.imageUrl[0] + '" alt="" class="img-responsive">\
+                                                </a>\
+                                            </div>\
+                                            <div class="back">\
+                                                <a href="detail.html?id=' + element.id + '">\
+                                                    <img src="' + element.imageUrl[1] + '" alt="" class="img-responsive">\
+                                                </a>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <a href="detail.html?id=' + element.id + '" class="invisible">\
+                                        <img src="img/product1.jpg" alt="" class="img-responsive">\
+                                    </a>\
+                                    <div class="text">\
+                                        <h3><a href="detail.html?id=' + element.id + '">' + element.name + '</a></h3>\
+                                        <p class="price">$' + element.price + '</p>\
+                                        <p class="buttons">\
+                                            <a href="detail.html?id=' + element.id + '" class="btn btn-default">View detail</a>\
+                                            <a href="#" onclick="addToCart(\'' + element.id + '\')" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>\
+                                        </p>\
+                                    </div>\
+                                </div>\
+                            </div>');
+                    });
+                }
+            });
+        });
+
+
+
+
+
+
+    });
+
+</script>
+
+</body>
+
+</html>
