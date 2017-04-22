@@ -71,6 +71,39 @@ services:
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
+  hystrix-dashboard:
+    # To view, point browser at:
+    # http://localhost:8081/monitor/monitor.html?streams=[{%22name%22%3A%22%22%2C%22stream%22%3A%22http%3A%2F%2Fhystrix-turbine%3A8000%2Fturbine.stream%22%2C%22auth%22%3A%22%22%2C%22delay%22%3A%22%22}]
+    image: travix/hystrix-dashboard:1.5.3
+    hostname: hystrix-dashboard
+    ports:
+      - '8081:8080'
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
+    links:
+      - orders:orders
+      - hystrix-turbine:hystrix-turbine
+  hystrix-turbine:
+    image: arthurtsang/docker-hystrix-turbine # travix/hystrix-turbine:latest
+    hostname: hystrix-turbine
+    restart: always
+    cap_drop:
+      - all
+    cap_add:
+      - NET_BIND_SERVICE
+    environment:
+      - TURBINE_STREAMS=http://orders:80/hystrix.stream
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
+    links:
+      - orders:orders
   orders:
     image: weaveworksdemos/orders
     hostname: orders
