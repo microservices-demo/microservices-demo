@@ -1,14 +1,3 @@
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: sock-shop
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: zipkin
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -175,9 +164,6 @@ spec:
       containers:
       - name: catalogue
         image: weaveworksdemos/catalogue:0.3.5
-        env:
-          - name: ZIPKIN
-            value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         ports:
         - containerPort: 80
         securityContext:
@@ -377,9 +363,6 @@ spec:
         image: weaveworksdemos/payment:0.4.3
         ports:
         - containerPort: 80
-        env:
-        - name: ZIPKIN
-          value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -618,8 +601,6 @@ spec:
         env:
         - name: MONGO_HOST
           value: user-db:27017
-        - name: ZIPKIN
-          value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -644,115 +625,3 @@ spec:
     targetPort: 80
   selector:
     name: user
-
-
-
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: zipkin
-  labels:
-    name: zipkin
-  namespace: zipkin
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        name: zipkin
-    spec:
-      containers:
-      - name: zipkin
-        image: openzipkin/zipkin
-        ports:
-        - containerPort: 9411
-        env:
-        - name: STORAGE_TYPE
-          value: mysql
-        - name: MYSQL_HOST
-          value: zipkin-mysql
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: zipkin
-  labels:
-    name: zipkin
-  namespace: zipkin
-spec:
-  type: NodePort
-  ports:
-    # the port that this service should serve on
-  - port: 9411
-    targetPort: 9411
-    nodePort: 30002
-  selector:
-    name: zipkin
-
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: zipkin-mysql
-  labels:
-    name: zipkin-mysql
-  namespace: zipkin
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        name: zipkin-mysql
-    spec:
-      containers:
-      - name: zipkin-mysql
-        image: openzipkin/zipkin-mysql:1.20.0
-        ports:
-        - name: mysql
-          containerPort: 3306
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: zipkin-mysql
-  labels:
-    name: zipkin-mysql
-  namespace: zipkin
-spec:
-  ports:
-    # the port that this service should serve on
-  - port: 3306
-    targetPort: 3306
-  selector:
-    name: zipkin-mysql
-
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: zipkin-cron
-  labels:
-    name: zipkin-cron
-  namespace: zipkin
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        name: zipkin-cron
-    spec:
-      containers:
-      - name: zipkin-cron
-        image: openzipkin/zipkin-dependencies:1.4.0
-        env:
-        - name: STORAGE_TYPE
-          value: mysql
-        - name: MYSQL_HOST
-          value: zipkin-mysql
-        - name: MYSQL_USER
-          value: zipkin
-        - name: MYSQL_PASS
-          value: zipkin
-        command: ["crond"]
-        args: ["-f"]
