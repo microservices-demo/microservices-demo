@@ -244,6 +244,10 @@ job "weavedemo" {
         name = "${TASKGROUP}-carts"
         tags = ["carts"]
       }
+      
+      env {
+        JAVA_OPTS = "-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom"
+      }
 
       resources {
         cpu = 100 # 100 Mhz
@@ -305,6 +309,10 @@ job "weavedemo" {
       service {
         name = "${TASKGROUP}-shipping"
         tags = ["shipping"]
+      }
+
+      env {
+        JAVA_OPTS = "-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom"
       }
 
       resources {
@@ -382,6 +390,10 @@ job "weavedemo" {
       service {
         name = "${TASKGROUP}-orders"
         tags = ["orders"]
+      }
+
+      env {
+        JAVA_OPTS = "-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom"
       }
 
       resources {
