@@ -34,19 +34,19 @@ scrape_configs:
     - job_name: "orders"
       scrape_interval: 5s
       # The HTTP resource path on which to fetch metrics from targets.
-      metrics_path: 'prometheus'
+      metrics_path: 'metrics'
       static_configs:
         - targets: ['orders']
 
     - job_name: "cart"
       scrape_interval: 5s
-      metrics_path: 'prometheus'
+      metrics_path: 'metrics'
       static_configs:
-        - targets: ['cart']
+        - targets: ['carts']
 
     - job_name: "shipping"
       scrape_interval: 5s
-      metrics_path: 'prometheus'
+      metrics_path: 'metrics'
       static_configs:
         - targets: ['shipping']
 
