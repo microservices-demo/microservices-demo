@@ -65,6 +65,7 @@ resource "aws_instance" "k8s-node" {
   provisioner "local-exec" {
     command = "ssh -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.private_ip} sudo `cat join.cmd`"
   }
+
 }
 
 resource "aws_instance" "k8s-master" {
@@ -97,11 +98,6 @@ resource "aws_instance" "k8s-master" {
     ]
   }
 
-  provisioner "file" {
-    source = "~/microservices-demo/deploy/kubernetes/manifests/"
-    destination = "/home/ubuntu/microservices-demo/deploy/kubernetes"
-  }
-
   provisioner "local-exec" {
     command = "ssh -i ${var.private_key_file} -o StrictHostKeyChecking=no ubuntu@${self.private_ip} sudo kubeadm init | grep -e --token > join.cmd"
   }
@@ -109,7 +105,7 @@ resource "aws_instance" "k8s-master" {
   provisioner "remote-exec" {
     inline = [
       "sudo cp /etc/kubernetes/admin.conf ~/config",
-      "sudo chown ubuntu: ~/config"
+      "sudo chown -R ubuntu ~/config"
     ]
   }
 
@@ -118,45 +114,10 @@ resource "aws_instance" "k8s-master" {
   }
 }
 
-resource "null_resource" "weave" {
-  depends_on = [ "aws_instance.k8s-node" ]
-
-  connection {
-    host        = "${aws_instance.k8s-master.private_ip}"
-    user        = "${var.instance_user}"
-    private_key = "${file("${var.private_key_file}")}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "kubectl apply -f https://git.io/weave-kube-1.6",
-      "kubectl apply -f 'https://cloud.weave.works/k8s/scope.yaml?t=${var.weave_cloud_token}'",
-      "kubectl apply -f 'https://cloud.weave.works/k8s/flux.yaml?t=${var.weave_cloud_token}'",
-      "kubectl apply -f 'https://cloud.weave.works/k8s/cortex.yaml?t=${var.weave_cloud_token}'"
-    ]
-  }
-}
-
-resource "null_resource" "sock-shop" {
-  depends_on = [ "null_resource.weave" ]
-
-  connection {
-    host        = "${aws_instance.k8s-master.private_ip}"
-    user        = "${var.instance_user}"
-    private_key = "${file("${var.private_key_file}")}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "kubectl apply -f ~/microservices-demo/deploy/kubernetes/manifests/sock-shop-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests/zipkin-ns.yaml -f ~/microservices-demo/deploy/kubernetes/manifests"
-    ]
-  }
-}
-
-resource "null_resource" "cleanup" {
-  depends_on = [ "aws_instance.k8s-node" ]
+resource "null_resource" "up" {
+  depends_on      = [ "aws_instance.k8s-node" ]
   provisioner "local-exec" {
-    command = "rm join.cmd"
+    command = "./up.sh ${var.weave_cloud_token}"
   }
 }
 
