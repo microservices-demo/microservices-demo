@@ -19,6 +19,8 @@ spec:
          ports:
           - name: elasticsearch
             containerPort: 9200
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
