@@ -8,7 +8,11 @@ It is built using [Spring Boot](http://projects.spring.io/spring-boot/), [Go kit
 
 You can read more about the [application design](./internal-docs/design.md).
 
-## Deployment Platforms
+## Deploying on Applatix
+
+We have added a .applatix folder with the deployment YAML files needed to deploy on Applatix.
+
+## Other Deployment Platforms
 
 The [deploy folder](./deploy/) contains scripts and instructions to provision the application onto your favourite platform. 
 
