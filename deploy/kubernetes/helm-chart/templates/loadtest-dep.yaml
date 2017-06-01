@@ -6,7 +6,7 @@ metadata:
   labels:
     name: load-test
 spec:
-  replicas: 2
+  replicas: {{ .Values.loadtest.replicas }}
   template:
     metadata:
       labels:
