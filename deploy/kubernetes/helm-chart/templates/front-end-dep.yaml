@@ -3,9 +3,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: front-end
-  namespace: {{ default "sock-shop" .Values.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.frontend.replicas }}
   template:
     metadata:
       labels:

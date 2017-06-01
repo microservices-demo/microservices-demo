@@ -4,7 +4,6 @@ metadata:
   name: zipkin
   labels:
     name: zipkin
-  namespace: zipkin
 spec:
   type: NodePort
   ports:
