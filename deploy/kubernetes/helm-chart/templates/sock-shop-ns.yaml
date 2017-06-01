@@ -1,5 +1,0 @@
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ default "sock-shop" .Values.namespace }}

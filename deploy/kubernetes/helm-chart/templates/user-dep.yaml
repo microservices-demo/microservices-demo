@@ -5,7 +5,6 @@ metadata:
   name: user
   labels:
     name: user
-  namespace: {{ default "sock-shop" .Values.namespace }}
 spec:
   replicas: 1
   template:

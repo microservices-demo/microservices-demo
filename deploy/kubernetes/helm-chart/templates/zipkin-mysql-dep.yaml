@@ -4,7 +4,6 @@ metadata:
   name: zipkin-mysql
   labels:
     name: zipkin-mysql
-  namespace: zipkin
 spec:
   replicas: 1
   template:
