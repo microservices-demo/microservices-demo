@@ -8,4 +8,6 @@ zipkin:
     url: zipkin.zipkin.svc.cluster.local
 frontend:
     replicas: 1
-loadtest.enabled: false
+loadtest:
+    replicas: 2
+    enabled: false
