@@ -9,8 +9,8 @@ container:
   image: weaveworksdemos/user:0.4.4
   docker_options: "-e ZIPKIN=http://zipkin:9411/api/v1/spans -e MONGO_HOST=user-db:27017"
   resources:
-    cpu_cores: 0.5
-    mem_mib: 1024
+    cpu_cores: 0.1
+    mem_mib: 128
 
 ---
 type: deployment

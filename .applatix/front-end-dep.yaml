@@ -9,8 +9,8 @@ container:
   image: weaveworksdemos/front-end:0.3.12
   docker_options: "-e SESSION_REDIS=true"
   resources:
-    cpu_cores: 0.5
-    mem_mib: 1024
+    cpu_cores: 0.1
+    mem_mib: 256
 
   
 ---

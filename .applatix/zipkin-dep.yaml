@@ -9,7 +9,7 @@ container:
   image: openzipkin/zipkin
   docker_options: "-e STORAGE_TYPE=mysql -e MYSQL_HOST=zipkin-mysql"
   resources:
-    cpu_cores: 0.5
+    cpu_cores: 0.2
     mem_mib: 1024
 ---
 type: deployment

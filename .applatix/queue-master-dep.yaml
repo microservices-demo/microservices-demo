@@ -10,8 +10,8 @@ container:
   docker_options: "-e JAVA_OPTS='-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom'"
   args: ["--spring.zipkin.baseUrl=http://zipkin:9411"]
   resources:
-    cpu_cores: 0.5
-    mem_mib: 1024
+    cpu_cores: 0.2
+    mem_mib: 512
 ---
 type: deployment
 name: queue-master

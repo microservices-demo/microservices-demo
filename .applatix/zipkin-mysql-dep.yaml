@@ -8,8 +8,8 @@ inputs:
 container:
   image: openzipkin/zipkin-mysql:1.20.0
 resources:
-    cpu_cores: 0.5
-    mem_mib: 1024
+    cpu_cores: 0.1
+    mem_mib: 256
 
 ---
 type: deployment
