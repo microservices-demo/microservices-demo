@@ -5,7 +5,6 @@ metadata:
   name: session-db
   labels:
     name: session-db
-  namespace: {{ default "sock-shop" .Values.namespace }}
 spec:
   replicas: 1
   template:

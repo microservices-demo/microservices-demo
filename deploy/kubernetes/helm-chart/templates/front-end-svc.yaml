@@ -5,7 +5,6 @@ metadata:
   name: front-end
   labels:
     name: front-end
-  namespace: {{ default "sock-shop" .Values.namespace }}
 spec:
   type: NodePort
   ports:

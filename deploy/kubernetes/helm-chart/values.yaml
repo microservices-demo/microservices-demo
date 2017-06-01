@@ -1,7 +1,6 @@
 # Default values for sock-shop.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-namespace: sock-shop
 java:
     options: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
 zipkin: 

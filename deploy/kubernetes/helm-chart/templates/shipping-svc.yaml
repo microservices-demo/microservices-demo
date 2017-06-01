@@ -5,7 +5,6 @@ metadata:
   name: shipping
   labels:
     name: shipping
-  namespace: {{ default "sock-shop" .Values.namespace }}
 spec:
   ports:
     # the port that this service should serve on
