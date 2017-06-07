@@ -21,7 +21,7 @@ receivers:
 - name: 'email-all'
   email_configs:
     # The email address to send notifications to.
-  - to: ''
+  - to: 'alertmanager@example.org'
     # Whether or not to notify about resolved alerts.
     send_resolved: true
     # The HTML body of the email notification.
