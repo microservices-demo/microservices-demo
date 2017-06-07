@@ -15,3 +15,5 @@ spec:
         image: gcr.io/google_containers/kube-state-metrics:v0.4.1
         ports:
         - containerPort: 8080
+      nodeSelector:
+        beta.kubernetes.io/os: linux

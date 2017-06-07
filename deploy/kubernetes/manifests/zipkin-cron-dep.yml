@@ -26,3 +26,5 @@ spec:
           value: zipkin
         command: ["crond"]
         args: ["-f"]
+      nodeSelector:
+        beta.kubernetes.io/os: linux
