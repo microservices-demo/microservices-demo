@@ -35,3 +35,5 @@ services:
         environment:
           - GF_SECURITY_ADMIN_PASSWORD=foobar
           - GF_USERS_ALLOW_SIGN_UP=false
+        links:
+          - prometheus:prometheus
