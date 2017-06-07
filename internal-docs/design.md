@@ -18,7 +18,7 @@ To this end, it aims to:
 
 ### Architecture
 
-![Architecture diagram](https://github.com/microservices-demo/microservices-demo.github.io/blob/05373fd7a23c7e49423c4e8941f01293b9c37cc5/assets/Architecture.png "Architecture")
+![Architecture diagram](https://github.com/microservices-demo/microservices-demo.github.io/blob/HEAD/assets/Architecture.png "Architecture")
 
 The architecture of the demo microserivces application was intentionally designed to provide as many microservices as possible. If you are considering your own design, we would recommend the iterative approach, whereby you only define new microservices when you see issues (performance/testing/coupling) developing in your application.
 
