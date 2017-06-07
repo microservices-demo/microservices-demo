@@ -37,3 +37,11 @@ services:
           - GF_USERS_ALLOW_SIGN_UP=false
         links:
           - prometheus:prometheus
+    importer:
+      image: giantswarm/tiny-tools
+      entrypoint: /bin/sh
+      working_dir: /opt/grafana-import-dashboards
+      volumes:
+        - ./grafana:/opt/grafana-import-dashboards
+      links:
+        - grafana:grafana
