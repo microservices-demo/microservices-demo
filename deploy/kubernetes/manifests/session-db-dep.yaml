@@ -28,3 +28,5 @@ spec:
               - SETGID
               - SETUID
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
