@@ -45,6 +45,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -101,6 +103,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -142,6 +146,8 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -189,6 +195,8 @@ spec:
             add:
               - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -233,6 +241,8 @@ spec:
             drop:
               - all
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -286,6 +296,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -342,6 +354,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -389,6 +403,8 @@ spec:
             add:
               - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -424,6 +440,8 @@ spec:
         image: weaveworksdemos/queue-master:0.3.1
         ports:
         - containerPort: 80
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -471,6 +489,8 @@ spec:
               - SETUID
               - DAC_OVERRIDE
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -527,7 +547,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
-
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -580,6 +601,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -629,6 +652,8 @@ spec:
             add:
               - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -644,9 +669,6 @@ spec:
     targetPort: 80
   selector:
     name: user
-
-
-
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -672,6 +694,8 @@ spec:
           value: mysql
         - name: MYSQL_HOST
           value: zipkin-mysql
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -711,6 +735,8 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -756,3 +782,5 @@ spec:
           value: zipkin
         command: ["crond"]
         args: ["-f"]
+      nodeSelector:
+        beta.kubernetes.io/os: linux

@@ -36,3 +36,5 @@ spec:
       - name: config-volume
         configMap:
           name: alertmanager
+      nodeSelector:
+        beta.kubernetes.io/os: linux
