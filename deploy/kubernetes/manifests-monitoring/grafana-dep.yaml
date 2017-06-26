@@ -50,3 +50,5 @@ spec:
       volumes:
       - name: grafana-persistent-storage
         emptyDir: {}
+      nodeSelector:
+        beta.kubernetes.io/os: linux
