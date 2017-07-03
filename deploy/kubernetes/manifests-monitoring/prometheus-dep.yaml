@@ -42,3 +42,5 @@ spec:
       - name: alertrules-volume
         configMap:
           name: prometheus-alertrules
+      nodeSelector:
+        beta.kubernetes.io/os: linux

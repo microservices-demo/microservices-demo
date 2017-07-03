@@ -27,3 +27,5 @@ spec:
         - name: varlibdockercontainers
           hostPath:
             path: /var/lib/docker/containers
+      nodeSelector:
+        beta.kubernetes.io/os: linux

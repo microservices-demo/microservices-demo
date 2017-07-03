@@ -34,6 +34,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -90,6 +92,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -131,6 +135,8 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -175,6 +181,8 @@ spec:
             add:
               - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -219,6 +227,8 @@ spec:
             drop:
               - all
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -272,6 +282,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -328,6 +340,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -372,6 +386,8 @@ spec:
             add:
               - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -407,6 +423,8 @@ spec:
         image: weaveworksdemos/queue-master:0.3.1
         ports:
         - containerPort: 80
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -454,6 +472,8 @@ spec:
               - SETUID
               - DAC_OVERRIDE
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -510,7 +530,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
-
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -563,6 +584,8 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -610,6 +633,8 @@ spec:
             add:
               - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
