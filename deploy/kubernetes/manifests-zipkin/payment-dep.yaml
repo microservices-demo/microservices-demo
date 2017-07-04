@@ -25,6 +25,9 @@ spec:
             memory: 100Mi
         ports:
         - containerPort: 80
+        env:
+        - name: ZIPKIN
+          value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
