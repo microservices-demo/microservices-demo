@@ -2,20 +2,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: payment
+  name: catalogue
   labels:
-    name: payment
+    name: catalogue
   namespace: sock-shop
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: payment
+        name: catalogue
     spec:
       containers:
-      - name: payment
-        image: weaveworksdemos/payment:0.4.3
+      - name: catalogue
+        image: weaveworksdemos/catalogue:0.3.5
+        env:
+         - name: ZIPKIN
+           value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         resources:
           limits:
             cpu: 100m

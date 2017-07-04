@@ -1,7 +1,4 @@
-{{- if .Values.zipkin.enabled -}}
----
 apiVersion: v1
 kind: Namespace
 metadata:
   name: zipkin
-{{- end -}}
