@@ -28,3 +28,10 @@ Make sure that you run the following commands from within the `graphs/` director
 ```
 docker run --rm -it -v ${PWD}:/opt/code weaveworks/grafanalib /bin/sh -c 'ls /opt/code/*.dashboard.py | parallel generate-dashboard -o {.}.json {}'
 ```
+
+## TODO
+Generate dashboard for:
+- [x] prometheus-stats-dashboard.json
+- [ ] k8s-pod-resources-dashboard.json
+- [ ] sock-shop-resources-dashboard.json
+- [ ] sock-shop-analytics-dashboard.json
