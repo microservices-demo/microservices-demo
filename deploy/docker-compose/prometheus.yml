@@ -1,3 +1,8 @@
+remote_write:
+    - url: https://cloud.weave.works/api/prom/push
+      basic_auth:
+          password: cbsx7gpi3t5gtza3xjx3dg9fde19uzgu
+
 global:
     # How frequently to scrape targets by default.
     scrape_interval: 1m
