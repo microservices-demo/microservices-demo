@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+sleep 3
 # Import data sources
 for file in *-datasource.json; do
   if [ -e "$file" ]; then
@@ -7,7 +8,7 @@ for file in *-datasource.json; do
     curl --silent --fail --show-error \
       --request POST http://admin:foobar@grafana:3000/api/datasources \
       --header "Content-Type: application/json" \
-      --data-binary "@$file";
+      -d "@$file";
     echo "";
   fi
 done;
@@ -19,7 +20,7 @@ for file in *-dashboard.json; do
     curl --request POST http://admin:foobar@grafana:3000/api/dashboards/import \
       --header "Content-Type: application/json" \
       --header "Accept: application/json" \
-      --data-binary "@$file";
+      -d "@$file";
     echo "";
   fi
 done;
