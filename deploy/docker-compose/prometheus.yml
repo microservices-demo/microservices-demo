@@ -12,6 +12,12 @@ rule_files:
 alerting:
 
 scrape_configs:
+    - job_name: "frontend"
+      scrape_interval: 5s
+      metrics_path: 'metrics'
+      static_configs:
+        - targets: ['edge-router']
+
     # The job name assigned to scraped metrics by default.
     - job_name: "catalogue"
       # How frequently to scrape targets from this job.

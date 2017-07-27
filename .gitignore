@@ -127,3 +127,7 @@ docker-swarm.box
 *.tfvars
 join.sh
 output-virtualbox-iso
+
+# Ignore grafanalib output
+/graphs/__pycache__/
+/graphs/*.json
