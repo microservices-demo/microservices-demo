@@ -6,13 +6,12 @@ metadata:
     name: zipkin
   namespace: zipkin
 spec:
-  type: NodePort
-  ports:
-    # the port that this service should serve on
-  - port: 9411
-    targetPort: 9411
-    nodePort: 30002
   selector:
     name: zipkin
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 9411
+    targetPort: 9411
 
 
