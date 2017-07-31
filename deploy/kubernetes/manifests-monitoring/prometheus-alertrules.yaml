@@ -11,10 +11,10 @@ data:
     # Alert for high error rate in the Sock Shop.
 
     ALERT HighErrorRate
-      IF rate(request_duration_seconds_count{status_code="500"}[5m]) > 1
-      FOR 5m
+      IF rate(request_duration_seconds_count{status_code>"400"}[1m]) > 1
+      FOR 1m
       LABELS { severity = "slack" }
       ANNOTATIONS {
-        summary = "High HTTP 500 error rates",
-        description = "Rate of HTTP 500 errors per 5 minutes: {{ $value }}",
+        summary = "High HTTP error rates",
+        description = "Rate of HTTP errors per 1 minutes: {{ $value }}",
       }
