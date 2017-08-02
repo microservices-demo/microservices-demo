@@ -3,7 +3,6 @@ We have included a set of dashboards for Grafana in this demo application.
 Most of the source of these dashboards look exactly the same. For the sake of
 keeping our code DRY, we have decided to generate our dashboards using [grafanalib](https://github.com/weaveworks/grafanalib).
 
-
 # Requirements
 If you don't have Python installed on your computer but do have Docker, then Docker and Make will
 make your life easier today:
@@ -32,6 +31,6 @@ docker run --rm -it -v ${PWD}:/opt/code weaveworks/grafanalib /bin/sh -c 'ls /op
 ## TODO
 Generate dashboard for:
 - [x] prometheus-stats-dashboard.json
-- [ ] k8s-pod-resources-dashboard.json
+- [x] k8s-pod-resources-dashboard.json
 - [ ] sock-shop-resources-dashboard.json
 - [ ] sock-shop-analytics-dashboard.json
