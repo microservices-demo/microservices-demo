@@ -8,13 +8,11 @@ metadata:
   namespace: monitoring
 data:
   alert.rules: |
-    # Alert for high error rate in the Sock Shop.
 
-    ALERT HighErrorRate
-      IF rate(request_duration_seconds_count{status_code>"400"}[1m]) > 1
-      FOR 1m
-      LABELS { severity = "slack" }
+    ALERT HighRequestRate
+      IF rate(microservices_demo_user_request_count[1m]) > 20
       ANNOTATIONS {
-        summary = "High HTTP error rates",
-        description = "Rate of HTTP errors per 1 minutes: {{ $value }}",
+        summary = "High HTTP Request Rate",
+        description = "Rate of HTTP request per 1 minutes: {{ $value }}",
       }
+
