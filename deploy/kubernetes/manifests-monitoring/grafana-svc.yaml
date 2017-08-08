@@ -7,13 +7,11 @@ metadata:
     app: grafana
     component: core
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
-  - name: prometheus
-    protocol: TCP
-    port: 3000
+  - protocol: TCP
+    port: 80
     targetPort: 3000
-    nodePort: 31300
   selector:
     app: grafana
     component: core
