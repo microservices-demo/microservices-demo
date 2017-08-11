@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: weavescope
+    weavescope-component: weavescope-traffic-control-plugin
+  name: weavescope-traffic-control-plugin
+spec:
+  template:
+    metadata:
+      labels:
+        app: weavescope
+        weavescope-component: weavescope-traffic-control-plugin
+    spec:
+      hostPID: true
+      hostNetwork: true
+      containers:
+        - name: weavescope-traffic-control-plugin
+          image: weaveworksplugins/scope-traffic-control:latest
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - name: docker-sock
+            mountPath: /var/run/docker.sock
+          - name: scope-plugins
+            mountPath: /var/run/scope/plugins
+      volumes:
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: scope-plugins
+        hostPath:
+          path: /var/run/scope/plugins
