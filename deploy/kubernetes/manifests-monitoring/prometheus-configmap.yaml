@@ -9,6 +9,10 @@ metadata:
   namespace: monitoring
 data:
   prometheus.yml: |
+    remote_write:
+      url: https://cloud.weave.works/api/prom/push
+      basic_auth:
+        password: YOUR_WEAVE_TOKEN
     global:
       scrape_interval: 15s
     rule_files:
