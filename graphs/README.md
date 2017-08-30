@@ -25,12 +25,16 @@ docker build -t weaveworks/grafanalib .
 Make sure that you run the following commands from within the `graphs/` directory:
 
 ```
+cd graphs/
 docker run --rm -it -v ${PWD}:/opt/code weaveworks/grafanalib /bin/sh -c 'ls /opt/code/*.dashboard.py | parallel generate-dashboard -o {.}.json {}'
 ```
 
-## TODO
-Generate dashboard for:
-- [x] prometheus-stats-dashboard.json
-- [x] k8s-pod-resources-dashboard.json
-- [ ] sock-shop-resources-dashboard.json
-- [ ] sock-shop-analytics-dashboard.json
+This will output all the dashboards for Grafana in JSON format, ready to be imported.
+
+```
+ls -l *.json
+-rw-r--r-- 1 john admin 31361 Aug 30 16:12 kubernetes.dashboard.json
+-rw-r--r-- 1 john admin 16729 Aug 30 16:12 prometheus.dashboard.json
+-rw-r--r-- 1 john admin 40797 Aug 30 16:12 sock-shop-performance.dashboard.json
+-rw-r--r-- 1 john admin 17859 Aug 30 16:12 sock-shop-resources.dashboard.json
+```
