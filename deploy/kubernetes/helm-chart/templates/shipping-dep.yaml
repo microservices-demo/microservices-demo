@@ -2,27 +2,33 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: payment
+  name: shipping
   labels:
-    name: payment
-  namespace: sock-shop
+    name: shipping
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: payment
+        name: shipping
     spec:
       containers:
-      - name: payment
-        image: weaveworksdemos/payment:0.4.3
+      - name: shipping
+        image: weaveworksdemos/shipping:0.4.8
+        env:
+        {{- if .Values.zipkin.enabled }}
+         - name: ZIPKIN
+           value: {{ .Values.zipkin.urlj }}
+        {{- end }}
+         - name: JAVA_OPTS
+           value: {{ .Values.java.options }}
         resources:
           limits:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 300m
+            memory: 2000Mi
           requests:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 300m
+            memory: 2000Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -34,6 +40,9 @@ spec:
             add:
               - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
         livenessProbe:
           httpGet:
             path: /health
@@ -46,5 +55,8 @@ spec:
             port: 80
           initialDelaySeconds: 180
           periodSeconds: 3
-      nodeSelector:
-        beta.kubernetes.io/os: linux
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
+

@@ -2,20 +2,24 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: payment
+  name: catalogue
   labels:
-    name: payment
-  namespace: sock-shop
+    name: catalogue
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: payment
+        name: catalogue
     spec:
       containers:
-      - name: payment
-        image: weaveworksdemos/payment:0.4.3
+      - name: catalogue
+        image: weaveworksdemos/catalogue:0.3.5
+        {{- if .Values.zipkin.enabled }}
+        env:
+         - name: ZIPKIN
+           value: http://{{ .Values.zipkin.url }}:9411/api/v1/spans
+        {{- end }}
         resources:
           limits:
             cpu: 100m
@@ -46,5 +50,3 @@ spec:
             port: 80
           initialDelaySeconds: 180
           periodSeconds: 3
-      nodeSelector:
-        beta.kubernetes.io/os: linux

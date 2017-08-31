@@ -2,49 +2,45 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: payment
-  labels:
-    name: payment
-  namespace: sock-shop
+  name: front-end
 spec:
-  replicas: 1
+  replicas: {{ .Values.frontend.replicas }}
   template:
     metadata:
       labels:
-        name: payment
+        name: front-end
     spec:
       containers:
-      - name: payment
-        image: weaveworksdemos/payment:0.4.3
+      - name: front-end
+        image: weaveworksdemos/front-end:0.3.12
         resources:
           limits:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 300m
+            memory: 1000Mi
           requests:
             cpu: 100m
-            memory: 100Mi
+            memory: 300Mi
         ports:
-        - containerPort: 80
+        - containerPort: 8079
+        env:
+        - name: SESSION_REDIS
+          value: "true"
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
           capabilities:
             drop:
               - all
-            add:
-              - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
-            path: /health
-            port: 80
+            path: /
+            port: 8079
           initialDelaySeconds: 300
           periodSeconds: 3
         readinessProbe:
           httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
+            path: /
+            port: 8079
+          initialDelaySeconds: 30
           periodSeconds: 3
-      nodeSelector:
-        beta.kubernetes.io/os: linux

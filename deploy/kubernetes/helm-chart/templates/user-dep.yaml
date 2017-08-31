@@ -2,29 +2,35 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: payment
+  name: user
   labels:
-    name: payment
-  namespace: sock-shop
+    name: user
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: payment
+        name: user
     spec:
       containers:
-      - name: payment
-        image: weaveworksdemos/payment:0.4.3
+      - name: user
+        image: weaveworksdemos/user:0.4.4
         resources:
           limits:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 300m
+            memory: 1000Mi
           requests:
             cpu: 100m
-            memory: 100Mi
+            memory: 400Mi
         ports:
         - containerPort: 80
+        env:
+        - name: MONGO_HOST
+          value: user-db:27017
+        {{- if .Values.zipkin.enabled }}
+        - name: ZIPKIN
+          value: http://{{ .Values.zipkin.url }}:9411/api/v1/spans
+        {{- end }}
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -46,5 +52,3 @@ spec:
             port: 80
           initialDelaySeconds: 180
           periodSeconds: 3
-      nodeSelector:
-        beta.kubernetes.io/os: linux

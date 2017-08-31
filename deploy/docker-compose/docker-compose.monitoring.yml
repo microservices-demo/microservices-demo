@@ -35,3 +35,15 @@ services:
         environment:
           - GF_SECURITY_ADMIN_PASSWORD=foobar
           - GF_USERS_ALLOW_SIGN_UP=false
+        links:
+          - prometheus:prometheus
+    importer:
+      image: giantswarm/tiny-tools
+      depends_on:
+        - grafana
+      entrypoint: /bin/sh import.sh
+      working_dir: /opt/grafana-import-dashboards
+      volumes:
+        - ./grafana:/opt/grafana-import-dashboards
+      links:
+        - grafana:grafana

@@ -19,17 +19,15 @@ spec:
         resources:
           limits:
             cpu: 300m
-            memory: 1000Mi
+            memory: 100Mi
           requests:
             cpu: 100m
-            memory: 400Mi
+            memory: 100Mi
         ports:
         - containerPort: 80
         env:
         - name: MONGO_HOST
           value: user-db:27017
-        - name: ZIPKIN
-          value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
