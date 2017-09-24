@@ -1,15 +1,16 @@
 ---
-apiVersion: extensions/v1beta1
+apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: shipping
   namespace: sock-shop
 spec:
-  scaleRef:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
     kind: Deployment
     name: shipping
-    subresource: scale
+
   minReplicas: 1
   maxReplicas: 10
-  cpuUtilization:
-    targetPercentage: 50
+  targetCPUUtilizationPercentage: 50
+    
