@@ -11,11 +11,19 @@ spec:
         task: monitoring
         k8s-app: heapster
     spec:
+      serviceAccountName: heapster
       containers:
       - name: heapster
-        image: gcr.io/google_containers/heapster-amd64:v1.3.0-beta.1
+        image: gcr.io/google_containers/heapster-amd64:v1.4.0
         imagePullPolicy: IfNotPresent
         command:
         - /heapster
         - --source=kubernetes:https://kubernetes.default
         - --sink=influxdb:http://monitoring-influxdb:8086
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi

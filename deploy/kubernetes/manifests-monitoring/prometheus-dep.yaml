@@ -19,14 +19,15 @@ spec:
       labels:
         app: prometheus
     spec:
+      serviceAccount: prometheus
       containers:
       - name: prometheus
         image: prom/prometheus:v1.5.2
         args:
-          - '-storage.local.retention=360h'
-          - '-storage.local.memory-chunks=1048576'
-          - '-config.file=/etc/prometheus/prometheus.yml'
-          - '-alertmanager.url=http://alertmanager:9093'
+        - '-storage.local.retention=360h'
+        - '-storage.local.memory-chunks=1048576'
+        - '-config.file=/etc/prometheus/prometheus.yml'
+        - '-alertmanager.url=http://alertmanager:9093'
         ports:
         - name: web
           containerPort: 9090
