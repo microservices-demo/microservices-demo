@@ -1,0 +1,14 @@
+{
+  "id": "/weave-demo/service/shipping",
+  "cpus": 0.5,
+  "mem": 1024.0,
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "weaveworksdemos/shipping:latest"
+    }
+  },
+  "ipAddress": {
+    "networkName": "weave"
+  }
+}

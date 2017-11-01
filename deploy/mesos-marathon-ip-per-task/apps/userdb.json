@@ -1,0 +1,14 @@
+{
+  "id": "/weave-demo/database/user-db",
+  "cpus": 0.1,
+  "mem": 1024.0,
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "weaveworksdemos/user-db"
+    }
+  },
+  "ipAddress": {
+    "networkName": "weave"
+  }
+}

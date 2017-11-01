@@ -1,0 +1,18 @@
+{
+  "id": "/weave-demo/database/catalogue-db",
+  "cpus": 0.1,
+  "mem": 1024.0,
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "weaveworksdemos/catalogue-db"
+    }
+  },
+  "env": {
+    "MYSQL_ROOT_PASSWORD": "fake_password",
+    "MYSQL_DATABASE": "socksdb"
+  },
+  "ipAddress": {
+    "networkName": "weave"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "/weave-demo/external/edge-router",
+  "cmd": "while ! ping -c1 front-end.ui.weave-demo.marathon.weave.local ; do echo .; done ; echo \"worker_processes  5; worker_rlimit_nofile 8192; events { worker_connections  4096; } http { resolver 172.17.0.1 valid=5s; server { listen 80; set \\$endpoint front-end.ui.weave-demo.marathon.weave.local:8079; location / { proxy_pass http://\\$endpoint; }}}\" | tee /etc/nginx/nginx.conf ; cat /etc/nginx/nginx.conf ; nginx -g \"daemon off;\"",
+  "cpus": 0.2,
+  "mem": 512,
+  "disk": 0,
+  "instances": 1,
+  "constraints": [
+    [
+      "hostname",
+      "UNIQUE"
+    ]
+  ],
+  "container": {
+    "docker": {
+      "image": "weaveworksdemos/edge-router:latest",
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80
+        }
+      ],
+      "privileged": true
+    },
+    "type": "MESOS",
+    "volumes": []
+  },
+  "portDefinitions": [
+    {
+      "port": 80,
+      "protocol": "tcp",
+      "name": "80"
+    }
+  ]
+}
