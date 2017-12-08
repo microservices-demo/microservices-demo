@@ -22,7 +22,7 @@ services:
     image: weaveworksdemos/carts:0.4.8
     environment:
       - reschedule=on-node-failure
-      - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
   carts-db:
     image: mongo:3.4
     environment:
@@ -31,7 +31,7 @@ services:
     image: weaveworksdemos/orders:0.4.7
     environment:
       - reschedule=on-node-failure
-      - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
   orders-db:
     image: mongo:3.4
     environment:
@@ -40,7 +40,7 @@ services:
     image: weaveworksdemos/shipping:0.4.8
     environment:
       - reschedule=on-node-failure
-      - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
   # @pidster: I've added this back in a comment, because I don't know why it is missing from this file
   # queue-master:
   #   image: weaveworksdemos/queue-master:0.3.1
