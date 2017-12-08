@@ -1,4 +1,4 @@
-version: '2'
+version: "3"
 
 services:
   front-end:
@@ -69,4 +69,4 @@ services:
       - reschedule=on-node-failure
   user-sim:
     image: weaveworksdemos/load-test:0.1.1
-    command: "-d 60 -r 200 -c 2 -h front-end"
+    command: "-d 60 -r 200 -c 2 -h front-end:8079"
