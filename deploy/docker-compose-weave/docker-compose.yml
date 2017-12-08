@@ -2,7 +2,7 @@ version: '2'
 
 services:
   front-end:
-    image: weaveworksdemos/front-end
+    image: weaveworksdemos/front-end:0.3.12
     hostname: front-end
     dns: 172.17.0.1
     dns_search: weave.local
@@ -14,7 +14,7 @@ services:
       - secure
       - internal
   edge-router:
-    image: weaveworksdemos/edge-router
+    image: weaveworksdemos/edge-router:0.1.1
     ports:
       - '80:80'
       - '8080:8080'
@@ -27,7 +27,7 @@ services:
     networks:
       - external
   catalogue:
-    image: weaveworksdemos/catalogue
+    image: weaveworksdemos/catalogue:0.3.5
     hostname: catalogue
     dns: 172.17.0.1
     dns_search: weave.local
@@ -37,7 +37,7 @@ services:
     networks:
       - external
   catalogue-db:
-    image: weaveworksdemos/catalogue-db
+    image: weaveworksdemos/catalogue-db:0.3.0
     hostname: catalogue-db
     dns: 172.17.0.1
     dns_search: weave.local
@@ -50,7 +50,7 @@ services:
     networks:
       - external
   carts:
-    image: weaveworksdemos/carts
+    image: weaveworksdemos/carts:0.4.8
     hostname: carts
     dns: 172.17.0.1
     dns_search: weave.local
@@ -61,7 +61,7 @@ services:
     networks:
       - internal
   carts-db:
-    image: mongo
+    image: mongo:3.4
     hostname: carts-db
     dns: 172.17.0.1
     dns_search: weave.local
@@ -71,7 +71,7 @@ services:
     networks:
       - internal
   orders:
-    image: weaveworksdemos/orders
+    image: weaveworksdemos/orders:0.4.7
     hostname: orders
     dns: 172.17.0.1
     dns_search: weave.local
@@ -84,7 +84,7 @@ services:
       - secure
       - backoffice
   orders-db:
-    image: mongo
+    image: mongo:3.4
     hostname: orders-db
     dns: 172.17.0.1
     dns_search: weave.local
@@ -94,7 +94,7 @@ services:
     networks:
       - internal
   shipping:
-    image: weaveworksdemos/shipping
+    image: weaveworksdemos/shipping:0.4.8
     hostname: shipping
     dns: 172.17.0.1
     dns_search: weave.local
@@ -105,7 +105,7 @@ services:
     networks:
       - backoffice
   queue-master:
-    image: weaveworksdemos/queue-master
+    image: weaveworksdemos/queue-master:0.3.1
     hostname: queue-master
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -127,7 +127,7 @@ services:
     networks:
       - backoffice
   payment:
-    image: weaveworksdemos/payment
+    image: weaveworksdemos/payment:0.4.3
     hostname: payment
     dns: 172.17.0.1
     dns_search: weave.local
@@ -137,7 +137,7 @@ services:
     networks:
       - secure
   user:
-    image: weaveworksdemos/user
+    image: weaveworksdemos/user:0.4.4
     hostname: user
     dns: 172.17.0.1
     dns_search: weave.local
@@ -148,7 +148,7 @@ services:
     networks:
       - secure
   user-db:
-    image: weaveworksdemos/user-db
+    image: weaveworksdemos/user-db:0.4.0
     hostname: user-db
     dns: 172.17.0.1
     dns_search: weave.local
@@ -158,7 +158,7 @@ services:
     networks:
       - secure
   user-sim:
-    image: weaveworksdemos/load-test
+    image: weaveworksdemos/load-test:0.1.1
     hostname: user-simulator
     domainname: weave.local
     networks:
