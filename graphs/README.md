@@ -46,4 +46,4 @@ file and fill the field with the contents of the `sock-sock-performance-dashboar
 
 The same process needs to be followed for the rest of the dashboards.
 
-Find the instructions on how to deploy Grafana and the dashboards [here](https://microservices-demo.github.io/microservices-demo/deployment/monitoring-kubernetes.html).
+Find the instructions on how to deploy Grafana and the dashboards [here](https://microservices-demo.github.io/deployment/monitoring-kubernetes.html).
