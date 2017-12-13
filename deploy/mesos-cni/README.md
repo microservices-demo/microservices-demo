@@ -1,1 +1,1 @@
-See the [documentation](https://microservices-demo.github.io/microservices-demo/deployment/mesos-cni.html) on how to deploy Sock Shop using [Mesos](https://mesos.apache.org) and [CNI](https://github.com/containernetworking/cni).
+See the [documentation](https://microservices-demo.github.io/deployment/mesos-cni.html) on how to deploy Sock Shop using [Mesos](https://mesos.apache.org) and [CNI](https://github.com/containernetworking/cni).

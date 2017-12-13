@@ -1,6 +1,6 @@
 # Installing sock-shop on Kubernetes
 
-See the [documentation](https://microservices-demo.github.io/microservices-demo/deployment/kubernetes.html) on how to deploy Sock Shop using Minikube.
+See the [documentation](https://microservices-demo.github.io/deployment/kubernetes.html) on how to deploy Sock Shop using Minikube.
 
 ## Kubernestes manifests
 
