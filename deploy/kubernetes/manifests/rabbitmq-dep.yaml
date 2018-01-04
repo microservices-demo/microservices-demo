@@ -12,12 +12,17 @@ spec:
     metadata:
       labels:
         name: rabbitmq
+      annotations:
+        prometheus.io/scrape: "false"
     spec:
       containers:
       - name: rabbitmq
-        image: rabbitmq:3.6.8
+        image: rabbitmq:3.6.8-management
         ports:
+        - containerPort: 15672
+          name: management
         - containerPort: 5672
+          name: rabbitmq
         securityContext:
           capabilities:
             drop:
@@ -28,5 +33,10 @@ spec:
               - SETUID
               - DAC_OVERRIDE
           readOnlyRootFilesystem: true
+      - name: rabbitmq-exporter
+        image: kbudde/rabbitmq-exporter
+        ports:
+        - containerPort: 9090
+          name: exporter
       nodeSelector:
         beta.kubernetes.io/os: linux
