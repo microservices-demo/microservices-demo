@@ -14,11 +14,6 @@ spec:
     spec:
       containers:
       - name: zipkin
-        image: openzipkin/zipkin
+        image: gcr.io/stackdriver-trace-docker/zipkin-collector
         ports:
         - containerPort: 9411
-        env:
-        - name: STORAGE_TYPE
-          value: mysql
-        - name: MYSQL_HOST
-          value: zipkin-mysql
