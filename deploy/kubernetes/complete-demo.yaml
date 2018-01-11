@@ -126,7 +126,7 @@ spec:
     spec:
       containers:
       - name: catalogue-db
-        image: weaveworksdemos/catalogue-db:0.3.0
+        image: gcr.io/stackdriver-microservices-demo/catalogue-db
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password
@@ -213,7 +213,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: weaveworksdemos/front-end:0.3.12
+        image: gcr.io/stackdriver-microservices-demo/front-end
         resources:
           requests:
             cpu: 100m
@@ -238,7 +238,7 @@ metadata:
     name: front-end
   namespace: sock-shop
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 80
     targetPort: 8079
@@ -317,6 +317,7 @@ spec:
       containers:
       - name: orders
         image: weaveworksdemos/orders:0.4.7
+        imagePullPolicy: Always
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
@@ -374,7 +375,7 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment:0.4.3
+        image:  weaveworksdemos/payment:0.4.3
         ports:
         - containerPort: 80
         securityContext:
@@ -506,7 +507,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.4.8
+        image: gcr.io/stackdriver-microservices-demo/shipping
         env:
          - name: ZIPKIN
            value: zipkin.zipkin.svc.cluster.local
