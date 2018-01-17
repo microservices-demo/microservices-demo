@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue:0.3.5
+        image: gcr.io/sock-shop-releases/catalogue
         resources:
           limits:
             cpu: 100m
