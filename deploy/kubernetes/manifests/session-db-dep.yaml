@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         name: session-db
+      annotations:
+        prometheus.io.scrape: "false"
     spec:
       containers:
       - name: session-db
