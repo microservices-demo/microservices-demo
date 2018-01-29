@@ -618,7 +618,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.4.4
+        image: weaveworksdemos/user:0.4.7
         ports:
         - containerPort: 80
         env:
