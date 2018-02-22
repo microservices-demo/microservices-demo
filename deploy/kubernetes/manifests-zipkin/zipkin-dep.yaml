@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: zipkin
-        image: gcr.io/stackdriver-trace-docker/zipkin-collector
+        image: gcr.io/stackdriver-trace-docker/zipkin-collector:v0.4.0
         ports:
         - containerPort: 9411
