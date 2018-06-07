@@ -10,6 +10,11 @@ spec:
   ports:
     # the port that this service should serve on
   - port: 5672
+    name: rabbitmq
     targetPort: 5672
+  - port: 9090
+    name: exporter
+    targetPort: exporter
+    protocol: TCP
   selector:
     name: rabbitmq

@@ -1,1 +1,1 @@
-See the [documentation](https://microservices-demo.github.io/microservices-demo/deployment/mesos-marathon.html) on how to deploy Sock Shop using [Mesos](https://mesos.apache.org) and [Marathon](https://github.com/mesosphere/marathon).
+See the [documentation](https://microservices-demo.github.io/deployment/mesos-marathon.html) on how to deploy Sock Shop using [Mesos](https://mesos.apache.org) and [Marathon](https://github.com/mesosphere/marathon).

@@ -2,23 +2,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: user
+  name: payment
   labels:
-    name: user
+    name: payment
   namespace: sock-shop
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: user
+        name: payment
     spec:
       containers:
-      - name: user
-        image: weaveworksdemos/user:0.4.4
+      - name: payment
+        image: weaveworksdemos/payment:0.4.3
         resources:
           limits:
-            cpu: 300m
+            cpu: 100m
             memory: 100Mi
           requests:
             cpu: 100m
@@ -26,10 +26,8 @@ spec:
         ports:
         - containerPort: 80
         env:
-        - name: MONGO_HOST
-          value: user-db:27017
         - name: ZIPKIN
-          value: http://zipkin.zipkin.svc.cluster.local:9411/api/v1/spans
+          value: http://zipkin.jaeger.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
