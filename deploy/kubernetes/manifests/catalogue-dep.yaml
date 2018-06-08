@@ -16,6 +16,8 @@ spec:
       containers:
       - name: catalogue
         image: weaveworksdemos/catalogue:0.3.5
+        args:
+        - -port=80
         resources:
           limits:
             cpu: 100m
