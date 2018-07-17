@@ -68,7 +68,7 @@ spec:
     spec:
       containers:
       - name: carts
-        image: weaveworksdemos/carts:0.4.8
+        image: gcr.io/stackdriver-microservices-demo/carts
         ports:
          - containerPort: 80
         env:
@@ -169,7 +169,7 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue:0.3.5
+        image: gcr.io/stackdriver-microservices-demo/catalogue:2
         ports:
         - containerPort: 80
         securityContext:
@@ -316,7 +316,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.4.7
+        image: gcr.io/stackdriver-microservices-demo/orders
         imagePullPolicy: Always
         env:
          - name: ZIPKIN
