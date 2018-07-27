@@ -10,8 +10,7 @@ if [ -z "$DOCKER_PASS" ] ; then
   exit 0;
 fi;
 
-
-docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 
 for svc in openapi healthcheck; do
     export REPO=${GROUP}/$(basename $svc);
