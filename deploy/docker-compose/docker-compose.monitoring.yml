@@ -2,15 +2,14 @@ version: '2'
 
 services:
     prometheus:
-        image: prom/prometheus
+    image: prom/prometheus:v2.6.0
         container_name: prometheus
         volumes:
           - ./prometheus.yml:/etc/prometheus/prometheus.yml
           - ./alert.rules:/etc/prometheus/alert.rules
         command:
-          - '-config.file=/etc/prometheus/prometheus.yml'
-          - '-storage.local.path=/prometheus'
-          - '-alertmanager.url=http://alertmanager:9093'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
         expose:
           - 9090
         ports:
@@ -18,14 +17,14 @@ services:
         links:
           - alertmanager:alertmanager
     alertmanager:
-        image: prom/alertmanager
+    image: prom/alertmanager:v0.15.3
         ports:
           - 9093:9093
         volumes:
           - ./alertmanager.yml:/etc/alertmanager/config.yml
         command:
-          - '-config.file=/etc/alertmanager/config.yml'
-          - '-storage.path=/alertmanager'
+      - "--config.file=/etc/alertmanager/config.yml"
+      - "--storage.path=/alertmanager"
     grafana:
         image: grafana/grafana
         depends_on:
