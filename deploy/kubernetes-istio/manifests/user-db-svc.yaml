@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: user-db
   labels:
-    name: user-db
+    app: user-db
+    service: user-db
   namespace: sock-shop
 spec:
   ports:
@@ -13,5 +14,5 @@ spec:
     name: mongo
     targetPort: 27017
   selector:
-    name: user-db
+    app: user-db
 

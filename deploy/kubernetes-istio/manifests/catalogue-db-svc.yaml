@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: catalogue-db
   labels:
-    name: catalogue-db
+    app: catalogue-db
+    service: catalogue-db
   namespace: sock-shop
 spec:
   ports:
@@ -13,4 +14,4 @@ spec:
     name: mysql
     targetPort: 3306
   selector:
-    name: catalogue-db
+    app: catalogue-db

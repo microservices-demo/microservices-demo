@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: payment
   labels:
-    name: payment
+    app: payment
+    service: payment
   namespace: sock-shop
 spec:
   ports:
@@ -13,4 +14,4 @@ spec:
     name: http
     targetPort: 80
   selector:
-    name: payment
+    app: payment

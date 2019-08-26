@@ -2,9 +2,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: session-db
+  name: session-db-v1
   labels:
-    name: session-db
+    app: session-db
+    version: v1
   namespace: sock-shop
 spec:
   replicas: 1

@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: queue-master
   labels:
-    name: queue-master
+    app: queue-master
+    service: queue-master
   annotations:
     prometheus.io/path: "/prometheus"
   namespace: sock-shop
@@ -15,4 +16,4 @@ spec:
     name: http
     targetPort: 80
   selector:
-    name: queue-master
+    app: queue-master

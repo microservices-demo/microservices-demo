@@ -2,16 +2,16 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: carts-db
+  name: carts-db-v1
   labels:
-    name: carts-db
+    app: carts-db
+    version: v1
   namespace: sock-shop
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: carts-db
         app: carts-db
         version: v1
     spec:

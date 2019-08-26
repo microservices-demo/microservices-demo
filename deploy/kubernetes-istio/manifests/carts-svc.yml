@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: carts
   labels:
-    name: carts
+    app: carts
+    service: carts
   namespace: sock-shop
 spec:
   ports:
@@ -13,4 +14,4 @@ spec:
     name: http
     targetPort: 80
   selector:
-    name: carts
+    app: carts

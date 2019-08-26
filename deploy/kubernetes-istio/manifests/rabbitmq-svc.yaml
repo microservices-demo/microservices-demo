@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: rabbitmq
   labels:
-    name: rabbitmq
+    app: rabbitmq
+    service: rabbitmq
   namespace: sock-shop
 spec:
   ports:
@@ -17,4 +18,4 @@ spec:
     targetPort: exporter
     protocol: TCP
   selector:
-    name: rabbitmq
+    app: rabbitmq

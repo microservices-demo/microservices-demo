@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: shipping
   labels:
-    name: shipping
+    app: shipping
+    service: shipping
   namespace: sock-shop
 spec:
   ports:
@@ -13,5 +14,5 @@ spec:
     name: http
     targetPort: 80
   selector:
-    name: shipping
+    app: shipping
 

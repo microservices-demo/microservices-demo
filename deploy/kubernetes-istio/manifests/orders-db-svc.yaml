@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: orders-db
   labels:
-    name: orders-db
+    app: orders-db
+    service: orders-db
   namespace: sock-shop
 spec:
   ports:
@@ -13,4 +14,4 @@ spec:
     name: mongo
     targetPort: 27017
   selector:
-    name: orders-db
+    app: orders-db
