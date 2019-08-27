@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: front-end-v1
-  lable: 
+  labels: 
     app: front-end
     version: v1
   namespace: sock-shop

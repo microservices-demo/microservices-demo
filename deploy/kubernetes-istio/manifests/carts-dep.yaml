@@ -22,14 +22,14 @@ spec:
          - name: ZIPKIN
            value: zipkin.jaeger.svc.cluster.local
          - name: JAVA_OPTS
-           value: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+           value: -Xms128m -Xmx512m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
         resources:
           limits:
-            cpu: 300m
-            memory: 500Mi
+            cpu: 1200m
+            memory: 800Mi
           requests:
-            cpu: 300m
-            memory: 500Mi
+            cpu: 800m
+            memory: 600Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -54,7 +54,7 @@ spec:
           httpGet:
             path: /health
             port: 80
-          initialDelaySeconds: 180
+          initialDelaySeconds: 60
           periodSeconds: 3
       volumes:
         - name: tmp-volume
