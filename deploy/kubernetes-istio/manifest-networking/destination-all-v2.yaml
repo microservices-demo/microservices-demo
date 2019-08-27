@@ -4,9 +4,6 @@ metadata:
   name: front-end
 spec:
   host: front-end
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
   subsets:
   - name: v2
     labels: 
@@ -19,9 +16,6 @@ metadata:
   name: user
 spec:
   host: user
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
   subsets:
   - name: v2
     labels:
