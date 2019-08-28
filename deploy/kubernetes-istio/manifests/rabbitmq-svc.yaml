@@ -10,11 +10,22 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 5672
-    name: tcp
-    targetPort: 5672
+  - name: rabbitmq
+    port: 5672
+    targetPort: rabbitmq
+  - name: epmd
+    port: 4369
+    targetPort: epmd
+  - name: management
+    port: 15672
+    targetPort: management
+  - name: dist
+    port: 25672
+    targetPort: dist
   - port: 9090
-    name: tcp
-    targetPort: 9090
+    name: exporter
+    targetPort: exporter
+    protocol: TCP
+
   selector:
     app: rabbitmq

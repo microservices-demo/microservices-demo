@@ -25,6 +25,10 @@ spec:
           name: management
         - containerPort: 5672
           name: rabbitmq
+        - containerPort: 4369
+          name: epmd
+        - containerPort: 25672
+          name: dist
         securityContext:
           capabilities:
             drop:
