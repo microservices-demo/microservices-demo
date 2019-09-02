@@ -6,6 +6,8 @@ metadata:
   labels:
     name: session-db
   namespace: sock-shop
+  annotations:
+    flux.weave.works/automated: 'true'
 spec:
   replicas: 1
   template:
@@ -24,11 +26,11 @@ spec:
         securityContext:
           capabilities:
             drop:
-              - all
+            - all
             add:
-              - CHOWN
-              - SETGID
-              - SETUID
+            - CHOWN
+            - SETGID
+            - SETUID
           readOnlyRootFilesystem: true
       nodeSelector:
         beta.kubernetes.io/os: linux
