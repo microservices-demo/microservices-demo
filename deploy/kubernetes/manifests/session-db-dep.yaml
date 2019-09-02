@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: session-db
-        image: redis:alpine
+        image: redis:4-alpine
         ports:
         - name: redis
           containerPort: 6379
