@@ -1,16 +1,20 @@
-apiVersion: extensions/v1beta1
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: carts-db
   labels:
-    name: carts-db
+    app: carts-db
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: carts-db
   template:
     metadata:
       labels:
-        name: carts-db
+        app: carts-db
     spec:
       containers:
       - name: carts-db
@@ -42,7 +46,7 @@ kind: Service
 metadata:
   name: carts-db
   labels:
-    name: carts-db
+    app: carts-db
   namespace: sock-shop
 spec:
   ports:
@@ -50,21 +54,24 @@ spec:
   - port: 27017
     targetPort: 27017
   selector:
-    name: carts-db
+    app: carts-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: carts
   labels:
-    name: carts
+    app: carts
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: carts
   template:
     metadata:
       labels:
-        name: carts
+        app: carts
     spec:
       containers:
       - name: carts
@@ -100,7 +107,7 @@ kind: Service
 metadata:
   name: carts
   labels:
-    name: carts
+    app: carts
   namespace: sock-shop
 spec:
   ports:
@@ -108,21 +115,24 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: carts
+    app: carts
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogue-db
   labels:
-    name: catalogue-db
+    app: catalogue-db
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: catalogue-db
   template:
     metadata:
       labels:
-        name: catalogue-db
+        app: catalogue-db
     spec:
       containers:
       - name: catalogue-db
@@ -143,7 +153,7 @@ kind: Service
 metadata:
   name: catalogue-db
   labels:
-    name: catalogue-db
+    app: catalogue-db
   namespace: sock-shop
 spec:
   ports:
@@ -151,21 +161,24 @@ spec:
   - port: 3306
     targetPort: 3306
   selector:
-    name: catalogue-db
+    app: catalogue-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogue
   labels:
-    name: catalogue
+    app: catalogue
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: catalogue
   template:
     metadata:
       labels:
-        name: catalogue
+        app: catalogue
     spec:
       containers:
       - name: catalogue
@@ -189,7 +202,7 @@ kind: Service
 metadata:
   name: catalogue
   labels:
-    name: catalogue
+    app: catalogue
   namespace: sock-shop
 spec:
   ports:
@@ -197,19 +210,22 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: catalogue
+    app: catalogue
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: front-end
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: front-end
   template:
     metadata:
       labels:
-        name: front-end
+        app: front-end
     spec:
       containers:
       - name: front-end
@@ -235,7 +251,7 @@ kind: Service
 metadata:
   name: front-end
   labels:
-    name: front-end
+    app: front-end
   namespace: sock-shop
 spec:
   type: NodePort
@@ -244,21 +260,24 @@ spec:
     targetPort: 8079
     nodePort: 30001
   selector:
-    name: front-end
+    app: front-end
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: orders-db
   labels:
-    name: orders-db
+    app: orders-db
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: orders-db
   template:
     metadata:
       labels:
-        name: orders-db
+        app: orders-db
     spec:
       containers:
       - name: orders-db
@@ -290,7 +309,7 @@ kind: Service
 metadata:
   name: orders-db
   labels:
-    name: orders-db
+    app: orders-db
   namespace: sock-shop
 spec:
   ports:
@@ -298,21 +317,24 @@ spec:
   - port: 27017
     targetPort: 27017
   selector:
-    name: orders-db
+    app: orders-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: orders
   labels:
-    name: orders
+    app: orders
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: orders
   template:
     metadata:
       labels:
-        name: orders
+        app: orders
     spec:
       containers:
       - name: orders
@@ -348,7 +370,7 @@ kind: Service
 metadata:
   name: orders
   labels:
-    name: orders
+    app: orders
   namespace: sock-shop
 spec:
   ports:
@@ -356,21 +378,24 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: orders
+    app: orders
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: payment
   labels:
-    name: payment
+    app: payment
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: payment
   template:
     metadata:
       labels:
-        name: payment
+        app: payment
     spec:
       containers:
       - name: payment
@@ -394,7 +419,7 @@ kind: Service
 metadata:
   name: payment
   labels:
-    name: payment
+    app: payment
   namespace: sock-shop
 spec:
   ports:
@@ -402,21 +427,24 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: payment
+    app: payment
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: queue-master
   labels:
-    name: queue-master
+    app: queue-master
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: queue-master
   template:
     metadata:
       labels:
-        name: queue-master
+        app: queue-master
     spec:
       containers:
       - name: queue-master
@@ -431,7 +459,7 @@ kind: Service
 metadata:
   name: queue-master
   labels:
-    name: queue-master
+    app: queue-master
   annotations:
     prometheus.io/path: "/prometheus"
   namespace: sock-shop
@@ -441,21 +469,24 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: queue-master
+    app: queue-master
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rabbitmq
   labels:
-    name: rabbitmq
+    app: rabbitmq
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
   template:
     metadata:
       labels:
-        name: rabbitmq
+        app: rabbitmq
     spec:
       containers:
       - name: rabbitmq
@@ -480,7 +511,7 @@ kind: Service
 metadata:
   name: rabbitmq
   labels:
-    name: rabbitmq
+    app: rabbitmq
   namespace: sock-shop
 spec:
   ports:
@@ -488,21 +519,24 @@ spec:
   - port: 5672
     targetPort: 5672
   selector:
-    name: rabbitmq
+    app: rabbitmq
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: shipping
   labels:
-    name: shipping
+    app: shipping
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: shipping
   template:
     metadata:
       labels:
-        name: shipping
+        app: shipping
     spec:
       containers:
       - name: shipping
@@ -538,7 +572,7 @@ kind: Service
 metadata:
   name: shipping
   labels:
-    name: shipping
+    app: shipping
   namespace: sock-shop
 spec:
   ports:
@@ -546,21 +580,24 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: shipping
+    app: shipping
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-db
   labels:
-    name: user-db
+    app: user-db
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: user-db
   template:
     metadata:
       labels:
-        name: user-db
+        app: user-db
     spec:
       containers:
       - name: user-db
@@ -592,7 +629,7 @@ kind: Service
 metadata:
   name: user-db
   labels:
-    name: user-db
+    app: user-db
   namespace: sock-shop
 spec:
   ports:
@@ -600,21 +637,24 @@ spec:
   - port: 27017
     targetPort: 27017
   selector:
-    name: user-db
+    app: user-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user
   labels:
-    name: user
+    app: user
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: user
   template:
     metadata:
       labels:
-        name: user
+        app: user
     spec:
       containers:
       - name: user
@@ -641,7 +681,7 @@ kind: Service
 metadata:
   name: user
   labels:
-    name: user
+    app: user
   namespace: sock-shop
 spec:
   ports:
@@ -649,4 +689,4 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: user
+    app: user
