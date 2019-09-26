@@ -6,6 +6,8 @@ metadata:
   labels:
     name: session-db
   namespace: sock-shop
+  annotations:
+    flux.weave.works/automated: 'true'
 spec:
   replicas: 1
   template:
@@ -17,18 +19,18 @@ spec:
     spec:
       containers:
       - name: session-db
-        image: redis:alpine
+        image: redis:4-alpine
         ports:
         - name: redis
           containerPort: 6379
         securityContext:
           capabilities:
             drop:
-              - all
+            - all
             add:
-              - CHOWN
-              - SETGID
-              - SETUID
+            - CHOWN
+            - SETGID
+            - SETUID
           readOnlyRootFilesystem: true
       nodeSelector:
         beta.kubernetes.io/os: linux
