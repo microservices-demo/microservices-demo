@@ -14,7 +14,7 @@ spec:
         name: elasticsearch
     spec:
       containers:
-       - image: elasticsearch
+       - image: elasticsearch:5
          name: elasticsearch
          ports:
           - name: elasticsearch
