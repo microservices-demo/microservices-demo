@@ -1,5 +1,5 @@
 {{- if .Values.zipkin.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: zipkin-cron
@@ -7,6 +7,9 @@ metadata:
     name: zipkin-cron
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: zipkin-cron
   template:
     metadata:
       labels:

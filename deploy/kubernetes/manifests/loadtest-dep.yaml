@@ -4,7 +4,7 @@ kind: Namespace
 metadata:
   name: loadtest
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: load-test
@@ -13,6 +13,9 @@ metadata:
   namespace: loadtest
 spec:
   replicas: 2
+  selector:
+    matchLabels:
+      name: load-test
   template:
     metadata:
       labels:
