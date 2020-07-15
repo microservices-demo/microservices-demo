@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: carts-db
@@ -6,6 +6,9 @@ metadata:
     name: carts-db
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: carts-db
   replicas: 1
   template:
     metadata:
@@ -52,7 +55,7 @@ spec:
   selector:
     name: carts-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: carts
@@ -60,6 +63,9 @@ metadata:
     name: carts
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: carts
   replicas: 1
   template:
     metadata:
@@ -110,7 +116,7 @@ spec:
   selector:
     name: carts
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogue-db
@@ -118,6 +124,9 @@ metadata:
     name: catalogue-db
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: catalogue-db
   replicas: 1
   template:
     metadata:
@@ -153,7 +162,7 @@ spec:
   selector:
     name: catalogue-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogue
@@ -161,6 +170,9 @@ metadata:
     name: catalogue
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: catalogue
   replicas: 1
   template:
     metadata:
@@ -172,6 +184,11 @@ spec:
         image: weaveworksdemos/catalogue:0.3.5
         ports:
         - containerPort: 80
+        resources:
+          limits:
+            cpu: 120m
+          requests:
+            cpu: 100m
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -199,12 +216,15 @@ spec:
   selector:
     name: catalogue
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: front-end
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: front-end
   replicas: 1
   template:
     metadata:
@@ -246,7 +266,7 @@ spec:
   selector:
     name: front-end
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: orders-db
@@ -254,6 +274,9 @@ metadata:
     name: orders-db
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: orders-db
   replicas: 1
   template:
     metadata:
@@ -300,7 +323,7 @@ spec:
   selector:
     name: orders-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: orders
@@ -308,6 +331,9 @@ metadata:
     name: orders
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: orders
   replicas: 1
   template:
     metadata:
@@ -358,7 +384,7 @@ spec:
   selector:
     name: orders
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: payment
@@ -366,6 +392,9 @@ metadata:
     name: payment
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: payment
   replicas: 1
   template:
     metadata:
@@ -404,7 +433,7 @@ spec:
   selector:
     name: payment
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: queue-master
@@ -412,6 +441,9 @@ metadata:
     name: queue-master
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: queue-master
   replicas: 1
   template:
     metadata:
@@ -443,7 +475,7 @@ spec:
   selector:
     name: queue-master
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rabbitmq
@@ -451,6 +483,9 @@ metadata:
     name: rabbitmq
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: rabbitmq
   replicas: 1
   template:
     metadata:
@@ -490,7 +525,7 @@ spec:
   selector:
     name: rabbitmq
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: shipping
@@ -498,6 +533,9 @@ metadata:
     name: shipping
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: shipping
   replicas: 1
   template:
     metadata:
@@ -548,7 +586,7 @@ spec:
   selector:
     name: shipping
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-db
@@ -556,6 +594,9 @@ metadata:
     name: user-db
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: user-db
   replicas: 1
   template:
     metadata:
@@ -602,7 +643,7 @@ spec:
   selector:
     name: user-db
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user
@@ -610,6 +651,9 @@ metadata:
     name: user
   namespace: sock-shop
 spec:
+  selector:
+    matchLabels:
+      name: user
   replicas: 1
   template:
     metadata:
@@ -650,3 +694,4 @@ spec:
     targetPort: 80
   selector:
     name: user
+
