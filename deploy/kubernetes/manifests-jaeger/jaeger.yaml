@@ -19,7 +19,7 @@ items:
   kind: Namespace
   metadata:
       name: jaeger
-- apiVersion: extensions/v1beta1
+- apiVersion: apps/v1
   kind: Deployment
   metadata:
     name: jaeger-deployment
