@@ -4,16 +4,14 @@ metadata:
   annotations:
     prometheus.io/scrape: 'true'
   labels:
-    name: prometheus
+    app: prometheus
   name: prometheus
   namespace: monitoring
 spec:
   selector:
     app: prometheus
-  type: NodePort
+  type: LoadBalancer
   ports:
-  - name: prometheus
-    protocol: TCP
-    port: 9090
+  - port: 80
     targetPort: 9090
-    nodePort: 31090
+    nodePort: 31091
