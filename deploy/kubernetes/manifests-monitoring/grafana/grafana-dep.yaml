@@ -8,14 +8,22 @@ metadata:
     component: core
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+      component: core
   template:
     metadata:
       labels:
         app: grafana
         component: core
     spec:
+      # https://stackoverflow.com/questions/60727107/how-can-i-give-grafana-user-appropriate-permission-so-that-it-can-start-successf
+      securityContext:
+        runAsUser: 472
+        fsGroup: 472
       containers:
-      - image: grafana/grafana:4.1.2
+      - image: grafana/grafana:7.1.1
         name: grafana-core
         imagePullPolicy: IfNotPresent
         # env:
@@ -46,7 +54,7 @@ spec:
           # timeoutSeconds: 1
         volumeMounts:
         - name: grafana-persistent-storage
-          mountPath: /var
+          mountPath: /var/lib/grafana
       volumes:
       - name: grafana-persistent-storage
         emptyDir: {}
