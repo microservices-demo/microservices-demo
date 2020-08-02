@@ -5,6 +5,9 @@ metadata:
   namespace: monitoring
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: kube-state-metrics
   template:
     metadata:
       labels:
