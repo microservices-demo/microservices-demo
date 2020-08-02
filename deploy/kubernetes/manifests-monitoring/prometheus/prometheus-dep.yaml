@@ -22,26 +22,29 @@ spec:
       serviceAccount: prometheus
       containers:
       - name: prometheus
-        image: prom/prometheus:v1.5.2
+        image: prom/prometheus:v2.20.0
         args:
-        - '-storage.local.retention=360h'
-        - '-storage.local.memory-chunks=1048576'
-        - '-config.file=/etc/prometheus/prometheus.yml'
-        - '-alertmanager.url=http://alertmanager:9093'
+        - '--storage.tsdb.retention=7200h'
+        - '--storage.tsdb.path=/var/lib/prometheus'
+        - '--config.file=/etc/prometheus/prometheus.yml'
         ports:
         - name: web
           containerPort: 9090
         volumeMounts:
         - name: config-volume
           mountPath: /etc/prometheus
-        - name: alertrules-volume
-          mountPath: /etc/prometheus-rules
+        # - name: alertrules-volume
+        #   mountPath: /etc/prometheus-rules
+        - name: prometheus-persistent-storage
+          mountPath: /var/lib/prometheus
       volumes:
+      - name: prometheus-persistent-storage
+        emptyDir: {}
       - name: config-volume
         configMap:
           name: prometheus-configmap
-      - name: alertrules-volume
-        configMap:
-          name: prometheus-alertrules
+      # - name: alertrules-volume
+      #   configMap:
+      #     name: prometheus-alertrules
       nodeSelector:
         beta.kubernetes.io/os: linux
