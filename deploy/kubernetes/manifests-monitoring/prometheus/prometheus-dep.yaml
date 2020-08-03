@@ -24,9 +24,10 @@ spec:
       - name: prometheus
         image: prom/prometheus:v2.20.0
         args:
-        - '--storage.tsdb.retention=7200h'
+        - '--storage.tsdb.retention.time=7200h'
         - '--storage.tsdb.path=/var/lib/prometheus'
         - '--config.file=/etc/prometheus/prometheus.yml'
+        - '--log.level=debug'
         ports:
         - name: web
           containerPort: 9090
@@ -38,11 +39,11 @@ spec:
         - name: prometheus-persistent-storage
           mountPath: /var/lib/prometheus
       volumes:
-      - name: prometheus-persistent-storage
-        emptyDir: {}
       - name: config-volume
         configMap:
           name: prometheus-configmap
+      - name: prometheus-persistent-storage
+        emptyDir: {}
       # - name: alertrules-volume
       #   configMap:
       #     name: prometheus-alertrules
