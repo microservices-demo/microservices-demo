@@ -7,8 +7,8 @@ import json
 import urllib.request
 import time
 
-component_labels = {"front-end", "orders", "orders-db", "carts", "cards-db", "shipping","user", "user-db", "payment", "catalogue", "queue-master", "rabbitmq"}
-step = 15
+COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "cards-db", "shipping","user", "user-db", "payment", "catalogue", "queue-master", "rabbitmq"}
+STEP = 15
 
 def get_targets(url):
     params = {
@@ -52,7 +52,7 @@ def get_series(url, targets, start, end, step):
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
         for target in targets:
             query = '{0}{{namespace="sock-shop",container=~"{1}"}}'.format(
-                    target['metric'], '|'.join(component_labels))
+                    target['metric'], '|'.join(COMPONENT_LABELS))
             if target['type'] == 'counter':
                 query = 'rate({}[1m])'.format(query)
             params = {
@@ -81,10 +81,12 @@ def main():
                                 default=start.timestamp())
     parser.add_argument("--end", help="end epoch time", type=int,
                                 default=now.timestamp())
+    parser.add_argument("--step", help="step seconds", type=int,
+                                default=STEP)
     args = parser.parse_args()
 
     targets = get_targets(args.prometheus_url)
-    series = get_series(args.prometheus_url, targets, args.start, args.end, step)
+    series = get_series(args.prometheus_url, targets, args.start, args.end, args.step)
     print(json.dumps(series, sort_keys=True))
 
 if __name__ == '__main__':
