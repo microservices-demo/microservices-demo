@@ -10,9 +10,9 @@ import time
 COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "cards-db", "shipping","user", "user-db", "payment", "catalogue", "queue-master", "rabbitmq"}
 STEP = 15
 
-def get_targets(url):
+def get_targets(url, job):
     params = {
-        "match_target": '{job="kubernetes-cadvisor"}',
+        "match_target": '{{job="{}"}}'.format(job),
     }
     req = urllib.request.Request('{}{}?{}'.format(url, "/api/v1/targets/metadata",
         urllib.parse.urlencode(params)))
@@ -44,15 +44,14 @@ def request_query(url, params):
     except Exception as e:
         raise(e)
 
-def get_series(url, targets, start, end, step):
+def get_metrics(url, targets, start, end, step, selector):
     start = start - start % step
     end = end - end % step
 
     future_to_params = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
         for target in targets:
-            query = '{0}{{namespace="sock-shop",container=~"{1}"}}'.format(
-                    target['metric'], '|'.join(COMPONENT_LABELS))
+            query = '{0}{{{1}}}'.format(target['metric'], selector)
             if target['type'] == 'counter':
                 query = 'rate({}[1m])'.format(query)
             params = {
@@ -63,13 +62,78 @@ def get_series(url, targets, start, end, step):
             }
             future_to_params[executor.submit(request_query, url, params)] = params
 
-    series = []
+    metrics = []
     for future in concurrent.futures.as_completed(future_to_params):
         params = future_to_params[future]
         res = future.result()
         if res is not None:
-            series.append(res)
-    return series
+            metrics += res
+    return metrics
+
+def get_metrics_by_query(url, start, end, step, query):
+    start = start - start % step
+    end = end - end % step
+    params = {
+        "query": query,
+        "start": start,
+        "end": end,
+        "step": '{}s'.format(step),
+    }
+    return request_query(url, params)
+
+def print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics):
+    """
+    {
+      'containers': {
+        'orders-db': [
+          { container_name: 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] },
+             ...
+        ]
+        ...
+      ]
+      'services': {
+        'orders': [
+          { service_name: 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] } },
+          ...
+        ]
+        ...
+      }
+    }
+    """
+
+    data = {'containers': {}, 'services': {}}
+    for metric in container_metrics:
+        # some metrics in results of prometheus query has no '__name__'
+        if '__name__' not in metric['metric']:
+            continue
+        container = metric['metric']['container']
+        data['containers'].setdefault(container, [])
+        m = {
+            'container_name': container,
+            'metric_name': metric['metric']['__name__'],
+            'values': metric['values'],
+        }
+        data['containers'][container].append(m)
+    for metric in throughput_metrics:
+        service = metric['metric']['name']
+        data['services'].setdefault(service, [])
+        m = {
+            'service_name': metric['metric']['name'],
+            'metric_name': 'throughput',
+            'values': metric['values'],
+        }
+        data['services'][service].append(m)
+    for metric in latency_metrics:
+        service = metric['metric']['name']
+        data['services'].setdefault(service, [])
+        m = {
+            'service_name': metric['metric']['name'],
+            'metric_name': 'latency',
+            'values': metric['values'],
+        }
+        data['services'][service].append(m)
+
+    print(json.dumps(data, sort_keys=True))
 
 def main():
     parser = argparse.ArgumentParser()
@@ -85,9 +149,19 @@ def main():
                                 default=STEP)
     args = parser.parse_args()
 
-    targets = get_targets(args.prometheus_url)
-    series = get_series(args.prometheus_url, targets, args.start, args.end, args.step)
-    print(json.dumps(series, sort_keys=True))
+    container_targets = get_targets(args.prometheus_url, "kubernetes-cadvisor")
+    container_selector = 'namespace="sock-shop",container=~"{}"'.format('|'.join(COMPONENT_LABELS))
+    container_metrics = get_metrics(args.prometheus_url, container_targets, args.start, args.end, args.step, container_selector)
+
+    throughput_metrics = get_metrics_by_query(
+        args.prometheus_url, args.start, args.end, args.step,
+            'sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
+    )
+    latency_metrics = get_metrics_by_query(
+        args.prometheus_url, args.start, args.end, args.step,
+        'sum by (name) (rate(request_duration_seconds_sum{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m])) / sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
+    )
+    print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics)
 
 if __name__ == '__main__':
     main()
