@@ -7,7 +7,7 @@ import json
 import urllib.request
 import time
 
-COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "cards-db", "shipping","user", "user-db", "payment", "catalogue", "queue-master", "rabbitmq"}
+COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "cards-db", "shipping", "user", "user-db", "payment", "catalogue", "catalogue-db", "queue-master", "rabbitmq"}
 STEP = 15
 
 def get_targets(url, job):
