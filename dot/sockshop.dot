@@ -10,6 +10,7 @@ digraph sockshop {
      cata [label="catalogue"];
      catadb [label="catalogue-db"];
      orders [label="orders"];
+     ordersdb [label="orders-db"];
      user [label="user"];
      userdb [label="user-db"];
      pay [label="payement"];
@@ -19,10 +20,11 @@ digraph sockshop {
      carts [label="carts"];
      cartsdb [label="carts-db"];
 
-     front -> orders -> carts;
+     front -> orders -> ordersdb;
      front -> carts -> cartsdb:
      front -> user -> userdb;
      front -> cata -> catadb;
+     orders -> carts;
      orders -> user;
      orders -> pay;
      orders -> ship -> rabbitmq -> qm;
