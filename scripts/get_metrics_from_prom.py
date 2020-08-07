@@ -40,7 +40,7 @@ def request_query(url, params, target):
             result = body['data']['result']
             if result is not None and len(result) > 0:
                 for r in result:
-                    r['metric']['__name__'] = target
+                    r['metric']['__name__'] = target['metric']
                 return result
     except urllib.error.HTTPError as err:
         print(urllib.parse.unquote(params.decode()))
@@ -164,12 +164,12 @@ def main():
     throughput_metrics = get_metrics_by_query(
         args.prometheus_url, args.start, args.end, args.step,
             'sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
-            'request_duration_seconds_count',
+            {'metric': 'request_duration_seconds_count', 'type': 'gauge'},
     )
     latency_metrics = get_metrics_by_query(
         args.prometheus_url, args.start, args.end, args.step,
         'sum by (name) (rate(request_duration_seconds_sum{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m])) / sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
-        'request_duration_seconds_sum',
+        {'metric': 'request_duration_seconds_sum', 'type': 'gauge'},
     )
     print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics)
 
