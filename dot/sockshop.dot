@@ -1,0 +1,33 @@
+digraph sockshop {
+     graph [
+          layout = dot;
+     ];
+     edge [
+          dir = back;
+     ];
+
+     front [label="front-end"];
+     cata [label="catalogue"];
+     catadb [label="catalogue-db"];
+     orders [label="orders"];
+     user [label="user"];
+     userdb [label="user-db"];
+     pay [label="payement"];
+     ship [label="shipping"];
+     qm [label="queue-master"];
+     rabbit [label="rabbitmq"];
+     carts [label="carts"];
+     cartsdb [label="carts-db"];
+
+     front -> orders -> carts;
+     front -> carts -> cartsdb:
+     front -> user -> userdb;
+     front -> cata -> catadb;
+     orders -> user;
+     orders -> pay;
+     orders -> ship -> rabbitmq -> qm;
+
+     {rank = min; front;}
+     {rank = same; orders; cata;}
+     {rank = same; carts; user; pay; ship;}
+}
