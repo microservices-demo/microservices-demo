@@ -140,7 +140,7 @@ def main():
     parser.add_argument("--prometheus-url", help="endpoint URL for prometheus server",
                                 default="http://localhost:9090")
     now = datetime.datetime.now()
-    start = now - datetime.timedelta(minutes=30) # now - 30minutes
+    start = now - datetime.timedelta(minutes=60) # now - 60minutes
     parser.add_argument("--start", help="start epoch time", type=int,
                                 default=start.timestamp())
     parser.add_argument("--end", help="end epoch time", type=int,
