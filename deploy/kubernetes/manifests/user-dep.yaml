@@ -8,6 +8,9 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: user
   template:
     metadata:
       labels:
@@ -36,7 +39,6 @@ spec:
               - all
             add:
               - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /health

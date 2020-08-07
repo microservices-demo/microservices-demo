@@ -8,6 +8,9 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: session-db
   template:
     metadata:
       labels:
@@ -29,6 +32,5 @@ spec:
               - CHOWN
               - SETGID
               - SETUID
-          readOnlyRootFilesystem: true
       nodeSelector:
         beta.kubernetes.io/os: linux

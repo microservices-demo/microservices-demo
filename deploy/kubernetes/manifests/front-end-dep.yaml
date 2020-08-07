@@ -6,6 +6,9 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: front-end
   template:
     metadata:
       labels:

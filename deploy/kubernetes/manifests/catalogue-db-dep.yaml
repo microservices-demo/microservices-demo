@@ -8,10 +8,10 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: catalogue-db
   template:
-    metadata:
-      labels:
-        name: catalogue-db
     spec:
       containers:
       - name: catalogue-db
