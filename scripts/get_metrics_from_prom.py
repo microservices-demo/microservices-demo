@@ -27,7 +27,7 @@ def get_targets(url, job):
                 dupcheck[item["metric"]] = 1
         return targets
 
-def request_query(url, params):
+def request_query(url, params, target):
     params = urllib.parse.urlencode(params).encode('ascii')
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -39,6 +39,8 @@ def request_query(url, params):
             body = json.load(res)
             result = body['data']['result']
             if result is not None and len(result) > 0:
+                for r in result:
+                    r['metric']['__name__'] = target
                 return result
     except urllib.error.HTTPError as err:
         print(urllib.parse.unquote(params.decode()))
@@ -54,7 +56,7 @@ def get_metrics(url, targets, start, end, step, selector):
     start = start - start % step
     end = end - end % step
 
-    future_to_params = {}
+    futures = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
         for target in targets:
             query = '{0}{{{1}}}'.format(target['metric'], selector)
@@ -66,17 +68,17 @@ def get_metrics(url, targets, start, end, step, selector):
                 "end": end,
                 "step": '{}s'.format(step),
             }
-            future_to_params[executor.submit(request_query, url, params)] = params
+            futures.append(executor.submit(request_query, url, params, target))
+        executor.shutdown()
 
     metrics = []
-    for future in concurrent.futures.as_completed(future_to_params):
-        params = future_to_params[future]
+    for future in concurrent.futures.as_completed(futures):
         res = future.result()
         if res is not None:
             metrics += res
     return metrics
 
-def get_metrics_by_query(url, start, end, step, query):
+def get_metrics_by_query(url, start, end, step, query, target):
     start = start - start % step
     end = end - end % step
     params = {
@@ -85,7 +87,7 @@ def get_metrics_by_query(url, start, end, step, query):
         "end": end,
         "step": '{}s'.format(step),
     }
-    return request_query(url, params)
+    return request_query(url, params, target)
 
 def print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics):
     """
@@ -139,7 +141,7 @@ def print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics
         }
         data['services'][service].append(m)
 
-    print(json.dumps(data, sort_keys=True))
+    print(json.dumps(data))
 
 def main():
     parser = argparse.ArgumentParser()
@@ -162,10 +164,12 @@ def main():
     throughput_metrics = get_metrics_by_query(
         args.prometheus_url, args.start, args.end, args.step,
             'sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
+            'request_duration_seconds_count',
     )
     latency_metrics = get_metrics_by_query(
         args.prometheus_url, args.start, args.end, args.step,
         'sum by (name) (rate(request_duration_seconds_sum{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m])) / sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
+        'request_duration_seconds_sum',
     )
     print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics)
 
