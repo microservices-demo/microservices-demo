@@ -16,9 +16,15 @@ def get_targets(url, job):
     }
     req = urllib.request.Request('{}{}?{}'.format(url, "/api/v1/targets/metadata",
         urllib.parse.urlencode(params)))
+    dupcheck = {}
+    targets = []
     with urllib.request.urlopen(req) as res:
         body = json.load(res)
-        targets = [ {"metric": item["metric"], "type": item["type"]} for item in body["data"] ]
+        # remove duplicate target
+        for item in body["data"]:
+            if item["metric"] not in dupcheck:
+                targets.append({"metric": item["metric"], "type": item["type"]})
+                dupcheck[item["metric"]] = 1
         return targets
 
 def request_query(url, params):
