@@ -12,6 +12,9 @@ spec:
     matchLabels:
       name: catalogue-db
   template:
+    metadata:
+      labels:
+        name: catalogue-db
     spec:
       containers:
       - name: catalogue-db
