@@ -5,6 +5,7 @@ import concurrent.futures
 import datetime
 import json
 import urllib.request
+import sys
 import time
 
 COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "cards-db", "shipping", "user", "user-db", "payment", "catalogue", "catalogue-db", "queue-master", "rabbitmq"}
@@ -91,6 +92,7 @@ def get_metrics_by_query(url, start, end, step, query, target):
 
 def print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics):
     """
+    An example of JSON
     {
       'containers': {
         'orders-db': [
@@ -147,27 +149,54 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--prometheus-url", help="endpoint URL for prometheus server",
                                 default="http://localhost:9090")
-    now = datetime.datetime.now()
-    start = now - datetime.timedelta(minutes=60) # now - 60minutes
-    parser.add_argument("--start", help="start epoch time", type=int,
-                                default=start.timestamp())
-    parser.add_argument("--end", help="end epoch time", type=int,
-                                default=now.timestamp())
-    parser.add_argument("--step", help="step seconds", type=int,
-                                default=STEP)
+    parser.add_argument("--start", help="start epoch time", type=int)
+    parser.add_argument("--end", help="end epoch time", type=int)
+    parser.add_argument("--step", help="step seconds", type=int, default=STEP)
+    parser.add_argument("--duration", help="", type=str, default="60m")
     args = parser.parse_args()
+
+    duration = datetime.timedelta(seconds=0)
+    dt = args.duration
+    if dt.endswith("s") or dt.endswith("sec"):
+        duration = datetime.timedelta(seconds=int(dt[:-1]))
+    elif dt.endswith("m") or dt.endswith("min"):
+        duration = datetime.timedelta(minutes=int(dt[:-1]))
+    elif dt.endswith("h") or dt.endswith("hours"):
+        duration = datetime.timedelta(hours=int(dt[:-1]))
+    else:
+        parser.print_help()
+        exit(-1)
+    duration = int(duration.total_seconds())
+
+    now = int(datetime.datetime.now().timestamp())
+    start, end = now - duration, now
+    if args.end is None and args.start is None:
+        pass
+    elif args.end is not None and args.start is None:
+        end = args.end
+        start = end - duration
+    elif args.end is None and args.start is not None:
+        start = args.start
+        end = start + duration
+    elif args.end is not None and args.start is not None:
+        start, end = args.start, args.end
+    else:
+        raise("not reachable")
+    if start > end:
+        print("start must be lower than end.", file=sys.stderr)
+        parser.print_help()
 
     container_targets = get_targets(args.prometheus_url, "kubernetes-cadvisor")
     container_selector = 'namespace="sock-shop",container=~"{}"'.format('|'.join(COMPONENT_LABELS))
-    container_metrics = get_metrics(args.prometheus_url, container_targets, args.start, args.end, args.step, container_selector)
+    container_metrics = get_metrics(args.prometheus_url, container_targets, start, end, args.step, container_selector)
 
     throughput_metrics = get_metrics_by_query(
-        args.prometheus_url, args.start, args.end, args.step,
+        args.prometheus_url, start, end, args.step,
             'sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
             {'metric': 'request_duration_seconds_count', 'type': 'gauge'},
     )
     latency_metrics = get_metrics_by_query(
-        args.prometheus_url, args.start, args.end, args.step,
+        args.prometheus_url, start, end, args.step,
         'sum by (name) (rate(request_duration_seconds_sum{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m])) / sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
         {'metric': 'request_duration_seconds_sum', 'type': 'gauge'},
     )
