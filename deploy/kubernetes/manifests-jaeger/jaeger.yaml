@@ -18,7 +18,7 @@ items:
 - apiVersion: v1
   kind: Namespace
   metadata:
-      name: jaeger
+    name: jaeger
 - apiVersion: apps/v1
   kind: Deployment
   metadata:
@@ -29,6 +29,10 @@ items:
       jaeger-infra: jaeger-deployment
   spec:
     replicas: 1
+    selector:
+      matchLabels:
+        app: jaeger
+        jaeger-infra: jaeger-pod
     strategy:
       type: Recreate
     template:
