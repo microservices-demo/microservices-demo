@@ -8,6 +8,9 @@ metadata:
   namespace: kube-system
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: elasticsearch
   template:
     metadata:
       labels:
