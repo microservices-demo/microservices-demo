@@ -14,6 +14,17 @@ data:
     rule_files:
       - "/etc/prometheus-rules/alert.rules"
     scrape_configs:
+    - job_name: 'kubernetes-nodes'
+      scheme: https
+      kubernetes_sd_configs:
+      - role: node
+      metrics_path: /metrics
+      tls_config:
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
     - job_name: 'kubernetes-cadvisor'
       scheme: https
       kubernetes_sd_configs:
