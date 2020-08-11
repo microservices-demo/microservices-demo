@@ -90,28 +90,31 @@ def get_metrics_by_query(url, start, end, step, query, target):
     }
     return request_query(url, params, target)
 
-def print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics):
+def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics):
     """
     An example of JSON
     {
       'containers': {
         'orders-db': [
-          { container_name: 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] },
+          { 'container_name': 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] },
              ...
         ]
         ...
       ]
       'services': {
         'orders': [
-          { service_name: 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] } },
+          { 'service_name': 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] } },
           ...
         ]
         ...
+      },
+      'nodes': {
+        [ {'node_name': 'xxx'}, 'metric_name': 'xx', 'values': [<timestamp>, <value>]],
       }
     }
     """
 
-    data = {'containers': {}, 'services': {}}
+    data = {'containers': {}, 'nodes':{}, 'services': {}}
     for metric in container_metrics:
         # some metrics in results of prometheus query has no '__name__'
         if '__name__' not in metric['metric']:
@@ -124,6 +127,18 @@ def print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics
             'values': metric['values'],
         }
         data['containers'][container].append(m)
+    for metric in node_metrics:
+        # some metrics in results of prometheus query has no '__name__'
+        if '__name__' not in metric['metric']:
+            continue
+        node = metric['metric']['node']
+        data['nodes'].setdefault(node, [])
+        m = {
+            'node_name': node,
+            'metric_name': metric['metric']['__name__'],
+            'values': metric['values'],
+        }
+        data['nodes'][node].append(m)
     for metric in throughput_metrics:
         service = metric['metric']['name']
         data['services'].setdefault(service, [])
@@ -186,10 +201,17 @@ def main():
         print("start must be lower than end.", file=sys.stderr)
         parser.print_help()
 
+    # get container metrics (cAdvisor)
     container_targets = get_targets(args.prometheus_url, "kubernetes-cadvisor")
     container_selector = 'namespace="sock-shop",container=~"{}"'.format('|'.join(COMPONENT_LABELS))
     container_metrics = get_metrics(args.prometheus_url, container_targets, start, end, args.step, container_selector)
 
+    # get node metrics (node-exporter)
+    node_targets = get_targets(args.prometheus_url, "monitoring/")
+    node_selector = 'job="monitoring/"'
+    node_metrics = get_metrics(args.prometheus_url, node_targets, start, end, args.step, node_selector)
+
+    # get service metrics
     throughput_metrics = get_metrics_by_query(
         args.prometheus_url, start, end, args.step,
             'sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
@@ -200,7 +222,7 @@ def main():
         'sum by (name) (rate(request_duration_seconds_sum{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m])) / sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
         {'metric': 'request_duration_seconds_sum', 'type': 'gauge'},
     )
-    print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics)
+    print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics)
 
 if __name__ == '__main__':
     main()
