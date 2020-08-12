@@ -8,7 +8,7 @@ import urllib.request
 import sys
 import time
 
-COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "cards-db", "shipping", "user", "user-db", "payment", "catalogue", "catalogue-db", "queue-master", "rabbitmq"}
+COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "carts-db", "shipping", "user", "user-db", "payment", "catalogue", "catalogue-db", "queue-master", "rabbitmq"}
 STEP = 15
 
 def get_targets(url, job):
@@ -29,6 +29,29 @@ def get_targets(url, job):
         return targets
 
 def request_query(url, params, target):
+    params = urllib.parse.urlencode(params).encode('ascii')
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+    }
+    try:
+        req = urllib.request.Request(url=url+'/api/v1/query',
+            data=params, headers=headers)
+        with urllib.request.urlopen(req) as res:
+            body = json.load(res)
+            result = body['data']['result']
+            if result is not None and len(result) > 0:
+                return result
+    except urllib.error.HTTPError as err:
+        print(urllib.parse.unquote(params.decode()))
+        print(err.read().decode())
+        raise(err)
+    except urllib.error.URLError as err:
+        print(err.reason)
+        raise(err)
+    except Exception as e:
+        raise(e)
+
+def request_query_range(url, params, target):
     params = urllib.parse.urlencode(params).encode('ascii')
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -69,7 +92,7 @@ def get_metrics(url, targets, start, end, step, selector):
                 "end": end,
                 "step": '{}s'.format(step),
             }
-            futures.append(executor.submit(request_query, url, params, target))
+            futures.append(executor.submit(request_query_range, url, params, target))
         executor.shutdown()
 
     metrics = []
@@ -88,9 +111,25 @@ def get_metrics_by_query(url, start, end, step, query, target):
         "end": end,
         "step": '{}s'.format(step),
     }
-    return request_query(url, params, target)
+    return request_query_range(url, params, target)
 
-def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics):
+def check_instrumentation_labels(url, targets):
+    futures = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(targets)) as executor:
+        for target in targets:
+            query = '{0}{{{1}}}'.format(target['metric'], selector)
+            params = { "query": query }
+            futures.append(executor.submit(request_query_range, url, params, target))
+        executor.shutdown()
+
+    metrics = []
+    for future in concurrent.futures.as_completed(futures):
+        res = future.result()
+        if res is not None:
+            metrics += res
+    return metrics
+
+def print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics):
     """
     An example of JSON
     {
@@ -109,12 +148,20 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
         ...
       },
       'nodes': {
-        [ {'node_name': 'xxx'}, 'metric_name': 'xx', 'values': [<timestamp>, <value>]],
+        '<node name>': [
+          [ {'node_name': 'xxx'}, 'metric_name': 'xx', 'values': [<timestamp>, <value>]],
+        ],
+      },
+      'mappings': {
+         nodes-containers': {
+           '<container name>': [
+           ]
+         }
       }
     }
     """
 
-    data = {'containers': {}, 'nodes':{}, 'services': {}}
+    data = {'containers': {}, 'services': {}}
     for metric in container_metrics:
         # some metrics in results of prometheus query has no '__name__'
         if '__name__' not in metric['metric']:
@@ -127,18 +174,18 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
             'values': metric['values'],
         }
         data['containers'][container].append(m)
-    for metric in node_metrics:
-        # some metrics in results of prometheus query has no '__name__'
-        if '__name__' not in metric['metric']:
-            continue
-        node = metric['metric']['node']
-        data['nodes'].setdefault(node, [])
-        m = {
-            'node_name': node,
-            'metric_name': metric['metric']['__name__'],
-            'values': metric['values'],
-        }
-        data['nodes'][node].append(m)
+    # for metric in node_metrics:
+    #     # some metrics in results of prometheus query has no '__name__'
+    #     if '__name__' not in metric['metric']:
+    #         continue
+    #     node = metric['metric']['node']
+    #     data['nodes'].setdefault(node, [])
+    #     m = {
+    #         'node_name': node,
+    #         'metric_name': metric['metric']['__name__'],
+    #         'values': metric['values'],
+    #     }
+    #     data['nodes'][node].append(m)
     for metric in throughput_metrics:
         service = metric['metric']['name']
         data['services'].setdefault(service, [])
@@ -207,9 +254,9 @@ def main():
     container_metrics = get_metrics(args.prometheus_url, container_targets, start, end, args.step, container_selector)
 
     # get node metrics (node-exporter)
-    node_targets = get_targets(args.prometheus_url, "monitoring/")
-    node_selector = 'job="monitoring/"'
-    node_metrics = get_metrics(args.prometheus_url, node_targets, start, end, args.step, node_selector)
+    # node_targets = get_targets(args.prometheus_url, "monitoring/")
+    # node_selector = 'job="monitoring/"'
+    # node_metrics = get_metrics(args.prometheus_url, node_targets, start, end, args.step, node_selector)
 
     # get service metrics
     throughput_metrics = get_metrics_by_query(
@@ -222,7 +269,7 @@ def main():
         'sum by (name) (rate(request_duration_seconds_sum{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m])) / sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
         {'metric': 'request_duration_seconds_sum', 'type': 'gauge'},
     )
-    print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics)
+    print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics)
 
 if __name__ == '__main__':
     main()
