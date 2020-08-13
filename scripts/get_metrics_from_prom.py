@@ -42,36 +42,38 @@ def request_query(url, params, target):
             if result is not None and len(result) > 0:
                 return result
     except urllib.error.HTTPError as err:
-        print(urllib.parse.unquote(params.decode()))
-        print(err.read().decode())
+        print(urllib.parse.unquote(params.decode()), file=sys.stderr)
+        print(err.read().decode(), file=sys.stderr)
         raise(err)
     except urllib.error.URLError as err:
-        print(err.reason)
+        print(err.reason, file=sys.stderr)
         raise(err)
     except Exception as e:
         raise(e)
 
 def request_query_range(url, params, target):
-    params = urllib.parse.urlencode(params).encode('ascii')
+    bparams = urllib.parse.urlencode(params).encode('ascii')
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
     }
     try:
+        # see https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries
         req = urllib.request.Request(url=url+'/api/v1/query_range',
-            data=params, headers=headers)
+            data=bparams, headers=headers)
         with urllib.request.urlopen(req) as res:
             body = json.load(res)
-            result = body['data']['result']
-            if result is not None and len(result) > 0:
-                for r in result:
-                    r['metric']['__name__'] = target['metric']
-                return result
+            metrics = body['data']['result']
+            if metrics is None or len(metrics) < 1:
+                return []
+            for metric in metrics:
+                metric['metric']['__name__'] = target['metric']
+            return metrics
     except urllib.error.HTTPError as err:
-        print(urllib.parse.unquote(params.decode()))
-        print(err.read().decode())
+        print(urllib.parse.unquote(bparams.decode()), file=sys.stderr)
+        print(err.read().decode(), file=sys.stderr)
         raise(err)
     except urllib.error.URLError as err:
-        print(err.reason)
+        print(err.reason, file=sys.stderr)
         raise(err)
     except Exception as e:
         raise(e)
@@ -83,9 +85,12 @@ def get_metrics(url, targets, start, end, step, selector):
     futures = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
         for target in targets:
+            if target == 'node_cpu_seconds_total':
+                selector += ',mode!="idle"'
             query = '{0}{{{1}}}'.format(target['metric'], selector)
             if target['type'] == 'counter':
                 query = 'rate({}[1m])'.format(query)
+            query = 'sum by (instance,job,node,container)({})'.format(query)
             params = {
                 "query": query,
                 "start": start,
@@ -95,14 +100,15 @@ def get_metrics(url, targets, start, end, step, selector):
             futures.append(executor.submit(request_query_range, url, params, target))
         executor.shutdown()
 
-    metrics = []
+    concated_metrics = []
     for future in concurrent.futures.as_completed(futures):
-        res = future.result()
-        if res is not None:
-            metrics += res
-    return metrics
+        metrics = future.result()
+        if metrics is None:
+            continue
+        concated_metrics += metrics
+    return concated_metrics
 
-def get_metrics_by_query(url, start, end, step, query, target):
+def get_metrics_by_query_range(url, start, end, step, query, target):
     start = start - start % step
     end = end - end % step
     params = {
@@ -113,23 +119,7 @@ def get_metrics_by_query(url, start, end, step, query, target):
     }
     return request_query_range(url, params, target)
 
-def check_instrumentation_labels(url, targets):
-    futures = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=len(targets)) as executor:
-        for target in targets:
-            query = '{0}{{{1}}}'.format(target['metric'], selector)
-            params = { "query": query }
-            futures.append(executor.submit(request_query_range, url, params, target))
-        executor.shutdown()
-
-    metrics = []
-    for future in concurrent.futures.as_completed(futures):
-        res = future.result()
-        if res is not None:
-            metrics += res
-    return metrics
-
-def print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics):
+def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics):
     """
     An example of JSON
     {
@@ -161,7 +151,7 @@ def print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics
     }
     """
 
-    data = {'containers': {}, 'services': {}}
+    data = {'containers': {}, 'nodes':{}, 'services': {}}
     for metric in container_metrics:
         # some metrics in results of prometheus query has no '__name__'
         if '__name__' not in metric['metric']:
@@ -174,18 +164,18 @@ def print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics
             'values': metric['values'],
         }
         data['containers'][container].append(m)
-    # for metric in node_metrics:
-    #     # some metrics in results of prometheus query has no '__name__'
-    #     if '__name__' not in metric['metric']:
-    #         continue
-    #     node = metric['metric']['node']
-    #     data['nodes'].setdefault(node, [])
-    #     m = {
-    #         'node_name': node,
-    #         'metric_name': metric['metric']['__name__'],
-    #         'values': metric['values'],
-    #     }
-    #     data['nodes'][node].append(m)
+    for metric in node_metrics:
+        # some metrics in results of prometheus query has no '__name__'
+        if '__name__' not in metric['metric']:
+            continue
+        node = metric['metric']['node']
+        data['nodes'].setdefault(node, [])
+        m = {
+            'node_name': node,
+            'metric_name': metric['metric']['__name__'],
+            'values': metric['values'],
+        }
+        data['nodes'][node].append(m)
     for metric in throughput_metrics:
         service = metric['metric']['name']
         data['services'].setdefault(service, [])
@@ -254,22 +244,22 @@ def main():
     container_metrics = get_metrics(args.prometheus_url, container_targets, start, end, args.step, container_selector)
 
     # get node metrics (node-exporter)
-    # node_targets = get_targets(args.prometheus_url, "monitoring/")
-    # node_selector = 'job="monitoring/"'
-    # node_metrics = get_metrics(args.prometheus_url, node_targets, start, end, args.step, node_selector)
+    node_targets = get_targets(args.prometheus_url, "monitoring/")
+    node_selector = 'job="monitoring/"'
+    node_metrics = get_metrics(args.prometheus_url, node_targets, start, end, args.step, node_selector)
 
     # get service metrics
-    throughput_metrics = get_metrics_by_query(
+    throughput_metrics = get_metrics_by_query_range(
         args.prometheus_url, start, end, args.step,
             'sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
             {'metric': 'request_duration_seconds_count', 'type': 'gauge'},
     )
-    latency_metrics = get_metrics_by_query(
+    latency_metrics = get_metrics_by_query_range(
         args.prometheus_url, start, end, args.step,
         'sum by (name) (rate(request_duration_seconds_sum{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m])) / sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
         {'metric': 'request_duration_seconds_sum', 'type': 'gauge'},
     )
-    print_metrics_as_json(container_metrics, throughput_metrics, latency_metrics)
+    print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics)
 
 if __name__ == '__main__':
     main()
