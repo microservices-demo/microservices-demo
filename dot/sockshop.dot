@@ -13,7 +13,7 @@ digraph sockshop {
      ordersdb [label="orders-db"];
      user [label="user"];
      userdb [label="user-db"];
-     pay [label="payement"];
+     pay [label="payment"];
      ship [label="shipping"];
      qm [label="queue-master"];
      rabbit [label="rabbitmq"];
