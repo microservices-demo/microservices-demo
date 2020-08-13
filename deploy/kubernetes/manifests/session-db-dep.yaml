@@ -24,13 +24,5 @@ spec:
         ports:
         - name: redis
           containerPort: 6379
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
       nodeSelector:
         beta.kubernetes.io/os: linux

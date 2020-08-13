@@ -26,15 +26,6 @@ spec:
           name: management
         - containerPort: 5672
           name: rabbitmq
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-              - DAC_OVERRIDE
       - name: rabbitmq-exporter
         image: kbudde/rabbitmq-exporter
         ports:
