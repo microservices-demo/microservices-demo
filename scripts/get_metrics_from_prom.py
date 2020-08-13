@@ -28,29 +28,6 @@ def get_targets(url, job):
                 dupcheck[item["metric"]] = 1
         return targets
 
-def request_query(url, params, target):
-    params = urllib.parse.urlencode(params).encode('ascii')
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-    }
-    try:
-        req = urllib.request.Request(url=url+'/api/v1/query',
-            data=params, headers=headers)
-        with urllib.request.urlopen(req) as res:
-            body = json.load(res)
-            result = body['data']['result']
-            if result is not None and len(result) > 0:
-                return result
-    except urllib.error.HTTPError as err:
-        print(urllib.parse.unquote(params.decode()), file=sys.stderr)
-        print(err.read().decode(), file=sys.stderr)
-        raise(err)
-    except urllib.error.URLError as err:
-        print(err.reason, file=sys.stderr)
-        raise(err)
-    except Exception as e:
-        raise(e)
-
 def request_query_range(url, params, target):
     bparams = urllib.parse.urlencode(params).encode('ascii')
     headers = {
