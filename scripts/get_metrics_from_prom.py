@@ -90,7 +90,7 @@ def get_metrics(url, targets, start, end, step, selector):
             query = '{0}{{{1}}}'.format(target['metric'], selector)
             if target['type'] == 'counter':
                 query = 'rate({}[1m])'.format(query)
-            query = 'sum by (instance,job,node,container)({})'.format(query)
+            query = 'sum by (instance,job,node,container,pod)({})'.format(query)
             params = {
                 "query": query,
                 "start": start,
@@ -154,9 +154,11 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
     data = {'containers': {}, 'nodes':{}, 'services': {}}
     for metric in container_metrics:
         # some metrics in results of prometheus query has no '__name__'
-        if '__name__' not in metric['metric']:
+        labels = metric['metric']
+        if '__name__' not in labels:
             continue
-        container = metric['metric']['container']
+        # ex. pod="queue-master-85f5644bf5-wrp7q"
+        container = labels['pod'].rsplit("-", maxsplit=2)[0] if 'pod' in labels else labels['container']
         data['containers'].setdefault(container, [])
         m = {
             'container_name': container,
@@ -240,7 +242,7 @@ def main():
 
     # get container metrics (cAdvisor)
     container_targets = get_targets(args.prometheus_url, "kubernetes-cadvisor")
-    container_selector = 'namespace="sock-shop",container=~"{}"'.format('|'.join(COMPONENT_LABELS))
+    container_selector = 'namespace="sock-shop",container=~"{}|POD"'.format('|'.join(COMPONENT_LABELS))
     container_metrics = get_metrics(args.prometheus_url, container_targets, start, end, args.step, container_selector)
 
     # get node metrics (node-exporter)
