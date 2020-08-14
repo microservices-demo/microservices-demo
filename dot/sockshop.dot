@@ -19,11 +19,13 @@ digraph sockshop {
      rabbit [label="rabbitmq"];
      carts [label="carts"];
      cartsdb [label="carts-db"];
+     sessiondb  [label="session-db"];
 
      front -> orders -> ordersdb;
      front -> carts -> cartsdb:
      front -> user -> userdb;
      front -> cata -> catadb;
+     front -> sessiondb;
      orders -> carts;
      orders -> user;
      orders -> pay;
