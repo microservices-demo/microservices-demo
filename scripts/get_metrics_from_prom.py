@@ -96,6 +96,11 @@ def get_metrics_by_query_range(url, start, end, step, query, target):
     }
     return request_query_range(url, params, target)
 
+def support_set_default(obj):
+    if isinstance(obj, set):
+        return list(obj)
+    raise TypeError(repr(obj) + " is not JSON serializable")
+
 def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics):
     """
     An example of JSON
@@ -120,15 +125,14 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
         ],
       },
       'mappings': {
-         nodes-containers': {
-           '<container name>': [
-           ]
+         'nodes-containers': {
+           '<node name>': [ '<container name>', ... ]
          }
       }
     }
     """
 
-    data = {'containers': {}, 'nodes':{}, 'services': {}}
+    data = {'containers': {}, 'nodes':{}, 'services': {}, 'mappings': {'nodes-containers': {}}}
     for metric in container_metrics:
         # some metrics in results of prometheus query has no '__name__'
         labels = metric['metric']
@@ -143,6 +147,8 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
             'values': metric['values'],
         }
         data['containers'][container].append(m)
+        data['mappings']['nodes-containers'].setdefault(labels['instance'], set())
+        data['mappings']['nodes-containers'][labels['instance']].add(container)
     for metric in node_metrics:
         # some metrics in results of prometheus query has no '__name__'
         if '__name__' not in metric['metric']:
@@ -174,7 +180,7 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
         }
         data['services'][service].append(m)
 
-    print(json.dumps(data))
+    print(json.dumps(data, default=support_set_default))
 
 def main():
     parser = argparse.ArgumentParser()
