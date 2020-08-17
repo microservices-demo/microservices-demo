@@ -133,6 +133,7 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
     """
 
     data = {'containers': {}, 'nodes':{}, 'services': {}, 'mappings': {'nodes-containers': {}}}
+    dupcheck = {}
     for metric in container_metrics:
         # some metrics in results of prometheus query has no '__name__'
         labels = metric['metric']
@@ -141,12 +142,29 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
         # ex. pod="queue-master-85f5644bf5-wrp7q"
         container = labels['pod'].rsplit("-", maxsplit=2)[0] if 'pod' in labels else labels['container']
         data['containers'].setdefault(container, [])
+        metric_name = labels['__name__']
         m = {
             'container_name': container,
-            'metric_name': metric['metric']['__name__'],
+            'metric_name': metric_name,
             'values': metric['values'],
         }
-        data['containers'][container].append(m)
+
+        # 1. {container: 'POD'} => {container: 'xxx' } -> Update 'POD'
+        # 2. {container: 'xxx'} => {container: 'POD' } -> Discard 'POD'
+        # 3. {container: 'POD'}
+        dupcheck.setdefault(container, {})
+        dupcheck[container][metric_name] = False
+        if labels['container'] == 'POD':
+            if not dupcheck[container][metric_name]:
+                data['containers'][container].append(m)
+        else:
+            if not dupcheck[container][metric_name]:
+                uniq_metrics = [x for x in data['containers'][container] if x['metric_name'] != metric_name]
+                uniq_metrics.append(m)
+                data['containers'][container] = uniq_metrics
+                dupcheck[container][metric_name] = True
+
+        # Update mappings for nods and containers
         data['mappings']['nodes-containers'].setdefault(labels['instance'], set())
         data['mappings']['nodes-containers'][labels['instance']].add(container)
     for metric in node_metrics:
