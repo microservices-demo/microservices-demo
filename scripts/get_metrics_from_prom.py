@@ -200,16 +200,7 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
 
     print(json.dumps(data, default=support_set_default))
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--prometheus-url", help="endpoint URL for prometheus server",
-                                default="http://localhost:9090")
-    parser.add_argument("--start", help="start epoch time", type=int)
-    parser.add_argument("--end", help="end epoch time", type=int)
-    parser.add_argument("--step", help="step seconds", type=int, default=STEP)
-    parser.add_argument("--duration", help="", type=str, default="60m")
-    args = parser.parse_args()
-
+def time_range_from_args(args):
     duration = datetime.timedelta(seconds=0)
     dt = args.duration
     if dt.endswith("s") or dt.endswith("sec"):
@@ -237,6 +228,19 @@ def main():
         start, end = args.start, args.end
     else:
         raise("not reachable")
+    return start, end
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--prometheus-url", help="endpoint URL for prometheus server",
+                                default="http://localhost:9090")
+    parser.add_argument("--start", help="start epoch time", type=int)
+    parser.add_argument("--end", help="end epoch time", type=int)
+    parser.add_argument("--step", help="step seconds", type=int, default=STEP)
+    parser.add_argument("--duration", help="", type=str, default="60m")
+    args = parser.parse_args()
+
+    start, end = time_range_from_args(args)
     if start > end:
         print("start must be lower than end.", file=sys.stderr)
         parser.print_help()
