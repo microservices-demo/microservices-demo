@@ -12,14 +12,11 @@ def die(msg):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--jsonfile", help="target JSON file")
+    parser.add_argument("jsonfile", help="target JSON file", nargs='?')
     args = parser.parse_args()
 
     jsonfile = args.jsonfile
-    if jsonfile is None:
-        jsonfile = input()
-
-    f = open(jsonfile, 'r')
+    f = open(jsonfile, 'r') if jsonfile is not None else sys.stdin
     data = json.load(f)
 
     print(f"Validating {jsonfile}...", file=sys.stderr)
