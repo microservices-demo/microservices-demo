@@ -1,5 +1,34 @@
 #!/usr/bin/env python3
 
+""" An example of JSON layout
+    {
+      'containers': {
+        'orders-db': [
+          { 'container_name': 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] },
+             ...
+        ]
+        ...
+      ]
+      'services': {
+        'orders': [
+          { 'service_name': 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] } },
+          ...
+        ]
+        ...
+      },
+      'nodes': {
+        '<node name>': [
+          [ {'node_name': 'xxx'}, 'metric_name': 'xx', 'values': [<timestamp>, <value>]],
+        ],
+      },
+      'mappings': {
+         'nodes-containers': {
+           '<node name>': [ '<container name>', ... ]
+         }
+      }
+    }
+"""
+
 import argparse
 import concurrent.futures
 import datetime
@@ -10,6 +39,7 @@ import time
 
 COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "carts-db", "shipping", "user", "user-db", "payment", "catalogue", "catalogue-db", "queue-master", "rabbitmq"}
 STEP = 15
+NAN = 'nan'
 
 def get_targets(url, job):
     params = {
@@ -56,9 +86,6 @@ def request_query_range(url, params, target):
         raise(e)
 
 def get_metrics(url, targets, start, end, step, selector):
-    start = start - start % step
-    end = end - end % step
-
     futures = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
         for target in targets:
@@ -86,8 +113,6 @@ def get_metrics(url, targets, start, end, step, selector):
     return concated_metrics
 
 def get_metrics_by_query_range(url, start, end, step, query, target):
-    start = start - start % step
-    end = end - end % step
     params = {
         "query": query,
         "start": start,
@@ -96,44 +121,29 @@ def get_metrics_by_query_range(url, start, end, step, query, target):
     }
     return request_query_range(url, params, target)
 
+def interpotate_time_series(values, time_mata):
+    start, end, step = time_mata['start'], time_mata['end'], time_mata['step']
+    new_values = []
+    for i, val in enumerate(values):
+        if i+1 >= len(values):
+            new_values.append(val)
+            break
+        cur_ts, next_ts = val[0], values[i+1][0]
+        new_values.append(val)
+        if (lost_num := int((next_ts - cur_ts) / step)-1) > 0:
+            for j in range(lost_num):
+                new_values.append([cur_ts + step*(j+1), NAN])
+    return new_values
+
 def support_set_default(obj):
     if isinstance(obj, set):
         return list(obj)
     raise TypeError(repr(obj) + " is not JSON serializable")
 
-def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics):
-    """
-    An example of JSON
-    {
-      'containers': {
-        'orders-db': [
-          { 'container_name': 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] },
-             ...
-        ]
-        ...
-      ]
-      'services': {
-        'orders': [
-          { 'service_name': 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] } },
-          ...
-        ]
-        ...
-      },
-      'nodes': {
-        '<node name>': [
-          [ {'node_name': 'xxx'}, 'metric_name': 'xx', 'values': [<timestamp>, <value>]],
-        ],
-      },
-      'mappings': {
-         'nodes-containers': {
-           '<node name>': [ '<container name>', ... ]
-         }
-      }
-    }
-    """
-
+def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics, time_meta):
     data = {'containers': {}, 'nodes':{}, 'services': {}, 'mappings': {'nodes-containers': {}}}
     dupcheck = {}
+
     for metric in container_metrics:
         # some metrics in results of prometheus query has no '__name__'
         labels = metric['metric']
@@ -143,10 +153,12 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
         container = labels['pod'].rsplit("-", maxsplit=2)[0] if 'pod' in labels else labels['container']
         data['containers'].setdefault(container, [])
         metric_name = labels['__name__']
+
+        values = interpotate_time_series(metric['values'], time_meta)
         m = {
             'container_name': container,
             'metric_name': metric_name,
-            'values': metric['values'],
+            'values': values,
         }
 
         # 1. {container: 'POD'} => {container: 'xxx' } -> Update 'POD'
@@ -167,34 +179,40 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
         # Update mappings for nods and containers
         data['mappings']['nodes-containers'].setdefault(labels['instance'], set())
         data['mappings']['nodes-containers'][labels['instance']].add(container)
+
     for metric in node_metrics:
         # some metrics in results of prometheus query has no '__name__'
         if '__name__' not in metric['metric']:
             continue
         node = metric['metric']['node']
         data['nodes'].setdefault(node, [])
+        values = interpotate_time_series(metric['values'], time_meta)
         m = {
             'node_name': node,
             'metric_name': metric['metric']['__name__'],
-            'values': metric['values'],
+            'values': values,
         }
         data['nodes'][node].append(m)
+
     for metric in throughput_metrics:
         service = metric['metric']['name']
         data['services'].setdefault(service, [])
+        values = interpotate_time_series(metric['values'], time_meta)
         m = {
             'service_name': metric['metric']['name'],
             'metric_name': 'throughput',
-            'values': metric['values'],
+            'values': values,
         }
         data['services'][service].append(m)
+
     for metric in latency_metrics:
         service = metric['metric']['name']
         data['services'].setdefault(service, [])
+        values = interpotate_time_series(metric['values'], time_meta)
         m = {
             'service_name': metric['metric']['name'],
             'metric_name': 'latency',
-            'values': metric['values'],
+            'values': values,
         }
         data['services'][service].append(m)
 
@@ -228,6 +246,9 @@ def time_range_from_args(args):
         start, end = args.start, args.end
     else:
         raise("not reachable")
+
+    start = start - start % step
+    end = end - end % step
     return start, end
 
 def main():
@@ -266,7 +287,12 @@ def main():
         'sum by (name) (rate(request_duration_seconds_sum{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m])) / sum by (name) (rate(request_duration_seconds_count{job="kubernetes-service-endpoints",kubernetes_namespace="sock-shop"}[1m]))',
         {'metric': 'request_duration_seconds_sum', 'type': 'gauge'},
     )
-    print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics)
+
+    print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics, {
+        'start': start,
+        'end': end,
+        'step': args.step,
+    })
 
 if __name__ == '__main__':
     main()
