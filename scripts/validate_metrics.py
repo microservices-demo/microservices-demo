@@ -36,7 +36,7 @@ def main():
         die(f"data['containers'] length should be 14, not {got}")
     for container, metrics in data['containers'].items():
         if (got := len(metrics)) < 40:
-            die(f"data['containers'][<container>] length should be >= 40, not {got}")
+            die(f"data['containers'][{container}] length should be >= 40, not {got}")
         dupcheck = {}
         for metric in metrics:
             if (name := metric['metric_name']) in dupcheck:
@@ -51,13 +51,13 @@ def main():
         die(f"data['services'] length should be 7, not {got}")
     for service, metrics in data['services'].items():
         if (got := len(metrics)) != 2:
-            die(f"data['services'][<service>] length should be 2, not {got}")
+            die(f"data['services'][{service}] length should be 2, not {got}")
 
     if (got := len(data['nodes'])) < 3:
         die(f"data['nodes'] length should be >= 3, not {got}")
     for node, metrics in data['nodes'].items():
         if (got := len(metrics)) != 264:
-            die(f"data['nodes'][<node>] length should be 264, not {got}")
+            die(f"data['nodes'][{node}] length should be 264, not {got}")
         dupcheck = {}
         for metric in metrics:
             if (name := metric['metric_name']) in dupcheck:
