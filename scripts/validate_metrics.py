@@ -5,10 +5,14 @@ import json
 import sys
 
 STEP = 15
+POINT_NUM = 241
 
 def die(msg):
     print(msg, file=sys.stderr)
     exit(-1)
+
+def log(msg):
+    print(msg, file=sys.stderr)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -36,16 +40,19 @@ def main():
         die(f"data['containers'] length should be 14, not {got}")
     for container, metrics in data['containers'].items():
         if (got := len(metrics)) < 40:
-            die(f"data['containers'][{container}] length should be >= 40, not {got}")
+            log(f"data['containers'][{container}] length should be >= 40, not {got}")
         dupcheck = {}
         for metric in metrics:
             if (name := metric['metric_name']) in dupcheck:
-                die(f"{container}/{name} is duplicated")
+                log(f"{container}/{name} is duplicated")
             else:
                 dupcheck[name] = True
             start, end = metric['values'][0][0], metric['values'][-1][0]
-            if abs((cnt := int((end - start) / STEP)) - (got := len(metric['values']))) > 1:
-                die(f"the number of values of {name} should be {cnt}, not {got}, start: {start}, end: {end}")
+            cnt, got = int((end - start) / STEP + 1), len(metric['values'])
+            if got != POINT_NUM:
+                log(f"the number of values of {name} should be {POINT_NUM}, not {got}, start: {start}, end: {end}")
+            if cnt - got != 0:
+                log(f"Exists lost datapoints {name} want:{cnt}, got:{got}")
 
     if (got := len(data['services'])) != 7:
         die(f"data['services'] length should be 7, not {got}")
@@ -65,8 +72,11 @@ def main():
             else:
                 dupcheck[name] = True
             start, end = metric['values'][0][0], metric['values'][-1][0]
-            if abs((cnt := int((end - start) / STEP)) - (got := len(metric['values']))) > 1:
-                die(f"the number of values of {name} should be {cnt}, not {got}, start: {start}, end: {end}")
+            cnt, got = int((end - start) / STEP + 1), len(metric['values'])
+            if got != POINT_NUM:
+                log(f"the number of values of {name} should be {POINT_NUM}, not {got}, start: {start}, end: {end}")
+            if cnt - got != 0:
+                log(f"Exists lost datapoints {name} want:{cnt}, got:{got}")
 
     print("Completed!")
 
