@@ -131,3 +131,6 @@ output-virtualbox-iso
 # Ignore grafanalib output
 /graphs/__pycache__/
 /graphs/*.json
+
+# Ignore venv
+.venv
