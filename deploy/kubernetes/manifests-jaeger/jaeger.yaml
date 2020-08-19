@@ -41,6 +41,8 @@ items:
           app: jaeger
           jaeger-infra: jaeger-pod
       spec:
+          nodeSelector:
+            cloud.google.com/gke-nodepool: "control-pool"
           containers:
           -   env:
               - name: COLLECTOR_ZIPKIN_HTTP_PORT
