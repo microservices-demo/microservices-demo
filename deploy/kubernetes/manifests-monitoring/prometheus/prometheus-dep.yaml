@@ -67,6 +67,7 @@ spec:
       #     name: prometheus-alertrules
       nodeSelector:
         beta.kubernetes.io/os: linux
+        cloud.google.com/gke-nodepool: "control-pool"
   volumeClaimTemplates:
     - metadata:
         name: prometheus-pv

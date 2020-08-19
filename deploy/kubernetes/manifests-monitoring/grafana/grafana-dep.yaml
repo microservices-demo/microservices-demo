@@ -74,3 +74,4 @@ spec:
             claimName: grafana-pvc
       nodeSelector:
         beta.kubernetes.io/os: linux
+        cloud.google.com/gke-nodepool: "control-pool"
