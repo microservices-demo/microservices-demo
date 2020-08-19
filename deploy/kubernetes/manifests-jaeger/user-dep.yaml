@@ -56,3 +56,4 @@ spec:
           periodSeconds: 3
       nodeSelector:
         beta.kubernetes.io/os: linux
+        cloud.google.com/gke-nodepool: "control-pool"

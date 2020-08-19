@@ -26,3 +26,4 @@ spec:
           containerPort: 6379
       nodeSelector:
         beta.kubernetes.io/os: linux
+        cloud.google.com/gke-nodepool: "default-pool"
