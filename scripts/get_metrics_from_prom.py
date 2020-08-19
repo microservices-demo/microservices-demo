@@ -41,6 +41,12 @@ COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "carts-db", "sh
 STEP = 15
 NAN = 'nan'
 
+PROM_GRAFANA = {
+    'http://prometheus01.prv': 'http://grafana01.prv',
+    'http://prometheus02.prv': 'http://grafana02.prv',
+}
+GRAFANA_DASHBOARD = "d/3cHU4RSMk/sock-shop-performance"
+
 def get_targets(url, job):
     params = {
         "match_target": '{{job="{}"}}'.format(job),
@@ -140,10 +146,23 @@ def support_set_default(obj):
         return list(obj)
     raise TypeError(repr(obj) + " is not JSON serializable")
 
-def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics, time_meta):
-    data = {'containers': {}, 'nodes':{}, 'services': {}, 'mappings': {'nodes-containers': {}}}
-    dupcheck = {}
+def metrics_as_result(container_metrics, node_metrics, throughput_metrics, latency_metrics, time_meta):
+    grafana_url = PROM_GRAFANA[time_meta['prometheus_url']]
+    start, end = time_meta['start'], time_meta['end']
+    data = {
+        'meta': {
+            'prometheus_url': time_meta['prometheus_url'],
+            'grafana_url': grafana_url,
+            'grafana_dashboard_url': f"{grafana_url}/{GRAFANA_DASHBOARD}?orgId=1&from={start}000&to={end}000",
+            'start': start,
+            'end': end,
+            'step': end,
+        },
+        'mappings': {'nodes-containers': {}},
+        'containers': {}, 'nodes': {}, 'services': {},
+    }
 
+    dupcheck = {}
     for metric in container_metrics:
         # some metrics in results of prometheus query has no '__name__'
         labels = metric['metric']
@@ -216,7 +235,8 @@ def print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, l
         }
         data['services'][service].append(m)
 
-    print(json.dumps(data, default=support_set_default))
+    return data
+
 
 def time_range_from_args(args):
     duration = datetime.timedelta(seconds=0)
@@ -288,11 +308,14 @@ def main():
         {'metric': 'request_duration_seconds_sum', 'type': 'gauge'},
     )
 
-    print_metrics_as_json(container_metrics, node_metrics, throughput_metrics, latency_metrics, {
+    result = metrics_as_result(container_metrics, node_metrics, throughput_metrics, latency_metrics, {
         'start': start,
         'end': end,
         'step': args.step,
+        'prometheus_url': args.prometheus_url,
     })
+
+    print(json.dumps(result, default=support_set_default))
 
 if __name__ == '__main__':
     main()
