@@ -247,8 +247,8 @@ def time_range_from_args(args):
     else:
         raise("not reachable")
 
-    start = start - start % step
-    end = end - end % step
+    start = start - start % args.step
+    end = end - end % args.step
     return start, end
 
 def main():
