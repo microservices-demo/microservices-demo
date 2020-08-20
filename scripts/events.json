@@ -1,0 +1,13 @@
+{
+    "events": {
+        "user-db:cpu-load:01": {
+            "component": "user-db",
+            "anomaly": "cpu-load",
+            "condition": "stress-ng -c 2",
+            "params": {
+                "prometheus-url": "http://prometheus01.prv",
+                "start": "1597814730"
+            }
+        }
+    }
+}
