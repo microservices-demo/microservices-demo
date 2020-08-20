@@ -134,3 +134,6 @@ output-virtualbox-iso
 
 # Ignore venv
 .venv
+
+# Ignore checkpoint files
+.ipynb_checkpoints
