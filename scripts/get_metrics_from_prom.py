@@ -156,7 +156,7 @@ def metrics_as_result(container_metrics, node_metrics, throughput_metrics, laten
             'grafana_dashboard_url': f"{grafana_url}/{GRAFANA_DASHBOARD}?orgId=1&from={start}000&to={end}000",
             'start': start,
             'end': end,
-            'step': end,
+            'step': time_mata['step'],
         },
         'mappings': {'nodes-containers': {}},
         'containers': {}, 'nodes': {}, 'services': {},
