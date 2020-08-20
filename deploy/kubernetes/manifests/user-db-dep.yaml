@@ -15,17 +15,27 @@ spec:
     metadata:
       labels:
         name: user-db
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9216"
     spec:
       containers:
       - name: user-db
         image: weaveworksdemos/user-db:0.3.0
-
         ports:
         - name: mongo
           containerPort: 27017
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
+      - name: mongodb-exporter
+        image: ssheehy/mongodb-exporter:0.10.0
+        ports:
+        - name: exporter
+          containerPort: 9216
+        env:
+          - name: MONGODB_URI
+            value: "mongodb://localhost:27017"
       volumes:
         - name: tmp-volume
           emptyDir:
