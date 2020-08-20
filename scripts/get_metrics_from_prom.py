@@ -127,8 +127,8 @@ def get_metrics_by_query_range(url, start, end, step, query, target):
     }
     return request_query_range(url, params, target)
 
-def interpotate_time_series(values, time_mata):
-    start, end, step = time_mata['start'], time_mata['end'], time_mata['step']
+def interpotate_time_series(values, time_meta):
+    start, end, step = time_meta['start'], time_meta['end'], time_meta['step']
     new_values = []
     for i, val in enumerate(values):
         if i+1 >= len(values):
@@ -156,7 +156,7 @@ def metrics_as_result(container_metrics, node_metrics, throughput_metrics, laten
             'grafana_dashboard_url': f"{grafana_url}/{GRAFANA_DASHBOARD}?orgId=1&from={start}000&to={end}000",
             'start': start,
             'end': end,
-            'step': time_mata['step'],
+            'step': time_meta['step'],
         },
         'mappings': {'nodes-containers': {}},
         'containers': {}, 'nodes': {}, 'services': {},
