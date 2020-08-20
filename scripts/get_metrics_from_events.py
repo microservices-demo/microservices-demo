@@ -16,11 +16,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("jsonfile", help="Events json file")
     parser.add_argument("--event", help="Events name")
+    parser.add_argument("--list", help="Events list", action="store_true")
     args = parser.parse_args()
 
     jsonfile = args.jsonfile
     f = open(jsonfile, 'r') if jsonfile is not None else sys.stdin
     events = json.load(f)
+
+    if args.list:
+        print('\n'.join(events['events'].keys()))
+        return
 
     if args.event not in events["events"]:
         die(f"{args.event} not found in {jsonfile}")
