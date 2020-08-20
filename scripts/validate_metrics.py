@@ -7,12 +7,12 @@ import sys
 STEP = 15
 POINT_NUM = 241
 
+def log(msg):
+    print(msg, file=sys.stderr)
+
 def die(msg):
     print(msg, file=sys.stderr)
     exit(-1)
-
-def log(msg):
-    print(msg, file=sys.stderr)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -23,7 +23,7 @@ def main():
     f = open(jsonfile, 'r') if jsonfile is not None else sys.stdin
     data = json.load(f)
 
-    print(f"Validating {jsonfile}...", file=sys.stderr)
+    log(f"Validating {jsonfile}...")
 
     if 'containers' not in data:
         die("data should have 'containers' key")
@@ -78,7 +78,7 @@ def main():
             if cnt - got != 0:
                 log(f"Exists lost datapoints {name} want:{cnt}, got:{got}")
 
-    print("Completed!")
+    log("Completed!")
 
 if __name__ == '__main__':
     main()
