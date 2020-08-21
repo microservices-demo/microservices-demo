@@ -162,6 +162,13 @@ def metrics_as_result(container_metrics, pod_metrics, node_metrics, throughput_m
             'start': start,
             'end': end,
             'step': time_meta['step'],
+            'count': {
+                'sum': 0,
+                'containers': 0,
+                'middlewares': 0,
+                'services': 0,
+                'nodes': 0,
+            }
         },
         'mappings': {'nodes-containers': {}},
         'containers': {}, 'middlewares': {}, 'nodes': {}, 'services': {},
@@ -253,8 +260,23 @@ def metrics_as_result(container_metrics, pod_metrics, node_metrics, throughput_m
         }
         data['services'][service].append(m)
 
-    return data
+    # Count the number of metric series.
+    containers_cnt, middlewares_cnt, services_cnt, nodes_cnt = 0, 0, 0, 0
+    for metrics in data['containers'].values():
+        containers_cnt += len(metrics)
+    for metrics in data['middlewares'].values():
+        middlewares_cnt += len(metrics)
+    for metrics in data['services'].values():
+        services_cnt += len(metrics)
+    for metrics in data['nodes'].values():
+        nodes_cnt += len(metrics)
+    data['meta']['count']['containers'] = containers_cnt
+    data['meta']['count']['middlewares'] = middlewares_cnt
+    data['meta']['count']['services'] = services_cnt
+    data['meta']['count']['nodes'] = nodes_cnt
+    data['meta']['count']['sum'] = containers_cnt + middlewares_cnt + services_cnt + nodes_cnt
 
+    return data
 
 def time_range_from_args(args):
     duration = datetime.timedelta(seconds=0)
