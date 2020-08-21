@@ -17,6 +17,16 @@
                 "prometheus-url": "http://prometheus01.prv",
                 "end": "1597892216"
             }
+        },
+        "user-db:cpu-load:02": {
+            "component": "user-db",
+            "anomaly": "cpu-load",
+            "condition": "stress-ng -c 2 --timeout 600s",
+            "note": "Get MongoDB metrics",
+            "params": {
+                "prometheus-url": "http://prometheus01.prv",
+                "end": "1597973031"
+            }
         }
     }
 }
