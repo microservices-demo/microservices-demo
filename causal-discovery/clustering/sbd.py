@@ -16,3 +16,13 @@ def _ncc_c(x, y):
     cc = ifft(fft(x, fft_size) * np.conj(fft(y, fft_size)))
     cc = np.concatenate((cc[-(x_len-1):], cc[:x_len]))
     return np.real(cc) / den
+
+def silhouette_score(data, labels):
+    distances = np.zeros((data.shape[0], data.shape[0]))
+    for idx_a, data_a in enumerate(data):
+        for idx_b, data_b in enumerate(data):
+            if idx_a == idx_b:
+                distances[idx_a, idx_b] = 0
+                continue
+            distances[idx_a, idx_b] = sbd(data_a, data_b)
+    return _silhouette_score(distances, labels, metric='precomputed')
