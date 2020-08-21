@@ -3,15 +3,20 @@
 """ An example of JSON layout
     {
       'containers': {
-        'orders-db': [
-          { 'container_name': 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] },
+        '<container name>': [
+          { 'container_name': '<container name>', 'metric_name': 'xx', 'values': [<timestamp>, '<value>'] },
              ...
         ]
         ...
       ]
+      'middlewares': {
+        '<container name>': [
+          [ {'container_name': '<container name>'}, 'metric_name': 'xx', 'values': [<timestamp>, '<value>']],
+        ],
+      },
       'services': {
-        'orders': [
-          { 'service_name': 'orders-db', 'metric_name': 'xx', 'values': [<timestamp>, <value>] } },
+        '<service name>': [
+          { 'service_name': '<container name>', 'metric_name': 'xx', 'values': [<timestamp>, '<value>'] } },
           ...
         ]
         ...
@@ -49,7 +54,7 @@ GRAFANA_DASHBOARD = "d/3cHU4RSMk/sock-shop-performance"
 
 def get_targets(url, job):
     params = {
-        "match_target": '{{job="{}"}}'.format(job),
+        "match_target": '{{job=~"{}"}}'.format(job),
     }
     req = urllib.request.Request('{}{}?{}'.format(url, "/api/v1/targets/metadata",
         urllib.parse.urlencode(params)))
@@ -146,7 +151,7 @@ def support_set_default(obj):
         return list(obj)
     raise TypeError(repr(obj) + " is not JSON serializable")
 
-def metrics_as_result(container_metrics, node_metrics, throughput_metrics, latency_metrics, time_meta):
+def metrics_as_result(container_metrics, pod_metrics, node_metrics, throughput_metrics, latency_metrics, time_meta):
     grafana_url = PROM_GRAFANA[time_meta['prometheus_url']]
     start, end = time_meta['start'], time_meta['end']
     data = {
@@ -159,7 +164,7 @@ def metrics_as_result(container_metrics, node_metrics, throughput_metrics, laten
             'step': time_meta['step'],
         },
         'mappings': {'nodes-containers': {}},
-        'containers': {}, 'nodes': {}, 'services': {},
+        'containers': {}, 'middlewares': {}, 'nodes': {}, 'services': {},
     }
 
     dupcheck = {}
@@ -198,6 +203,19 @@ def metrics_as_result(container_metrics, node_metrics, throughput_metrics, laten
         # Update mappings for nods and containers
         data['mappings']['nodes-containers'].setdefault(labels['instance'], set())
         data['mappings']['nodes-containers'][labels['instance']].add(container)
+
+    for metric in pod_metrics:
+        if '__name__' not in metric['metric']:
+            continue
+        container = metric['metric']['job'].split('/')[1]
+        data['middlewares'].setdefault(container, [])
+        values = interpotate_time_series(metric['values'], time_meta)
+        m = {
+            'container_name': container,
+            'metric_name': metric['metric']['__name__'],
+            'values': values,
+        }
+        data['middlewares'][container].append(m)
 
     for metric in node_metrics:
         # some metrics in results of prometheus query has no '__name__'
@@ -291,6 +309,11 @@ def main():
     container_selector = 'namespace="sock-shop",container=~"{}|POD"'.format('|'.join(COMPONENT_LABELS))
     container_metrics = get_metrics(args.prometheus_url, container_targets, start, end, args.step, container_selector)
 
+    # get pod metrics
+    pod_targets = get_targets(args.prometheus_url, "sock-shop/.*")
+    pod_selector = 'job=~"sock-shop/.*"'
+    pod_metrics = get_metrics(args.prometheus_url, pod_targets, start, end, args.step, pod_selector)
+
     # get node metrics (node-exporter)
     node_targets = get_targets(args.prometheus_url, "monitoring/")
     node_selector = 'job="monitoring/"'
@@ -308,7 +331,7 @@ def main():
         {'metric': 'request_duration_seconds_sum', 'type': 'gauge'},
     )
 
-    result = metrics_as_result(container_metrics, node_metrics, throughput_metrics, latency_metrics, {
+    result = metrics_as_result(container_metrics, pod_metrics, node_metrics, throughput_metrics, latency_metrics, {
         'start': start,
         'end': end,
         'step': args.step,
