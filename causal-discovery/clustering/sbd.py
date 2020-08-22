@@ -6,7 +6,11 @@ from sklearn.metrics import silhouette_score as _silhouette_score
 def sbd(x, y):
     ncc = _ncc_c(x, y)
     idx = ncc.argmax()
-    return 1 - ncc[idx]
+    dist = 1 - ncc[idx]
+    if dist < 0:
+        return 0
+    else:
+        return dist
 
 def _ncc_c(x, y):
     den = np.array(norm(x) * norm(y))
