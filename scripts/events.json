@@ -27,6 +27,16 @@
                 "prometheus-url": "http://prometheus01.prv",
                 "end": "1597973031"
             }
+        },
+        "load-test:rate:01": {
+            "component": "load-test",
+            "anomaly": "rate",
+            "condition": "locust --clients 100 --hatch-rate 10 --num-request 10000 --no-web",
+            "note": "Increase client requests",
+            "params": {
+                "prometheus-url": "http://prometheus01.prv",
+                "end": "1598234563"
+            }
         }
     }
 }
