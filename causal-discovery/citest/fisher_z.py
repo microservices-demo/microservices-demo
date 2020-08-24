@@ -19,6 +19,8 @@ def zstat(x, y, s, cm, n):
         return zv
 
 def log_q1pm(r):
+    if r == 1:
+        r = 1 - 1e-10
     return np.log1p(2 * r / (1 - r))
 
 def pcor_order(x, y, s, cm):
