@@ -31,9 +31,6 @@ spec:
         env:
         - name: mongo
           value: user-db:27017
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
         livenessProbe:
           httpGet:
             path: /health

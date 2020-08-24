@@ -28,9 +28,6 @@ spec:
             memory: 100Mi
         ports:
         - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
         livenessProbe:
           httpGet:
             path: /health

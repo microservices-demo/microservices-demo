@@ -33,14 +33,6 @@ spec:
             memory: 500Mi
         ports:
         - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume

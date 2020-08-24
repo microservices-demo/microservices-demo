@@ -33,9 +33,6 @@ spec:
             memory: 500Mi
         ports:
         - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
