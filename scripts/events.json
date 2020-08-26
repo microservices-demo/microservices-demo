@@ -46,6 +46,15 @@
                 "prometheus-url": "http://prometheus01.prv",
                 "end": "1598363376"
             }
+        },
+        "orders:network-latency:01": {
+            "component": "orders",
+            "anomaly": "network-latency",
+            "condition": "tc qdisc add dev veth743d77c4 root netem delay 200ms; sleep 600; tc qdisc del dev veth743d77c4 root",
+            "params": {
+                "prometheus-url": "http://prometheus02.prv",
+                "end": "1598415999"
+            }
         }
     }
 }
