@@ -16,7 +16,7 @@ spec:
       labels:
         name: session-db
       annotations:
-        prometheus.io.scrape: "false"
+        prometheus.io.scrape: "true"
     spec:
       containers:
       - name: session-db
@@ -24,6 +24,19 @@ spec:
         ports:
         - name: redis
           containerPort: 6379
+      - name: redis-exporter
+        image: oliver006/redis_exporter:latest
+        imagePullPolicy: Always
+        ports:
+        - name: exporter
+          containerPort: 9121
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
       nodeSelector:
         beta.kubernetes.io/os: linux
         cloud.google.com/gke-nodepool: "default-pool"
