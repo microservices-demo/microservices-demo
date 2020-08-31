@@ -43,7 +43,7 @@ import sys
 import time
 
 COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "carts-db", "shipping", "user", "user-db", "payment", "catalogue", "catalogue-db", "queue-master", "rabbitmq"}
-STEP = 15
+STEP = 5
 NAN = 'nan'
 
 PROM_GRAFANA = {
@@ -318,7 +318,7 @@ def main():
     parser.add_argument("--start", help="start epoch time", type=int)
     parser.add_argument("--end", help="end epoch time", type=int)
     parser.add_argument("--step", help="step seconds", type=int, default=STEP)
-    parser.add_argument("--duration", help="", type=str, default="60m")
+    parser.add_argument("--duration", help="", type=str, default="30m")
     args = parser.parse_args()
 
     start, end = time_range_from_args(args)
