@@ -68,10 +68,19 @@
         "user-db:cpu-load:03": {
             "component": "user-db",
             "anomaly": "cpu-load",
-            "condition": "stress-nc -c 1",
+            "condition": "apt-get install stress-ng",
             "params": {
                 "prometheus-url": "http://prometheus02.prv",
                 "end": "1598848948"
+            }
+        },
+        "user-db:cpu-load:04": {
+            "component": "user-db",
+            "anomaly": "cpu-load",
+            "condition": "stress-ng -c 2",
+            "params": {
+                "prometheus-url": "http://prometheus02.prv",
+                "end": "1598851873"
             }
         }
     }
