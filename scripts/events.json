@@ -64,6 +64,15 @@
                 "prometheus-url": "http://prometheus01.prv",
                 "end": "1598419294"
             }
+        },
+        "user-db:cpu-load:03": {
+            "component": "user-db",
+            "anomaly": "cpu-load",
+            "condition": "stress-nc -c 1",
+            "params": {
+                "prometheus-url": "http://prometheus02.prv",
+                "end": "1598848948"
+            }
         }
     }
 }
