@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: catalogue-db
-        image: weaveworksdemos/catalogue-db:0.3.0
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.cataloguedb.image.repo }}:{{ .Values.cataloguedb.image.tag }}
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password

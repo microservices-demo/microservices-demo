@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: user-db
-        image: weaveworksdemos/user-db:0.3.0
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.userdb.image.repo }}:{{ .Values.userdb.image.tag }}
 
         ports:
         - name: mongo

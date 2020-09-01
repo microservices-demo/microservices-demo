@@ -13,8 +13,13 @@ spec:
         name: carts
     spec:
       containers:
-      - name: carts
-        image: weaveworksdemos/carts:0.4.8
+      - command:
+        - /usr/local/bin/java.sh
+        - -jar
+        - ./app.jar
+        - --port={{ template "cartsContainerPort" . }}
+        name: carts
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.carts.image.repo }}:{{ .Values.carts.image.tag }}
         env:
          {{- if .Values.zipkin.enabled }}
          - name: ZIPKIN
@@ -30,15 +35,10 @@ spec:
             cpu: 300m
             memory: 2000Mi
         ports:
-        - containerPort: 80
+        - containerPort: {{ template "cartsContainerPort" . }}
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
@@ -46,14 +46,14 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 80
-          initialDelaySeconds: 300
+            port: {{ template "cartsContainerPort" . }}
+          initialDelaySeconds: 420
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
-          initialDelaySeconds: 180
+            port: {{ template "cartsContainerPort" . }}
+          initialDelaySeconds: 360
           periodSeconds: 3
       volumes:
         - name: tmp-volume
