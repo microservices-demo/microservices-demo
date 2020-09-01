@@ -19,7 +19,7 @@ spec:
         image: weaveworksdemos/front-end:0.3.12
         resources:
           limits:
-            cpu: 300m
+            cpu: 500m
             memory: 1000Mi
           requests:
             cpu: 100m

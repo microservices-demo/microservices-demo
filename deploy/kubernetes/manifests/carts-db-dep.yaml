@@ -33,7 +33,7 @@ spec:
             cpu: 200m
             memory: 200Mi
           requests:
-            cpu: 200m
+            cpu: 50m
             memory: 200Mi
       - name: mongodb-exporter
         image: ssheehy/mongodb-exporter:0.10.0

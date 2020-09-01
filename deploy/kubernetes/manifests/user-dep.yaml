@@ -21,10 +21,10 @@ spec:
         image: weaveworksdemos/user:0.4.7
         resources:
           limits:
-            cpu: 300m
+            cpu: 200m
             memory: 100Mi
           requests:
-            cpu: 100m
+            cpu: 50m
             memory: 100Mi
         ports:
         - containerPort: 80
