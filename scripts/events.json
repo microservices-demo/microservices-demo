@@ -82,6 +82,15 @@
                 "prometheus-url": "http://prometheus02.prv",
                 "end": "1598851873"
             }
+        },
+        "user-db:network-latency:03": {
+            "component": "user-db",
+            "anomaly": "network-latency",
+            "condition": "tc qdisc add dev vethd65f65ab root netem delay 500ms; sleep 600; tc qdisc del dev vethd65f65ab root",
+            "params": {
+                "prometheus-url": "http://prometheus02.prv",
+                "end": "1598935146"
+            }
         }
     }
 }
