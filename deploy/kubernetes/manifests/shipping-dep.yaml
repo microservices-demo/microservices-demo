@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.4.8
+        image: yuuki/sockshop-shipping:0.4.9
         env:
          - name: ZIPKIN
            value: zipkin.jaeger.svc.cluster.local
