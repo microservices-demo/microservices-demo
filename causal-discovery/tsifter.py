@@ -1,4 +1,7 @@
+import os
+import json
 import time
+from datetime import datetime
 import pandas as pd
 import numpy as np
 import re
@@ -159,7 +162,7 @@ if __name__ == '__main__':
 
     metrics_dimension = count_metrics(metrics_dimension, reduced_by_st_df, 1)
     metrics_dimension["total"].append(len(reduced_by_st_df.columns))
-    print("Elapsed time:{:.3f}".format(time.time() - start) + "/sec")
+    time_adf = round(time.time() - start, 2)
 
     ## Step 2: Reduced by hierarchical clustering
     start = time.time()
@@ -195,5 +198,16 @@ if __name__ == '__main__':
 
     metrics_dimension = count_metrics(metrics_dimension, reduced_df, 2)
     metrics_dimension["total"].append(len(reduced_df.columns))
-    print("Elapsed time:{:.3f}".format(time.time() - start) + "/sec")
-    pprint(metrics_dimension)
+    time_clustering = round(time.time() - start, 2)
+    #pprint(metrics_dimension)
+
+    # Output summary of results as JSON file
+    summary = {}
+    summary["data_file"] = DATA_FILE.split("/")[-1]
+    summary["execution_time"] = {"ADF": time_adf, "clustering": time_clustering, "total": time_adf+time_clustering}
+    summary["metrics_dimension"] = metrics_dimension
+    summary["reduced_metrics"] = list(reduced_df.columns)
+    summary["clustering_info"] = clustering_info
+    file_name = "summary_{}.json".format(datetime.now().strftime("%Y%m%d%H%M%S"))
+    with open(os.path.join("./results", file_name), "w") as f:
+        json.dump(summary, f, indent=4)
