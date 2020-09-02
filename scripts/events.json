@@ -100,6 +100,15 @@
                 "prometheus-url": "http://prometheus01.prv",
                 "end": "1599020220"
             }
+        },
+        "shipping:cpu-load:01": {
+            "component": "shipping",
+            "anomaly": "cpu-load",
+            "condition": "nice -n 15 stress-ng --cpu 2 --timeout 300s",
+            "params": {
+                "prometheus-url": "http://prometheus01.prv",
+                "end": "1599053037"
+            }
         }
     }
 }
