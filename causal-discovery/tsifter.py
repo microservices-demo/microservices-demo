@@ -17,7 +17,6 @@ from statsmodels.tsa.stattools import adfuller
 DATA_FILE = "../data/20200831_user-db_cpu-load_02.json"
 TARGET_DATA = {"containers": "all",
                "services": "all",
-               "nodes": "all",
                "middlewares": "all"}
 PLOTS_NUM = 360
 SIGNIFICANCE_LEVEL = 0.05
@@ -111,38 +110,24 @@ if __name__ == '__main__':
                         "gke-microservices-experi-default-pool-", "")
                     if re.match("^gke-microservices-experi", target_name):
                         continue
+                    if target_name in ["queue-master", "rabbitmq", "session-db"]:
+                        continue
                     column_name = "{}-{}_{}".format(target[0], target_name, metric_name)
                     data_df[column_name] = np.array(metric["values"], dtype=np.float)[:, 1][:PLOTS_NUM]
     data_df = data_df.round(4)
 
-    # Prepare target list
-    containers_list = []
+    # Prepare list of services
     services_list = []
-    nodes_list = []
-    middlewares_list = []
     for col in data_df.columns:
-        if re.match("^c-", col):
-            container_name = col.split("_")[0].replace("c-", "")
-            if container_name not in containers_list:
-                containers_list.append(container_name)
-        elif re.match("^s-", col):
+        if re.match("^s-", col):
             service_name = col.split("_")[0].replace("s-", "")
             if service_name not in services_list:
                 services_list.append(service_name)
-        elif re.match("^n-", col):
-            node_name = col.split("_")[0].replace("n-", "")
-            if node_name not in nodes_list:
-                nodes_list.append(node_name)
-        elif re.match("^m-", col):
-            middleware_name = col.split("_")[0].replace("m-", "")
-            if middleware_name not in middlewares_list:
-                middlewares_list.append(middleware_name)
 
     # Aggregate the dimension of a metric
     metrics_dimension = {}
     for target in TARGET_DATA:
         metrics_dimension[target] = {}
-
     metrics_dimension = count_metrics(metrics_dimension, data_df, 0)
     metrics_dimension["total"] = [len(data_df.columns)]
 
@@ -152,7 +137,7 @@ if __name__ == '__main__':
     reduced_by_st_df = pd.DataFrame()
     for col in data_df.columns:
         data = data_df[col].values
-        if data.sum() == 0. or np.isnan(data.sum()):
+        if data.sum() == 0. or len(np.unique(data)) == 1 or np.isnan(data.sum()):
             p_val = np.nan
         else:
             p_val = adfuller(data)[1]
@@ -166,33 +151,16 @@ if __name__ == '__main__':
 
     ## Step 2: Reduced by hierarchical clustering
     start = time.time()
-    # Clustering metrics of containers and middlewares
     clustering_info = {}
     reduced_df = reduced_by_st_df
-    for con in containers_list:
-        con_df = reduced_by_st_df.loc[:,
-                 reduced_by_st_df.columns.str.startswith(("c-{}_".format(con), "m-{}_".format(con)))]
-        if len(con_df.columns) in [0, 1]:
-            continue
-        clustering_info, remove_list = hierarchical_clustering(con_df, clustering_info, sbd)
-        for r in remove_list:
-            reduced_df = reduced_df.drop(r, axis=1)
 
-    # Clustering metrics of nodes
-    for node in nodes_list:
-        node_df = reduced_by_st_df.loc[:, reduced_by_st_df.columns.str.startswith("n-{}_".format(node))]
-        if len(node_df.columns) in [0, 1]:
-            continue
-        clustering_info, remove_list = hierarchical_clustering(node_df, clustering_info, sbd)
-        for r in remove_list:
-            reduced_df = reduced_df.drop(r, axis=1)
-
-    # Clustering metrics of services
+    # Clustering metrics by service including services, containers and middlewares metrics
     for ser in services_list:
-        service_df = reduced_by_st_df.loc[:, reduced_by_st_df.columns.str.startswith("s-{}_".format(ser))]
-        if len(service_df.columns) in [0, 1]:
+        target_df = reduced_by_st_df.loc[:, reduced_by_st_df.columns.str.startswith(
+            ("s-{}_".format(ser), "c-{}".format(ser), "m-{}".format(ser)))]
+        if len(target_df.columns) in [0, 1]:
             continue
-        clustering_info, remove_list = hierarchical_clustering(service_df, clustering_info, sbd)
+        clustering_info, remove_list = hierarchical_clustering(target_df, clustering_info, sbd)
         for r in remove_list:
             reduced_df = reduced_df.drop(r, axis=1)
 
