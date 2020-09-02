@@ -7,11 +7,10 @@ import numpy as np
 import re
 import random
 from pprint import pprint
-from scipy.cluster.hierarchy import linkage
-from scipy.cluster.hierarchy import fcluster
-from scipy.spatial.distance import pdist, squareform
 from clustering.sbd import sbd
-from statsmodels.tsa.stattools import adfuller
+from clustering.sbd import silhouette_score
+from clustering.metricsnamecluster import cluster_words
+from clustering.kshape import kshape
 
 ## Parameters ###################################################
 DATA_FILE = "../data/20200831_user-db_cpu-load_02.json"
@@ -23,21 +22,43 @@ SIGNIFICANCE_LEVEL = 0.05
 THRESHOLD_DIST = 0.01
 #################################################################
 
-def hierarchical_clustering(target_df, clustering_info, dist_func):
-    series = target_df.values.T
-    norm_series = z_normalization(series)
-    dist = pdist(norm_series, metric=dist_func)
-    # distance_list.extend(dist)
-    dist_matrix = squareform(dist)
-    z = linkage(dist, method="single", metric=dist_func)
-    labels = fcluster(z, t=THRESHOLD_DIST, criterion="distance")
+def kshape_clustering(target_df, service_name, clustering_info, dist_func):
+    data = z_normalization(target_df.values.T)
+    labels = []
+    scores = []
+    centroids = []
+    for n in np.arange(2, data.shape[0]):
+        words_list = []
+        for col in target_df.columns:
+            words_list.append(col[2:])
+        init_labels = cluster_words(words_list, service_name, n)
+        results = kshape(data, n, initial_clustering=init_labels)
+        label = [0] * data.shape[0]
+        cluster_center = []
+        cluster_num = 0
+        for res in results:
+            if not res[1]:
+                continue
+            for i in res[1]:
+                label[i] = cluster_num
+            cluster_center.append(res[0])
+            cluster_num += 1
+        if len(set(label)) == 1:
+            continue
+        labels.append(label)
+        scores.append(silhouette_score(data, label))
+        centroids.append(cluster_center)
+    idx = np.argmax(scores)
+    label = labels[idx]
+    centroid = centroids[idx]
+    n_cluster = len(np.unique(label))
     cluster_dict = {}
-    for i, v in enumerate(labels):
+    remove_list = []
+    for i, v in enumerate(label):
         if v not in cluster_dict:
             cluster_dict[v] = [i]
         else:
             cluster_dict[v].append(i)
-    remove_list = []
     for c in cluster_dict:
         cluster_metrics = cluster_dict[c]
         if len(cluster_metrics) == 1:
@@ -48,20 +69,17 @@ def hierarchical_clustering(target_df, clustering_info, dist_func):
             clustering_info[target_df.columns[shuffle_list[0]]] = [target_df.columns[shuffle_list[1]]]
             remove_list.append(target_df.columns[shuffle_list[1]])
         elif len(cluster_metrics) > 2:
-            # Select medoid as the representative metric
+            # Select the representative metric based on the distance from the centroid
             distances = []
-            for met1 in cluster_metrics:
-                dist_sum = 0
-                for met2 in cluster_metrics:
-                    if met1 != met2:
-                        dist_sum += dist_matrix[met1][met2]
-                distances.append(dist_sum)
-            medoid = cluster_metrics[np.argmin(distances)]
-            clustering_info[target_df.columns[medoid]] = []
+            cent = centroid[c]
+            for met in cluster_metrics:
+                distances.append(sbd(cent, data[met]))
+            representative_metric = cluster_metrics[np.argmin(distances)]
+            clustering_info[target_df.columns[representative_metric]] = []
             for r in cluster_metrics:
-                if r != medoid:
+                if r != representative_metric:
                     remove_list.append(target_df.columns[r])
-                    clustering_info[target_df.columns[medoid]].append(target_df.columns[r])
+                    clustering_info[target_df.columns[representative_metric]].append(target_df.columns[r])
     return clustering_info, remove_list
 
 def z_normalization(data):
@@ -132,35 +150,36 @@ if __name__ == '__main__':
     metrics_dimension["total"] = [len(data_df.columns)]
 
     # Reduce metrics
-    ## Step 1: Reduced metrics with stationarity
+    ## Step 1: Reduced metrics by CV
     start = time.time()
-    reduced_by_st_df = pd.DataFrame()
+    reduced_by_cv_df = pd.DataFrame()
     for col in data_df.columns:
         data = data_df[col].values
-        if data.sum() == 0. or len(np.unique(data)) == 1 or np.isnan(data.sum()):
-            p_val = np.nan
+        mean = data.mean()
+        std = data.std()
+        if mean == 0. and std == 0.:
+            cv = 0
         else:
-            p_val = adfuller(data)[1]
-        if not np.isnan(p_val):
-            if p_val >= SIGNIFICANCE_LEVEL:
-                reduced_by_st_df[col] = data_df[col]
+            cv = std / mean
+        if cv > 0.002:
+            reduced_by_cv_df[col] = data_df[col]
 
-    metrics_dimension = count_metrics(metrics_dimension, reduced_by_st_df, 1)
-    metrics_dimension["total"].append(len(reduced_by_st_df.columns))
-    time_adf = round(time.time() - start, 2)
+    metrics_dimension = count_metrics(metrics_dimension, reduced_by_cv_df, 1)
+    metrics_dimension["total"].append(len(reduced_by_cv_df.columns))
+    time_cv = round(time.time() - start, 2)
 
-    ## Step 2: Reduced by hierarchical clustering
+    ## Step 2: Reduced by k-Shape
     start = time.time()
     clustering_info = {}
-    reduced_df = reduced_by_st_df
+    reduced_df = reduced_by_cv_df
 
-    # Clustering metrics by service including services, containers and middlewares metrics
+    # Clustering metrics by services including services, containers and middlewares
     for ser in services_list:
-        target_df = reduced_by_st_df.loc[:, reduced_by_st_df.columns.str.startswith(
+        target_df = reduced_by_cv_df.loc[:, reduced_by_cv_df.columns.str.startswith(
             ("s-{}_".format(ser), "c-{}".format(ser), "m-{}".format(ser)))]
         if len(target_df.columns) in [0, 1]:
             continue
-        clustering_info, remove_list = hierarchical_clustering(target_df, clustering_info, sbd)
+        clustering_info, remove_list = kshape_clustering(target_df, ser, clustering_info, sbd)
         for r in remove_list:
             reduced_df = reduced_df.drop(r, axis=1)
 
@@ -172,10 +191,10 @@ if __name__ == '__main__':
     # Output summary of results as JSON file
     summary = {}
     summary["data_file"] = DATA_FILE.split("/")[-1]
-    summary["execution_time"] = {"ADF": time_adf, "clustering": time_clustering, "total": time_adf+time_clustering}
+    summary["execution_time"] = {"ADF": time_cv, "clustering": time_clustering, "total": time_cv+time_clustering}
     summary["metrics_dimension"] = metrics_dimension
     summary["reduced_metrics"] = list(reduced_df.columns)
     summary["clustering_info"] = clustering_info
-    file_name = "tsifter_{}.json".format(datetime.now().strftime("%Y%m%d%H%M%S"))
+    file_name = "sieve_{}.json".format(datetime.now().strftime("%Y%m%d%H%M%S"))
     with open(os.path.join("./results", file_name), "w") as f:
         json.dump(summary, f, indent=4)
