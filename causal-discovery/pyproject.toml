@@ -9,14 +9,11 @@ python = "^3.8"
 numpy = "^1.19.0"
 jupyterlab = "^2.2.0"
 matplotlib = "^3.3.0"
-graphviz = "^0.14.1"
 pgmpy = "^0.1.11"
 pcalg = "^0.1.9"
-pygraphviz = "^1.6"
 scipy = "^1.5.2"
 fastdtw = "^0.3.4"
-seaborn = "^0.10.1"
-tslearn = "^0.4.1"
+sklearn = "^0.0"
 
 [tool.poetry.dev-dependencies]
 
