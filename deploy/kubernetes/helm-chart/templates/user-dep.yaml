@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.4.4
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.user.image.repo }}:{{ .Values.user.image.tag }}
         resources:
           limits:
             cpu: 300m
@@ -23,7 +23,7 @@ spec:
             cpu: 100m
             memory: 400Mi
         ports:
-        - containerPort: 80
+        - containerPort: {{ template "userContainerPort" . }}
         env:
         - name: MONGO_HOST
           value: user-db:27017
@@ -34,21 +34,16 @@ spec:
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: {{ template "userContainerPort" . }}
           initialDelaySeconds: 300
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: {{ template "userContainerPort" . }}
           initialDelaySeconds: 180
           periodSeconds: 3

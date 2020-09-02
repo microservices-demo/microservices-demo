@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: carts-db
-        image: mongo
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.cartsdb.image.repo }}:{{ .Values.cartsdb.image.tag }}
         ports:
         - name: mongo
           containerPort: 27017

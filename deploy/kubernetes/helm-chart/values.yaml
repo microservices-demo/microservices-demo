@@ -1,13 +1,104 @@
 # Default values for sock-shop.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+    registry: ''
+
 java:
     options: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
-zipkin: 
-    enabled:  false
-    url: zipkin.zipkin.svc.cluster.local
+
+cartsdb:
+    image:
+        repo: mongo
+        tag: 4.4.0
+
+carts:
+    image:
+        repo: weaveworksdemos/carts
+        tag: 0.4.8
+
+cataloguedb:
+    image:
+        repo: weaveworksdemos/catalogue-db
+        tag: 0.3.0
+
+catalogue:
+    image:
+        repo: weaveworksdemos/catalogue
+        tag: 0.3.5
+
 frontend:
+    image:
+        repo: weaveworksdemos/front-end
+        tag: 0.3.12
     replicas: 1
+
 loadtest:
+    image:
+        repo: weaveworksdemos/load-test
+        tag: 0.1.1
     replicas: 2
     enabled: false
+
+ordersdb:
+    image:
+        repo: mongo
+        tag: 4.4.0
+
+orders:
+    image:
+        repo: weaveworksdemos/orders
+        tag: 0.4.7
+
+payment:
+    image:
+        repo: weaveworksdemos/payment
+        tag: 0.4.3
+    declinePaymentsOverAmount: 200
+
+queuemaster:
+    image:
+        repo: weaveworksdemos/queue-master
+        tag: 0.3.1
+
+rabbitmq:
+    image:
+        repo: rabbitmq
+        tag: 3.6.8
+
+sessiondb:
+    image:
+        repo: redis
+        tag: alpine
+
+shipping:
+    image:
+        repo: weaveworksdemos/shipping
+        tag: 0.4.8
+
+userdb:
+    image:
+        repo: weaveworksdemos/user-db
+        tag: 0.3.0
+
+user:
+    image:
+        repo: weaveworksdemos/user
+        tag: 0.4.4
+
+zipkincron:
+    image:
+        repo: openzipkin/zipkin-dependencies
+        tag: 1.4.0
+
+zipkin:
+    image:
+        repo: openzipkin/zipkin
+        tag: 2.21
+    enabled:  false
+    url: zipkin.zipkin.svc.cluster.local
+
+zipkinmysql:
+    image:
+        repo: openzipkin/zipkin-mysql
+        tag: 1.20.0

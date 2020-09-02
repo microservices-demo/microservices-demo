@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: queue-master
-        image: weaveworksdemos/queue-master:0.3.1
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.queuemaster.image.repo }}:{{ .Values.queuemaster.image.tag }}
         env:
          {{- if .Values.zipkin.enabled }}
          - name: ZIPKIN

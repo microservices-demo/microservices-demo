@@ -14,7 +14,10 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment:0.4.3
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.payment.image.repo }}:{{ .Values.payment.image.tag }}
+        command:
+        - /app
+        - -decline={{ .Values.payment.declinePaymentsOverAmount }}
         resources:
           limits:
             cpu: 100m
@@ -23,7 +26,7 @@ spec:
             cpu: 100m
             memory: 100Mi
         ports:
-        - containerPort: 80
+        - containerPort: {{ template "paymentContainerPort" . }}
         {{- if .Values.zipkin.enabled }}
         env:
         - name: ZIPKIN
@@ -32,21 +35,16 @@ spec:
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: {{ template "paymentContainerPort" . }}
           initialDelaySeconds: 300
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: {{ template "paymentContainerPort" . }}
           initialDelaySeconds: 180
           periodSeconds: 3
