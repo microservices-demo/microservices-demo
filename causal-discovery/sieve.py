@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import time
 from datetime import datetime
@@ -13,7 +14,6 @@ from clustering.metricsnamecluster import cluster_words
 from clustering.kshape import kshape
 
 ## Parameters ###################################################
-DATA_FILE = "../data/20200831_user-db_cpu-load_02.json"
 TARGET_DATA = {"containers": "all",
                "services": "all",
                "middlewares": "all"}
@@ -115,6 +115,7 @@ def count_metrics(metrics_dimension, dataframe, n):
     return metrics_dimension
 
 if __name__ == '__main__':
+    DATA_FILE = sys.argv[1]
     # Prepare data matrix
     raw_data = pd.read_json(DATA_FILE)
     data_df = pd.DataFrame()
