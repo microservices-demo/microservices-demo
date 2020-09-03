@@ -178,5 +178,8 @@ if __name__ == '__main__':
     summary["reduced_metrics"] = list(reduced_df.columns)
     summary["clustering_info"] = clustering_info
     file_name = "tsifter_{}.json".format(datetime.now().strftime("%Y%m%d%H%M%S"))
-    with open(os.path.join("./results", file_name), "w") as f:
+    result_dir = "./results/{}".format(DATA_FILE.split("/")[-1])
+    if not os.path.isdir(result_dir):
+        os.makedirs(result_dir)
+    with open(os.path.join(result_dir, file_name), "w") as f:
         json.dump(summary, f, indent=4)
