@@ -135,6 +135,12 @@ def get_metrics_by_query_range(url, start, end, step, query, target):
 def interpotate_time_series(values, time_meta):
     start, end, step = time_meta['start'], time_meta['end'], time_meta['step']
     new_values = []
+
+    # start check
+    if (lost_num := int((values[0][0] - start) / step)-1) > 0:
+        for j in range(lost_num):
+            new_values.append([start + step*j, NAN])
+
     for i, val in enumerate(values):
         if i+1 >= len(values):
             new_values.append(val)
@@ -144,6 +150,13 @@ def interpotate_time_series(values, time_meta):
         if (lost_num := int((next_ts - cur_ts) / step)-1) > 0:
             for j in range(lost_num):
                 new_values.append([cur_ts + step*(j+1), NAN])
+
+    # end check
+    last_ts = values[-1][0]
+    if (lost_num := int((end - last_ts)/ step)) > 0:
+        for j in range(lost_num):
+            new_values.append([last_ts + step*(j+1), NAN])
+
     return new_values
 
 def support_set_default(obj):
