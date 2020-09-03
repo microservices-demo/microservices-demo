@@ -192,7 +192,7 @@ if __name__ == '__main__':
     # Output summary of results as JSON file
     summary = {}
     summary["data_file"] = DATA_FILE.split("/")[-1]
-    summary["execution_time"] = {"ADF": time_cv, "clustering": time_clustering, "total": time_cv+time_clustering}
+    summary["execution_time"] = {"ADF": time_cv, "clustering": time_clustering, "total": round(time_cv+time_clustering, 2)}
     summary["metrics_dimension"] = metrics_dimension
     summary["reduced_metrics"] = list(reduced_df.columns)
     summary["clustering_info"] = clustering_info
