@@ -114,7 +114,7 @@ if __name__ == '__main__':
                     if target_name in ["queue-master", "rabbitmq", "session-db"]:
                         continue
                     column_name = "{}-{}_{}".format(target[0], target_name, metric_name)
-                    data_df[column_name] = np.array(metric["values"], dtype=np.float)[:, 1][:PLOTS_NUM]
+                    data_df[column_name] = np.array(metric["values"], dtype=np.float)[:, 1][-PLOTS_NUM:]
     data_df = data_df.round(4)
 
     # Prepare list of services
@@ -173,6 +173,7 @@ if __name__ == '__main__':
     # Output summary of results as JSON file
     summary = {}
     summary["data_file"] = DATA_FILE.split("/")[-1]
+    summary["number_of_plots"] = PLOTS_NUM
     summary["execution_time"] = {"ADF": time_adf, "clustering": time_clustering, "total": round(time_adf+time_clustering, 2)}
     summary["metrics_dimension"] = metrics_dimension
     summary["reduced_metrics"] = list(reduced_df.columns)
