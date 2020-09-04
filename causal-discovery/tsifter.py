@@ -98,6 +98,8 @@ def count_metrics(metrics_dimension, dataframe, n):
 
 if __name__ == '__main__':
     DATA_FILE = sys.argv[1]
+    if len(sys.argv) > 2:
+        PLOTS_NUM = sys.argv[2]
     # Prepare data matrix
     raw_data = pd.read_json(DATA_FILE)
     data_df = pd.DataFrame()
