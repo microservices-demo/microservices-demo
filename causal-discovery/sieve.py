@@ -136,6 +136,7 @@ if __name__ == '__main__':
                     column_name = "{}-{}_{}".format(target[0], target_name, metric_name)
                     data_df[column_name] = np.array(metric["values"], dtype=np.float)[:, 1][-PLOTS_NUM:]
     data_df = data_df.round(4)
+    data_df = data_df.interpolate(method="spline", order=3, limit_direction="both")
 
     # Prepare list of services
     services_list = []
