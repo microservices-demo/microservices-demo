@@ -118,6 +118,15 @@
                 "prometheus-url": "http://prometheus01.prv",
                 "end": "1599200400"
             }
+        },
+        "catalogue-db:connections-error:02": {
+            "component": "catalogue-db",
+            "anomaly": "mysql connections error",
+            "condition": "max_connections=3",
+            "params": {
+                "prometheus-url": "http://prometheus01.prv",
+                "end": "1599277667862"
+            }
         }
     }
 }
