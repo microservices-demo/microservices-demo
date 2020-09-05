@@ -125,7 +125,7 @@
             "condition": "max_connections=3",
             "params": {
                 "prometheus-url": "http://prometheus01.prv",
-                "end": "1599277667862"
+                "end": "1599277667"
             }
         }
     }
