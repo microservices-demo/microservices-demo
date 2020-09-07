@@ -140,20 +140,19 @@ if __name__ == '__main__':
     ## Step 1: Reduced metrics with stationarity
     start = time.time()
     reduced_by_st_df = pd.DataFrame()
-    future_list = []
     with futures.ProcessPoolExecutor(max_workers=4) as executor:
+        future_to_col = {}
         for col in data_df.columns:
             data = data_df[col].values
             if data.sum() == 0. or len(np.unique(data)) == 1 or np.isnan(data.sum()):
                 continue
-            else:
-                future_list.append(executor.submit(adfuller, data))
-
-    for future in futures.as_completed(future_list):
-        p_val = future.result()[1]
-        if not np.isnan(p_val):
-            if p_val >= SIGNIFICANCE_LEVEL:
-                reduced_by_st_df[col] = data_df[col]
+            future_to_col[executor.submit(adfuller, data)] = col
+        for future in futures.as_completed(future_to_col):
+            col = future_to_col[future]
+            p_val = future.result()[1]
+            if not np.isnan(p_val):
+                if p_val >= SIGNIFICANCE_LEVEL:
+                    reduced_by_st_df[col] = data_df[col]
 
     metrics_dimension = count_metrics(metrics_dimension, reduced_by_st_df, 1)
     metrics_dimension["total"].append(len(reduced_by_st_df.columns))
