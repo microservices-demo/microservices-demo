@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+import argparse
 import os
 import sys
 import json
@@ -13,6 +16,7 @@ from scipy.cluster.hierarchy import fcluster
 from scipy.spatial.distance import pdist, squareform
 from clustering.sbd import sbd
 from statsmodels.tsa.stattools import adfuller
+from concurrent import futures
 
 ## Parameters ###################################################
 TARGET_DATA = {"containers": "all",
@@ -97,9 +101,16 @@ def count_metrics(metrics_dimension, dataframe, n):
     return metrics_dimension
 
 if __name__ == '__main__':
-    DATA_FILE = sys.argv[1]
-    if len(sys.argv) > 2:
-        PLOTS_NUM = int(sys.argv[2])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("datafile", help="metrics JSON data file")
+    parser.add_argument("--max-workers", help="number of processes", type=int, default=1)
+    parser.add_argument("--plot-num", help="number of plots", type=int, default=PLOTS_NUM)
+    args = parser.parse_args()
+
+    DATA_FILE = args.datafile
+    PLOTS_NUM = args.plot_num
+    max_workers = args.max_workers
+
     # Prepare data matrix
     raw_data = pd.read_json(DATA_FILE)
     data_df = pd.DataFrame()
@@ -139,15 +150,19 @@ if __name__ == '__main__':
     ## Step 1: Reduced metrics with stationarity
     start = time.time()
     reduced_by_st_df = pd.DataFrame()
-    for col in data_df.columns:
-        data = data_df[col].values
-        if data.sum() == 0. or len(np.unique(data)) == 1 or np.isnan(data.sum()):
-            p_val = np.nan
-        else:
-            p_val = adfuller(data)[1]
-        if not np.isnan(p_val):
-            if p_val >= SIGNIFICANCE_LEVEL:
-                reduced_by_st_df[col] = data_df[col]
+    with futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
+        future_to_col = {}
+        for col in data_df.columns:
+            data = data_df[col].values
+            if data.sum() == 0. or len(np.unique(data)) == 1 or np.isnan(data.sum()):
+                continue
+            future_to_col[executor.submit(adfuller, data)] = col
+        for future in futures.as_completed(future_to_col):
+            col = future_to_col[future]
+            p_val = future.result()[1]
+            if not np.isnan(p_val):
+                if p_val >= SIGNIFICANCE_LEVEL:
+                    reduced_by_st_df[col] = data_df[col]
 
     metrics_dimension = count_metrics(metrics_dimension, reduced_by_st_df, 1)
     metrics_dimension["total"].append(len(reduced_by_st_df.columns))
