@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+import argparse
 import os
 import sys
 import json
@@ -12,6 +15,7 @@ from clustering.sbd import sbd
 from clustering.sbd import silhouette_score
 from clustering.metricsnamecluster import cluster_words
 from clustering.kshape import kshape
+from concurrent import futures
 
 ## Parameters ###################################################
 TARGET_DATA = {"containers": "all",
@@ -22,7 +26,10 @@ SIGNIFICANCE_LEVEL = 0.05
 THRESHOLD_DIST = 0.01
 #################################################################
 
-def kshape_clustering(target_df, service_name, clustering_info, dist_func):
+# Disable multiprocessing by OpenMP in numpy.
+os.environ["OMP_NUM_THREADS"] = "1"
+
+def kshape_clustering(target_df, service_name, dist_func):
     data = z_normalization(target_df.values.T)
     labels = []
     scores = []
@@ -59,6 +66,8 @@ def kshape_clustering(target_df, service_name, clustering_info, dist_func):
             cluster_dict[v] = [i]
         else:
             cluster_dict[v].append(i)
+
+    clustering_info = {}
     for c in cluster_dict:
         cluster_metrics = cluster_dict[c]
         if len(cluster_metrics) == 1:
@@ -115,9 +124,16 @@ def count_metrics(metrics_dimension, dataframe, n):
     return metrics_dimension
 
 if __name__ == '__main__':
-    DATA_FILE = sys.argv[1]
-    if len(sys.argv) > 2:
-        PLOTS_NUM = int(sys.argv[2])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("datafile", help="metrics JSON data file")
+    parser.add_argument("--max-workers", help="number of processes", type=int, default=1)
+    parser.add_argument("--plot-num", help="number of plots", type=int, default=PLOTS_NUM)
+    args = parser.parse_args()
+
+    DATA_FILE = args.datafile
+    PLOTS_NUM = args.plot_num
+    max_workers = args.max_workers
+
     # Prepare data matrix
     raw_data = pd.read_json(DATA_FILE)
     data_df = pd.DataFrame()
@@ -177,15 +193,21 @@ if __name__ == '__main__':
     clustering_info = {}
     reduced_df = reduced_by_cv_df
 
-    # Clustering metrics by services including services, containers and middlewares
-    for ser in services_list:
-        target_df = reduced_by_cv_df.loc[:, reduced_by_cv_df.columns.str.startswith(
-            ("s-{}_".format(ser), "c-{}".format(ser), "m-{}".format(ser)))]
-        if len(target_df.columns) in [0, 1]:
-            continue
-        clustering_info, remove_list = kshape_clustering(target_df, ser, clustering_info, sbd)
-        for r in remove_list:
-            reduced_df = reduced_df.drop(r, axis=1)
+    with futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
+        future_to_service = {}
+        # Clustering metrics by services including services, containers and middlewares
+        for ser in services_list:
+            target_df = reduced_by_cv_df.loc[:, reduced_by_cv_df.columns.str.startswith(
+                ("s-{}_".format(ser), "c-{}".format(ser), "m-{}".format(ser)))]
+            if len(target_df.columns) in [0, 1]:
+                continue
+            future_to_service[executor.submit(kshape_clustering, target_df, ser, sbd)] = ser
+        for future in futures.as_completed(future_to_service):
+            ser = future_to_service[future]
+            c_info, remove_list = future.result()
+            clustering_info.update(c_info)
+            for r in remove_list:
+                reduced_df = reduced_df.drop(r, axis=1)
 
     metrics_dimension = count_metrics(metrics_dimension, reduced_df, 2)
     metrics_dimension["total"].append(len(reduced_df.columns))
