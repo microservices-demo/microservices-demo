@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+import argparse
 import os
 import sys
 import json
@@ -98,9 +101,16 @@ def count_metrics(metrics_dimension, dataframe, n):
     return metrics_dimension
 
 if __name__ == '__main__':
-    DATA_FILE = sys.argv[1]
-    if len(sys.argv) > 2:
-        PLOTS_NUM = int(sys.argv[2])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("datafile", help="metrics JSON data file")
+    parser.add_argument("--max-workers", help="number of processes", type=int, default=1)
+    parser.add_argument("--plot-num", help="number of plots", type=int, default=PLOTS_NUM)
+    args = parser.parse_args()
+
+    DATA_FILE = args.datafile
+    PLOTS_NUM = args.plot_num
+    max_workers = args.max_workers
+
     # Prepare data matrix
     raw_data = pd.read_json(DATA_FILE)
     data_df = pd.DataFrame()
@@ -140,7 +150,7 @@ if __name__ == '__main__':
     ## Step 1: Reduced metrics with stationarity
     start = time.time()
     reduced_by_st_df = pd.DataFrame()
-    with futures.ProcessPoolExecutor(max_workers=4) as executor:
+    with futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         future_to_col = {}
         for col in data_df.columns:
             data = data_df[col].values
