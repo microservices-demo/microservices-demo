@@ -27,7 +27,7 @@ SIGNIFICANCE_LEVEL = 0.05
 THRESHOLD_DIST = 0.01
 #################################################################
 
-def hierarchical_clustering(target_df, clustering_info, dist_func):
+def hierarchical_clustering(target_df, dist_func):
     series = target_df.values.T
     norm_series = z_normalization(series)
     dist = pdist(norm_series, metric=dist_func)
@@ -41,7 +41,7 @@ def hierarchical_clustering(target_df, clustering_info, dist_func):
             cluster_dict[v] = [i]
         else:
             cluster_dict[v].append(i)
-    remove_list = []
+    clustering_info, remove_list = {}, []
     for c in cluster_dict:
         cluster_metrics = cluster_dict[c]
         if len(cluster_metrics) == 1:
@@ -173,15 +173,20 @@ if __name__ == '__main__':
     clustering_info = {}
     reduced_df = reduced_by_st_df
 
-    # Clustering metrics by service including services, containers and middlewares metrics
-    for ser in services_list:
-        target_df = reduced_by_st_df.loc[:, reduced_by_st_df.columns.str.startswith(
-            ("s-{}_".format(ser), "c-{}".format(ser), "m-{}".format(ser)))]
-        if len(target_df.columns) in [0, 1]:
-            continue
-        clustering_info, remove_list = hierarchical_clustering(target_df, clustering_info, sbd)
-        for r in remove_list:
-            reduced_df = reduced_df.drop(r, axis=1)
+    with futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
+        # Clustering metrics by service including services, containers and middlewares metrics
+        future_list = []
+        for ser in services_list:
+            target_df = reduced_by_st_df.loc[:, reduced_by_st_df.columns.str.startswith(
+                ("s-{}_".format(ser), "c-{}".format(ser), "m-{}".format(ser)))]
+            if len(target_df.columns) in [0, 1]:
+                continue
+            future_list.append(executor.submit(hierarchical_clustering, target_df, sbd))
+        for future in futures.as_completed(future_list):
+            c_info, remove_list = future.result()
+            clustering_info.update(c_info)
+            for r in remove_list:
+                reduced_df = reduced_df.drop(r, axis=1)
 
     metrics_dimension = count_metrics(metrics_dimension, reduced_df, 2)
     metrics_dimension["total"].append(len(reduced_df.columns))
