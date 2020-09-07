@@ -138,6 +138,18 @@ if __name__ == '__main__':
     data_df = data_df.round(4)
     data_df = data_df.interpolate(method="spline", order=3, limit_direction="both")
 
+    # Increase the number of metrics by copying columns for experiment
+    if len(sys.argv) > 3:
+        columns_num = int(sys.argv[3])
+        large_df = data_df
+        i = 1
+        while True:
+            large_df = pd.concat([large_df, data_df.add_prefix("{}_".format(i))], axis=1)
+            i += 1
+            if len(large_df.columns) >= columns_num:
+                break
+        data_df = large_df.iloc[:, :columns_num]
+
     # Prepare list of services
     services_list = []
     for col in data_df.columns:
