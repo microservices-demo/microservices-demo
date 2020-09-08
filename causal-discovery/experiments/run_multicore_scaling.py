@@ -35,7 +35,7 @@ if __name__ == '__main__':
             log(f"Running tsifter test in case of CPU cores {str(n)} ...")
 
             total_time_sum, filtering_time_sum, clustering_time_sum = 0.0, 0.0, 0.0
-            for i in range(1, args.num_test):
+            for i in range(1, args.num_test+1):
                 log(f"Running tsifter test in case of CPU cores {str(n)}: test:f{str(i)} ...")
 
                 cmdout = subprocess.Popen(f"{CUR_DIR}/../tsifter.py --max-workers {str(n)} {DATA_FILE}",
@@ -56,7 +56,7 @@ if __name__ == '__main__':
             log(f"Running sieve test in case of CPU cores {str(n)} ...")
 
             total_time_sum, filtering_time_sum, clustering_time_sum = 0.0, 0.0, 0.0
-            for i in range(1, args.num_test):
+            for i in range(1, args.num_test+1):
                 log(f"Running sieve test in case of CPU cores {str(n)}: test:f{str(i)} ...")
 
                 cmdout = subprocess.Popen(f"{CUR_DIR}/../sieve.py --max-workers {str(n)} {DATA_FILE}",
