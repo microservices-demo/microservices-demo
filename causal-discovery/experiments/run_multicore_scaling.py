@@ -72,4 +72,4 @@ if __name__ == '__main__':
                 'clustering_time': clustering_time_sum / args.num_test,
             }
 
-    json.dump(outout, sys.stdout, indent=4)
+    json.dump(output, sys.stdout, indent=4)
