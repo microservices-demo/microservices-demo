@@ -31,7 +31,7 @@ if __name__ == '__main__':
     }
 
     if args.method in ['all', 'tsifter']:
-        for n in range(1, args.num_cores):
+        for n in range(1, args.num_cores+1):
             log(f"Running tsifter test in case of CPU cores {str(n)} ...")
 
             total_time_sum, filtering_time_sum, clustering_time_sum = 0.0, 0.0, 0.0
@@ -52,7 +52,7 @@ if __name__ == '__main__':
             }
 
     if args.method in ['all', 'sieve']:
-        for n in range(1, args.num_cores):
+        for n in range(1, args.num_cores+1):
             log(f"Running sieve test in case of CPU cores {str(n)} ...")
 
             total_time_sum, filtering_time_sum, clustering_time_sum = 0.0, 0.0, 0.0
