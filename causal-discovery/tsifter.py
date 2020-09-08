@@ -105,10 +105,12 @@ if __name__ == '__main__':
     parser.add_argument("datafile", help="metrics JSON data file")
     parser.add_argument("--max-workers", help="number of processes", type=int, default=1)
     parser.add_argument("--plot-num", help="number of plots", type=int, default=PLOTS_NUM)
+    parser.add_argument("--metric-num", help="number of metrics (for experiment)", type=int, default=None)
     args = parser.parse_args()
 
     DATA_FILE = args.datafile
     PLOTS_NUM = args.plot_num
+    METRIC_NUM = args.metric_num
     max_workers = args.max_workers
 
     # Prepare data matrix
@@ -130,6 +132,25 @@ if __name__ == '__main__':
                     data_df[column_name] = np.array(metric["values"], dtype=np.float)[:, 1][-PLOTS_NUM:]
     data_df = data_df.round(4)
     data_df = data_df.interpolate(method="spline", order=3, limit_direction="both")
+
+    # Increase the number of metrics by copying columns for experiment
+    if METRIC_NUM:
+        large_df = data_df
+        i = 1
+        while True:
+            rename_columns = {}
+            for col_name in data_df.columns:
+                target_name = col_name.split("_")[0][2:]
+                if "-" in target_name:
+                    renamed = target_name.replace("-", str(i) + "-")
+                else:
+                    renamed = target_name + str(i)
+                rename_columns[col_name] = col_name.replace(target_name, renamed)
+            large_df = pd.concat([large_df, data_df.rename(columns=rename_columns)], axis=1)
+            i += 1
+            if len(large_df.columns) >= METRIC_NUM:
+                break
+        data_df = large_df.iloc[:, :METRIC_NUM]
 
     # Prepare list of services
     services_list = []
@@ -178,7 +199,7 @@ if __name__ == '__main__':
         future_list = []
         for ser in services_list:
             target_df = reduced_by_st_df.loc[:, reduced_by_st_df.columns.str.startswith(
-                ("s-{}_".format(ser), "c-{}".format(ser), "m-{}".format(ser)))]
+                ("s-{}_".format(ser), "c-{}_".format(ser), "c-{}-".format(ser), "m-{}_".format(ser), "m-{}-".format(ser)))]
             if len(target_df.columns) in [0, 1]:
                 continue
             future_list.append(executor.submit(hierarchical_clustering, target_df, sbd))
