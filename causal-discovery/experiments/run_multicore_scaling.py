@@ -61,8 +61,8 @@ if __name__ == '__main__':
 
                 cmdout = subprocess.Popen(f"{CUR_DIR}/../sieve.py --max-workers {str(n)} {DATA_FILE}",
                     shell=True, stdout=subprocess.PIPE)
-                jsonS = json.dumps(cmdout.communicate())
-                res = json.load(jsonS)['execution_time']
+                jsonS, _ = cmdout.communicate()
+                res = json.loads(jsonS)['execution_time']
                 total_time_sum += res['total']
                 filtering_time_sum += res['ADF']
                 clustering_time_sum += res['clustering']
