@@ -64,7 +64,7 @@ if __name__ == '__main__':
                 jsonS, _ = cmdout.communicate()
                 res = json.loads(jsonS)['execution_time']
                 total_time_sum += res['total']
-                filtering_time_sum += res['ADF']
+                filtering_time_sum += res['CV']
                 clustering_time_sum += res['clustering']
             output['tsifter']['execution_time']['cpu_cores'][n] = {
                 'total_time': total_time_sum / args.num_test,
