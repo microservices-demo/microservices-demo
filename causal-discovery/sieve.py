@@ -228,3 +228,5 @@ if __name__ == '__main__':
         os.makedirs(result_dir)
     with open(os.path.join(result_dir, file_name), "w") as f:
         json.dump(summary, f, indent=4)
+    # print stdout, too.
+    json.dump(summary, sys.stdout, indent=4)
