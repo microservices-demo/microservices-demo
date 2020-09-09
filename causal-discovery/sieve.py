@@ -220,8 +220,8 @@ if __name__ == '__main__':
 
     # Reduce metrics
     ## Step 1: Reduced metrics by CV
-    start = time.time()
     reduced_by_cv_df = pd.DataFrame()
+    start = time.time()
     for col in data_df.columns:
         data = data_df[col].values
         mean = data.mean()
@@ -233,14 +233,14 @@ if __name__ == '__main__':
         if cv > 0.002:
             reduced_by_cv_df[col] = data_df[col]
 
+    time_cv = round(time.time() - start, 2)
     metrics_dimension = count_metrics(metrics_dimension, reduced_by_cv_df, 1)
     metrics_dimension["total"].append(len(reduced_by_cv_df.columns))
-    time_cv = round(time.time() - start, 2)
 
     ## Step 2: Reduced by k-Shape
-    start = time.time()
     clustering_info = {}
     reduced_df = reduced_by_cv_df
+    start = time.time()
 
     with futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         # Clustering metrics by services including services, containers and middlewares
@@ -254,9 +254,9 @@ if __name__ == '__main__':
             for r in remove_list:
                 reduced_df = reduced_df.drop(r, axis=1)
 
+    time_clustering = round(time.time() - start, 2)
     metrics_dimension = count_metrics(metrics_dimension, reduced_df, 2)
     metrics_dimension["total"].append(len(reduced_df.columns))
-    time_clustering = round(time.time() - start, 2)
     #pprint(metrics_dimension)
 
     # Output summary of results as JSON file
