@@ -212,7 +212,7 @@ if __name__ == '__main__':
     ## Step 2: Reduced by k-Shape
     clustering_info = {}
     reduced_df = reduced_by_cv_df
-    start = time.time()start = time.time()
+    start = time.time()
 
     with futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         future_to_service = {}
