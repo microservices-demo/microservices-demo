@@ -19,7 +19,7 @@ import pandas as pd
 import numpy as np
 import re
 import random
-import util
+from util import util
 from pprint import pprint
 from clustering.sbd import sbd
 from clustering.sbd import silhouette_score
