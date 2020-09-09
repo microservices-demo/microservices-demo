@@ -1,3 +1,4 @@
+import numpy as np
 
 def z_normalization(data):
     arr = []
