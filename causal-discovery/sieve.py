@@ -30,9 +30,7 @@ THRESHOLD_DIST = 0.01
 os.environ["OMP_NUM_THREADS"] = "1"
 
 def create_clusters(data, columns, service_name, n):
-    words_list = []
-    for col in columns:
-        words_list.append(col[2:])
+    words_list = [col[2:] for col in columns]
     init_labels = cluster_words(words_list, service_name, n)
     results = kshape(data, n, initial_clustering=init_labels)
     label = [0] * data.shape[0]
