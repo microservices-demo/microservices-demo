@@ -7,6 +7,10 @@ import json
 import time
 from datetime import datetime
 import pandas as pd
+
+# Disable multiprocessing by OpenMP in numpy.
+os.environ["OMP_NUM_THREADS"] = "1"
+
 import numpy as np
 import re
 import random
