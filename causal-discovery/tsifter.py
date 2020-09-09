@@ -169,8 +169,8 @@ if __name__ == '__main__':
 
     # Reduce metrics
     ## Step 1: Reduced metrics with stationarity
-    start = time.time()
     reduced_by_st_df = pd.DataFrame()
+    start = time.time()
     with futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         future_to_col = {}
         for col in data_df.columns:
@@ -185,14 +185,14 @@ if __name__ == '__main__':
                 if p_val >= SIGNIFICANCE_LEVEL:
                     reduced_by_st_df[col] = data_df[col]
 
+    time_adf = round(time.time() - start, 2)
     metrics_dimension = count_metrics(metrics_dimension, reduced_by_st_df, 1)
     metrics_dimension["total"].append(len(reduced_by_st_df.columns))
-    time_adf = round(time.time() - start, 2)
 
     ## Step 2: Reduced by hierarchical clustering
-    start = time.time()
     clustering_info = {}
     reduced_df = reduced_by_st_df
+    start = time.time()
 
     with futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         # Clustering metrics by service including services, containers and middlewares metrics
@@ -209,9 +209,9 @@ if __name__ == '__main__':
             for r in remove_list:
                 reduced_df = reduced_df.drop(r, axis=1)
 
+    time_clustering = round(time.time() - start, 2)
     metrics_dimension = count_metrics(metrics_dimension, reduced_df, 2)
     metrics_dimension["total"].append(len(reduced_df.columns))
-    time_clustering = round(time.time() - start, 2)
     #pprint(metrics_dimension)
 
     # Output summary of results as JSON file
