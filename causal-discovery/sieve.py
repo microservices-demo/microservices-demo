@@ -29,32 +29,37 @@ THRESHOLD_DIST = 0.01
 # Disable multiprocessing by OpenMP in numpy.
 os.environ["OMP_NUM_THREADS"] = "1"
 
+def create_clusters(data, columns, service_name, n):
+    words_list = []
+    for col in columns:
+        words_list.append(col[2:])
+    init_labels = cluster_words(words_list, service_name, n)
+    results = kshape(data, n, initial_clustering=init_labels)
+    label = [0] * data.shape[0]
+    cluster_center = []
+    cluster_num = 0
+    for res in results:
+        if not res[1]:
+            continue
+        for i in res[1]:
+            label[i] = cluster_num
+        cluster_center.append(res[0])
+        cluster_num += 1
+    if len(set(label)) == 1:
+        return None
+    return (label, silhouette_score(data, label), cluster_center)
+
 def kshape_clustering(target_df, service_name):
     data = z_normalization(target_df.values.T)
-    labels = []
-    scores = []
-    centroids = []
+    labels, scores, centroids = [], [], []
     for n in np.arange(2, data.shape[0]):
-        words_list = []
-        for col in target_df.columns:
-            words_list.append(col[2:])
-        init_labels = cluster_words(words_list, service_name, n)
-        results = kshape(data, n, initial_clustering=init_labels)
-        label = [0] * data.shape[0]
-        cluster_center = []
-        cluster_num = 0
-        for res in results:
-            if not res[1]:
-                continue
-            for i in res[1]:
-                label[i] = cluster_num
-            cluster_center.append(res[0])
-            cluster_num += 1
-        if len(set(label)) == 1:
+        cluster = create_clusters(data, target_df.columns, service_name, n)
+        if cluster is None:
             continue
-        labels.append(label)
-        scores.append(silhouette_score(data, label))
-        centroids.append(cluster_center)
+        labels.append(cluster[0])
+        scores.append(cluster[1])
+        centroids.append(cluster[2])
+
     idx = np.argmax(scores)
     label = labels[idx]
     centroid = centroids[idx]
