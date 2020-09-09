@@ -35,9 +35,6 @@ SIGNIFICANCE_LEVEL = 0.05
 THRESHOLD_DIST = 0.01
 #################################################################
 
-# Disable multiprocessing by OpenMP in numpy.
-os.environ["OMP_NUM_THREADS"] = "1"
-
 def create_clusters(data, columns, service_name, n):
     words_list = [col[2:] for col in columns]
     init_labels = cluster_words(words_list, service_name, n)
@@ -56,34 +53,40 @@ def create_clusters(data, columns, service_name, n):
         return None
     return (label, silhouette_score(data, label), cluster_center)
 
-def select_representative_metric(cluster_metrics, centroid):
+def select_representative_metric(data, cluster_metrics, columns, centroid):
     clustering_info = {}
     remove_list = []
     if len(cluster_metrics) == 1:
-        return None
+        return None, None
     if len(cluster_metrics) == 2:
         # Select the representative metric at random
         shuffle_list = random.sample(cluster_metrics, len(cluster_metrics))
-        clustering_info[target_df.columns[shuffle_list[0]]] = [target_df.columns[shuffle_list[1]]]
-        remove_list.append(target_df.columns[shuffle_list[1]])
+        clustering_info[columns[shuffle_list[0]]] = [columns[shuffle_list[1]]]
+        remove_list.append(columns[shuffle_list[1]])
     elif len(cluster_metrics) > 2:
         # Select the representative metric based on the distance from the centroid
         distances = []
         for met in cluster_metrics:
             distances.append(sbd(centroid, data[met]))
         representative_metric = cluster_metrics[np.argmin(distances)]
-        clustering_info[target_df.columns[representative_metric]] = []
+        clustering_info[columns[representative_metric]] = []
         for r in cluster_metrics:
             if r != representative_metric:
-                remove_list.append(target_df.columns[r])
-                clustering_info[target_df.columns[representative_metric]].append(target_df.columns[r])
-    return clustering_info, remove_list
+                remove_list.append(columns[r])
+                clustering_info[columns[representative_metric]].append(columns[r])
+    return (clustering_info, remove_list)
 
-def kshape_clustering(target_df, service_name):
+def kshape_clustering(target_df, service_name, executor):
+    future_list = []
+
     data = z_normalization(target_df.values.T)
-    labels, scores, centroids = [], [], []
     for n in np.arange(2, data.shape[0]):
-        cluster = create_clusters(data, target_df.columns, service_name, n)
+        future_list.append(
+            executor.submit(create_clusters, data, target_df.columns, service_name, n)
+        )
+    labels, scores, centroids = [], [], []
+    for future in futures.as_completed(future_list):
+        cluster = future.result()
         if cluster is None:
             continue
         labels.append(cluster[0])
@@ -100,12 +103,19 @@ def kshape_clustering(target_df, service_name):
         else:
             cluster_dict[v].append(i)
 
+    future_list = []
+    for c, cluster_metrics in cluster_dict.items():
+        future_list.append(
+            executor.submit(select_representative_metric, data, cluster_metrics, target_df.columns, centroid[c])
+        )
     clustering_info = {}
     remove_list = []
-    for c, cluster_metrics in cluster_dict.items():
-        c_info, r_list = select_representative_metric(cluster_metrics, centroid[c])
+    for future in futures.as_completed(future_list):
+        c_info, r_list = future.result()
+        if c_info is None:
+            continue
         clustering_info.update(c_info)
-        remove_list.append(r_list)
+        remove_list.extend(r_list)
 
     return clustering_info, remove_list
 
@@ -233,17 +243,13 @@ if __name__ == '__main__':
     reduced_df = reduced_by_cv_df
 
     with futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
-        future_to_service = {}
         # Clustering metrics by services including services, containers and middlewares
         for ser in services_list:
             target_df = reduced_by_cv_df.loc[:, reduced_by_cv_df.columns.str.startswith(
                 ("s-{}_".format(ser), "c-{}_".format(ser), "c-{}-".format(ser), "m-{}_".format(ser), "m-{}-".format(ser)))]
             if len(target_df.columns) in [0, 1]:
                 continue
-            future_to_service[executor.submit(kshape_clustering, target_df, ser)] = ser
-        for future in futures.as_completed(future_to_service):
-            ser = future_to_service[future]
-            c_info, remove_list = future.result()
+            c_info, remove_list = kshape_clustering(target_df, ser, executor)
             clustering_info.update(c_info)
             for r in remove_list:
                 reduced_df = reduced_df.drop(r, axis=1)
