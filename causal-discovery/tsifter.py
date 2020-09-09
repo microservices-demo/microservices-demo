@@ -19,6 +19,7 @@ import pandas as pd
 import numpy as np
 import re
 import random
+from util import util
 from pprint import pprint
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import fcluster
@@ -38,7 +39,7 @@ THRESHOLD_DIST = 0.01
 
 def hierarchical_clustering(target_df, dist_func):
     series = target_df.values.T
-    norm_series = z_normalization(series)
+    norm_series = util.z_normalization(series)
     dist = pdist(norm_series, metric=dist_func)
     # distance_list.extend(dist)
     dist_matrix = squareform(dist)
@@ -76,38 +77,6 @@ def hierarchical_clustering(target_df, dist_func):
                     remove_list.append(target_df.columns[r])
                     clustering_info[target_df.columns[medoid]].append(target_df.columns[r])
     return clustering_info, remove_list
-
-def z_normalization(data):
-    arr = []
-    for d in data:
-        mean = d.mean()
-        std = d.std()
-        arr.append((d - mean) / std)
-    return np.array(arr)
-
-def count_metrics(metrics_dimension, dataframe, n):
-    for col in dataframe.columns:
-        if col.startswith("c-"):
-            container_name = col.split("_")[0].replace("c-", "")
-            if container_name not in metrics_dimension["containers"]:
-                metrics_dimension["containers"][container_name] = [0, 0, 0]
-            metrics_dimension["containers"][container_name][n] += 1
-        elif col.startswith("m-"):
-            middleware_name = col.split("_")[0].replace("m-", "")
-            if middleware_name not in metrics_dimension["middlewares"]:
-                metrics_dimension["middlewares"][middleware_name] = [0, 0, 0]
-            metrics_dimension["middlewares"][middleware_name][n] += 1
-        elif col.startswith("s-"):
-            service_name = col.split("_")[0].replace("s-", "")
-            if service_name not in metrics_dimension["services"]:
-                metrics_dimension["services"][service_name] = [0, 0, 0]
-            metrics_dimension["services"][service_name][n] += 1
-        elif col.startswith("n-"):
-            node_name = col.split("_")[0].replace("n-", "")
-            if node_name not in metrics_dimension["nodes"]:
-                metrics_dimension["nodes"][node_name] = [0, 0, 0]
-            metrics_dimension["nodes"][node_name][n] += 1
-    return metrics_dimension
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -173,7 +142,7 @@ if __name__ == '__main__':
     metrics_dimension = {}
     for target in TARGET_DATA:
         metrics_dimension[target] = {}
-    metrics_dimension = count_metrics(metrics_dimension, data_df, 0)
+    metrics_dimension = util.count_metrics(metrics_dimension, data_df, 0)
     metrics_dimension["total"] = [len(data_df.columns)]
 
     # Reduce metrics
@@ -195,7 +164,7 @@ if __name__ == '__main__':
                     reduced_by_st_df[col] = data_df[col]
 
     time_adf = round(time.time() - start, 2)
-    metrics_dimension = count_metrics(metrics_dimension, reduced_by_st_df, 1)
+    metrics_dimension = util.count_metrics(metrics_dimension, reduced_by_st_df, 1)
     metrics_dimension["total"].append(len(reduced_by_st_df.columns))
 
     ## Step 2: Reduced by hierarchical clustering
@@ -219,7 +188,7 @@ if __name__ == '__main__':
                 reduced_df = reduced_df.drop(r, axis=1)
 
     time_clustering = round(time.time() - start, 2)
-    metrics_dimension = count_metrics(metrics_dimension, reduced_df, 2)
+    metrics_dimension = util.count_metrics(metrics_dimension, reduced_df, 2)
     metrics_dimension["total"].append(len(reduced_df.columns))
     #pprint(metrics_dimension)
 

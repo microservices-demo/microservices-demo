@@ -19,6 +19,7 @@ import pandas as pd
 import numpy as np
 import re
 import random
+import util
 from pprint import pprint
 from clustering.sbd import sbd
 from clustering.sbd import silhouette_score
@@ -79,7 +80,7 @@ def select_representative_metric(data, cluster_metrics, columns, centroid):
 def kshape_clustering(target_df, service_name, executor):
     future_list = []
 
-    data = z_normalization(target_df.values.T)
+    data = util.z_normalization(target_df.values.T)
     for n in np.arange(2, data.shape[0]):
         future_list.append(
             executor.submit(create_clusters, data, target_df.columns, service_name, n)
@@ -118,38 +119,6 @@ def kshape_clustering(target_df, service_name, executor):
         remove_list.extend(r_list)
 
     return clustering_info, remove_list
-
-def z_normalization(data):
-    arr = []
-    for d in data:
-        mean = d.mean()
-        std = d.std()
-        arr.append((d - mean) / std)
-    return np.array(arr)
-
-def count_metrics(metrics_dimension, dataframe, n):
-    for col in dataframe.columns:
-        if col.startswith("c-"):
-            container_name = col.split("_")[0].replace("c-", "")
-            if container_name not in metrics_dimension["containers"]:
-                metrics_dimension["containers"][container_name] = [0, 0, 0]
-            metrics_dimension["containers"][container_name][n] += 1
-        elif col.startswith("m-"):
-            middleware_name = col.split("_")[0].replace("m-", "")
-            if middleware_name not in metrics_dimension["middlewares"]:
-                metrics_dimension["middlewares"][middleware_name] = [0, 0, 0]
-            metrics_dimension["middlewares"][middleware_name][n] += 1
-        elif col.startswith("s-"):
-            service_name = col.split("_")[0].replace("s-", "")
-            if service_name not in metrics_dimension["services"]:
-                metrics_dimension["services"][service_name] = [0, 0, 0]
-            metrics_dimension["services"][service_name][n] += 1
-        elif col.startswith("n-"):
-            node_name = col.split("_")[0].replace("n-", "")
-            if node_name not in metrics_dimension["nodes"]:
-                metrics_dimension["nodes"][node_name] = [0, 0, 0]
-            metrics_dimension["nodes"][node_name][n] += 1
-    return metrics_dimension
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -215,7 +184,7 @@ if __name__ == '__main__':
     metrics_dimension = {}
     for target in TARGET_DATA:
         metrics_dimension[target] = {}
-    metrics_dimension = count_metrics(metrics_dimension, data_df, 0)
+    metrics_dimension = util.count_metrics(metrics_dimension, data_df, 0)
     metrics_dimension["total"] = [len(data_df.columns)]
 
     # Reduce metrics
@@ -234,7 +203,7 @@ if __name__ == '__main__':
             reduced_by_cv_df[col] = data_df[col]
 
     time_cv = round(time.time() - start, 2)
-    metrics_dimension = count_metrics(metrics_dimension, reduced_by_cv_df, 1)
+    metrics_dimension = util.count_metrics(metrics_dimension, reduced_by_cv_df, 1)
     metrics_dimension["total"].append(len(reduced_by_cv_df.columns))
 
     ## Step 2: Reduced by k-Shape
@@ -255,7 +224,7 @@ if __name__ == '__main__':
                 reduced_df = reduced_df.drop(r, axis=1)
 
     time_clustering = round(time.time() - start, 2)
-    metrics_dimension = count_metrics(metrics_dimension, reduced_df, 2)
+    metrics_dimension = util.count_metrics(metrics_dimension, reduced_df, 2)
     metrics_dimension["total"].append(len(reduced_df.columns))
     #pprint(metrics_dimension)
 
