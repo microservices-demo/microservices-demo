@@ -19,6 +19,8 @@ if __name__ == '__main__':
     parser.add_argument("--num-cores", help="number of CPU cores",
         type=int, default=multiprocessing.cpu_count())
     parser.add_argument("--num-test", help="number of test", type=int, default=5)
+    parser.add_argument("--num-plots", help="number of plots", type=int, default=720)
+
     args = parser.parse_args()
 
     output = {
@@ -38,7 +40,7 @@ if __name__ == '__main__':
             for i in range(1, args.num_test+1):
                 log(f"Running tsifter test in case of CPU cores {str(n)}: test:f{str(i)} ...")
 
-                cmdout = subprocess.Popen(f"{CUR_DIR}/../tsifter.py --max-workers {str(n)} {DATA_FILE}",
+                cmdout = subprocess.Popen(f"{CUR_DIR}/../tsifter.py --plot-num {args.num_plots} --max-workers {str(n)} {DATA_FILE}",
                     shell=True, stdout=subprocess.PIPE)
                 jsonS, _ = cmdout.communicate()
                 res = json.loads(jsonS)['execution_time']
@@ -59,7 +61,7 @@ if __name__ == '__main__':
             for i in range(1, args.num_test+1):
                 log(f"Running sieve test in case of CPU cores {str(n)}: test:f{str(i)} ...")
 
-                cmdout = subprocess.Popen(f"{CUR_DIR}/../sieve.py --max-workers {str(n)} {DATA_FILE}",
+                cmdout = subprocess.Popen(f"{CUR_DIR}/../sieve.py --plot-num {args.num_plots} --max-workers {str(n)} {DATA_FILE}",
                     shell=True, stdout=subprocess.PIPE)
                 jsonS, _ = cmdout.communicate()
                 res = json.loads(jsonS)['execution_time']
