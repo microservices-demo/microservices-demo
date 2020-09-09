@@ -2,11 +2,6 @@
 
 import argparse
 import os
-import sys
-import json
-import time
-from datetime import datetime
-import pandas as pd
 
 # Disable multithreading in numpy.
 # see https://stackoverflow.com/questions/30791550/limit-number-of-threads-in-numpy
@@ -16,6 +11,11 @@ os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
 
+import sys
+import json
+import time
+from datetime import datetime
+import pandas as pd
 import numpy as np
 import re
 import random
