@@ -66,7 +66,7 @@ if __name__ == '__main__':
                 total_time_sum += res['total']
                 filtering_time_sum += res['CV']
                 clustering_time_sum += res['clustering']
-            output['tsifter']['execution_time']['cpu_cores'][n] = {
+            output['sieve']['execution_time']['cpu_cores'][n] = {
                 'total_time': total_time_sum / args.num_test,
                 'filtering_time': filtering_time_sum / args.num_test,
                 'clustering_time': clustering_time_sum / args.num_test,
