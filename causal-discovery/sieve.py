@@ -47,6 +47,29 @@ def create_clusters(data, columns, service_name, n):
         return None
     return (label, silhouette_score(data, label), cluster_center)
 
+def select_representative_metric(cluster_metrics, centroid):
+    clustering_info = {}
+    remove_list = []
+    if len(cluster_metrics) == 1:
+        return None
+    if len(cluster_metrics) == 2:
+        # Select the representative metric at random
+        shuffle_list = random.sample(cluster_metrics, len(cluster_metrics))
+        clustering_info[target_df.columns[shuffle_list[0]]] = [target_df.columns[shuffle_list[1]]]
+        remove_list.append(target_df.columns[shuffle_list[1]])
+    elif len(cluster_metrics) > 2:
+        # Select the representative metric based on the distance from the centroid
+        distances = []
+        for met in cluster_metrics:
+            distances.append(sbd(centroid, data[met]))
+        representative_metric = cluster_metrics[np.argmin(distances)]
+        clustering_info[target_df.columns[representative_metric]] = []
+        for r in cluster_metrics:
+            if r != representative_metric:
+                remove_list.append(target_df.columns[r])
+                clustering_info[target_df.columns[representative_metric]].append(target_df.columns[r])
+    return clustering_info, remove_list
+
 def kshape_clustering(target_df, service_name):
     data = z_normalization(target_df.values.T)
     labels, scores, centroids = [], [], []
@@ -61,9 +84,7 @@ def kshape_clustering(target_df, service_name):
     idx = np.argmax(scores)
     label = labels[idx]
     centroid = centroids[idx]
-    n_cluster = len(np.unique(label))
     cluster_dict = {}
-    remove_list = []
     for i, v in enumerate(label):
         if v not in cluster_dict:
             cluster_dict[v] = [i]
@@ -71,27 +92,12 @@ def kshape_clustering(target_df, service_name):
             cluster_dict[v].append(i)
 
     clustering_info = {}
-    for c in cluster_dict:
-        cluster_metrics = cluster_dict[c]
-        if len(cluster_metrics) == 1:
-            continue
-        if len(cluster_metrics) == 2:
-            # Select the representative metric at random
-            shuffle_list = random.sample(cluster_metrics, len(cluster_metrics))
-            clustering_info[target_df.columns[shuffle_list[0]]] = [target_df.columns[shuffle_list[1]]]
-            remove_list.append(target_df.columns[shuffle_list[1]])
-        elif len(cluster_metrics) > 2:
-            # Select the representative metric based on the distance from the centroid
-            distances = []
-            cent = centroid[c]
-            for met in cluster_metrics:
-                distances.append(sbd(cent, data[met]))
-            representative_metric = cluster_metrics[np.argmin(distances)]
-            clustering_info[target_df.columns[representative_metric]] = []
-            for r in cluster_metrics:
-                if r != representative_metric:
-                    remove_list.append(target_df.columns[r])
-                    clustering_info[target_df.columns[representative_metric]].append(target_df.columns[r])
+    remove_list = []
+    for c, cluster_metrics in cluster_dict.items():
+        c_info, r_list = select_representative_metric(cluster_metrics, centroid[c])
+        clustering_info.update(c_info)
+        remove_list.append(r_list)
+
     return clustering_info, remove_list
 
 def z_normalization(data):
