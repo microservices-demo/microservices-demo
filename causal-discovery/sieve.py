@@ -29,7 +29,7 @@ THRESHOLD_DIST = 0.01
 # Disable multiprocessing by OpenMP in numpy.
 os.environ["OMP_NUM_THREADS"] = "1"
 
-def kshape_clustering(target_df, service_name, dist_func):
+def kshape_clustering(target_df, service_name):
     data = z_normalization(target_df.values.T)
     labels = []
     scores = []
@@ -222,7 +222,7 @@ if __name__ == '__main__':
                 ("s-{}_".format(ser), "c-{}_".format(ser), "c-{}-".format(ser), "m-{}_".format(ser), "m-{}-".format(ser)))]
             if len(target_df.columns) in [0, 1]:
                 continue
-            future_to_service[executor.submit(kshape_clustering, target_df, ser, sbd)] = ser
+            future_to_service[executor.submit(kshape_clustering, target_df, ser)] = ser
         for future in futures.as_completed(future_to_service):
             ser = future_to_service[future]
             c_info, remove_list = future.result()
