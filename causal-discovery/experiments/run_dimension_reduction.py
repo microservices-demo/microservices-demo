@@ -41,8 +41,8 @@ def run(method, num_test, num_cores, output):
                 filtered_num_metrics += res['total'][1]
                 last_num_metrics += res['total'][2]
 
-            output[method]['reduction'][container].setdefault({})
-            output[method]['reduction'][container][anomaly].setdefault({})
+            output[method]['reduction'].setdefault(container, {})
+            output[method]['reduction'][container].setdefault(anomaly, {})
             output[method]['reduction'][container][anomaly]['before_num_metrics'] = before_num_metrics / args.num_test
             output[method]['reduction'][container][anomaly]['filtered_num_metrics'] = filtered_num_metrics / args.num_test
             output[method]['reduction'][container][anomaly]['last_num_metrics'] = last_num_metrics / args.num_test
