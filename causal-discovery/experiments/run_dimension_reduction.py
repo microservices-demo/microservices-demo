@@ -23,29 +23,24 @@ INPUT = {
 def log(msg):
     print(msg, file=sys.stderr)
 
-def run(method, num_test, num_cores, output):
+def run(method, num_cores, output):
     for container, entries in INPUT.items():
         for anomaly, inputfile in entries.items():
             log(f"Running {method} test in case of {container} {anomaly} {inputfile} ...")
 
-            before_num_metrics, filtered_num_metrics, last_num_metrics = 0, 0, 0
-            for i in range(1, args.num_test+1):
-                log(f"Running {method} test in case of {container} {anomaly} {inputfile}: test:{str(i)} ...")
-
-                cmdout = subprocess.Popen(f"{CUR_DIR}/../{method}.py --max-workers {num_cores} {inputfile}",
+            cmdout = subprocess.Popen(f"{CUR_DIR}/../{method}.py --max-workers {num_cores} {inputfile}",
                     shell=True, stdout=subprocess.PIPE)
-                jsonS, _ = cmdout.communicate()
-                res = json.loads(jsonS)['metrics_dimension']
-
-                before_num_metrics += res['total'][0]
-                filtered_num_metrics += res['total'][1]
-                last_num_metrics += res['total'][2]
+            jsonS, _ = cmdout.communicate()
+            res = json.loads(jsonS)['metrics_dimension']
+            before_num_metrics = res['total'][0]
+            filtered_num_metrics = res['total'][1]
+            last_num_metrics = res['total'][2]
 
             output[method]['reduction'].setdefault(container, {})
             output[method]['reduction'][container].setdefault(anomaly, {})
-            output[method]['reduction'][container][anomaly]['before_num_metrics'] = before_num_metrics / args.num_test
-            output[method]['reduction'][container][anomaly]['filtered_num_metrics'] = filtered_num_metrics / args.num_test
-            output[method]['reduction'][container][anomaly]['last_num_metrics'] = last_num_metrics / args.num_test
+            output[method]['reduction'][container][anomaly]['before_num_metrics'] = before_num_metrics
+            output[method]['reduction'][container][anomaly]['filtered_num_metrics'] = filtered_num_metrics
+            output[method]['reduction'][container][anomaly]['last_num_metrics'] = last_num_metrics
 
 
 if __name__ == '__main__':
@@ -53,7 +48,6 @@ if __name__ == '__main__':
     parser.add_argument("--method", help="'tsifter' or 'sieve'", default='all')
     parser.add_argument("--num-cores", help="number of CPU cores",
         type=int, default=multiprocessing.cpu_count())
-    parser.add_argument("--num-test", help="number of test", type=int, default=5)
     args = parser.parse_args()
 
     output = {
@@ -66,8 +60,8 @@ if __name__ == '__main__':
     }
 
     if args.method in ['all', 'tsifter']:
-        run('tsifter', args.num_test, args.num_cores, output)
+        run('tsifter', args.num_cores, output)
     if args.method in ['all', 'sieve']:
-        run('sieve', args.num_test, args.num_cores, output)
+        run('sieve', args.num_cores, output)
 
     json.dump(output, sys.stdout, indent=4)
