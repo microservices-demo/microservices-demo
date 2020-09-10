@@ -19,7 +19,7 @@ if __name__ == '__main__':
     parser.add_argument("--num-cores", help="number of CPU cores",
         type=int, default=multiprocessing.cpu_count())
     parser.add_argument("--num-test", help="number of test", type=int, default=5)
-    parser.add_argument("--num-plots", help="number of plots", type=int, default=720)
+    parser.add_argument("--num-plots", help="number of plots", type=int, default=360)
 
     args = parser.parse_args()
 
