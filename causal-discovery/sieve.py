@@ -220,8 +220,7 @@ if __name__ == '__main__':
                 continue
             c_info, remove_list = kshape_clustering(target_df, ser, executor)
             clustering_info.update(c_info)
-            for r in remove_list:
-                reduced_df = reduced_df.drop(r, axis=1)
+            reduced_df = reduced_df.drop(remove_list, axis=1)
 
     time_clustering = round(time.time() - start, 2)
     metrics_dimension = util.count_metrics(metrics_dimension, reduced_df, 2)

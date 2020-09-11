@@ -184,8 +184,7 @@ if __name__ == '__main__':
         for future in futures.as_completed(future_list):
             c_info, remove_list = future.result()
             clustering_info.update(c_info)
-            for r in remove_list:
-                reduced_df = reduced_df.drop(r, axis=1)
+            reduced_df = reduced_df.drop(remove_list, axis=1)
 
     time_clustering = round(time.time() - start, 2)
     metrics_dimension = util.count_metrics(metrics_dimension, reduced_df, 2)
