@@ -127,6 +127,15 @@
                 "prometheus-url": "http://prometheus01.prv",
                 "end": "1599277667"
             }
+        },
+        "user-db:memory-leak:01": {
+            "component": "user-db",
+            "anomaly": "memory-leak",
+            "condition": "stress-ng --vm 1 --vm-bytes 100M -t 300s",
+            "params": {
+                "prometheus-url": "http://prometheus01.prv",
+                "end": "1599827767"
+            }
         }
     }
 }
