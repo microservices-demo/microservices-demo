@@ -40,7 +40,6 @@ import datetime
 import json
 import urllib.request
 import sys
-import time
 
 COMPONENT_LABELS = {"front-end", "orders", "orders-db", "carts", "carts-db", "shipping", "user", "user-db", "payment", "catalogue", "catalogue-db", "queue-master", "rabbitmq"}
 STEP = 5
