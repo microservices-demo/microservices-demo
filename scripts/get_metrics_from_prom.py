@@ -51,11 +51,13 @@ PROM_GRAFANA = {
 }
 GRAFANA_DASHBOARD = "d/3cHU4RSMk/sock-shop-performance"
 
+
 def get_targets(url, job):
     params = {
         "match_target": '{{job=~"{}"}}'.format(job),
     }
-    req = urllib.request.Request('{}{}?{}'.format(url, "/api/v1/targets/metadata",
+    req = urllib.request.Request('{}{}?{}'.format(
+        url, "/api/v1/targets/metadata",
         urllib.parse.urlencode(params)))
     dupcheck = {}
     targets = []
@@ -67,6 +69,7 @@ def get_targets(url, job):
                 targets.append({"metric": item["metric"], "type": item["type"]})
                 dupcheck[item["metric"]] = 1
         return targets
+
 
 def request_query_range(url, params, target):
     bparams = urllib.parse.urlencode(params).encode('ascii')
@@ -95,6 +98,7 @@ def request_query_range(url, params, target):
     except Exception as e:
         raise(e)
 
+
 def get_metrics(url, targets, start, end, step, selector):
     futures = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
@@ -122,6 +126,7 @@ def get_metrics(url, targets, start, end, step, selector):
         concated_metrics += metrics
     return concated_metrics
 
+
 def get_metrics_by_query_range(url, start, end, step, query, target):
     params = {
         "query": query,
@@ -130,6 +135,7 @@ def get_metrics_by_query_range(url, start, end, step, query, target):
         "step": '{}s'.format(step),
     }
     return request_query_range(url, params, target)
+
 
 def interpotate_time_series(values, time_meta):
     start, end, step = time_meta['start'], time_meta['end'], time_meta['step']
@@ -158,10 +164,12 @@ def interpotate_time_series(values, time_meta):
 
     return new_values
 
+
 def support_set_default(obj):
     if isinstance(obj, set):
         return list(obj)
     raise TypeError(repr(obj) + " is not JSON serializable")
+
 
 def metrics_as_result(container_metrics, pod_metrics, node_metrics, throughput_metrics, latency_metrics, time_meta):
     grafana_url = PROM_GRAFANA[time_meta['prometheus_url']]
@@ -290,6 +298,7 @@ def metrics_as_result(container_metrics, pod_metrics, node_metrics, throughput_m
 
     return data
 
+
 def time_range_from_args(args):
     duration = datetime.timedelta(seconds=0)
     dt = args.duration
@@ -322,6 +331,7 @@ def time_range_from_args(args):
     start = start - start % args.step
     end = end - end % args.step
     return start, end
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -373,6 +383,7 @@ def main():
     })
 
     print(json.dumps(result, default=support_set_default))
+
 
 if __name__ == '__main__':
     main()
