@@ -1,6 +1,5 @@
 ---
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1kind: Deployment
 metadata:
   name: carts
   labels:
@@ -8,6 +7,9 @@ metadata:
   namespace: sock-shop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: carts  
   template:
     metadata:
       labels:
