@@ -1,5 +1,5 @@
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: session-db
@@ -7,6 +7,9 @@ metadata:
     name: session-db
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: session-db
   template:
     metadata:
       labels:

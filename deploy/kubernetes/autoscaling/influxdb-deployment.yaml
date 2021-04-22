@@ -1,10 +1,14 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: monitoring-influxdb
   namespace: kube-system
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      task: monitoring
+      k8s-app: influxdb
   template:
     metadata:
       labels:
