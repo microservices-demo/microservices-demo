@@ -11,6 +11,9 @@ metadata:
       These are scheduled on every node in the Kubernetes cluster.
       To choose directories from the node to check, just mount them on the `read-du` container below `/mnt`.
 spec:
+  selector:
+    matchLabels:
+      app: node-directory-size-metrics
   template:
     metadata:
       labels:
