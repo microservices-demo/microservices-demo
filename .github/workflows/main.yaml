@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GROUP: weaveworksdemos 
+      COMMIT: 
     strategy:
       matrix:
         repo: ["openapi", "healthcheck"]
@@ -26,13 +27,18 @@ jobs:
     #
     #
     # Push to dockerhub
-    - name: Push to Docker Hub
-      uses: docker/build-push-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASS }}
-        repository: ${{ env.GROUP }}/${{ matrix.repo }}
-        tag_with_ref: true
-        tag_with_sha: true
-        path: ${{ matrix.repo }}
-        dockerfile: ${{ matrix.repo }}/Dockerfile
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: ${{ matrix.repo }}
+        push: true
+        tags: ${{ env.GROUP }}/${{ matrix.repo }}:${{ github.sha }}
