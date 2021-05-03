@@ -1,0 +1,38 @@
+name: ci
+
+on:
+  push:
+    branches:
+    - "*"  # run for branches
+    tags:
+    - "*"  # run for tags
+  pull_request:
+    branches:
+    - "*"  # run for branches
+    tags:
+    - "*"  # run for tags
+
+jobs:
+  build-test-images:
+    runs-on: ubuntu-latest
+    env:
+      GROUP: weaveworksdemos 
+    strategy:
+      matrix:
+        repo: ["openapi", "healthcheck"]
+    steps:
+    - uses: actions/checkout@v2
+
+    #
+    #
+    # Push to dockerhub
+    - name: Push to Docker Hub
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASS }}
+        repository: ${{ env.GROUP }}/${{ matrix.repo }}
+        tag_with_ref: true
+        tag_with_sha: true
+        path: ${{ matrix.repo }}
+        dockerfile: ${{ matrix.repo }}/Dockerfile
