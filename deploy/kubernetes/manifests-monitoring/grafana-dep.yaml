@@ -19,7 +19,7 @@ spec:
         component: core
     spec:
       containers:
-      - image: grafana/grafana:4.1.2
+      - image: grafana/grafana:7.5.5
         name: grafana-core
         imagePullPolicy: IfNotPresent
         # env:
@@ -33,24 +33,19 @@ spec:
             memory: 100Mi
         env:
           # The following env variables set up basic auth twith the default admin user and admin password.
-          - name: GF_AUTH_BASIC_ENABLED
-            value: "true"
-          - name: GF_AUTH_ANONYMOUS_ENABLED
-            value: "false"
-          # - name: GF_AUTH_ANONYMOUS_ORG_ROLE
-          #   value: Admin
-          # does not really work, because of template variables in exported dashboards:
-          # - name: GF_DASHBOARDS_JSON_ENABLED
-          #   value: "true"
+          - name: GF_SECURITY_ADMIN_USER
+            value: admin
+          - name: GF_SECURITY_ADMIN_PASSWORD
+            value: admin
         readinessProbe:
           httpGet:
             path: /login
             port: 3000
-          # initialDelaySeconds: 30
-          # timeoutSeconds: 1
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
         volumeMounts:
         - name: grafana-persistent-storage
-          mountPath: /var
+          mountPath: /var/lib/grafana
       volumes:
       - name: grafana-persistent-storage
         emptyDir: {}
