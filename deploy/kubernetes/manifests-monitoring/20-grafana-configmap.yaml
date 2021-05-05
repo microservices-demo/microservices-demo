@@ -298,7 +298,7 @@ data:
             "stack": false,
             "steppedLine": false,
             "targets": [{
-              "expr": "rate(prometheus_local_storage_ingested_samples_total[5m])",
+              "expr": "rate(prometheus_tsdb_head_samples_appended_total[5m])",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "{{job}}",
