@@ -17,7 +17,7 @@ The prometheus server will be exposed on Nodeport `31090`.
 
 First apply the grafana manifests from 20 to 22:
 
-`kubectl apply $(ls *-grafana-*.yaml | awk ' { print " -f " $1 } ') | grep -v grafana-import`
+`kubectl apply $(ls *-grafana-*.yaml | awk ' { print " -f " $1 }'  | grep -v grafana-import)`
 
 Once the grafana pod is in the Running state apply the `23-grafana-import-dash-batch.yaml` manifest to import the Dashboards:
 
