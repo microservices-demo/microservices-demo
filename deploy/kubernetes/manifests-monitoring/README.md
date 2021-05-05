@@ -11,11 +11,11 @@ To deploy simply apply all the prometheus manifests (01-10) in any order:
 
 `kubectl apply $(ls *-prometheus-*.yaml | awk ' { print " -f " $1 } ')`
 
-The prometheus server is exposed on Nodeport `31090`.
+The prometheus server will be exposed on Nodeport `31090`.
 
 ### Grafana
 
-First deploy apply the grafana manifests from 20 to 22:
+First deploy the grafana manifests from 20 to 22:
 
 `kubectl apply $(ls *-grafana-*.yaml | awk ' { print " -f " $1 } ') | grep -v grafana-import`
 
