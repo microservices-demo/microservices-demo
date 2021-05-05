@@ -15,7 +15,7 @@ The prometheus server will be exposed on Nodeport `31090`.
 
 ### Grafana
 
-First deploy the grafana manifests from 20 to 22:
+First apply the grafana manifests from 20 to 22:
 
 `kubectl apply $(ls *-grafana-*.yaml | awk ' { print " -f " $1 } ') | grep -v grafana-import`
 
