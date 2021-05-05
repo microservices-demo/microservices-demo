@@ -6,10 +6,18 @@ metadata:
   labels:
     app: prometheus
 rules:
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups: [""] # "" indicates the core API group
   resources:
   - nodes
-  - nodes/proxy
+  - nodes/metrics
   - services
   - endpoints
   - pods
