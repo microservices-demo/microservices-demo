@@ -13,6 +13,37 @@ on:
     - "*"  # run for tags
 
 jobs:
+  #
+  #
+  #check complete demo is in sync with individual manifest, it should block fom merge. Should this be a diferent file?
+  complete-demo-check:
+    runs-on: ubuntu-latest
+    env:
+      COMPLETE_DEMO_ARGS: --rm -v ${{ github.workspace }}:/workdir
+      COMPLETE_DEMO_DIR: 'deploy/kubernetes/'
+      COMPLETE_DEMO_IMAGE: 'manifests-image'
+    steps:
+    - uses: actions/checkout@v2
+
+    #
+    #
+    # Build image
+    - name: Build image
+      env:
+        DOCKER_BUILDKIT: 1
+      run: docker build -t $COMPLETE_DEMO_IMAGE $COMPLETE_DEMO_DIR
+
+    #
+    #
+    # Check that manifest and complete-demo.yaml ahve the same content
+    - name: check comeplte-demo content
+      run: docker run $COMPLETE_DEMO_ARGS $COMPLETE_DEMO_IMAGE make -C $COMPLETE_DEMO_DIR check-complete-demo
+
+  #
+  #
+  #check that we can deploy complete-demo
+  #NOTE: what about docker compose? maybe doesn't make sense if we use the KIND action
+  #NOTE: later we can test that the documentation is tested, as in previous cronjobs in travis
   deployments-tests:
     runs-on: ubuntu-latest
     env:
@@ -37,7 +68,11 @@ jobs:
         until [ "$(kubectl get pods -n sock-shop --no-headers | grep -cEv '([0-9]+)/\1')" -eq 0 ]; do
             sleep 5s
         done
+        kubectl get pod -A
 
+  #
+  #
+  #build openapi and healtcheck images
   build-test-images:
     if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
