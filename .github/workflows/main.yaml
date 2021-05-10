@@ -45,6 +45,7 @@ jobs:
   #NOTE: what about docker compose? maybe doesn't make sense if we use the KIND action
   #NOTE: later we can test that the documentation is tested, as in previous cronjobs in travis
   deployments-tests:
+    needs: complete-demo-check
     runs-on: ubuntu-latest
     env:
       kind-version: 'v0.10.0'
