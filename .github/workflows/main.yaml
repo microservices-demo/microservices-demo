@@ -14,6 +14,7 @@ on:
 
 jobs:
   deployments-tests:
+    runs-on: ubuntu-latest
     env:
       kind-version: 'v0.10.0'
       kind-image: 'kindest/node:v1.20.0'
