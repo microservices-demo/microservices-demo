@@ -1,15 +1,23 @@
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: prometheus
   labels:
     app: prometheus
 rules:
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups: [""] # "" indicates the core API group
   resources:
   - nodes
-  - nodes/proxy
+  - nodes/metrics
   - services
   - endpoints
   - pods
