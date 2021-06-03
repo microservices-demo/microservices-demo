@@ -20,10 +20,8 @@ spec:
       - name: carts
         image: weaveworksdemos/carts:0.4.8
         env:
-         - name: ZIPKIN
-           value: zipkin.jaeger.svc.cluster.local
          - name: JAVA_OPTS
-           value: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+           value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
         resources:
           limits:
             cpu: 300m
