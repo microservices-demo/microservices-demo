@@ -17,12 +17,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.shipping.image.repo }}:{{ .Values.shipping.image.tag }}
-        command:
-        - /usr/local/bin/java.sh
-        - -jar
-        - ./app.jar
-        - --port={{ template "shippingContainerPort" . }}
+        image: weaveworksdemos/shipping:0.4.8
         env:
         {{- if .Values.zipkin.enabled }}
          - name: ZIPKIN
@@ -38,10 +33,15 @@ spec:
             cpu: 300m
             memory: 2000Mi
         ports:
-        - containerPort: {{ template "shippingContainerPort" . }}
+        - containerPort: 80
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
@@ -49,16 +49,17 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: {{ template "shippingContainerPort" . }}
-          initialDelaySeconds: 420
+            port: 80
+          initialDelaySeconds: 300
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /health
-            port: {{ template "shippingContainerPort" . }}
-          initialDelaySeconds: 360
+            port: 80
+          initialDelaySeconds: 180
           periodSeconds: 3
       volumes:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+

@@ -17,12 +17,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.orders.image.repo }}:{{ .Values.orders.image.tag }}
-        command:
-        - /usr/local/bin/java.sh
-        - -jar
-        - ./app.jar
-        - --port={{ template "ordersContainerPort" . }}
+        image: weaveworksdemos/orders:0.4.7
         env:
          {{- if .Values.zipkin.enabled }}
          - name: ZIPKIN
@@ -38,10 +33,15 @@ spec:
             cpu: 200m
             memory: 2000Mi
         ports:
-        - containerPort: {{ template "ordersContainerPort" . }}
+        - containerPort: 80
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
@@ -49,16 +49,17 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: {{ template "ordersContainerPort" . }}
+            port: 80
           initialDelaySeconds: 300
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /health
-            port: {{ template "ordersContainerPort" . }}
+            port: 80
           initialDelaySeconds: 180
           periodSeconds: 3
       volumes:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+

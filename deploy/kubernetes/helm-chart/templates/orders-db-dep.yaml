@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: orders-db
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.ordersdb.image.repo }}:{{ .Values.ordersdb.image.tag }}
+        image: mongo
         ports:
         - name: mongo
           containerPort: 27017

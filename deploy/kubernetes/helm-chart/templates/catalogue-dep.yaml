@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.catalogue.image.repo }}:{{ .Values.catalogue.image.tag }}
+        image: weaveworksdemos/catalogue:0.3.5
         {{- if .Values.zipkin.enabled }}
         env:
          - name: ZIPKIN
@@ -31,20 +31,25 @@ spec:
             cpu: 100m
             memory: 100Mi
         ports:
-        - containerPort: {{ template "catalogueContainerPort" . }}
+        - containerPort: 80
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
           readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /health
-            port: {{ template "catalogueContainerPort" . }}
+            port: 80
           initialDelaySeconds: 300
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /health
-            port: {{ template "catalogueContainerPort" . }}
+            port: 80
           initialDelaySeconds: 180
           periodSeconds: 3

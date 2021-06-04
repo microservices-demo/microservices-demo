@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: zipkin-cron
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.zipkincron.image.repo }}:{{ .Values.zipkincron.image.tag }}
+        image: openzipkin/zipkin-dependencies:1.4.0
         env:
         - name: STORAGE_TYPE
           value: mysql

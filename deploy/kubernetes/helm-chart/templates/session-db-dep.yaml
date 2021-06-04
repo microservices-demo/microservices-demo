@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: session-db
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.sessiondb.image.repo }}:{{ .Values.sessiondb.image.tag }}
+        image: redis:alpine
         ports:
         - name: redis
           containerPort: 6379
