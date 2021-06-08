@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: load-test
-        image: weaveworksdemos/load-test
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.loadtest.image.repo }}:{{ .Values.loadtest.image.tag }}
         command: ["/bin/sh"]
         args: ["-c", "while true; do locust --host http://front-end.sock-shop.svc.cluster.local -f /config/locustfile.py --clients 5 --hatch-rate 5 --num-request 100 --no-web; done"]
 {{- end }}

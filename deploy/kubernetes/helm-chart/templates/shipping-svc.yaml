@@ -9,7 +9,6 @@ spec:
   ports:
     # the port that this service should serve on
   - port: 80
-    targetPort: 80
+    targetPort: {{ .Values.shipping.containerPort }}
   selector:
     name: shipping
-
