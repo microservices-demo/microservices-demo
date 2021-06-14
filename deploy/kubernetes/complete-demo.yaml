@@ -48,18 +48,6 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
       volumes:
         - name: tmp-volume
           emptyDir:
@@ -374,18 +362,6 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
       volumes:
         - name: tmp-volume
           emptyDir:
@@ -569,18 +545,6 @@ spec:
             memory: 500Mi
         ports:
         - containerPort: 80
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
       nodeSelector:
         beta.kubernetes.io/os: linux
 ---
@@ -592,8 +556,6 @@ metadata:
         prometheus.io/scrape: 'true'
   labels:
     name: queue-master
-  annotations:
-    prometheus.io/path: "/prometheus"
   namespace: sock-shop
 spec:
   ports:
@@ -601,8 +563,7 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: queue-master
----
+    name: queue-master---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -744,6 +705,8 @@ spec:
       - name: shipping
         image: weaveworksdemos/shipping:0.4.8
         env:
+         - name: ZIPKIN
+           value: zipkin.jaeger.svc.cluster.local
          - name: JAVA_OPTS
            value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
         resources:
@@ -767,18 +730,6 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
       volumes:
         - name: tmp-volume
           emptyDir:

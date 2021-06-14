@@ -7,8 +7,6 @@ metadata:
         prometheus.io/scrape: 'true'
   labels:
     name: queue-master
-  annotations:
-    prometheus.io/path: "/prometheus"
   namespace: sock-shop
 spec:
   ports:
