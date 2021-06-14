@@ -1,3 +1,0 @@
-[submodule "deploy/kubernetes/litmus-helm"]
-	path = deploy/kubernetes/litmus-helm
-	url = https://github.com/litmuschaos/litmus-helm
