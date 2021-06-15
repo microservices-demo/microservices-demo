@@ -563,7 +563,8 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: queue-master---
+    name: queue-master
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

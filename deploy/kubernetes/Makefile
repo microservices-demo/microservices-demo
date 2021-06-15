@@ -3,7 +3,7 @@ MANIFESTS = $(or $(shell printenv MANIFESTS), manifests)
 
 .PHONY: gen-complete-demo
 gen-complete-demo:
-	cat ${MANIFESTS}/* > complete-demo.yaml
+	awk '{print}' ${MANIFESTS}/* > complete-demo.yaml
 
 .PHONY: check-complete-demo
 check-complete-demo:
