@@ -21,6 +21,8 @@ spec:
         ports:
         - name: mongo
           containerPort: 27017
+        resources:
+{{ toYaml .Values.cartsdb.resources | indent 10 }}
         securityContext:
           capabilities:
             drop:

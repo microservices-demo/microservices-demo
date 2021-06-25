@@ -26,3 +26,6 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
+        resources:
+{{ toYaml .Values.cataloguedb.resources | indent 10 }}
+

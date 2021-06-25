@@ -29,4 +29,6 @@ spec:
           value: zipkin
         command: ["crond"]
         args: ["-f"]
+        resources:
+{{ toYaml .Values.zipkincron.resources | indent 10 }}
 {{- end -}}
