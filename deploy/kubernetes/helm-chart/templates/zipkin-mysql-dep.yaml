@@ -21,4 +21,6 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
+        resources:
+{{ toYaml .Values.zipkinmysql.resources | indent 10 }}
 {{- end -}}

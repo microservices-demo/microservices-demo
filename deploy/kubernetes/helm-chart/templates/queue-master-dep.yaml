@@ -14,6 +14,10 @@ spec:
     metadata:
       labels:
         name: queue-master
+      {{- if .Values.istio.enabled }}
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- end }}
     spec:
       containers:
       - name: queue-master
@@ -26,12 +30,7 @@ spec:
          - name: JAVA_OPTS
            value: {{ .Values.java.options }}
         resources:
-          limits:
-            cpu: 300m
-            memory: 1000Mi
-          requests:
-            cpu: 300m
-            memory: 1000Mi
+{{ toYaml .Values.queuemaster.resources | indent 10 }}
         ports:
         - containerPort: 80
         livenessProbe:

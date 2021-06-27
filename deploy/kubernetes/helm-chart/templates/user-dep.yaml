@@ -14,6 +14,10 @@ spec:
     metadata:
       labels:
         name: user
+      {{- if .Values.istio.enabled }}
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- end }}
     spec:
       containers:
       - name: user
@@ -25,12 +29,7 @@ spec:
         - -database=mongodb
         - -mongo-host=user-db.{{ .Release.Namespace }}.svc.cluster.local:27017
         resources:
-          limits:
-            cpu: 300m
-            memory: 1000Mi
-          requests:
-            cpu: 100m
-            memory: 400Mi
+{{ toYaml .Values.user.resources | indent 10 }}
         ports:
         - containerPort: {{ .Values.user.containerPort }}
         env:

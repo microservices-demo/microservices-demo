@@ -14,6 +14,10 @@ spec:
     metadata:
       labels:
         name: payment
+      {{- if .Values.istio.enabled }}
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- end }}
     spec:
       containers:
       - name: payment
@@ -22,12 +26,7 @@ spec:
         - /app
         - -decline={{ .Values.payment.declinePaymentsOverAmount }}
         resources:
-          limits:
-            cpu: 100m
-            memory: 100Mi
-          requests:
-            cpu: 100m
-            memory: 100Mi
+{{ toYaml .Values.payment.resources | indent 10 }}
         ports:
         - containerPort: {{ .Values.payment.containerPort }}
         {{- if .Values.zipkin.enabled }}
