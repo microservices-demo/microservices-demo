@@ -32,8 +32,8 @@ spec:
             cpu: 300m
             memory: 500Mi
           requests:
-            cpu: 300m
-            memory: 500Mi
+            cpu: 100m
+            memory: 200Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -154,8 +154,8 @@ spec:
         - -port=80
         resources:
           limits:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 200m
+            memory: 200Mi
           requests:
             cpu: 100m
             memory: 100Mi
@@ -346,8 +346,8 @@ spec:
             cpu: 500m
             memory: 500Mi
           requests:
-            cpu: 200m
-            memory: 500Mi
+            cpu: 100m
+            memory: 300Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -465,8 +465,8 @@ spec:
         image: weaveworksdemos/payment:0.4.3
         resources:
           limits:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 200m
+            memory: 200Mi
           requests:
             cpu: 99m
             memory: 100Mi
@@ -541,8 +541,8 @@ spec:
             cpu: 300m
             memory: 500Mi
           requests:
-            cpu: 300m
-            memory: 500Mi
+            cpu: 100m
+            memory: 300Mi
         ports:
         - containerPort: 80
       nodeSelector:
@@ -715,8 +715,8 @@ spec:
             cpu: 300m
             memory: 500Mi
           requests:
-            cpu: 300m
-            memory: 500Mi
+            cpu: 100m
+            memory: 300Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -779,7 +779,7 @@ spec:
         resources:
           limits:
             cpu: 300m
-            memory: 100Mi
+            memory: 200Mi
           requests:
             cpu: 100m
             memory: 100Mi
