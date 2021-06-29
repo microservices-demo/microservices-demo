@@ -27,8 +27,8 @@ spec:
             cpu: 300m
             memory: 500Mi
           requests:
-            cpu: 300m
-            memory: 500Mi
+            cpu: 100m
+            memory: 200Mi
         ports:
         - containerPort: 80
         securityContext:

@@ -45,7 +45,7 @@ jobs:
     env:
       kind-version: 'v0.10.0'
       kind-image: 'kindest/node:v1.20.0'
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v2
     - name: Start KinD
@@ -64,6 +64,8 @@ jobs:
         kubectl apply -f deploy/kubernetes/complete-demo.yaml
         until [ "$(kubectl get pods -n sock-shop --no-headers | grep -cEv '([0-9]+)/\1')" -eq 0 ]; do
             sleep 5s
+            kubectl get pods -n sock-shop
+            kubectl describe node | grep "Allocated resources" -A 10
         done
         kubectl get pod -A
 
