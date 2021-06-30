@@ -14,19 +14,21 @@ spec:
     metadata:
       labels:
         name: payment
+      {{- if .Values.istio.enabled }}
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- end }}
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment:0.4.3
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.payment.image.repo }}:{{ .Values.payment.image.tag }}
+        command:
+        - /app
+        - -decline={{ .Values.payment.declinePaymentsOverAmount }}
         resources:
-          limits:
-            cpu: 100m
-            memory: 100Mi
-          requests:
-            cpu: 100m
-            memory: 100Mi
+{{ toYaml .Values.payment.resources | indent 10 }}
         ports:
-        - containerPort: 80
+        - containerPort: {{ .Values.payment.containerPort }}
         {{- if .Values.zipkin.enabled }}
         env:
         - name: ZIPKIN
@@ -35,21 +37,23 @@ spec:
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
+{{- if lt (int .Values.payment.containerPort) 1024 }}
           capabilities:
             drop:
               - all
             add:
               - NET_BIND_SERVICE
+{{- end }}
           readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: {{ .Values.payment.containerPort }}
           initialDelaySeconds: 300
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: {{ .Values.payment.containerPort }}
           initialDelaySeconds: 180
           periodSeconds: 3

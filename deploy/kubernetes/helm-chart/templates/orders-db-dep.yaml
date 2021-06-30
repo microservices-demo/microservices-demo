@@ -17,10 +17,12 @@ spec:
     spec:
       containers:
       - name: orders-db
-        image: mongo
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.ordersdb.image.repo }}:{{ .Values.ordersdb.image.tag }}
         ports:
         - name: mongo
           containerPort: 27017
+        resources:
+{{ toYaml .Values.ordersdb.resources | indent 10 }}
         securityContext:
           capabilities:
             drop:

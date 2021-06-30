@@ -17,8 +17,10 @@ spec:
     spec:
       containers:
       - name: zipkin-mysql
-        image: openzipkin/zipkin-mysql:1.20.0
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.zipkinmysql.image.repo }}:{{ .Values.zipkinmysql.image.tag }}
         ports:
         - name: mysql
           containerPort: 3306
+        resources:
+{{ toYaml .Values.zipkinmysql.resources | indent 10 }}
 {{- end -}}

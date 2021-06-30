@@ -14,10 +14,19 @@ spec:
     metadata:
       labels:
         name: shipping
+      {{- if .Values.istio.enabled }}
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- end }}
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.4.8
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.shipping.image.repo }}:{{ .Values.shipping.image.tag }}
+        command:
+        - /usr/local/bin/java.sh
+        - -jar
+        - ./app.jar
+        - --port={{ .Values.shipping.containerPort }}
         env:
         {{- if .Values.zipkin.enabled }}
          - name: ZIPKIN
@@ -26,22 +35,19 @@ spec:
          - name: JAVA_OPTS
            value: {{ .Values.java.options }}
         resources:
-          limits:
-            cpu: 300m
-            memory: 2000Mi
-          requests:
-            cpu: 300m
-            memory: 2000Mi
+{{ toYaml .Values.shipping.resources | indent 10 }}
         ports:
-        - containerPort: 80
+        - containerPort: {{ .Values.shipping.containerPort }}
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
+{{- if lt (int .Values.shipping.containerPort) 1024 }}
           capabilities:
             drop:
               - all
             add:
               - NET_BIND_SERVICE
+{{- end }}
           readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
@@ -49,14 +55,14 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 80
-          initialDelaySeconds: 300
+            port: {{ .Values.shipping.containerPort }}
+          initialDelaySeconds: 420
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
-          initialDelaySeconds: 180
+            port: {{ .Values.shipping.containerPort }}
+          initialDelaySeconds: 360
           periodSeconds: 3
       volumes:
         - name: tmp-volume

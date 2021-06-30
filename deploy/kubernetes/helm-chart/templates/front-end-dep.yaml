@@ -12,17 +12,16 @@ spec:
     metadata:
       labels:
         name: front-end
+      {{- if .Values.istio.enabled }}
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- end }}
     spec:
       containers:
       - name: front-end
-        image: weaveworksdemos/front-end:0.3.12
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.frontend.image.repo }}:{{ .Values.frontend.image.tag }}
         resources:
-          limits:
-            cpu: 300m
-            memory: 1000Mi
-          requests:
-            cpu: 100m
-            memory: 300Mi
+{{ toYaml .Values.frontend.resources | indent 10 }}
         ports:
         - containerPort: 8079
         env:

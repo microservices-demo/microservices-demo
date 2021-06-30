@@ -21,8 +21,8 @@ spec:
         image: weaveworksdemos/payment:0.4.3
         resources:
           limits:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 200m
+            memory: 200Mi
           requests:
             cpu: 99m
             memory: 100Mi

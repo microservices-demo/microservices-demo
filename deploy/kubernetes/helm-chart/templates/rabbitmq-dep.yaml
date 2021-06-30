@@ -17,9 +17,11 @@ spec:
     spec:
       containers:
       - name: rabbitmq
-        image: rabbitmq:3.6.8
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.rabbitmq.image.repo }}:{{ .Values.rabbitmq.image.tag }}
         ports:
         - containerPort: 5672
+        resources:
+{{ toYaml .Values.rabbitmq.resources | indent 10 }}
         securityContext:
           capabilities:
             drop:

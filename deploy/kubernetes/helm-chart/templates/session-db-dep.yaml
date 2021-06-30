@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: session-db
-        image: redis:alpine
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.sessiondb.image.repo }}:{{ .Values.sessiondb.image.tag }}
         ports:
         - name: redis
           containerPort: 6379
@@ -30,3 +30,5 @@ spec:
               - SETGID
               - SETUID
           readOnlyRootFilesystem: true
+        resources:
+{{ toYaml .Values.sessiondb.resources | indent 10 }}

@@ -14,10 +14,19 @@ spec:
     metadata:
       labels:
         name: carts
+      {{- if .Values.istio.enabled }}
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- end }}
     spec:
       containers:
-      - name: carts
-        image: weaveworksdemos/carts:0.4.8
+      - command:
+        - /usr/local/bin/java.sh
+        - -jar
+        - ./app.jar
+        - --port={{ .Values.carts.containerPort }}
+        name: carts
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.carts.image.repo }}:{{ .Values.carts.image.tag }}
         env:
          {{- if .Values.zipkin.enabled }}
          - name: ZIPKIN
@@ -26,22 +35,19 @@ spec:
          - name: JAVA_OPTS
            value: {{ .Values.java.options }}
         resources:
-          limits:
-            cpu: 300m
-            memory: 2000Mi
-          requests:
-            cpu: 300m
-            memory: 2000Mi
+{{ toYaml .Values.carts.resources | indent 10 }}
         ports:
-        - containerPort: 80
+         - containerPort: {{ .Values.carts.containerPort }}
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
+{{- if lt (int .Values.carts.containerPort) 1024 }}
           capabilities:
             drop:
               - all
             add:
               - NET_BIND_SERVICE
+{{- end }}
           readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
@@ -49,14 +55,14 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 80
-          initialDelaySeconds: 300
+            port: {{ .Values.carts.containerPort }}
+          initialDelaySeconds: 420
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
-          initialDelaySeconds: 180
+            port: {{ .Values.carts.containerPort }}
+          initialDelaySeconds: 360
           periodSeconds: 3
       volumes:
         - name: tmp-volume

@@ -17,11 +17,12 @@ spec:
     spec:
       containers:
       - name: user-db
-        image: weaveworksdemos/user-db:0.3.0
-
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.userdb.image.repo }}:{{ .Values.userdb.image.tag }}
         ports:
         - name: mongo
           containerPort: 27017
+        resources:
+{{ toYaml .Values.userdb.resources | indent 10 }}
         securityContext:
           capabilities:
             drop:

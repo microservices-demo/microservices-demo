@@ -14,19 +14,24 @@ spec:
     metadata:
       labels:
         name: user
+      {{- if .Values.istio.enabled }}
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- end }}
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.4.4
+        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.user.image.repo }}:{{ .Values.user.image.tag }}
+        command:
+        - /user
+        args:
+        - -port={{ .Values.user.containerPort }}
+        - -database=mongodb
+        - -mongo-host=user-db.{{ .Release.Namespace }}.svc.cluster.local:27017
         resources:
-          limits:
-            cpu: 300m
-            memory: 1000Mi
-          requests:
-            cpu: 100m
-            memory: 400Mi
+{{ toYaml .Values.user.resources | indent 10 }}
         ports:
-        - containerPort: 80
+        - containerPort: {{ .Values.user.containerPort }}
         env:
         - name: MONGO_HOST
           value: user-db:27017
@@ -37,21 +42,23 @@ spec:
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
+{{- if lt (int .Values.user.containerPort) 1024 }}
           capabilities:
             drop:
               - all
             add:
               - NET_BIND_SERVICE
+{{- end }}
           readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: {{ .Values.user.containerPort }}
           initialDelaySeconds: 300
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: {{ .Values.user.containerPort }}
           initialDelaySeconds: 180
           periodSeconds: 3

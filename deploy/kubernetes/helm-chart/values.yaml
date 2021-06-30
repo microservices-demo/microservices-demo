@@ -1,13 +1,255 @@
 # Default values for sock-shop.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+global:
+    registry: ''
+
 java:
     options: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
-zipkin: 
-    enabled:  false
-    url: zipkin.zipkin.svc.cluster.local
+
+istio:
+    enabled: false
+
+ingress:
+    annotations:
+        kubernetes.io/ingress.class: nginx
+    labels: {}
+    host: ''
+    tlsSecretName: ''
+
+cartsdb:
+    image:
+        repo: mongo
+        tag: 4.4.0
+    resources:
+        requests:
+            cpu: 500m
+            memory: 512Mi
+        limits:
+            cpu: 500m
+            memory: 512Mi
+    persistentVolume:
+        storageClass: ''
+        size: 512Mi
+
+carts:
+    image:
+        repo: weaveworksdemos/carts
+        tag: 0.4.8
+    containerPort: 80
+    resources:
+        limits:
+            cpu: 300m
+            memory: 2000Mi
+        requests:
+            cpu: 300m
+            memory: 2000Mi
+
+cataloguedb:
+    image:
+        repo: weaveworksdemos/catalogue-db
+        tag: 0.3.0
+    resources:
+        limits:
+            cpu: 300m
+            memory: 1000Mi
+        requests:
+            cpu: 100m
+            memory: 300Mi
+
+catalogue:
+    image:
+        repo: weaveworksdemos/catalogue
+        tag: 0.3.5
+    containerPort: 80
+    resources:
+        limits:
+            cpu: 100m
+            memory: 100Mi
+        requests:
+            cpu: 100m
+            memory: 100Mi
+
 frontend:
     replicas: 1
+    image:
+        repo: weaveworksdemos/front-end
+        tag: 0.3.12
+    resources:
+        limits:
+            cpu: 300m
+            memory: 1000Mi
+        requests:
+            cpu: 100m
+            memory: 300Mi
+
 loadtest:
     replicas: 2
     enabled: false
+    image:
+        repo: weaveworksdemos/load-test
+        tag: 0.1.1
+    resources:
+        limits:
+            cpu: 300m
+            memory: 1000Mi
+        requests:
+            cpu: 100m
+            memory: 300Mi
+
+ordersdb:
+    image:
+        repo: mongo
+        tag: 4.4.0
+    resources:
+        requests:
+            cpu: 500m
+            memory: 512Mi
+        limits:
+            cpu: 500m
+            memory: 512Mi
+    persistentVolume:
+        storageClass: ''
+        size: 512Mi
+
+orders:
+    image:
+        repo: weaveworksdemos/orders
+        tag: 0.4.7
+    containerPort: 80
+    resources:
+        limits:
+            cpu: 500m
+            memory: 2000Mi
+        requests:
+            cpu: 200m
+            memory: 2000Mi
+
+payment:
+    image:
+        repo: weaveworksdemos/payment
+        tag: 0.4.3
+    declinePaymentsOverAmount: 200
+    containerPort: 8080
+    resources:
+        limits:
+            cpu: 100m
+            memory: 100Mi
+        requests:
+            cpu: 100m
+            memory: 100Mi
+
+queuemaster:
+    image:
+        repo: weaveworksdemos/queue-master
+        tag: 0.3.1
+    resources:
+        limits:
+            cpu: 300m
+            memory: 1000Mi
+        requests:
+            cpu: 300m
+            memory: 1000Mi
+
+rabbitmq:
+    image:
+        repo: rabbitmq
+        tag: 3.6.8
+    resources:
+        requests:
+            memory: 256Mi
+            cpu: 350m
+        limits:
+            memory: 512Mi
+            cpu: 1
+
+sessiondb:
+    image:
+        repo: redis
+        tag: alpine
+    resources:
+        requests:
+            memory: 256Mi
+            cpu: 250m
+        limits:
+            memory: 256Mi
+            cpu: 250m
+    persistentVolume:
+        storageClass: ''
+        size: 512Mi
+
+shipping:
+    image:
+        repo: weaveworksdemos/shipping
+        tag: 0.4.8
+    containerPort: 80
+    resources:
+        limits:
+            cpu: 300m
+            memory: 2000Mi
+        requests:
+            cpu: 300m
+            memory: 2000Mi
+
+userdb:
+    image:
+        repo: weaveworksdemos/user-db
+        tag: 0.4.0
+    resources:
+        limits:
+            cpu: 300m
+            memory: 1000Mi
+        requests:
+            cpu: 100m
+            memory: 300Mi
+
+user:
+    image:
+        repo: weaveworksdemos/user
+        tag: 0.4.7
+    containerPort: 80
+    resources:
+        limits:
+            cpu: 300m
+            memory: 1000Mi
+        requests:
+            cpu: 100m
+            memory: 400Mi
+
+zipkincron:
+    image:
+        repo: openzipkin/zipkin-dependencies
+        tag: 1.4.0
+    resources:
+        limits:
+            cpu: 300m
+            memory: 1000Mi
+        requests:
+            cpu: 100m
+            memory: 300Mi
+
+zipkin:
+    image:
+        repo: openzipkin/zipkin
+        tag: 2.21
+    resources:
+        limits:
+            cpu: 300m
+            memory: 1000Mi
+        requests:
+            cpu: 100m
+            memory: 300Mi
+    enabled:  false
+    url: zipkin.zipkin.svc.cluster.local
+
+zipkinmysql:
+    image:
+        repo: openzipkin/zipkin-mysql
+        tag: 1.20.0
+    resources:
+        requests:
+            memory: 256Mi
+            cpu: 250m
+        limits:
+            memory: 768Mi
+            cpu: 1
