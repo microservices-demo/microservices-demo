@@ -18,6 +18,17 @@ services:
           - 9090:9090
         links:
           - alertmanager:alertmanager
+    nodeexporter:
+        image: quay.io/prometheus/node-exporter:v1.1.2
+        container_name: nodeexporter
+        volumes:
+          - '/:/host:ro,rslave'
+        pid: host
+        command:
+          - '--path.rootfs=/host'
+        restart: unless-stopped
+        ports:
+          - 9100:9100
     alertmanager:
         image: prom/alertmanager
         ports:
