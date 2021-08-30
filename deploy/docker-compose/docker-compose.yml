@@ -2,8 +2,8 @@ version: '2'
 
 services:
   front-end:
-    image: front-end
-    hostname: front-end
+    image: weaveworksdemos/front-end
+    hostname: weaveworksdemos/front-end:0.3.12
     restart: always
     cap_drop:
       - all
@@ -70,7 +70,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
   orders:
-    image: weaveworksdemos/orders:0.4.7
+    image: orders
     hostname: orders
     restart: always
     cap_drop:
