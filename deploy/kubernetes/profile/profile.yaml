@@ -1,0 +1,13 @@
+apiVersion: weave.works/v1alpha1
+kind: ProfileDefinition
+metadata:
+  name: microservices-demo
+spec:
+  description: Profile for deploying microservices-demo
+  maintainer: weaveworks
+  prerequisites:
+    - "kubernetes 1.19"
+  artifacts:
+    - name: microservices-demo
+      chart:
+        path: ../helm-chart
