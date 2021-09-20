@@ -6,7 +6,7 @@ spec:
   description: Profile for deploying microservices-demo
   maintainer: weaveworks
   prerequisites:
-    - "kubernetes 1.19"
+    - "kubernetes 1.16"
   artifacts:
     - name: microservices-demo
       chart:
