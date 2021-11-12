@@ -1,0 +1,12 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Reached install"
+  build:
+    commands:
+      - echo "Reached build"
+artifacts:
+  files:
+    - '**/*'
