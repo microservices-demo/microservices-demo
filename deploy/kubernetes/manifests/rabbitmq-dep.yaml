@@ -5,7 +5,7 @@ metadata:
   name: rabbitmq
   labels:
     name: rabbitmq
-  namespace: sock-shop
+  namespace: my-sock-shop
 spec:
   replicas: 1
   selector:

@@ -2,28 +2,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: session-db
+  name: orders-db
   labels:
-    name: session-db
-  namespace: sock-shop
+    name: orders-db
+  namespace: my-sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: session-db
+      name: orders-db
   template:
     metadata:
       labels:
-        name: session-db
-      annotations:
-        prometheus.io.scrape: "false"
+        name: orders-db
     spec:
       containers:
-      - name: session-db
-        image: redis:alpine
+      - name: orders-db
+        image: mongo
         ports:
-        - name: redis
-          containerPort: 6379
+        - name: mongo
+          containerPort: 27017
         securityContext:
           capabilities:
             drop:
@@ -33,5 +31,12 @@ spec:
               - SETGID
               - SETUID
           readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
       nodeSelector:
         beta.kubernetes.io/os: linux

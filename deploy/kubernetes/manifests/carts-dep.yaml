@@ -2,33 +2,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders
+  name: carts
   labels:
-    name: orders
-  namespace: sock-shop
+    name: carts
+  namespace: my-sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: orders
+      name: carts
   template:
     metadata:
       labels:
-        name: orders
+        name: carts
     spec:
       containers:
-      - name: orders
-        image: weaveworksdemos/orders:0.4.7
+      - name: carts
+        image: weaveworksdemos/carts:0.4.8
         env:
          - name: JAVA_OPTS
            value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
         resources:
           limits:
-            cpu: 500m
+            cpu: 300m
             memory: 500Mi
           requests:
             cpu: 100m
-            memory: 300Mi
+            memory: 200Mi
         ports:
         - containerPort: 80
         securityContext:

@@ -2,15 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-db
+  name: carts-db
   labels:
-    name: user-db
-  namespace: sock-shop
+    name: carts-db
+  namespace: my-sock-shop
 spec:
   ports:
     # the port that this service should serve on
   - port: 27017
     targetPort: 27017
   selector:
-    name: user-db
-
+    name: carts-db

@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: session-db
+  name: catalogue-db
   labels:
-    name: session-db
-  namespace: sock-shop
+    name: catalogue-db
+  namespace: my-sock-shop
 spec:
   ports:
     # the port that this service should serve on
-  - port: 6379
-    targetPort: 6379
+  - port: 3306
+    targetPort: 3306
   selector:
-    name: session-db
+    name: catalogue-db

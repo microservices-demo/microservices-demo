@@ -5,7 +5,7 @@ metadata:
   name: catalogue-db
   labels:
     name: catalogue-db
-  namespace: sock-shop
+  namespace: my-sock-shop
 spec:
   replicas: 1
   selector:

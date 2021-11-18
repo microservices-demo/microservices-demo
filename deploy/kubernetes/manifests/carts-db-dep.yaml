@@ -2,22 +2,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders-db
+  name: carts-db
   labels:
-    name: orders-db
-  namespace: sock-shop
+    name: carts-db
+  namespace: my-sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: orders-db
+      name: carts-db
   template:
     metadata:
       labels:
-        name: orders-db
+        name: carts-db
     spec:
       containers:
-      - name: orders-db
+      - name: carts-db
         image: mongo
         ports:
         - name: mongo

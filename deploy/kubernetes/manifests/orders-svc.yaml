@@ -2,16 +2,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: queue-master
+  name: orders
   annotations:
         prometheus.io/scrape: 'true'
   labels:
-    name: queue-master
-  namespace: sock-shop
+    name: orders
+  namespace: my-sock-shop
 spec:
   ports:
     # the port that this service should serve on
   - port: 80
     targetPort: 80
   selector:
-    name: queue-master
+    name: orders

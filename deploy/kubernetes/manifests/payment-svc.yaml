@@ -2,16 +2,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: catalogue
+  name: payment
   annotations:
         prometheus.io/scrape: 'true'
   labels:
-    name: catalogue
-  namespace: sock-shop
+    name: payment
+  namespace: my-sock-shop
 spec:
   ports:
     # the port that this service should serve on
   - port: 80
     targetPort: 80
   selector:
-    name: catalogue
+    name: payment

@@ -2,27 +2,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-db
+  name: session-db
   labels:
-    name: user-db
-  namespace: sock-shop
+    name: session-db
+  namespace: my-sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: user-db
+      name: session-db
   template:
     metadata:
       labels:
-        name: user-db
+        name: session-db
+      annotations:
+        prometheus.io.scrape: "false"
     spec:
       containers:
-      - name: user-db
-        image: weaveworksdemos/user-db:0.3.0
-
+      - name: session-db
+        image: redis:alpine
         ports:
-        - name: mongo
-          containerPort: 27017
+        - name: redis
+          containerPort: 6379
         securityContext:
           capabilities:
             drop:
@@ -32,12 +33,5 @@ spec:
               - SETGID
               - SETUID
           readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
-      volumes:
-        - name: tmp-volume
-          emptyDir:
-            medium: Memory
       nodeSelector:
         beta.kubernetes.io/os: linux
