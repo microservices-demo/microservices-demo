@@ -5,6 +5,7 @@ metadata:
   name: orders-db
   labels:
     name: orders-db
+    app: orders-db
   namespace: sock-shop
 spec:
   ports:
@@ -13,3 +14,4 @@ spec:
     targetPort: 27017
   selector:
     name: orders-db
+    app: orders-db

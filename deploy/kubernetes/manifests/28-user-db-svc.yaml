@@ -5,6 +5,7 @@ metadata:
   name: user-db
   labels:
     name: user-db
+    app: user-db
   namespace: sock-shop
 spec:
   ports:
@@ -13,4 +14,5 @@ spec:
     targetPort: 27017
   selector:
     name: user-db
+    app: user-db
 

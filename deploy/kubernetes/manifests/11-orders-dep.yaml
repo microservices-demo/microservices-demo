@@ -2,19 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders
+  name: orders-v1
   labels:
     name: orders
+    app: orders
+    version: v1
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: orders
+      app: orders
+      version: v1
   template:
     metadata:
       labels:
         name: orders
+        app: orders
+        version: v1
     spec:
       containers:
       - name: orders

@@ -2,19 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders-db
+  name: orders-db-v1
   labels:
     name: orders-db
+    app: orders-db
+    version: v1
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: orders-db
+      app: orders-db
+      version: v1
   template:
     metadata:
       labels:
         name: orders-db
+        app: orders-db
+        version: v1
     spec:
       containers:
       - name: orders-db
@@ -22,6 +28,13 @@ spec:
         ports:
         - name: mongo
           containerPort: 27017
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            cpu: 300m
+            memory: 500Mi
         securityContext:
           capabilities:
             drop:

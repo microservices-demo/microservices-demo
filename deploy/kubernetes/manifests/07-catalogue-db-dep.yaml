@@ -2,23 +2,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: catalogue-db
+  name: catalogue-db-v1
   labels:
     name: catalogue-db
+    app: catalogue-db
+    version: v1
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: catalogue-db
+      app: catalogue-db
+      version: v1
   template:
     metadata:
       labels:
         name: catalogue-db
+        app: catalogue-db
+        version: v1
     spec:
       containers:
       - name: catalogue-db
         image: weaveworksdemos/catalogue-db:0.3.0
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            cpu: 300m
+            memory: 500Mi
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password

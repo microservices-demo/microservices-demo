@@ -2,21 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: session-db
+  name: session-db-v1
   labels:
     name: session-db
+    app: session-db
+    version: v1
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: session-db
+      app: session-db
+      version: v1
   template:
     metadata:
       labels:
         name: session-db
-      annotations:
-        prometheus.io.scrape: "false"
+        app: session-db
+        version: v1
     spec:
       containers:
       - name: session-db
@@ -24,6 +28,13 @@ spec:
         ports:
         - name: redis
           containerPort: 6379
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 300m
+            memory: 300Mi
         securityContext:
           capabilities:
             drop:

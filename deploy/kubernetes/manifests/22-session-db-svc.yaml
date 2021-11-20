@@ -5,6 +5,7 @@ metadata:
   name: session-db
   labels:
     name: session-db
+    app: session-db
   namespace: sock-shop
 spec:
   ports:
@@ -13,3 +14,4 @@ spec:
     targetPort: 6379
   selector:
     name: session-db
+    app: session-db

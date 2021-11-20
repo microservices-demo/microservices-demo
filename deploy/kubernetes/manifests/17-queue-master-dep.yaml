@@ -2,19 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: queue-master
+  name: queue-master-v1
   labels:
     name: queue-master
+    app: queue-master
+    version: v1
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: queue-master
+      app: queue-master
+      version: v1
   template:
     metadata:
       labels:
         name: queue-master
+        app: queue-master
+        version: v1
     spec:
       containers:
       - name: queue-master
