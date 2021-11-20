@@ -10,7 +10,7 @@ on:
 jobs:
   #
   #
-  #check complete demo is in sync with individual manifest, it should block fom merge. Should this be a diferent file?
+  #check complete demo is in sync with individual manifest, it should block fom merge. Should this be a different file?
   complete-demo-sync-check:
     runs-on: ubuntu-latest
     env:
@@ -30,7 +30,7 @@ jobs:
 
     #
     #
-    # Check that manifest and complete-demo.yaml ahve the same content
+    # Check that manifest and complete-demo.yaml have the same content
     - name: check comeplte-demo.yaml content sync
       run: docker run $COMPLETE_DEMO_ARGS $COMPLETE_DEMO_IMAGE make -C $COMPLETE_DEMO_DIR check-complete-demo
 
