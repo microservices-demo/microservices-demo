@@ -1,0 +1,21 @@
+[req]
+distinguished_name = private_registry_cert_req
+x509_extensions = v3_req
+prompt = no
+
+[private_registry_cert_req]
+C = KR
+ST = SEOUL
+L = SEOUL
+O = micro-amazon
+OU = zwan
+CN = 192.168.1.10
+
+[v3_req]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.0 = master 
+IP.0 = 192.168.1.10 
