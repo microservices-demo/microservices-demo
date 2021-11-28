@@ -23,8 +23,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        # image: weaveworksdemos/front-end:0.3.12
-        image: jmgoyesc/dsp-front-end
+        image: europe-west3-docker.pkg.dev/cnpe-blue/sockshop/front-end:latest
         resources:
           limits:
             cpu: 300m

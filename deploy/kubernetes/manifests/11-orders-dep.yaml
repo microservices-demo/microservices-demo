@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.4.7
+        image: europe-west3-docker.pkg.dev/cnpe-blue/sockshop/orders:latest
         env:
          - name: JAVA_OPTS
            value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
