@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: xel1s/front-end:v1
+        image: xel1s/front-end:v6
         resources:
           limits:
             cpu: 300m
