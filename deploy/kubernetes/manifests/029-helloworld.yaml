@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: helloworld
-        image: xel1s/go_hello_world:v4
+        image: europe-west3-docker.pkg.dev/cnpe-blue/sockshop/helloworld:latest
         resources:
           limits:
             cpu: 300m
