@@ -3,16 +3,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: front-end
-  annotations:
-        prometheus.io/scrape: 'true'
   labels:
     name: front-end
+    app: front-end
   namespace: sock-shop
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 80
     targetPort: 8079
-    nodePort: 30001
   selector:
     name: front-end
+    app: front-end

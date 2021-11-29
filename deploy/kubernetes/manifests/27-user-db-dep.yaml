@@ -2,27 +2,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-db
+  name: user-db-v1
   labels:
     name: user-db
+    app: user-db
+    version: v1
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: user-db
+      app: user-db
+      version: v1
   template:
     metadata:
       labels:
         name: user-db
+        app: user-db
+        version: v1
     spec:
       containers:
       - name: user-db
-        image: weaveworksdemos/user-db:0.3.0
+        # image: weaveworksdemos/user-db:0.3.0
+        image: jmgoyesc/dsp-users
 
         ports:
         - name: mongo
           containerPort: 27017
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            cpu: 300m
+            memory: 500Mi
         securityContext:
           capabilities:
             drop:

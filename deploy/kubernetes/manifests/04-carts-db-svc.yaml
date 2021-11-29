@@ -5,6 +5,7 @@ metadata:
   name: carts-db
   labels:
     name: carts-db
+    app: carts-db
   namespace: sock-shop
 spec:
   ports:
@@ -13,3 +14,4 @@ spec:
     targetPort: 27017
   selector:
     name: carts-db
+    app: carts-db

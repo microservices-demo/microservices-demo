@@ -3,10 +3,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: queue-master
-  annotations:
-        prometheus.io/scrape: 'true'
   labels:
     name: queue-master
+    app: queue-master
   namespace: sock-shop
 spec:
   ports:
@@ -15,3 +14,4 @@ spec:
     targetPort: 80
   selector:
     name: queue-master
+    app: queue-master

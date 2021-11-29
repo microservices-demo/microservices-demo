@@ -2,21 +2,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: front-end
+  name: front-end-v1
+  labels:
+    app: front-end
+    version: v1
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: front-end
+      app: front-end
+      version: v1
   template:
     metadata:
       labels:
         name: front-end
+        app: front-end
+        version: v1
     spec:
       containers:
       - name: front-end
+<<<<<<< HEAD
         image: xel1s/front-end:v6
+=======
+        image: europe-west3-docker.pkg.dev/cnpe-blue/sockshop/front-end:latest
+>>>>>>> master
         resources:
           limits:
             cpu: 300m

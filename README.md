@@ -12,6 +12,7 @@ It is built using [Spring Boot](http://projects.spring.io/spring-boot/), [Go kit
 
 - Documentation site: [website](https://microservices-demo.github.io/)
 - Application design: [website](./internal-docs/design.md).
+- Google Cloud Kubernetes installation: [website](./deploy/kubernetes/terraform/gcp/README.md)
 
 ## Services 
 
@@ -35,10 +36,22 @@ It is built using [Spring Boot](http://projects.spring.io/spring-boot/), [Go kit
 
 ## Quick start with minikube
 
-1. Start minikube: `minikube start --vm-driver=hyperkit --cpus 4 --memory 8192`
-2. Go to the folder deploy/kubernetes/manifest and execute: `kubectl apply -f .`
-3. Access to UI with port forwaring: `kubectl port-forward svc/front-end 8080:80`
+1. Start minikube: `minikube start --vm-driver=hyperkit --cpus 6 --memory 8192`
+1. Go to the folder deploy/kubernetes/manifest and execute: `kubectl apply -f .`
+1. In another terminal/console, run `minikube tunnel`
+1. Get the external ip address using `kubectl get svc front-end`
+1. To get metrics in minikube install this `minikube addons enable metrics-server` and display dashboar with `minikube dashboard`
+1. Finally, to end execute `minikube stop` and delete with `minikube delete`
 
+## Istio configuration
+
+1. istioctl install
+1. kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/kiali.yaml
+1. kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/jaeger.yaml
+1. kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/prometheus.yaml
+1. kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/grafana.yaml
+1. k port-forward svc/kiali 20001 -n istio-system
+1. Follow terraform gcp instructions (create gke, install k8s apps, do load test)
 
 ## Deployment Platforms
 
