@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue:0.3.5
+        image: frgpow/sec-sox-shop-catalogue
         command: ["/app"]
         args:
         - -port=80

@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: catalogue-db
-        image: weaveworksdemos/catalogue-db:0.3.0
+        image: frgpow/sec-sox-shop-catalogue-db
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password
