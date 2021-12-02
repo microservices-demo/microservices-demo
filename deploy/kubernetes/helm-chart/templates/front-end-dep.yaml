@@ -18,31 +18,31 @@ spec:
       {{- end }}
     spec:
       containers:
-      - name: front-end
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.frontend.image.repo }}:{{ .Values.frontend.image.tag }}
-        resources:
-{{ toYaml .Values.frontend.resources | indent 10 }}
-        ports:
-        - containerPort: 8079
-        env:
-        - name: SESSION_REDIS
-          value: "true"
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-          readOnlyRootFilesystem: true
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8079
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8079
-          initialDelaySeconds: 30
-          periodSeconds: 3
+        - name: front-end
+          image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.frontend.image.repo }}:{{ .Values.frontend.image.tag }}
+          resources:
+{{ toYaml .Values.frontend.resources | indent 12 }}
+          ports:
+            - containerPort: 8079
+          env:
+            - name: SESSION_REDIS
+              value: "true"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            capabilities:
+              drop:
+                - all
+            readOnlyRootFilesystem: true
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8079
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8079
+            initialDelaySeconds: 30
+            periodSeconds: 3

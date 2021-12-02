@@ -20,40 +20,40 @@ spec:
       {{- end }}
     spec:
       containers:
-      - name: payment
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.payment.image.repo }}:{{ .Values.payment.image.tag }}
-        command:
-        - /app
-        - -decline={{ .Values.payment.declinePaymentsOverAmount }}
-        resources:
-{{ toYaml .Values.payment.resources | indent 10 }}
-        ports:
-        - containerPort: {{ .Values.payment.containerPort }}
-        {{- if .Values.zipkin.enabled }}
-        env:
-        - name: ZIPKIN
-          value: http://{{ .Values.zipkin.url }}:9411/api/v1/spans
-        {{- end }}
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-{{- if lt (int .Values.payment.containerPort) 1024 }}
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-{{- end }}
-          readOnlyRootFilesystem: true
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: {{ .Values.payment.containerPort }}
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: {{ .Values.payment.containerPort }}
-          initialDelaySeconds: 180
-          periodSeconds: 3
+        - name: payment
+          image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.payment.image.repo }}:{{ .Values.payment.image.tag }}
+          command:
+            - /app
+            - -decline={{ .Values.payment.declinePaymentsOverAmount }}
+          resources:
+{{ toYaml .Values.payment.resources | indent 12 }}
+          ports:
+            - containerPort: {{ .Values.payment.containerPort }}
+          {{- if .Values.zipkin.enabled }}
+          env:
+            - name: ZIPKIN
+              value: http://{{ .Values.zipkin.url }}:9411/api/v1/spans
+          {{- end }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            {{- if lt (int .Values.payment.containerPort) 1024 }}
+            capabilities:
+              drop:
+                - all
+              add:
+                - NET_BIND_SERVICE
+            {{- end }}
+            readOnlyRootFilesystem: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.payment.containerPort }}
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.payment.containerPort }}
+            initialDelaySeconds: 180
+            periodSeconds: 3

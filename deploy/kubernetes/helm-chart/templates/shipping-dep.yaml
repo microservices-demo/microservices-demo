@@ -20,50 +20,50 @@ spec:
       {{- end }}
     spec:
       containers:
-      - name: shipping
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.shipping.image.repo }}:{{ .Values.shipping.image.tag }}
-        command:
-        - /usr/local/bin/java.sh
-        - -jar
-        - ./app.jar
-        - --port={{ .Values.shipping.containerPort }}
-        env:
-        {{- if .Values.zipkin.enabled }}
-          - name: ZIPKIN
-            value: {{ .Values.zipkin.urlj }}
-        {{- end }}
-          - name: JAVA_OPTS
-            value: {{ .Values.java.options }}
-        resources:
-{{ toYaml .Values.shipping.resources | indent 10 }}
-        ports:
-        - containerPort: {{ .Values.shipping.containerPort }}
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 10001
-{{- if lt (int .Values.shipping.containerPort) 1024 }}
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-{{- end }}
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: {{ .Values.shipping.containerPort }}
-          initialDelaySeconds: 420
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: {{ .Values.shipping.containerPort }}
-          initialDelaySeconds: 360
-          periodSeconds: 3
+        - name: shipping
+          image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.shipping.image.repo }}:{{ .Values.shipping.image.tag }}
+          command:
+            - /usr/local/bin/java.sh
+            - -jar
+            - ./app.jar
+            - --port={{ .Values.shipping.containerPort }}
+          env:
+          {{- if .Values.zipkin.enabled }}
+            - name: ZIPKIN
+              value: {{ .Values.zipkin.urlj }}
+          {{- end }}
+            - name: JAVA_OPTS
+              value: {{ .Values.java.options }}
+          resources:
+{{ toYaml .Values.shipping.resources | indent 12 }}
+          ports:
+            - containerPort: {{ .Values.shipping.containerPort }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            {{- if lt (int .Values.shipping.containerPort) 1024 }}
+            capabilities:
+              drop:
+                - all
+              add:
+                - NET_BIND_SERVICE
+            {{- end }}
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.shipping.containerPort }}
+            initialDelaySeconds: 420
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.shipping.containerPort }}
+            initialDelaySeconds: 360
+            periodSeconds: 3
       volumes:
         - name: tmp-volume
           emptyDir:

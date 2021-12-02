@@ -20,28 +20,28 @@ spec:
       {{- end }}
     spec:
       containers:
-      - name: queue-master
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.queuemaster.image.repo }}:{{ .Values.queuemaster.image.tag }}
-        env:
-          {{- if .Values.zipkin.enabled }}
-          - name: ZIPKIN
-            value: {{ .Values.zipkin.url }}
-          {{- end }}
-          - name: JAVA_OPTS
-            value: {{ .Values.java.options }}
-        resources:
-{{ toYaml .Values.queuemaster.resources | indent 10 }}
-        ports:
-        - containerPort: 80
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
+        - name: queue-master
+          image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.queuemaster.image.repo }}:{{ .Values.queuemaster.image.tag }}
+          env:
+            {{- if .Values.zipkin.enabled }}
+            - name: ZIPKIN
+              value: {{ .Values.zipkin.url }}
+            {{- end }}
+            - name: JAVA_OPTS
+              value: {{ .Values.java.options }}
+          resources:
+{{ toYaml .Values.queuemaster.resources | indent 12 }}
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 180
+            periodSeconds: 3

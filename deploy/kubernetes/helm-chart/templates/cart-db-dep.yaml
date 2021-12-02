@@ -16,25 +16,25 @@ spec:
         name: carts-db
     spec:
       containers:
-      - name: carts-db
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.cartsdb.image.repo }}:{{ .Values.cartsdb.image.tag }}
-        ports:
-        - name: mongo
-          containerPort: 27017
-        resources:
-{{ toYaml .Values.cartsdb.resources | indent 10 }}
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
+        - name: carts-db
+          image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.cartsdb.image.repo }}:{{ .Values.cartsdb.image.tag }}
+          ports:
+            - name: mongo
+              containerPort: 27017
+          resources:
+{{ toYaml .Values.cartsdb.resources | indent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir:
