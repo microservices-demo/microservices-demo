@@ -23,12 +23,12 @@ spec:
       - name: queue-master
         image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.queuemaster.image.repo }}:{{ .Values.queuemaster.image.tag }}
         env:
-         {{- if .Values.zipkin.enabled }}
-         - name: ZIPKIN
-           value: {{ .Values.zipkin.url }}
-         {{- end }}
-         - name: JAVA_OPTS
-           value: {{ .Values.java.options }}
+          {{- if .Values.zipkin.enabled }}
+          - name: ZIPKIN
+            value: {{ .Values.zipkin.url }}
+          {{- end }}
+          - name: JAVA_OPTS
+            value: {{ .Values.java.options }}
         resources:
 {{ toYaml .Values.queuemaster.resources | indent 10 }}
         ports:

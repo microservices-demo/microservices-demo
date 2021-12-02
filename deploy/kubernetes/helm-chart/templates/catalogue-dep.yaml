@@ -28,8 +28,8 @@ spec:
         - -DSN=catalogue_user:default_password@tcp(catalogue-db.{{ .Release.Namespace }}.svc.cluster.local:3306)/socksdb
         {{- if .Values.zipkin.enabled }}
         env:
-         - name: ZIPKIN
-           value: http://{{ .Values.zipkin.url }}:9411/api/v1/spans
+          - name: ZIPKIN
+            value: http://{{ .Values.zipkin.url }}:9411/api/v1/spans
         {{- end }}
         resources:
 {{ toYaml .Values.catalogue.resources | indent 10 }}

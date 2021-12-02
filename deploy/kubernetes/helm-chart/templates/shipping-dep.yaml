@@ -29,11 +29,11 @@ spec:
         - --port={{ .Values.shipping.containerPort }}
         env:
         {{- if .Values.zipkin.enabled }}
-         - name: ZIPKIN
-           value: {{ .Values.zipkin.urlj }}
+          - name: ZIPKIN
+            value: {{ .Values.zipkin.urlj }}
         {{- end }}
-         - name: JAVA_OPTS
-           value: {{ .Values.java.options }}
+          - name: JAVA_OPTS
+            value: {{ .Values.java.options }}
         resources:
 {{ toYaml .Values.shipping.resources | indent 10 }}
         ports:

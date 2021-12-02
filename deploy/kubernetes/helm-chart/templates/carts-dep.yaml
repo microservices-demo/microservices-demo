@@ -28,16 +28,16 @@ spec:
         name: carts
         image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.carts.image.repo }}:{{ .Values.carts.image.tag }}
         env:
-         {{- if .Values.zipkin.enabled }}
-         - name: ZIPKIN
-           value: {{ .Values.zipkin.url }}
-         {{- end }}
-         - name: JAVA_OPTS
-           value: {{ .Values.java.options }}
+          {{- if .Values.zipkin.enabled }}
+          - name: ZIPKIN
+            value: {{ .Values.zipkin.url }}
+          {{- end }}
+          - name: JAVA_OPTS
+            value: {{ .Values.java.options }}
         resources:
 {{ toYaml .Values.carts.resources | indent 10 }}
         ports:
-         - containerPort: {{ .Values.carts.containerPort }}
+          - containerPort: {{ .Values.carts.containerPort }}
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001

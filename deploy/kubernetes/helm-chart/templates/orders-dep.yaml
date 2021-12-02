@@ -28,12 +28,12 @@ spec:
         - ./app.jar
         - --port={{ .Values.orders.containerPort }}
         env:
-         {{- if .Values.zipkin.enabled }}
-         - name: ZIPKIN
-           value: {{ .Values.zipkin.url }}
-         {{- end }}
-         - name: JAVA_OPTS
-           value: {{ .Values.java.options }}
+          {{- if .Values.zipkin.enabled }}
+          - name: ZIPKIN
+            value: {{ .Values.zipkin.url }}
+          {{- end }}
+          - name: JAVA_OPTS
+            value: {{ .Values.java.options }}
         resources:
 {{ toYaml .Values.orders.resources | indent 10 }}
         ports:
