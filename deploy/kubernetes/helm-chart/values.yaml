@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 global:
-    registry: ''
+    registry: ""
 
 java:
     options: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
@@ -14,8 +14,8 @@ ingress:
     annotations:
         kubernetes.io/ingress.class: nginx
     labels: {}
-    host: ''
-    tlsSecretName: ''
+    host: ""
+    tlsSecretName: ""
 
 cartsdb:
     image:
@@ -29,7 +29,7 @@ cartsdb:
             cpu: 500m
             memory: 512Mi
     persistentVolume:
-        storageClass: ''
+        storageClass: ""
         size: 512Mi
 
 carts:
@@ -109,7 +109,7 @@ ordersdb:
             cpu: 500m
             memory: 512Mi
     persistentVolume:
-        storageClass: ''
+        storageClass: ""
         size: 512Mi
 
 orders:
@@ -175,7 +175,7 @@ sessiondb:
             memory: 256Mi
             cpu: 250m
     persistentVolume:
-        storageClass: ''
+        storageClass: ""
         size: 512Mi
 
 shipping:
@@ -239,7 +239,7 @@ zipkin:
         requests:
             cpu: 100m
             memory: 300Mi
-    enabled:  false
+    enabled: false
     url: zipkin.zipkin.svc.cluster.local
 
 zipkinmysql:
