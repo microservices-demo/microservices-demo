@@ -8,7 +8,7 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-  - port: 80
-    targetPort: {{ .Values.user.containerPort }}
+    - port: 80
+      targetPort: {{ .Values.user.containerPort }}
   selector:
     name: user

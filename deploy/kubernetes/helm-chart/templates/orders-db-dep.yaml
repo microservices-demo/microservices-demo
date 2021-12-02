@@ -16,25 +16,25 @@ spec:
         name: orders-db
     spec:
       containers:
-      - name: orders-db
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.ordersdb.image.repo }}:{{ .Values.ordersdb.image.tag }}
-        ports:
-        - name: mongo
-          containerPort: 27017
-        resources:
-{{ toYaml .Values.ordersdb.resources | indent 10 }}
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
+        - name: orders-db
+          image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.ordersdb.image.repo }}:{{ .Values.ordersdb.image.tag }}
+          ports:
+            - name: mongo
+              containerPort: 27017
+          resources:
+{{ toYaml .Values.ordersdb.resources | indent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir:

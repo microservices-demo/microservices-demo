@@ -8,23 +8,23 @@ metadata:
   name: {{ template "fullname" .}}-socks-ingress
 spec:
   rules:
-  - http:
-      paths:
-      - backend:
-          service:
-            name: front-end
-            port:
-              number: 80
-        path: /
-        pathType: Prefix
-    {{- if .Values.host }}
-    host: {{ template "host" . }}
-    {{- end }}
+    - http:
+        paths:
+          - backend:
+              service:
+                name: front-end
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+      {{- if .Values.host }}
+      host: {{ template "host" . }}
+      {{- end }}
   {{- if .Values.ingress.tlsSecretName }}
   tls:
-  - secretName: {{ .Values.ingress.tlsSecretName }}
-    {{- if .Values.host }}
-    hosts:
-    - {{ template "host" . }}
-    {{- end }}
+    - secretName: {{ .Values.ingress.tlsSecretName }}
+      {{- if .Values.host }}
+      hosts:
+        - {{ template "host" . }}
+      {{- end }}
   {{- end }}

@@ -16,15 +16,15 @@ spec:
         name: zipkin
     spec:
       containers:
-      - name: zipkin
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.zipkin.image.repo }}:{{ .Values.zipkin.image.tag }}
-        ports:
-        - containerPort: 9411
-        env:
-        - name: STORAGE_TYPE
-          value: mysql
-        - name: MYSQL_HOST
-          value: zipkin-mysql
-        resources:
-{{ toYaml .Values.zipkinmysql.resources | indent 10 }}
+        - name: zipkin
+          image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.zipkin.image.repo }}:{{ .Values.zipkin.image.tag }}
+          ports:
+            - containerPort: 9411
+          env:
+            - name: STORAGE_TYPE
+              value: mysql
+            - name: MYSQL_HOST
+              value: zipkin-mysql
+          resources:
+{{ toYaml .Values.zipkinmysql.resources | indent 12 }}
 {{- end -}}

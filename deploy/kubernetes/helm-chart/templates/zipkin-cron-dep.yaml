@@ -16,19 +16,19 @@ spec:
         name: zipkin-cron
     spec:
       containers:
-      - name: zipkin-cron
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.zipkincron.image.repo }}:{{ .Values.zipkincron.image.tag }}
-        env:
-        - name: STORAGE_TYPE
-          value: mysql
-        - name: MYSQL_HOST
-          value: zipkin-mysql
-        - name: MYSQL_USER
-          value: zipkin
-        - name: MYSQL_PASS
-          value: zipkin
-        command: ["crond"]
-        args: ["-f"]
-        resources:
-{{ toYaml .Values.zipkincron.resources | indent 10 }}
+        - name: zipkin-cron
+          image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.zipkincron.image.repo }}:{{ .Values.zipkincron.image.tag }}
+          env:
+            - name: STORAGE_TYPE
+              value: mysql
+            - name: MYSQL_HOST
+              value: zipkin-mysql
+            - name: MYSQL_USER
+              value: zipkin
+            - name: MYSQL_PASS
+              value: zipkin
+          command: ["crond"]
+          args: ["-f"]
+          resources:
+{{ toYaml .Values.zipkincron.resources | indent 12 }}
 {{- end -}}

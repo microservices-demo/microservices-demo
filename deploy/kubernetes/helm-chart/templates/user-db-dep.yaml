@@ -16,25 +16,25 @@ spec:
         name: user-db
     spec:
       containers:
-      - name: user-db
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.userdb.image.repo }}:{{ .Values.userdb.image.tag }}
-        ports:
-        - name: mongo
-          containerPort: 27017
-        resources:
-{{ toYaml .Values.userdb.resources | indent 10 }}
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
+        - name: user-db
+          image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.userdb.image.repo }}:{{ .Values.userdb.image.tag }}
+          ports:
+            - name: mongo
+              containerPort: 27017
+          resources:
+{{ toYaml .Values.userdb.resources | indent 12 }}
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-volume
       volumes:
         - name: tmp-volume
           emptyDir:

@@ -16,19 +16,19 @@ spec:
         name: session-db
     spec:
       containers:
-      - name: session-db
-        image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.sessiondb.image.repo }}:{{ .Values.sessiondb.image.tag }}
-        ports:
-        - name: redis
-          containerPort: 6379
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
-        resources:
-{{ toYaml .Values.sessiondb.resources | indent 10 }}
+        - name: session-db
+          image: {{if .Values.global.registry}}{{ .Values.global.registry }}/{{end}}{{ .Values.sessiondb.image.repo }}:{{ .Values.sessiondb.image.tag }}
+          ports:
+            - name: redis
+              containerPort: 6379
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+            readOnlyRootFilesystem: true
+          resources:
+{{ toYaml .Values.sessiondb.resources | indent 12 }}
