@@ -38,7 +38,7 @@ spec:
         - containerPort: 80
         securityContext:
           runAsNonRoot: true
-          runAsUser: 10001
+          runAsUser: 0
           capabilities:
             drop:
               - all
@@ -163,7 +163,7 @@ spec:
         - containerPort: 80
         securityContext:
           runAsNonRoot: true
-          runAsUser: 10001
+          runAsUser: 0
           capabilities:
             drop:
               - all
@@ -280,7 +280,7 @@ spec:
           value: "true"
         securityContext:
           runAsNonRoot: true
-          runAsUser: 10001
+          runAsUser: 0
           capabilities:
             drop:
               - all
@@ -352,7 +352,7 @@ spec:
         - containerPort: 80
         securityContext:
           runAsNonRoot: true
-          runAsUser: 10001
+          runAsUser: 0
           capabilities:
             drop:
               - all
@@ -474,7 +474,7 @@ spec:
         - containerPort: 80
         securityContext:
           runAsNonRoot: true
-          runAsUser: 10001
+          runAsUser: 0
           capabilities:
             drop:
               - all
@@ -721,7 +721,7 @@ spec:
         - containerPort: 80
         securityContext:
           runAsNonRoot: true
-          runAsUser: 10001
+          runAsUser: 0
           capabilities:
             drop:
               - all
@@ -790,7 +790,7 @@ spec:
           value: user-db:27017
         securityContext:
           runAsNonRoot: true
-          runAsUser: 10001
+          runAsUser: 0
           capabilities:
             drop:
               - all
