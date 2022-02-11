@@ -87,10 +87,14 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
+        - mountPath: /data/db
+          name: tmp-volume4 
       volumes:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+        - name: tmp-volume4
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -197,6 +201,12 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: tmp-volume3
+      volumes:
+      - name: tmp-volume3
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -357,10 +367,14 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
+        - mountPath: /data/db
+          name: tmp-volume5  
       volumes:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+        - name: tmp-volume5
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -730,10 +744,14 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
+        - mountPath: /data/db-users
+          name: tmp-volume2
       volumes:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+        - name: tmp-volume2
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
