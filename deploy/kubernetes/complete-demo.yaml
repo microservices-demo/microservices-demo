@@ -36,15 +36,6 @@ spec:
             memory: 200Mi
         ports:
         - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 0
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
@@ -52,8 +43,6 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -95,15 +84,6 @@ spec:
         ports:
         - name: mongo
           containerPort: 27017
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
@@ -111,8 +91,6 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -161,15 +139,6 @@ spec:
             memory: 100Mi
         ports:
         - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 0
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /health
@@ -182,8 +151,6 @@ spec:
             port: 80
           initialDelaySeconds: 180
           periodSeconds: 3
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -230,8 +197,6 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -278,13 +243,6 @@ spec:
         env:
         - name: SESSION_REDIS
           value: "true"
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 0
-          capabilities:
-            drop:
-              - all
-          readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /
@@ -297,8 +255,6 @@ spec:
             port: 8079
           initialDelaySeconds: 30
           periodSeconds: 3
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -350,15 +306,6 @@ spec:
             memory: 300Mi
         ports:
         - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 0
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
@@ -366,8 +313,6 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -409,15 +354,6 @@ spec:
         ports:
         - name: mongo
           containerPort: 27017
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
@@ -425,8 +361,6 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -472,15 +406,6 @@ spec:
             memory: 100Mi
         ports:
         - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 0
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /health
@@ -493,8 +418,6 @@ spec:
             port: 80
           initialDelaySeconds: 180
           periodSeconds: 3
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -545,8 +468,6 @@ spec:
             memory: 300Mi
         ports:
         - containerPort: 80
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -592,23 +513,11 @@ spec:
           name: management
         - containerPort: 5672
           name: rabbitmq
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-              - DAC_OVERRIDE
-          readOnlyRootFilesystem: true
       - name: rabbitmq-exporter
         image: kbudde/rabbitmq-exporter
         ports:
         - containerPort: 9090
           name: exporter
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -658,17 +567,6 @@ spec:
         ports:
         - name: redis
           containerPort: 6379
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -719,15 +617,6 @@ spec:
             memory: 300Mi
         ports:
         - containerPort: 80
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 0
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
@@ -735,8 +624,6 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -754,7 +641,6 @@ spec:
     targetPort: 80
   selector:
     name: shipping
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -788,15 +674,6 @@ spec:
         env:
         - name: mongo
           value: user-db:27017
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 0
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
         livenessProbe:
           httpGet:
             path: /health
@@ -809,8 +686,6 @@ spec:
             port: 80
           initialDelaySeconds: 180
           periodSeconds: 3
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -828,7 +703,6 @@ spec:
     targetPort: 80
   selector:
     name: user
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -850,19 +724,9 @@ spec:
       containers:
       - name: user-db
         image: weaveworksdemos/user-db:0.3.0
-
         ports:
         - name: mongo
           containerPort: 27017
-        securityContext:
-          capabilities:
-            drop:
-              - all
-            add:
-              - CHOWN
-              - SETGID
-              - SETUID
-          readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
@@ -870,8 +734,6 @@ spec:
         - name: tmp-volume
           emptyDir:
             medium: Memory
-      nodeSelector:
-        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
