@@ -76,7 +76,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
-      GROUP: weaveworksdemos 
+      GROUP: darrylweaver 
     strategy:
       matrix:
         repo: ["openapi", "healthcheck"]
