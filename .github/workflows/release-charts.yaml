@@ -1,0 +1,51 @@
+name: Release Charts
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # important parameter
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.7.0
+
+      - name: Add dependencies
+        shell: bash
+        run: |
+          for dir in $(ls -d charts/*/ | cut -f2 -d'/'); do
+            repo_urls=$(helm dependency list charts/"$dir" | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*" || true)
+            i=0
+            echo $repo_urls | while read urls; do
+              for u in $urls; do
+                if [ ! -z "$u" ] 
+                then
+                  echo $u
+                  helm repo add $dir$i $u
+                  ((i=i+1))
+                fi
+              done
+            done
+          done
+
+      - name: Run chart-releaser
+        uses: stecky/yet-another-chart-releaser-action@v1
+        with:
+          charts_dir: charts
+          charts_repo_url: https://raw.githubusercontent.com/darrylweaver/microservices-demo/gh-pages/
+        env:
+          YACR_TOKEN: "${{ secrets.HELM_CHART_RELEASE_TOKEN }}"
