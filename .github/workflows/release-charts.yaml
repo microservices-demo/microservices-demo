@@ -24,24 +24,6 @@ jobs:
         with:
           version: v3.7.0
 
-      - name: Add dependencies
-        shell: bash
-        run: |
-          for dir in $(ls -d charts/*/ | cut -f2 -d'/'); do
-            repo_urls=$(helm dependency list charts/"$dir" | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*" || true)
-            i=0
-            echo $repo_urls | while read urls; do
-              for u in $urls; do
-                if [ ! -z "$u" ] 
-                then
-                  echo $u
-                  helm repo add $dir$i $u
-                  ((i=i+1))
-                fi
-              done
-            done
-          done
-
       - name: Run chart-releaser
         uses: stecky/yet-another-chart-releaser-action@v1
         with:
