@@ -1,0 +1,170 @@
+name: microservices-demo
+services:
+  - name: front-end
+    containers:
+      - name: front-end
+        image: registry-1.docker.io/weaveworksdemos/front-end:0.3.12
+    mode: replicated
+    replicas: 1
+  - name: edge-router
+    containers:
+      - name: edge-router
+        image: registry-1.docker.io/weaveworksdemos/edge-router:0.1.1
+    network:
+      ingress-ip-per-instance:
+        protocols:
+          - name: tcp
+            port-ranges: "80,8080"
+      outbound-access:
+        allow-all: true
+    mode: replicated
+    replicas: 1
+  - name: catalogue
+    containers:
+      - name: catalogue
+        image: registry-1.docker.io/weaveworksdemos/catalogue:0.3.5
+    mode: replicated
+    replicas: 1
+  - name: catalogue-db
+    containers:
+      - name: catalogue-db
+        image: registry-1.docker.io/weaveworksdemos/catalogue-db:0.3.0
+        env:
+          MYSQL_ROOT_PASSWORD: "fixme"
+          MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+          MYSQL_DATABASE: socksdb
+        mounts:
+          - volume-name: db
+            mount-path: /var/lib/mysql
+    volumes:
+      - name: db
+        ephemeral-volume:
+          size: 100MB
+    mode: replicated
+    replicas: 1
+  - name: carts
+    containers:
+      - name: carts
+        image: registry-1.docker.io/weaveworksdemos/carts:0.4.8
+        env:
+          JAVA_OPTS: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+    mode: replicated
+    replicas: 1
+  - name: carts-db
+    containers:
+      - name: carts-db
+        image: registry-1.docker.io/mongo:3.4
+        mounts:
+          - volume-name: configdb
+            mount-path: /data/configdb
+          - volume-name: db
+            mount-path: /data/db
+    volumes:
+      - name: configdb
+        ephemeral-volume:
+          size: 100MB
+      - name: db
+        ephemeral-volume:
+          size: 100MB
+    mode: replicated
+    replicas: 1
+  - name: orders
+    containers:
+      - name: orders
+        image: registry-1.docker.io/weaveworksdemos/orders:0.4.7
+        env:
+          JAVA_OPTS: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+    mode: replicated
+    replicas: 1
+  - name: orders-db
+    containers:
+      - name: orders-db
+        image: registry-1.docker.io/mongo:3.4
+        mounts:
+          - volume-name: configdb
+            mount-path: /data/configdb
+          - volume-name: db
+            mount-path: /data/db
+    volumes:
+      - name: configdb
+        ephemeral-volume:
+          size: 100MB
+      - name: db
+        ephemeral-volume:
+          size: 100MB
+    mode: replicated
+    replicas: 1
+  - name: shipping
+    containers:
+      - name: shipping
+        image: registry-1.docker.io/weaveworksdemos/shipping:0.4.8
+        env:
+          JAVA_OPTS: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+    mode: replicated
+    replicas: 1
+  - name: queue-master
+    containers:
+      - name: queue-master
+        image: registry-1.docker.io/weaveworksdemos/queue-master:0.3.1
+    mode: replicated
+    replicas: 1
+  - name: rabbitmq
+    containers:
+      - name: rabbitmq
+        image: registry-1.docker.io/rabbitmq:3.6.8
+        mounts:
+          - volume-name: rabbitmq
+            mount-path: /var/lib/rabbitmq
+    volumes:
+      - name: rabbitmq
+        ephemeral-volume:
+          size: 100MB
+    mode: replicated
+    replicas: 1
+  - name: payment
+    containers:
+      - name: payment
+        image: registry-1.docker.io/weaveworksdemos/payment:0.4.3
+    mode: replicated
+    replicas: 1
+  - name: user
+    containers:
+      - name: user
+        image: registry-1.docker.io/weaveworksdemos/user:0.4.4
+        env:
+          MONGO_HOST: user-db:27017
+    mode: replicated
+    replicas: 1
+  - name: user-db
+    containers:
+      - name: user-db
+        image: registry-1.docker.io/mongo:3.4
+        mounts:
+          - volume-name: configdb
+            mount-path: /data/configdb
+          - volume-name: db
+            mount-path: /data/db
+    volumes:
+      - name: configdb
+        ephemeral-volume:
+          size: 100MB
+      - name: db
+        ephemeral-volume:
+          size: 100MB
+    mode: replicated
+    replicas: 1
+  - name: user-sim
+    containers:
+      - name: user-db
+        image: registry-1.docker.io/weaveworksdemos/load-test:0.1.1
+        cmd:
+          - "-d"
+          - "60"
+          - "-r"
+          - "200"
+          - "-c"
+          - "2"
+          - "-h"
+          - "edge-router"
+    mode: replicated
+    replicas: 1
