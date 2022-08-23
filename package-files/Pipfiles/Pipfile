@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+awscli = "==1.18.23"
+flask = "==1.1.2"
+flask-sqlalchemy = "==2.4.4"
+molecule = "==3.0.4"
+django = "==1.2"
+aiohttp = "==3.7.4"
+pygithub = "==1.53"
+flask-cors = "==3.0.9"
+flask-jwt-extended = "==3.25.1"
+
+[dev-packages]
+pytest = "*"
