@@ -1,0 +1,2 @@
+base command: docker run -p 8089:8089 --mount type=bind,source=$pwd,target=/mnt/locust locustio/locust -f /mnt/locust/locustfile.py
+headless commands: --headless
