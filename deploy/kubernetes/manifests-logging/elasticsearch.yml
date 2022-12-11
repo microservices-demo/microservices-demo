@@ -17,13 +17,16 @@ spec:
         name: elasticsearch
     spec:
       containers:
-       - image: elasticsearch
-         name: elasticsearch
-         ports:
-          - name: elasticsearch
-            containerPort: 9200
+        - image: elasticsearch:7.12.1
+          name: elasticsearch
+          ports:
+            - name: elasticsearch
+              containerPort: 9200
+          env:
+            - name: discovery.type
+              value: single-node
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service

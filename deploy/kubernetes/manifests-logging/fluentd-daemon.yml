@@ -32,4 +32,4 @@ spec:
         hostPath:
           path: /var/lib/docker/containers
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

@@ -19,9 +19,9 @@ spec:
       containers:
       - name: catalogue
         image: weaveworksdemos/catalogue:0.3.5
-        command: ["/app"]
-        args:
-        - -port=80
+        env:
+         - name: ZIPKIN
+           value: http://zipkin.jaeger.svc.cluster.local:9411/api/v1/spans
         resources:
           limits:
             cpu: 200m
@@ -53,4 +53,4 @@ spec:
           initialDelaySeconds: 180
           periodSeconds: 3
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

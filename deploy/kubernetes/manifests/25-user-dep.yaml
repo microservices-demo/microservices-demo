@@ -22,15 +22,17 @@ spec:
         resources:
           limits:
             cpu: 300m
-            memory: 200Mi
+            memory: 100Mi
           requests:
             cpu: 100m
             memory: 100Mi
         ports:
         - containerPort: 80
         env:
-        - name: mongo
+        - name: MONGO_HOST
           value: user-db:27017
+        - name: ZIPKIN
+          value: http://zipkin.jaeger.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001

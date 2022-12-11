@@ -21,13 +21,16 @@ spec:
         image: weaveworksdemos/payment:0.4.3
         resources:
           limits:
-            cpu: 200m
-            memory: 200Mi
+            cpu: 100m
+            memory: 100Mi
           requests:
-            cpu: 99m
+            cpu: 100m
             memory: 100Mi
         ports:
         - containerPort: 80
+        env:
+        - name: ZIPKIN
+          value: http://zipkin.jaeger.svc.cluster.local:9411/api/v1/spans
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
@@ -50,4 +53,4 @@ spec:
           initialDelaySeconds: 180
           periodSeconds: 3
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

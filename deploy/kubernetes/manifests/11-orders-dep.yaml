@@ -48,4 +48,4 @@ spec:
           emptyDir:
             medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
