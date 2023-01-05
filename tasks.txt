@@ -1,0 +1,43 @@
+get visible results from load testing *
+Map out sys specs *
+get some proper response time data out of the thing *   
+
+Current concerns
+Prometheus instrumentation varies depending on underlying technology/language (go, java )
+impossible to cover them all. - the sockshop framework in use is quite opaque
+Need to limit to some clear boundary of what metrics to explore - the ones in the sockshop
+current plan to document the metrics in use, sort them and perform dimensionality reduction
+with PCA
+
+work on my mental - work on fear of failure
+find some solution to collecting the various metrics into one file
+build query-range api requester - https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries
+set docker throttles according to sys specs -
+write locustfile
+write python to collect all relevant metrics - 
+perform PCA on metrics
+
+1: Create steady-state locust, compile it all into two dimensional grid with __name__ and instance
+2: Create overload states, compile them into the exact same grid.
+3: Run percentage difference algorithm on all data sets. Google how to do this easily.
+4: Define some incremental list of those metrics that one average confer the biggest changes: These are now defined as the least scalable
+Doest DTW fit into this somewhere? Read DTW figure out the difference with what im trying to acheieve here
+
+Automatically log users/spawn rate on locust generated csv
+Logging interval when getting data from prometheus
+Identify peaks, and then too dtw/pca to find the module metrics corresponding to the increase in delay ###
+
+Automate running docker container with the headless command and remove flag
+
+Data management:
+Get properly sorted data. Should they all be deltas?
+Z-normalize every data set
+Peak extraction, and start/endpoint equalizing.
+DTW will compare to Pumba stress results and others. One to many for several metrics
+Use DTW initially to find most relevant metrics, then more interesting stuff.
+Maybe make a system that in the start only looks at very basic data. Then compares to generated different versions of errors. Maybe a way to add new types of delays as they appear?
+
+PUMBA need -H tcp://localhost:2375
+container name in docker-compose-name format
+
+docker run -it --rm -v //var/run/docker.sock:/var/run/docker.sock gaiaadm/pumba --interval=2h --log-level=debug stress -d 1h --stressors ' --cpu 4 --timeout 60m' docker-compose-front-end-1
