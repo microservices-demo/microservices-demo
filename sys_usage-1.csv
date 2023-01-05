@@ -1,0 +1,16 @@
+LOCUSTFILE-1
+name,cpu,mem,
+front-end,40,123
+edge-router,35,20.4
+catalogue,0,17.1
+rabbitmq,1-2,154.3
+catalogue-db,0,228.3
+user-db,0.4,44.1
+shipping,0,415.4
+orders,0.3,413
+carts-db,0,175.5
+payment,0,14.7
+user,0,14.4
+orders-db,0.4,141.7
+queue-master,0,807
+carts,0,428.1

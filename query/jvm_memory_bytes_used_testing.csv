@@ -1,0 +1,7 @@
+__name__,area,instance,job
+jvm_memory_bytes_used_heap_carts:80_cart,86085248,92376704,97619584
+jvm_memory_bytes_used_heap_orders:80_orders,93090720,98333600,104625056
+jvm_memory_bytes_used_heap_shipping:80_shipping,97016328,102259208,108550664
+jvm_memory_bytes_used_nonheap_carts:80_cart,78216560,78435056,78743288
+jvm_memory_bytes_used_nonheap_orders:80_orders,77501944,77730632,78030360
+jvm_memory_bytes_used_nonheap_shipping:80_shipping,73788992,73787968,74123936

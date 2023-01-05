@@ -1,0 +1,7 @@
+job = cart, orders, shipping, catalogue, , payment, user
+instance = carts:80, orders:80, shipping:80, catalogue:80, payment:80, user:80
+
+just sort by the different labels collected, no?
+
+Get a request answer, do a simple regex or smth to isolate the 
+label types, then build the resulting csv from it. Script r

@@ -1,5 +1,8 @@
-*
-!query
-!tasks.txt
-!commands.txt
-!thesis
+deploy
+docs
+graphs
+healthcheck
+install
+internal-docs
+openapi
+staging

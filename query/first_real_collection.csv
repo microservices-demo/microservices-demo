@@ -1,0 +1,423 @@
+classes&carts:80&cart,8053,8054,8054,8054
+classes&orders:80&orders,8097,8098,8098,8098
+classes&shipping:80&shipping,7430,7431,7431,7431
+classes_loaded&carts:80&cart,8053,8054,8054,8054
+classes_loaded&orders:80&orders,8097,8098,8098,8098
+classes_loaded&shipping:80&shipping,7430,7431,7431,7431
+classes_unloaded&carts:80&cart,0,0,0,0
+classes_unloaded&orders:80&orders,0,0,0,0
+classes_unloaded&shipping:80&shipping,0,0,0,0
+gauge_response_metrics&carts:80&cart,18,2,1,1
+gauge_response_metrics&orders:80&orders,13,1,0,1
+gauge_response_metrics&shipping:80&shipping,2,1,1,1
+gauge_response_prometheus&queue-master:80&queue-master,3,1,1,1
+gc_g1_old_generation_count&carts:80&cart,0,0,0,0
+gc_g1_old_generation_count&orders:80&orders,0,0,0,0
+gc_g1_old_generation_count&shipping:80&shipping,0,0,0,0
+gc_g1_old_generation_time&carts:80&cart,0,0,0,0
+gc_g1_old_generation_time&orders:80&orders,0,0,0,0
+gc_g1_old_generation_time&shipping:80&shipping,0,0,0,0
+gc_g1_young_generation_count&carts:80&cart,62,62,62,62
+gc_g1_young_generation_count&orders:80&orders,63,63,63,63
+gc_g1_young_generation_count&shipping:80&shipping,66,66,66,66
+gc_g1_young_generation_time&carts:80&cart,3492,3492,3492,3492
+gc_g1_young_generation_time&orders:80&orders,3242,3242,3242,3242
+gc_g1_young_generation_time&shipping:80&shipping,4134,4134,4134,4134
+go_gc_duration_seconds&catalogue:80&catalogue&0,0,0.000266199,0.000266199,0.000266199
+go_gc_duration_seconds&catalogue:80&catalogue&0.25,0,0.00030926,0.000307491,0.0003077
+go_gc_duration_seconds&catalogue:80&catalogue&0.5,0,0.000322429,0.00032048,0.00032198000000000003
+go_gc_duration_seconds&catalogue:80&catalogue&0.75,0,0.00033258100000000003,0.00033651000000000004,0.000337101
+go_gc_duration_seconds&catalogue:80&catalogue&1,0,0.00046840900000000003,0.0004963410000000001,0.0004963410000000001
+go_gc_duration_seconds&payment:80&payment&0,0,0.00027626,0.00027530100000000004,0.00027530100000000004
+go_gc_duration_seconds&payment:80&payment&0.25,0,0.00030708900000000003,0.00030495,0.00030381
+go_gc_duration_seconds&payment:80&payment&0.5,0,0.000321211,0.000319131,0.000316439
+go_gc_duration_seconds&payment:80&payment&0.75,0,0.000330779,0.000330779,0.00032732000000000003
+go_gc_duration_seconds&payment:80&payment&1,0,0.00036000100000000004,0.000374349,0.000604031
+go_gc_duration_seconds&user:80&user&0,0.00031537000000000004,0.00028138800000000004,0.00028138800000000004,0.00028138800000000004
+go_gc_duration_seconds&user:80&user&0.25,0.00034691,0.00034192,0.00033804900000000004,0.00033513
+go_gc_duration_seconds&user:80&user&0.5,0.00036329,0.000360509,0.00035811,0.000355079
+go_gc_duration_seconds&user:80&user&0.75,0.000447429,0.00041362100000000003,0.000409319,0.00040532000000000003
+go_gc_duration_seconds&user:80&user&1,0.00063729,0.00063729,0.00063729,0.00063729
+go_gc_duration_seconds_count&catalogue:80&catalogue,0,40,80,120
+go_gc_duration_seconds_count&payment:80&payment,0,40,80,120
+go_gc_duration_seconds_count&user:80&user,144,189,234,278
+go_gc_duration_seconds_sum&catalogue:80&catalogue,0,0.012935849000000001,0.026210226000000003,0.039511413
+go_gc_duration_seconds_sum&payment:80&payment,0,0.012797573000000001,0.025540550000000002,0.038331262000000005
+go_gc_duration_seconds_sum&user:80&user,0.057133713,0.07312523400000001,0.089600704,0.10572134300000001
+go_goroutines&catalogue:80&catalogue,11,10,10,10
+go_goroutines&payment:80&payment,11,11,11,11
+go_goroutines&user:80&user,13,12,13,12
+go_memstats_alloc_bytes&catalogue:80&catalogue,2325160,2881016,2908488,2924808
+go_memstats_alloc_bytes&payment:80&payment,2156736,2765584,2794360,2808712
+go_memstats_alloc_bytes&user:80&user,2239248,2225240,2232208,2252928
+go_memstats_alloc_bytes_total&catalogue:80&catalogue,2325160,112352544,222290584,332243288
+go_memstats_alloc_bytes_total&payment:80&payment,2156736,112154752,222152288,332098704
+go_memstats_alloc_bytes_total&user:80&user,14663136,125193056,235726120,346243680
+go_memstats_buck_hash_sys_bytes&catalogue:80&catalogue,1443278,1448782,1451246,1453574
+go_memstats_buck_hash_sys_bytes&payment:80&payment,1443498,1447218,1449090,1450474
+go_memstats_buck_hash_sys_bytes&user:80&user,1445768,1451360,1455328,1456664
+go_memstats_frees_total&catalogue:80&catalogue,531,168776,335771,502926
+go_memstats_frees_total&payment:80&payment,487,168219,335339,502357
+go_memstats_frees_total&user:80&user,230940,404111,577327,750429
+go_memstats_gc_sys_bytes&catalogue:80&catalogue,262144,524288,561152,561152
+go_memstats_gc_sys_bytes&payment:80&payment,262144,524288,524288,524288
+go_memstats_gc_sys_bytes&user:80&user,524288,589824,589824,589824
+go_memstats_heap_alloc_bytes&catalogue:80&catalogue,2325160,2881016,2908488,2924808
+go_memstats_heap_alloc_bytes&payment:80&payment,2156736,2765584,2794360,2808712
+go_memstats_heap_alloc_bytes&user:80&user,2239248,2225240,2232208,2252928
+go_memstats_heap_idle_bytes&catalogue:80&catalogue,1695744,2539520,3522560,3497984
+go_memstats_heap_idle_bytes&payment:80&payment,1826816,2760704,2629632,2621440
+go_memstats_heap_idle_bytes&user:80&user,3170304,5103616,5169152,5144576
+go_memstats_heap_inuse_bytes&catalogue:80&catalogue,2957312,3653632,3653632,3678208
+go_memstats_heap_inuse_bytes&payment:80&payment,2826240,3432448,3465216,3473408
+go_memstats_heap_inuse_bytes&user:80&user,3022848,3055616,3055616,3047424
+go_memstats_heap_objects&catalogue:80&catalogue,13707,12803,12931,12970
+go_memstats_heap_objects&payment:80&payment,13070,12608,12758,12784
+go_memstats_heap_objects&user:80&user,12673,12695,12795,13038
+go_memstats_heap_released_bytes&catalogue:80&catalogue,0,0,0,0
+go_memstats_heap_released_bytes&payment:80&payment,0,0,0,0
+go_memstats_heap_released_bytes_total&user:80&user,1474560,1097728,1097728,1097728
+go_memstats_heap_sys_bytes&catalogue:80&catalogue,4653056,6193152,7176192,7176192
+go_memstats_heap_sys_bytes&payment:80&payment,4653056,6193152,6094848,6094848
+go_memstats_heap_sys_bytes&user:80&user,6193152,8159232,8224768,8192000
+go_memstats_last_gc_time_seconds&catalogue:80&catalogue,0,1669662897.291245,1669663497.2908058,1669664097.2904499
+go_memstats_last_gc_time_seconds&payment:80&payment,0,1669662896.4011476,1669663496.400811,1669664096.4007127
+go_memstats_last_gc_time_seconds&user:80&user,1669662284.8104126,1669662902.0544329,1669663497.0554118,1669664102.053638
+go_memstats_lookups_total&catalogue:80&catalogue,28,989,1949,2908
+go_memstats_lookups_total&payment:80&payment,17,977,1937,2897
+go_memstats_lookups_total&user:80&user,4219,5339,6474,7594
+go_memstats_mallocs_total&catalogue:80&catalogue,14238,181579,348702,515896
+go_memstats_mallocs_total&payment:80&payment,13557,180827,348097,515141
+go_memstats_mallocs_total&user:80&user,243613,416806,590122,763467
+go_memstats_mcache_inuse_bytes&catalogue:80&catalogue,19200,19200,19200,19200
+go_memstats_mcache_inuse_bytes&payment:80&payment,19200,19200,19200,19200
+go_memstats_mcache_inuse_bytes&user:80&user,19200,19200,19200,19200
+go_memstats_mcache_sys_bytes&catalogue:80&catalogue,32768,32768,32768,32768
+go_memstats_mcache_sys_bytes&payment:80&payment,32768,32768,32768,32768
+go_memstats_mcache_sys_bytes&user:80&user,32768,32768,32768,32768
+go_memstats_mspan_inuse_bytes&catalogue:80&catalogue,34080,39360,39360,39680
+go_memstats_mspan_inuse_bytes&payment:80&payment,33440,36320,37120,37280
+go_memstats_mspan_inuse_bytes&user:80&user,43200,44480,43520,43520
+go_memstats_mspan_sys_bytes&catalogue:80&catalogue,49152,49152,49152,49152
+go_memstats_mspan_sys_bytes&payment:80&payment,49152,49152,49152,49152
+go_memstats_mspan_sys_bytes&user:80&user,98304,98304,98304,98304
+go_memstats_next_gc_bytes&catalogue:80&catalogue,4194304,4194304,4194304,4194304
+go_memstats_next_gc_bytes&payment:80&payment,4194304,4194304,4194304,4194304
+go_memstats_next_gc_bytes&user:80&user,4194304,4194304,4194304,4194304
+go_memstats_other_sys_bytes&catalogue:80&catalogue,1037098,3587498,3585034,3582706
+go_memstats_other_sys_bytes&payment:80&payment,1036878,3326918,3325046,3585806
+go_memstats_other_sys_bytes&user:80&user,3017072,3277720,3273752,3272416
+go_memstats_stack_inuse_bytes&catalogue:80&catalogue,1638400,2195456,2260992,2260992
+go_memstats_stack_inuse_bytes&payment:80&payment,1638400,2195456,2293760,2293760
+go_memstats_stack_inuse_bytes&user:80&user,2195456,2326528,2260992,2293760
+go_memstats_stack_sys_bytes&catalogue:80&catalogue,1638400,2195456,2260992,2260992
+go_memstats_stack_sys_bytes&payment:80&payment,1638400,2195456,2293760,2293760
+go_memstats_stack_sys_bytes&user:80&user,2195456,2326528,2260992,2293760
+go_memstats_sys_bytes&catalogue:80&catalogue,9115896,14031096,15116536,15116536
+go_memstats_sys_bytes&payment:80&payment,9115896,13768952,13768952,14031096
+go_memstats_sys_bytes&user:80&user,13506808,15935736,15935736,15935736
+heap&carts:80&cart,131072,131072,131072,131072
+heap&orders:80&orders,131072,131072,131072,131072
+heap&shipping:80&shipping,131072,131072,131072,131072
+heap_committed&carts:80&cart,131072,131072,131072,131072
+heap_committed&orders:80&orders,131072,131072,131072,131072
+heap_committed&shipping:80&shipping,131072,131072,131072,131072
+heap_init&carts:80&cart,65536,65536,65536,65536
+heap_init&orders:80&orders,65536,65536,65536,65536
+heap_init&shipping:80&shipping,65536,65536,65536,65536
+heap_used&carts:80&cart,61339,73627,85915,98203
+heap_used&orders:80&orders,74831,88143,100431,112719
+heap_used&shipping:80&shipping,54893,68205,78445,89709
+httpsessions_active&carts:80&cart,0,0,0,0
+httpsessions_active&orders:80&orders,0,0,0,0
+httpsessions_active&shipping:80&shipping,0,0,0,0
+httpsessions_max&carts:80&cart,-1,-1,-1,-1
+httpsessions_max&orders:80&orders,-1,-1,-1,-1
+httpsessions_max&shipping:80&shipping,-1,-1,-1,-1
+instance_uptime&carts:80&cart,21253781,21853779,22453779,23053780
+instance_uptime&orders:80&orders,21252151,21852150,22452149,23052149
+instance_uptime&shipping:80&shipping,21252911,21852910,22452910,23052909
+jvm_classes_loaded&carts:80&cart,8053,8054,8054,8054
+jvm_classes_loaded&orders:80&orders,8097,8098,8098,8098
+jvm_classes_loaded&shipping:80&shipping,7430,7431,7431,7431
+jvm_classes_loaded_total&carts:80&cart,8053,8054,8054,8054
+jvm_classes_loaded_total&orders:80&orders,8097,8098,8098,8098
+jvm_classes_loaded_total&shipping:80&shipping,7430,7431,7431,7431
+jvm_classes_unloaded_total&carts:80&cart,0,0,0,0
+jvm_classes_unloaded_total&orders:80&orders,0,0,0,0
+jvm_classes_unloaded_total&shipping:80&shipping,0,0,0,0
+jvm_gc_collection_seconds_count&G1 Old Generation&carts:80&cart,0,0,0,0
+jvm_gc_collection_seconds_count&G1 Old Generation&orders:80&orders,0,0,0,0
+jvm_gc_collection_seconds_count&G1 Old Generation&shipping:80&shipping,0,0,0,0
+jvm_gc_collection_seconds_count&G1 Young Generation&carts:80&cart,62,62,62,62
+jvm_gc_collection_seconds_count&G1 Young Generation&orders:80&orders,63,63,63,63
+jvm_gc_collection_seconds_count&G1 Young Generation&shipping:80&shipping,66,66,66,66
+jvm_gc_collection_seconds_sum&G1 Old Generation&carts:80&cart,0,0,0,0
+jvm_gc_collection_seconds_sum&G1 Old Generation&orders:80&orders,0,0,0,0
+jvm_gc_collection_seconds_sum&G1 Old Generation&shipping:80&shipping,0,0,0,0
+jvm_gc_collection_seconds_sum&G1 Young Generation&carts:80&cart,3.492,3.492,3.492,3.492
+jvm_gc_collection_seconds_sum&G1 Young Generation&orders:80&orders,3.242,3.242,3.242,3.242
+jvm_gc_collection_seconds_sum&G1 Young Generation&shipping:80&shipping,4.134,4.134,4.134,4.134
+jvm_info&carts:80&cart&Oracle Corporation&1.8.0_111-internal-alpine-r0-b14,1,1,1,1
+jvm_info&orders:80&orders&Oracle Corporation&1.8.0_111-internal-alpine-r0-b14,1,1,1,1
+jvm_info&shipping:80&shipping&Oracle Corporation&1.8.0_111-internal-alpine-r0-b14,1,1,1,1
+jvm_memory_bytes_committed&heap&carts:80&cart,134217728,134217728,134217728,134217728
+jvm_memory_bytes_committed&heap&orders:80&orders,134217728,134217728,134217728,134217728
+jvm_memory_bytes_committed&heap&shipping:80&shipping,134217728,134217728,134217728,134217728
+jvm_memory_bytes_committed&nonheap&carts:80&cart,75251712,75513856,75972608,76759040
+jvm_memory_bytes_committed&nonheap&orders:80&orders,76300288,76562432,76824576,77742080
+jvm_memory_bytes_committed&nonheap&shipping:80&shipping,71991296,72253440,72515584,73170944
+jvm_memory_bytes_used&heap&carts:80&cart,62811872,75394784,87977696,100560608
+jvm_memory_bytes_used&heap&orders:80&orders,77675656,90258568,102841480,115424392
+jvm_memory_bytes_used&heap&shipping:80&shipping,56210432,68793344,80327680,91862016
+jvm_memory_bytes_used&nonheap&carts:80&cart,72765064,73937576,74519744,75425952
+jvm_memory_bytes_used&nonheap&orders:80&orders,73823160,74982640,75621216,76406328
+jvm_memory_bytes_used&nonheap&shipping:80&shipping,69144536,70072280,70754304,71709016
+jvm_memory_pool_bytes_committed&carts:80&cart&Code Cache,25231360,25231360,25427968,26214400
+jvm_memory_pool_bytes_committed&carts:80&cart&Compressed Class Space,5505024,5505024,5505024,5505024
+jvm_memory_pool_bytes_committed&carts:80&cart&G1 Eden Space,56623104,56623104,56623104,56623104
+jvm_memory_pool_bytes_committed&carts:80&cart&G1 Old Gen,71303168,71303168,71303168,71303168
+jvm_memory_pool_bytes_committed&carts:80&cart&G1 Survivor Space,6291456,6291456,6291456,6291456
+jvm_memory_pool_bytes_committed&carts:80&cart&Metaspace,44515328,44777472,45039616,45039616
+jvm_memory_pool_bytes_committed&orders:80&orders&Code Cache,26017792,26017792,26279936,26935296
+jvm_memory_pool_bytes_committed&orders:80&orders&Compressed Class Space,5505024,5505024,5505024,5505024
+jvm_memory_pool_bytes_committed&orders:80&orders&G1 Eden Space,71303168,71303168,71303168,71303168
+jvm_memory_pool_bytes_committed&orders:80&orders&G1 Old Gen,61865984,61865984,61865984,61865984
+jvm_memory_pool_bytes_committed&orders:80&orders&G1 Survivor Space,1048576,1048576,1048576,1048576
+jvm_memory_pool_bytes_committed&orders:80&orders&Metaspace,44777472,45039616,45039616,45301760
+jvm_memory_pool_bytes_committed&shipping:80&shipping&Code Cache,25427968,25427968,25427968,25821184
+jvm_memory_pool_bytes_committed&shipping:80&shipping&Compressed Class Space,5062656,5062656,5062656,5062656
+jvm_memory_pool_bytes_committed&shipping:80&shipping&G1 Eden Space,61865984,61865984,61865984,61865984
+jvm_memory_pool_bytes_committed&shipping:80&shipping&G1 Old Gen,63963136,63963136,63963136,63963136
+jvm_memory_pool_bytes_committed&shipping:80&shipping&G1 Survivor Space,8388608,8388608,8388608,8388608
+jvm_memory_pool_bytes_committed&shipping:80&shipping&Metaspace,41500672,41762816,42024960,42287104
+jvm_memory_pool_bytes_max&carts:80&cart&Code Cache,251658240,251658240,251658240,251658240
+jvm_memory_pool_bytes_max&carts:80&cart&Compressed Class Space,1073741824,1073741824,1073741824,1073741824
+jvm_memory_pool_bytes_max&carts:80&cart&G1 Eden Space,-1,-1,-1,-1
+jvm_memory_pool_bytes_max&carts:80&cart&G1 Old Gen,134217728,134217728,134217728,134217728
+jvm_memory_pool_bytes_max&carts:80&cart&G1 Survivor Space,-1,-1,-1,-1
+jvm_memory_pool_bytes_max&carts:80&cart&Metaspace,-1,-1,-1,-1
+jvm_memory_pool_bytes_max&orders:80&orders&Code Cache,251658240,251658240,251658240,251658240
+jvm_memory_pool_bytes_max&orders:80&orders&Compressed Class Space,1073741824,1073741824,1073741824,1073741824
+jvm_memory_pool_bytes_max&orders:80&orders&G1 Eden Space,-1,-1,-1,-1
+jvm_memory_pool_bytes_max&orders:80&orders&G1 Old Gen,134217728,134217728,134217728,134217728
+jvm_memory_pool_bytes_max&orders:80&orders&G1 Survivor Space,-1,-1,-1,-1
+jvm_memory_pool_bytes_max&orders:80&orders&Metaspace,-1,-1,-1,-1
+jvm_memory_pool_bytes_max&shipping:80&shipping&Code Cache,251658240,251658240,251658240,251658240
+jvm_memory_pool_bytes_max&shipping:80&shipping&Compressed Class Space,1073741824,1073741824,1073741824,1073741824
+jvm_memory_pool_bytes_max&shipping:80&shipping&G1 Eden Space,-1,-1,-1,-1
+jvm_memory_pool_bytes_max&shipping:80&shipping&G1 Old Gen,134217728,134217728,134217728,134217728
+jvm_memory_pool_bytes_max&shipping:80&shipping&G1 Survivor Space,-1,-1,-1,-1
+jvm_memory_pool_bytes_max&shipping:80&shipping&Metaspace,-1,-1,-1,-1
+jvm_memory_pool_bytes_used&carts:80&cart&Code Cache,23922048,24773952,25218560,25977280
+jvm_memory_pool_bytes_used&carts:80&cart&Compressed Class Space,5294736,5295288,5295288,5295288
+jvm_memory_pool_bytes_used&carts:80&cart&G1 Eden Space,3145728,15728640,28311552,40894464
+jvm_memory_pool_bytes_used&carts:80&cart&G1 Old Gen,53374688,53374688,53374688,53374688
+jvm_memory_pool_bytes_used&carts:80&cart&G1 Survivor Space,6291456,6291456,6291456,6291456
+jvm_memory_pool_bytes_used&carts:80&cart&Metaspace,43548280,43868336,44005896,44153384
+jvm_memory_pool_bytes_used&orders:80&orders&Code Cache,24754048,25592640,26092928,26725248
+jvm_memory_pool_bytes_used&orders:80&orders&Compressed Class Space,5320896,5321448,5321448,5321448
+jvm_memory_pool_bytes_used&orders:80&orders&G1 Eden Space,26214400,38797312,51380224,63963136
+jvm_memory_pool_bytes_used&orders:80&orders&G1 Old Gen,50412680,50412680,50412680,50412680
+jvm_memory_pool_bytes_used&orders:80&orders&G1 Survivor Space,1048576,1048576,1048576,1048576
+jvm_memory_pool_bytes_used&orders:80&orders&Metaspace,43748216,44068552,44206840,44359632
+jvm_memory_pool_bytes_used&shipping:80&shipping&Code Cache,23667776,24281152,24813184,25591808
+jvm_memory_pool_bytes_used&shipping:80&shipping&Compressed Class Space,4885696,4886248,4886248,4886248
+jvm_memory_pool_bytes_used&shipping:80&shipping&G1 Eden Space,2097152,14680064,26214400,37748736
+jvm_memory_pool_bytes_used&shipping:80&shipping&G1 Old Gen,45724672,45724672,45724672,45724672
+jvm_memory_pool_bytes_used&shipping:80&shipping&G1 Survivor Space,8388608,8388608,8388608,8388608
+jvm_memory_pool_bytes_used&shipping:80&shipping&Metaspace,40591712,40904880,41054872,41230960
+jvm_threads_current&carts:80&cart,16,23,23,23
+jvm_threads_current&orders:80&orders,16,23,23,23
+jvm_threads_current&shipping:80&shipping,14,21,21,21
+jvm_threads_daemon&carts:80&cart,14,21,21,21
+jvm_threads_daemon&orders:80&orders,14,21,21,21
+jvm_threads_daemon&shipping:80&shipping,12,19,19,19
+jvm_threads_deadlocked&carts:80&cart,0,0,0,0
+jvm_threads_deadlocked&orders:80&orders,0,0,0,0
+jvm_threads_deadlocked&shipping:80&shipping,0,0,0,0
+jvm_threads_deadlocked_monitor&carts:80&cart,0,0,0,0
+jvm_threads_deadlocked_monitor&orders:80&orders,0,0,0,0
+jvm_threads_deadlocked_monitor&shipping:80&shipping,0,0,0,0
+jvm_threads_peak&carts:80&cart,16,23,23,23
+jvm_threads_peak&orders:80&orders,16,23,23,23
+jvm_threads_peak&shipping:80&shipping,14,21,21,21
+jvm_threads_started_total&carts:80&cart,23,30,30,30
+jvm_threads_started_total&orders:80&orders,23,30,30,30
+jvm_threads_started_total&shipping:80&shipping,21,28,28,28
+mem&carts:80&cart,202129,203276,203845,204730
+mem&orders:80&orders,203159,204297,204920,205687
+mem&shipping:80&shipping,198605,199501,200168,201100
+mem_free&carts:80&cart,69427,56836,44833,32269
+mem_free&orders:80&orders,55216,42599,30287,17985
+mem_free&shipping:80&shipping,75543,62865,51662,40339
+nodejs_active_handles_total&edge-router:80&frontend,4,4,4,4
+nodejs_active_requests_total&edge-router:80&frontend,2,2,2,2
+nodejs_eventloop_lag_seconds&edge-router:80&frontend,0.00013182,0.00012693,0.00012863,0.0001248
+nodejs_heap_size_total_bytes&edge-router:80&frontend,25926256,24894320,24894320,24894320
+nodejs_heap_size_used_bytes&edge-router:80&frontend,21261416,20178376,20921520,21477336
+nonheap&carts:80&cart,0,0,0,0
+nonheap&orders:80&orders,0,0,0,0
+nonheap&shipping:80&shipping,0,0,0,0
+nonheap_committed&carts:80&cart,73488,73744,74192,74960
+nonheap_committed&orders:80&orders,74512,74768,75024,75920
+nonheap_committed&shipping:80&shipping,70304,70560,70816,71456
+nonheap_init&carts:80&cart,2496,2496,2496,2496
+nonheap_init&orders:80&orders,2496,2496,2496,2496
+nonheap_init&shipping:80&shipping,2496,2496,2496,2496
+nonheap_used&carts:80&cart,71059,72204,72773,73658
+nonheap_used&orders:80&orders,72087,73225,73848,74615
+nonheap_used&shipping:80&shipping,67533,68431,69096,70028
+process_cpu_seconds_total&carts:80&cart,77.04,78.01,78.71,79.55
+process_cpu_seconds_total&catalogue:80&catalogue,0.31,0.53,0.76,0.99
+process_cpu_seconds_total&edge-router:80&frontend,1.6165890000000005,1.784659,1.9265489999999998,2.055790999999999
+process_cpu_seconds_total&orders:80&orders,74.32,75.29,76.04,76.75
+process_cpu_seconds_total&payment:80&payment,0.3,0.53,0.75,0.98
+process_cpu_seconds_total&shipping:80&shipping,73.05,73.94,74.64,75.31
+process_cpu_seconds_total&user:80&user,2.14,2.43,2.71,2.99
+process_cpu_system_seconds_total&edge-router:80&frontend,0.6198110000000016,0.6691870000000018,0.7013270000000015,0.7433910000000019
+process_cpu_user_seconds_total&edge-router:80&frontend,0.9967779999999977,1.1154719999999976,1.2252219999999974,1.3123999999999976
+process_heap_bytes&edge-router:80&frontend,34668000,33644000,33644000,33644000
+process_max_fds&carts:80&cart,1048576,1048576,1048576,1048576
+process_max_fds&catalogue:80&catalogue,1048576,1048576,1048576,1048576
+process_max_fds&edge-router:80&frontend,2619746,2619746,2619746,2619746
+process_max_fds&orders:80&orders,1048576,1048576,1048576,1048576
+process_max_fds&payment:80&payment,1048576,1048576,1048576,1048576
+process_max_fds&shipping:80&shipping,1048576,1048576,1048576,1048576
+process_max_fds&user:80&user,1048576,1048576,1048576,1048576
+process_open_fds&carts:80&cart,29,29,29,29
+process_open_fds&catalogue:80&catalogue,7,7,7,7
+process_open_fds&edge-router:80&frontend,13,13,13,13
+process_open_fds&orders:80&orders,29,29,29,29
+process_open_fds&payment:80&payment,7,7,7,7
+process_open_fds&shipping:80&shipping,29,29,29,29
+process_open_fds&user:80&user,8,8,8,8
+process_resident_memory_bytes&carts:80&cart,421208064,409698304,404336640,403599360
+process_resident_memory_bytes&catalogue:80&catalogue,9502720,12877824,12877824,12877824
+process_resident_memory_bytes&edge-router:80&frontend,40856000,38960000,39128000,39464000
+process_resident_memory_bytes&orders:80&orders,412164096,414646272,409022464,407781376
+process_resident_memory_bytes&payment:80&payment,10084352,13045760,13045760,13840384
+process_resident_memory_bytes&shipping:80&shipping,420532224,424398848,417984512,417959936
+process_resident_memory_bytes&user:80&user,12128256,17166336,17522688,17416192
+process_start_time_seconds&carts:80&cart,1669641044.549,1669641044.549,1669641044.549,1669641044.549
+process_start_time_seconds&catalogue:80&catalogue,1669641037.42,1669641037.42,1669641037.42,1669641037.42
+process_start_time_seconds&edge-router:80&frontend,1669641046,1669641046,1669641046,1669641046
+process_start_time_seconds&orders:80&orders,1669641045.713,1669641045.713,1669641045.713,1669641045.713
+process_start_time_seconds&payment:80&payment,1669641037.49,1669641037.49,1669641037.49,1669641037.49
+process_start_time_seconds&shipping:80&shipping,1669641044.751,1669641044.751,1669641044.751,1669641044.751
+process_start_time_seconds&user:80&user,1669641037.49,1669641037.49,1669641037.49,1669641037.49
+process_virtual_memory_bytes&carts:80&cart,1899278336,1906647040,1906647040,1906647040
+process_virtual_memory_bytes&catalogue:80&catalogue,17817600,22732800,23818240,23818240
+process_virtual_memory_bytes&edge-router:80&frontend,610196000,609172000,609172000,609172000
+process_virtual_memory_bytes&orders:80&orders,1895120896,1902489600,1902489600,1902489600
+process_virtual_memory_bytes&payment:80&payment,17309696,21962752,21962752,22224896
+process_virtual_memory_bytes&shipping:80&shipping,1903980544,1911349248,1911349248,1911349248
+process_virtual_memory_bytes&user:80&user,22540288,24969216,24969216,24969216
+processors&carts:80&cart,16,16,16,16
+processors&orders:80&orders,16,16,16,16
+processors&shipping:80&shipping,16,16,16,16
+request_duration_seconds_bucket&catalogue:80&false&catalogue&+Inf&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&0.005&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&0.01&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&0.025&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&0.05&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&0.1&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&0.25&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&0.5&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&1&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&10&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&2.5&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&catalogue:80&false&catalogue&5&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&+Inf&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&0.005&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&0.01&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&0.025&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&0.05&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&0.1&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&0.25&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&0.5&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&1&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&10&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&2.5&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&payment:80&false&payment&5&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&+Inf&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&0.005&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&0.01&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&0.025&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&0.05&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&0.1&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&0.25&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&0.5&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&1&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&10&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&2.5&GET&metrics&200,1,121,241,361
+request_duration_seconds_bucket&user:80&false&user&5&GET&metrics&200,1,121,241,361
+request_duration_seconds_count&catalogue:80&false&catalogue&GET&metrics&200,1,121,241,361
+request_duration_seconds_count&payment:80&false&payment&GET&metrics&200,1,121,241,361
+request_duration_seconds_count&user:80&false&user&GET&metrics&200,1,121,241,361
+request_duration_seconds_sum&catalogue:80&false&catalogue&GET&metrics&200,0.0010285790000000002,0.10551434600000002,0.20962754300000006,0.31465708300000006
+request_duration_seconds_sum&payment:80&false&payment&GET&metrics&200,0.0013285480000000001,0.10679533900000004,0.21153372200000015,0.3170095439999999
+request_duration_seconds_sum&user:80&false&user&GET&metrics&200,0.0008739290000000001,0.10629837100000002,0.20756171900000006,0.30486687900000004
+scrape_duration_seconds&carts:80&cart,0.002958456,0.001567118,0.001463408,0.00132597
+scrape_duration_seconds&catalogue:80&catalogue,0.00139804,0.00096333,0.001124859,0.001035258
+scrape_duration_seconds&edge-router:80&frontend,0.002380507,0.001099389,0.001121949,0.001002178
+scrape_duration_seconds&nodeexporter:9100&node-exporter,5.000627184,5.000075335,5.000502466,5.001040385
+scrape_duration_seconds&orders:80&orders,0.002698746,0.001379188,0.001362758,0.00117111
+scrape_duration_seconds&payment:80&payment,0.001155097,0.001062759,0.001174509,0.001065319
+scrape_duration_seconds&queue-master:80&queue-master,0.002232166,0.001589497,0.001219977,0.00110927
+scrape_duration_seconds&shipping:80&shipping,0.002975216,0.001556527,0.001417828,0.001442799
+scrape_duration_seconds&user:80&user,0.001259219,0.001135569,0.00107974,0.00108506
+scrape_samples_post_metric_relabeling&carts:80&cart,73,73,73,73
+scrape_samples_post_metric_relabeling&catalogue:80&catalogue,51,51,51,51
+scrape_samples_post_metric_relabeling&edge-router:80&frontend,14,14,14,14
+scrape_samples_post_metric_relabeling&nodeexporter:9100&node-exporter,0,0,0,0
+scrape_samples_post_metric_relabeling&orders:80&orders,73,73,73,73
+scrape_samples_post_metric_relabeling&payment:80&payment,51,51,51,51
+scrape_samples_post_metric_relabeling&queue-master:80&queue-master,2,2,2,2
+scrape_samples_post_metric_relabeling&shipping:80&shipping,73,73,73,73
+scrape_samples_post_metric_relabeling&user:80&user,51,51,51,51
+scrape_samples_scraped&carts:80&cart,73,73,73,73
+scrape_samples_scraped&catalogue:80&catalogue,51,51,51,51
+scrape_samples_scraped&edge-router:80&frontend,14,14,14,14
+scrape_samples_scraped&nodeexporter:9100&node-exporter,0,0,0,0
+scrape_samples_scraped&orders:80&orders,73,73,73,73
+scrape_samples_scraped&payment:80&payment,51,51,51,51
+scrape_samples_scraped&queue-master:80&queue-master,2,2,2,2
+scrape_samples_scraped&shipping:80&shipping,73,73,73,73
+scrape_samples_scraped&user:80&user,51,51,51,51
+scrape_series_added&carts:80&cart,0,0,0,0
+scrape_series_added&catalogue:80&catalogue,14,0,0,0
+scrape_series_added&edge-router:80&frontend,0,0,0,0
+scrape_series_added&nodeexporter:9100&node-exporter,0,0,0,0
+scrape_series_added&orders:80&orders,0,0,0,0
+scrape_series_added&payment:80&payment,14,0,0,0
+scrape_series_added&queue-master:80&queue-master,0,0,0,0
+scrape_series_added&shipping:80&shipping,0,0,0,0
+scrape_series_added&user:80&user,14,0,0,0
+systemload_average&carts:80&cart,0.13330078125,0.0244140625,0.01220703125,0
+systemload_average&orders:80&orders,0.13330078125,0.0244140625,0.01220703125,0
+systemload_average&shipping:80&shipping,0.14501953125,0.02685546875,0.01220703125,0
+threads&carts:80&cart,16,23,23,23
+threads&orders:80&orders,16,23,23,23
+threads&shipping:80&shipping,14,21,21,21
+threads_daemon&carts:80&cart,14,21,21,21
+threads_daemon&orders:80&orders,14,21,21,21
+threads_daemon&shipping:80&shipping,12,19,19,19
+threads_peak&carts:80&cart,16,23,23,23
+threads_peak&orders:80&orders,16,23,23,23
+threads_peak&shipping:80&shipping,14,21,21,21
+threads_totalStarted&carts:80&cart,23,30,30,30
+threads_totalStarted&orders:80&orders,23,30,30,30
+threads_totalStarted&shipping:80&shipping,21,28,28,28
+up&carts:80&cart,1,1,1,1
+up&catalogue:80&catalogue,1,1,1,1
+up&edge-router:80&frontend,1,1,1,1
+up&nodeexporter:9100&node-exporter,0,0,0,0
+up&orders:80&orders,1,1,1,1
+up&payment:80&payment,1,1,1,1
+up&queue-master:80&queue-master,1,1,1,1
+up&shipping:80&shipping,1,1,1,1
+up&user:80&user,1,1,1,1
+uptime&carts:80&cart,21265898,21865897,22465897,23065898
+uptime&orders:80&orders,21264739,21864738,22464737,23064738
+uptime&shipping:80&shipping,21264088,21864087,22464087,23064087
