@@ -1,6 +1,7 @@
 import time
 import logging
 import random
+import json
 from locust import HttpUser, task, between
 
 #usrname: locust
@@ -17,8 +18,8 @@ class EvenLoad(HttpUser):
         self.client.get("/category.html")
         self.client.get("/category.html?tags=" + random.choice(filterList))
         self.client.get("/detail.html?id=" + random.choice(productList))
-        for i in range(random.coice([1,2,3,4,5,6,7,8,9])):
-            self.client.post("/cart", {"id": random.choice(productList)})
+        for i in range(random.choice([1,2,3,4,5,6,7,8,9])):
+            self.client.post("/cart", json={"id": random.choice(productList)})
         self.client.get("/basket.html")
         self.client.post("/orders")
         self.client.get("/customer-orders.html")
