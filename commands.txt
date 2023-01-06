@@ -1,2 +1,3 @@
 base command: docker run -p 8089:8089 --mount type=bind,source=$pwd,target=/mnt/locust locustio/locust -f /mnt/locust/locustfile.py
-
+docker run -p 8089:8089 --name locustfile_complete_rev3 --mount type=bind,source=$pwd/locustfiles,target=/mnt/locust locustio/locust -f /mnt/locust/locustfile_complete.py
+autorun: docker run -p 8089:8089 --name locustfile_complete_rev3 --mount type=bind,source=$pwd/locustfiles,target=/mnt/locust locustio/locust -f /mnt/locust/locustfile_complete.py --headless -u XXX -r XXX
