@@ -10,6 +10,14 @@ import base64
 #creds encoded to base64 with colon sepator to comply with login function: Basic bG9jdXN0OmxvY3VzdA==
 #Basic bG9jdXN0OmxvY3VzdA==
 
+import string
+
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
+
 class UserTasks(HttpUser):
     wait_time = between(0.5,1.5)
 
@@ -34,21 +42,21 @@ class UserTasks(HttpUser):
     @tag('carts')
     @task
     def carts(self):
-        for _ in range(random.choice([1,2,3,4,5,6,7,8,9])):
+        for i in range(random.choice([1,2,3,4,5,6,7,8,9])):
             prod =  random.choice(productList)
             self.client.post("/cart", json={"id": prod})
-            self.client.post("/cart/update", json={"id": prod, "quantity": _ })
+            self.client.post("/cart/update", json={"id": prod, "quantity": i })
         self.client.get("/basket.html")
-        self.client.delete("/cart")
+        #self.client.delete("/cart")
     
     @tag('users')
     @task
     def user(self):
-        now = datetime.now()
+        randomstring = get_random_string(random.choice([4,5,6,7,8,9]))
         self.client.cookies.clear()
-        response = self.client.post("/register", {"username": now, "password":"qwerty", "email": now } )
+        response = self.client.post("/register", json={"username": randomstring, "password":"qwerty", "email": randomstring } )
         id = response.json()["id"]
-        self.client.get("/login", headers={"Authorization":createcreds(now, "qwerty")})
+        self.client.get("/login", headers={"Authorization":createcreds(randomstring, "qwerty")})
         self.client.post("/addresses", json={"number": 12345678,
         "street": "nowhere st",
         "city": "cornucopia",
@@ -59,7 +67,7 @@ class UserTasks(HttpUser):
             "expires": "12/24",
             "ccv":"123"
         })
-        self.client.delete("/customers" + id)
+        self.client.delete("/customers/" + id)
     
     @tag('catalog')
     @task
