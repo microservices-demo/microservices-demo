@@ -1,0 +1,171 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nyt/global//global/global}
+  \entry{Reference3}{article}{}
+    \name{author}{4}{}{%
+      {{hash=AAS}{%
+         family={Arnold},
+         familyi={A\bibinitperiod},
+         given={A.\bibnamedelima S.},
+         giveni={A\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=WJS}{%
+         family={Wilson},
+         familyi={W\bibinitperiod},
+         given={J.\bibnamedelima S.},
+         giveni={J\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=BMG}{%
+         family={Boshier},
+         familyi={B\bibinitperiod},
+         given={M.\bibnamedelima G.},
+         giveni={M\bibinitperiod\bibinitdelim G\bibinitperiod},
+      }}%
+      {{hash=SJ}{%
+         family={Smith},
+         familyi={S\bibinitperiod},
+         given={J.},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AAS+1}
+    \strng{fullhash}{AASWJSBMGSJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1998}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{abstract}{%
+    Operating a laser diode in an extended cavity which provides
+  frequency-selective feedback is a very effective method of reducing the
+  laser's linewidth and improving its tunability. We have developed an
+  extremely simple laser of this type, built from inexpensive commercial
+  components with only a few minor modifications. A 780~nm laser built to this
+  design has an output power of 80~mW, a linewidth of 350~kHz, and it has been
+  continuously locked to a Doppler-free rubidium transition for several days.%
+    }
+    \field{number}{3}
+    \field{pages}{1236\bibrangedash 1239}
+    \field{title}{A Simple Extended-Cavity Diode Laser}
+    \verb{url}
+    \verb http://link.aip.org/link/?RSI/69/1236/1
+    \endverb
+    \field{volume}{69}
+    \field{journaltitle}{Review of Scientific Instruments}
+    \field{month}{03}
+    \field{year}{1998}
+  \endentry
+
+  \entry{Reference1}{article}{}
+    \name{author}{3}{}{%
+      {{hash=HCJ}{%
+         family={Hawthorn},
+         familyi={H\bibinitperiod},
+         given={C.\bibnamedelima J.},
+         giveni={C\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=WKP}{%
+         family={Weber},
+         familyi={W\bibinitperiod},
+         given={K.\bibnamedelima P.},
+         giveni={K\bibinitperiod\bibinitdelim P\bibinitperiod},
+      }}%
+      {{hash=SRE}{%
+         family={Scholten},
+         familyi={S\bibinitperiod},
+         given={R.\bibnamedelima E.},
+         giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{HCJWKPSRE1}
+    \strng{fullhash}{HCJWKPSRE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2001}
+    \field{labeldatesource}{}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{abstract}{%
+    We have developed an enhanced Littrow configuration extended cavity diode
+  laser (ECDL) that can be tuned without changing the direction of the output
+  beam. The output of a conventional Littrow ECDL is reflected from a plane
+  mirror fixed parallel to the tuning diffraction grating. Using a free-space
+  Michelson wavemeter to measure the laser wavelength, we can tune the laser
+  over a range greater than 10 nm without any alteration of alignment.%
+    }
+    \field{number}{12}
+    \field{pages}{4477\bibrangedash 4479}
+    \field{title}{Littrow Configuration Tunable External Cavity Diode Laser
+  with Fixed Direction Output Beam}
+    \verb{url}
+    \verb http://link.aip.org/link/?RSI/72/4477/1
+    \endverb
+    \field{volume}{72}
+    \field{journaltitle}{Review of Scientific Instruments}
+    \field{month}{12}
+    \field{year}{2001}
+  \endentry
+
+  \entry{Reference2}{article}{}
+    \name{author}{2}{}{%
+      {{hash=WCE}{%
+         family={Wieman},
+         familyi={W\bibinitperiod},
+         given={Carl\bibnamedelima E.},
+         giveni={C\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+      {{hash=HL}{%
+         family={Hollberg},
+         familyi={H\bibinitperiod},
+         given={Leo},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \keyw{Diode Laser}
+    \strng{namehash}{WCEHL1}
+    \strng{fullhash}{WCEHL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1991}
+    \field{labeldatesource}{}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{abstract}{%
+    We present a review of the use of diode lasers in atomic physics with an
+  extensive list of references. We discuss the relevant characteristics of
+  diode lasers and explain how to purchase and use them. We also review the
+  various techniques that have been used to control and narrow the spectral
+  outputs of diode lasers. Finally we present a number of examples illustrating
+  the use of diode lasers in atomic physics experiments. Review of Scientific
+  Instruments is copyrighted by The American Institute of Physics.%
+    }
+    \field{number}{1}
+    \field{pages}{1\bibrangedash 20}
+    \field{title}{Using Diode Lasers for Atomic Physics}
+    \verb{url}
+    \verb http://link.aip.org/link/?RSI/62/1/1
+    \endverb
+    \field{volume}{62}
+    \field{journaltitle}{Review of Scientific Instruments}
+    \field{month}{01}
+    \field{year}{1991}
+  \endentry
+\enddatalist
+\endinput

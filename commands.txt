@@ -1,3 +1,4 @@
 base command: docker run -p 8089:8089 --mount type=bind,source=$pwd,target=/mnt/locust locustio/locust -f /mnt/locust/locustfile.py
 docker run -p 8089:8089 --name locustfile_complete_rev3 --mount type=bind,source=$pwd/locustfiles,target=/mnt/locust locustio/locust -f /mnt/locust/locustfile_complete.py
-autorun: docker run -p 8089:8089 --name locustfile_complete_rev3 --mount type=bind,source=$pwd/locustfiles,target=/mnt/locust locustio/locust -f /mnt/locust/locustfile_complete.py --headless -u XXX -r XXX
+docker run -p 8089:8089 --rm --name locustfile_complete_rev3 --mount type=bind,source=$pwd/../../locustfiles,target=/mnt/locust locustio/locust -f /mnt/locust/locustfile_complete.py --headless -u 100 -r 20 --run-time 10s --host http://host.docker.internal
+docker run -it --rm -v //var/run/docker.sock:/var/run/docker.sock gaiaadm/pumba --interval=2h --log-level=debug stress -d 1h --stressors ' --cpu 4 --timeout 60m' docker-compose-front-end-1

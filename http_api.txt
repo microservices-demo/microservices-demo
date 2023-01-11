@@ -1,0 +1,59 @@
+login:
+GET /login
+xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password))
+
+register:
+POST /register
+var username = $('#register-username-modal').val();
+    var email = $('#register-email-modal').val();
+    var password = $('#register-password-modal').val();
+    var firstName = $('#register-first-modal').val();
+    var lastName = $('#register-last-modal').val();
+    var postvals = JSON.stringify({
+		"username": username,
+		"password": password,
+		"email": email,
+		"firstName": firstName,
+		"lastName": lastName
+	});
+note: no way to delete users afaik. So bad idea to spam this.
+
+order:
+POST /orders
+note: this calls deleteCart()
+
+deletecart: 
+DELETE /cart
+
+addtocart
+POST /cart
+data: JSON.stringify({"id": id}),
+note: product ID
+
+updatetocart
+POST /cart/update
+ data: JSON.stringify({"id": id, "quantity": quantity}),
+ note: seems to change cart amount
+
+username
+GET /customers/ + id
+
+address
+POST /addresses
+var data = {
+        "number": $("#form-number").val(),
+        "street": $("#form-street").val(),
+        "city": $("#form-city").val(),
+        "postcode": $("#form-post-code").val(),
+        "country": $("#form-country").val()}
+JSON.stringify(data)
+
+card
+POST /cards
+var data = {
+        "longNum": $("#form-card-number").val(),
+        "expires": $("#form-expires").val(),
+        "ccv": $("#form-ccv").val()
+    };
+JSON.stringify(data)
+This one changes your credit card information. Probably handled by user

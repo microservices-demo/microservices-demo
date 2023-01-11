@@ -40,4 +40,5 @@ Maybe make a system that in the start only looks at very basic data. Then compar
 PUMBA need -H tcp://localhost:2375
 container name in docker-compose-name format
 
-docker run -it --rm -v //var/run/docker.sock:/var/run/docker.sock gaiaadm/pumba --interval=2h --log-level=debug stress -d 1h --stressors ' --cpu 4 --timeout 60m' docker-compose-front-end-1
+Create automation script for generating various types of load with locust
+Then iterate over many types of loads to filter them properly.

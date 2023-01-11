@@ -1,35 +1,81 @@
-import time
-import logging
+# import time
+# import logging
 import random
-import json
-from locust import HttpUser, task, between
+from locust import HttpUser, task, between, tag
+from datetime import datetime
+import base64
 
 #usrname: locust
 #pwf: locust
 #creds encoded to base64 with colon sepator to comply with login function: Basic bG9jdXN0OmxvY3VzdA==
 #Basic bG9jdXN0OmxvY3VzdA==
 
-class EvenLoad(HttpUser):
+class UserTasks(HttpUser):
     wait_time = between(0.5,1.5)
 
+    @tag('even_load')
     @task
     def even_load(self):
+
         self.client.get("/index.html")
         self.client.get("/category.html")
         self.client.get("/category.html?tags=" + random.choice(filterList))
         self.client.get("/detail.html?id=" + random.choice(productList))
-        for i in range(random.choice([1,2,3,4,5,6,7,8,9])):
+        for _ in range(random.choice([1,2,3,4,5,6,7,8,9])):
             self.client.post("/cart", json={"id": random.choice(productList)})
         self.client.get("/basket.html")
-        self.client.post("/orders")
+        self.client.get("/orders")
         self.client.get("/customer-orders.html")
         self.client.get("/index.html")
 
     def on_start(self):
         self.client.get("/login", headers={"Authorization":"Basic bG9jdXN0OmxvY3VzdA=="})
     
-    # def add_to_cart(self, id):
-    #     self.client.post("/cart", {"id": id})
+    @tag('carts')
+    @task
+    def carts(self):
+        for _ in range(random.choice([1,2,3,4,5,6,7,8,9])):
+            prod =  random.choice(productList)
+            self.client.post("/cart", json={"id": prod})
+            self.client.post("/cart/update", json={"id": prod, "quantity": _ })
+        self.client.get("/basket.html")
+        self.client.delete("/cart")
+    
+    @tag('users')
+    @task
+    def user(self):
+        now = datetime.now()
+        self.client.cookies.clear()
+        response = self.client.post("/register", {"username": now, "password":"qwerty", "email": now } )
+        id = response.json()["id"]
+        self.client.get("/login", headers={"Authorization":createcreds(now, "qwerty")})
+        self.client.post("/addresses", json={"number": 12345678,
+        "street": "nowhere st",
+        "city": "cornucopia",
+        "postcode": "1234",
+        "country": "albania"})
+        self.client.post("/cards", json={
+            "longNum": "123456",
+            "expires": "12/24",
+            "ccv":"123"
+        })
+        self.client.delete("/customers" + id)
+    
+    @tag('catalog')
+    @task
+    def catalog(self):
+        self.client.get("/category.html?tags=" + random.choice(filterList))
+    
+    @tag('payment')
+    @task
+    def payment(self):
+        self.client.get("/health")
+        self.client.post("/paymentAuth", json={"authorised"})
+
+def createcreds(usr,pwd):
+    input = "Basic " + usr + ":" + pwd
+    return base64.b64encode(input.encode("ascii")).decode("ascii")
+
 
 filterList = [
     "brown","geek","formal","blue","skin","red","action","sport","black","magic","green"
@@ -45,5 +91,4 @@ productList = [
     "a0a4f044-b040-410d-8ead-4de0446aec7e",
     "d3588630-ad8e-49df-bbd7-3167f7efb246",
     "zzz4f044-b040-410d-8ead-4de0446aec7e"
-    
 ]

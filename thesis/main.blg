@@ -1,0 +1,67 @@
+This is BibTeX, Version 0.99d (TeX Live 2022)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: biblatex.bst
+A level-1 auxiliary file: Chapters/Chapter1.aux
+A level-1 auxiliary file: Appendices/AppendixA.aux
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: main-blx.bib
+Database file #2: example.bib
+Biblatex version: 3.18
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 4 entries,
+            6399 wiz_defined-function locations,
+            1234 strings with 11030 characters,
+and the built_in function-call counts, 32843 in all, are:
+= -- 2702
+> -- 447
+< -- 97
++ -- 858
+- -- 183
+* -- 2627
+:= -- 3982
+add.period$ -- 0
+call.type$ -- 4
+change.case$ -- 33
+chr.to.int$ -- 54
+cite$ -- 6
+duplicate$ -- 2874
+empty$ -- 2925
+format.name$ -- 234
+if$ -- 6637
+int.to.chr$ -- 0
+int.to.str$ -- 6
+missing$ -- 0
+newline$ -- 153
+num.names$ -- 123
+pop$ -- 1152
+preamble$ -- 1
+purify$ -- 54
+quote$ -- 0
+skip$ -- 616
+stack$ -- 0
+substring$ -- 5639
+swap$ -- 582
+text.length$ -- 118
+text.prefix$ -- 3
+top$ -- 1
+type$ -- 124
+warning$ -- 0
+while$ -- 458
+width$ -- 0
+write$ -- 150
