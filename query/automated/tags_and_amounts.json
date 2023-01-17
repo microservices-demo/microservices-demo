@@ -1,0 +1,8 @@
+{
+    "tags": ["even_load","carts","users","catalog"],
+    "lower_bound_users": 100,
+    "upper_bound_users": 2000,
+    "lower_bound_spawnrate": 10,
+    "upper_bound_spawnrate":100,
+    "amount_list": [100,200,400,600,800,1000,1500,2000]
+}

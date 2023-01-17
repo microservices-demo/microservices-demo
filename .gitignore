@@ -6,3 +6,5 @@ install
 internal-docs
 openapi
 staging
+query/automated/generated_csvs
+*.csv

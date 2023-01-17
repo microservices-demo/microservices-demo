@@ -1,5 +1,5 @@
 # import time
-# import logging
+import logging
 import random
 from locust import HttpUser, task, between, tag
 from datetime import datetime
@@ -56,8 +56,10 @@ class UserTasks(HttpUser):
         self.client.cookies.clear()
         response = self.client.post("/register", json={"username": randomstring, "password":"qwerty", "email": randomstring } )
         id = response.json()["id"]
-        self.client.get("/login", headers={"Authorization":createcreds(randomstring, "qwerty")})
-        self.client.post("/addresses", json={"number": 12345678,
+        loginres = self.client.get("/login", headers={"Authorization":createcreds(randomstring, "qwerty")})
+        if not loginres.ok:
+            logging.info("Login failed: " + loginres.text + loginres.reason)
+        self.client.post("/addresses", json={"number": "12345678",
         "street": "nowhere st",
         "city": "cornucopia",
         "postcode": "1234",
@@ -74,15 +76,16 @@ class UserTasks(HttpUser):
     def catalog(self):
         self.client.get("/category.html?tags=" + random.choice(filterList))
     
+    ##NOTE: This endpoint is noted in the docs but is not implemented
     @tag('payment')
     @task
     def payment(self):
         self.client.get("/health")
-        self.client.post("/paymentAuth", json={"authorised"})
+        self.client.post("/paymentAuth", json={"authorised":"true"})
 
 def createcreds(usr,pwd):
-    input = "Basic " + usr + ":" + pwd
-    return base64.b64encode(input.encode("ascii")).decode("ascii")
+    input = "" + usr + ":" + pwd
+    return "Basic " +  base64.b64encode(input.encode("ascii")).decode("ascii")
 
 
 filterList = [

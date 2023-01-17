@@ -42,3 +42,10 @@ container name in docker-compose-name format
 
 Create automation script for generating various types of load with locust
 Then iterate over many types of loads to filter them properly.
+
+With automate.ipynb pretty much ready except for some extra features and kinks, the thing I gotta work on now
+is to make it loop through some variables that generate a stable set of data
+
+How to make good metrics for it to run for? 
+Folder structure:
+Specific folders for each tag and combination of tags
