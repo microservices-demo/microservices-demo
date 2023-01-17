@@ -40,7 +40,7 @@ def collection(time, step, source, filename, tag):
             labelnames.update(result['metric'].keys())
         labelnames = sorted(labelnames)
         
-        with open("" + tag + "/" +filename + ".csv", mode = "a") as f:
+        with open("generated_csvs/" + tag + "/" +filename + ".csv", mode = "a") as f:
             writer = csv.writer(f, lineterminator='\n')
             if(first):
                 first = False

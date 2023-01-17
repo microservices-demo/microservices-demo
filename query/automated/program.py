@@ -2,6 +2,7 @@ import subprocess
 import json
 import collection
 import random
+import time
 def cmd(cmd):
     completed = subprocess.run(["powershell", "-Command", cmd], capture_output=True, universal_newlines=True)
     
@@ -40,11 +41,12 @@ def main():
     tags_and_amounts = json.load(jsonfile)
 
     for tag in tags_and_amounts["tags"]:
-        command = buildCommand(400, 20, "60s",tag,"F:/Master/Kubernetes/sockshop/microservices-demo/locustfiles")
+        command = buildCommand(400, 20, "10m",tag,"F:/Master/Kubernetes/sockshop/microservices-demo/locustfiles")
 
         result = cmd(command)
         print(result)
-        collection.collection(11, 5, "./metrics.json","400U_20R_60s",tag)
+        time.sleep(15)
+        collection.collection(11, 5, "./metrics.json","400U_20R_10m",tag)
        
 
 if __name__ == "__main__":
