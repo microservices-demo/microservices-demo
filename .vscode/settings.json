@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "https://gitlab.com/appsemble/appsemble/-/raw/HEAD/packages/cli/assets/appsemblerc.schema.json": "file:///c%3A/Users/USUARIO/Documents/GitHub/microservices-demo1/deploy/kubernetes/complete-demo.yaml"
+    }
+}
