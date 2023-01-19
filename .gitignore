@@ -7,4 +7,5 @@ internal-docs
 openapi
 staging
 query/automated/generated_csvs
+query/automated/print_output.txt
 *.csv
