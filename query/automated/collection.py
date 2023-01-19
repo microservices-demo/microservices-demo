@@ -57,4 +57,4 @@ def collection(time, step, source, filename, tag):
                     
                 writer.writerow([identifier_string[:-1]] + vals)
 
-collection(11, 5, "./metrics.json","400U_20R_60s","carts")
+#collection(11, 5, "./metrics.json","400U_20R_60s","carts")

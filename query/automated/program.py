@@ -3,8 +3,13 @@ import json
 import collection
 import random
 import time
+RUN_TIME = 10
+DEFAULT_SPAWNRATE = 50
+DEFAULT_STEP = 5
+LOCUSTFILE_COMPLETE_LOCATION = "F:/Master/Kubernetes/sockshop/microservices-demo/locustfiles"
+TAGS_AND_AMOUNTS_LOCATION = "F:/Master/Kubernetes/sockshop/microservices-demo/query/automated/tags_and_amounts.json"
 def cmd(cmd):
-    completed = subprocess.run(["powershell", "-Command", cmd], capture_output=True, universal_newlines=True)
+    completed = subprocess.run(["powershell", "-Command", cmd], capture_output=True, encoding='utf-8')
     
     return completed
 #Run a test with the same exact duration and interval. One with no load, the other with heavy load. Then perform delta on delta metrics. Include useless metrics for now.
@@ -22,14 +27,17 @@ def buildCommand(users, spawnrate, runtime, tags, fileLocation) -> str:
 
     :param str/int users: amount of users
     :param str/int spawnrate: How fast the threads are spawned
-    :param str runtime: How long it runs. Example: 30m
+    :param int runtime: How long it runs, in minutes
     :param str tags: space separated string of tags to execute
     :param str fileLocation: path to directory with the relevant locustfile
     """
-    base = "docker run -p 8089:8089 --rm --name {} --mount type=bind,source={},target=/mnt/locust locustio/locust -f /mnt/locust/locustfile_complete.py --headless -u {} -r {} --run-time {} --host http://host.docker.internal --tags {}"
+    base = "docker run -p 8089:8089 --rm --name {} --mount type=bind,source={},target=/mnt/locust locustio/locust -f /mnt/locust/locustfile_complete.py --headless -u {} -r {} --run-time {}m --host http://host.docker.internal --tags {}"
     #name =  str(users) + str(spawnrate) + str(runtime) + str(tags)
-    name = "" + str(users) + "U_" + str(spawnrate) + "R_" + str(runtime) 
-    return base.format(name, fileLocation, users, spawnrate, runtime, tags)
+    name = buildName(users,spawnrate, runtime)
+    return base.format(name, fileLocation, users, spawnrate, str(runtime), tags)
+
+def buildName(users, spawnrate, runtime):
+    return  "" + str(users) + "U_" + str(spawnrate) + "R_" + str(runtime) 
 
 def main():
     """
@@ -37,17 +45,36 @@ def main():
     data with the different tags.
     Do 10 minute intervals
     """
-    jsonfile = open("F:/Master/Kubernetes/sockshop/microservices-demo/query/automated/tags_and_amounts.json")
+    jsonfile = open(TAGS_AND_AMOUNTS_LOCATION)
     tags_and_amounts = json.load(jsonfile)
 
-    for tag in tags_and_amounts["tags"]:
-        command = buildCommand(400, 20, "10m",tag,"F:/Master/Kubernetes/sockshop/microservices-demo/locustfiles")
+    setLoop(tags_and_amounts)
 
-        result = cmd(command)
-        print(result)
-        time.sleep(15)
-        collection.collection(11, 5, "./metrics.json","400U_20R_10m",tag)
-       
+    # for tag in tags_and_amounts["tags"]:
+
+    #     command = buildCommand(400, 20, "10m",tag,LOCUSTFILE_COMPLETE_LOCATION)
+
+    #     result = cmd(command)
+    #     print(result)
+    #     time.sleep(15)
+    #     collection.collection(11, 5, "./metrics.json","400U_20R_10m",tag)
+
+
+
+def setLoop(tags_and_amounts):
+    for tag in tags_and_amounts["tags"]:
+        for amount in tags_and_amounts["amount_list"]:
+            command = buildCommand(amount, DEFAULT_SPAWNRATE, RUN_TIME, tag, LOCUSTFILE_COMPLETE_LOCATION)
+            print("Running Locust with tag " + tag + " with " + str(amount) + " users")
+            print("command: ", command)
+            result = cmd(command)
+            if result.stderr:
+                with open("Print_output.txt","a") as outputfile:
+                    outputfile.write(str(result.stderr))
+                    outputfile.close()
+            
+            time.sleep(15)
+            collection.collection(RUN_TIME+1, DEFAULT_STEP, "./metrics.json", buildName(amount,DEFAULT_SPAWNRATE,RUN_TIME),tag)
 
 if __name__ == "__main__":
     main()
