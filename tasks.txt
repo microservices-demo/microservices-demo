@@ -49,3 +49,32 @@ is to make it loop through some variables that generate a stable set of data
 How to make good metrics for it to run for? 
 Folder structure:
 Specific folders for each tag and combination of tags
+
+Now that we have decent amounts of data generation
+1: I can now do more thorough comparisons of the data, what is useless, what is only marked by deltas
+Tools I expect to use: pandas, mathplotlib, scikit-learn
+What I must research now: 
+How to analyse the data in a way that gives us something
+My intial, uneducated idea on this is: Data sets of an idle/stable system
+various data sets of various types of loads
+do automatedpeak extraction on some data in runtime, perform live dtw,
+to classify performance data by comparing to various generated stress types
+
+3 categroies: not affected by test, affected by test, delta
+unaffected can indicate that the data is from a container not related to the data
+being stressed.
+Can rule out performance vs correlation
+1 is you can use this data to prove that the service generating this data is not correlated to the source of the latency WITH CONDITIONS. If param does not change even if it is from the stressed service, it must be ruled out
+find those that correlate the most with the parameters of the stressed containers
+allows us to build a performance relations map
+tree structure: stress source is the root, 
+
+Data relevance:
+PCA and pearson correlation:
+Use PCA or some more fitting version of it to sort the most correlated data points inside one file. 
+
+Find relevance of parameters. Then loookat the relevance of those paramaters
+in another file. If these are relevant in the other file as well, we can surmise
+that this correlation happens indepentent of the testing condition and its use
+as a classifier is limited. If they differ largely in correlation, we have found
+an indication that we have something useful here. 

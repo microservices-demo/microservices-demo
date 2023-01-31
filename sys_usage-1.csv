@@ -1,4 +1,3 @@
-LOCUSTFILE-1
 name,cpu,mem,
 front-end,40,123
 edge-router,35,20.4
