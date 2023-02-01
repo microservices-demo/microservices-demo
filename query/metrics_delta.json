@@ -8,6 +8,6 @@
         "gc_g1_young_generation_count",
         "gc_g1_young_generation_time",
         "go_gc_duration_seconds_count",
-        "go_gc_duration_seconds_sum",
+        "go_gc_duration_seconds_sum"
     ]
 }
