@@ -67,7 +67,7 @@ Can rule out performance vs correlation
 1 is you can use this data to prove that the service generating this data is not correlated to the source of the latency WITH CONDITIONS. If param does not change even if it is from the stressed service, it must be ruled out
 find those that correlate the most with the parameters of the stressed containers
 allows us to build a performance relations map
-tree structure: stress source is the root, 
+tree structure: stress source is the root, closer correlation is closer to root.
 
 Data relevance:
 PCA and pearson correlation:
@@ -78,3 +78,10 @@ in another file. If these are relevant in the other file as well, we can surmise
 that this correlation happens indepentent of the testing condition and its use
 as a classifier is limited. If they differ largely in correlation, we have found
 an indication that we have something useful here. 
+
+If we do the eros set, we would have to compare it to other methods of comparing anyway. So we first have to establish a way of measuring using DTW/PCA first anyway.
+For today: set up DTW. Should be okay with some of the tools on hand. Just gotta preprocess the data som.
+
+Using various built in correlation methods should not be so hard. Build a python program that genreates data, then runs the various correltation graphs. Then give a loss function about how far off each thing is. Could then start implementing weighting?
+A simple machine learning platform that finds out which predefined comparison method is best suited?
+Possible methinks.

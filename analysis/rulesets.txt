@@ -1,0 +1,7 @@
+What should it actually do?
+Black box: INPUT -> OUTPUT
+
+INPUT: Two datasets
+OUTPUT: A similiarity score
+
+Dataset shape: As we get it from prometheus, or preprocessed? If they all should be preprocessed the same way we do it before sending it in. Ofc.
