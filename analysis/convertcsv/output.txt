@@ -1,0 +1,8 @@
+@problemName sockshop
+@timeStamps false
+@missing false
+@univariate false
+@dimensions 2
+@equalLength true
+@seriesLength 8
+@classLabel true
