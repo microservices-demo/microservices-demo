@@ -2,9 +2,11 @@
 @timeStamps false
 @missing false
 @univariate false
-@dimensions 2
+@dimensions 3
 @equalLength true
 @seriesLength 8
 @classLabel false
 @data
-312:313
+312:313:314
+13:12:12
+31:33:33
