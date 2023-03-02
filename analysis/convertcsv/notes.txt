@@ -1,0 +1,2 @@
+The method to compare these dataframes reduce the columns to only those found in all time series. This is because of a technical 
+limitation of sktime, pandas, and most TSC algorithms. 
