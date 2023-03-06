@@ -1,2 +1,5 @@
 The method to compare these dataframes reduce the columns to only those found in all time series. This is because of a technical 
 limitation of sktime, pandas, and most TSC algorithms. 
+How to deal with the MultiIndex?
+I probably want to use some auto-generated names then, and just keep the labels in a separate list.
+Send in tuple, get out tuple.
