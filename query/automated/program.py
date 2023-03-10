@@ -3,6 +3,7 @@ import json
 import collection
 import random
 import time
+from datetime import datetime
 RUN_TIME = 10
 DEFAULT_SPAWNRATE = 50
 DEFAULT_STEP = 5
@@ -39,7 +40,7 @@ def buildCommand(users, spawnrate, runtime, tags, fileLocation) -> str:
 def buildName(users, spawnrate, runtime):
     return  "" + str(users) + "U_" + str(spawnrate) + "R_" + str(runtime) 
 
-def main():
+def main(runtime=RUN_TIME):
     """
     Have folders for every tag and combination of tags. Then run generators on
     data with the different tags.
@@ -48,7 +49,7 @@ def main():
     jsonfile = open(TAGS_AND_AMOUNTS_LOCATION)
     tags_and_amounts = json.load(jsonfile)
 
-    setLoop(tags_and_amounts)
+    setLoop(tags_and_amounts, runtime)
 
     # for tag in tags_and_amounts["tags"]:
 
@@ -61,10 +62,14 @@ def main():
 
 
 
-def setLoop(tags_and_amounts):
+def setLoop(tags_and_amounts, runtime):
+
+    now = datetime.now()
+    now_unix = time.mktime(now.timetuple())
+
     for tag in tags_and_amounts["tags"]:
         for amount in tags_and_amounts["amount_list"]:
-            command = buildCommand(amount, DEFAULT_SPAWNRATE, RUN_TIME, tag, LOCUSTFILE_COMPLETE_LOCATION)
+            command = buildCommand(amount, DEFAULT_SPAWNRATE, runtime, tag, LOCUSTFILE_COMPLETE_LOCATION)
             print("Running Locust with tag " + tag + " with " + str(amount) + " users")
             print("command: ", command)
             result = cmd(command)
@@ -74,7 +79,7 @@ def setLoop(tags_and_amounts):
                     outputfile.close()
             
             time.sleep(15)
-            collection.collection(RUN_TIME+1, DEFAULT_STEP, "./metrics.json", buildName(amount,DEFAULT_SPAWNRATE,RUN_TIME),tag)
+            collection.collection(RUN_TIME+1, DEFAULT_STEP, "./metrics.json", now_unix,tag, now_unix)
 
 if __name__ == "__main__":
     main()

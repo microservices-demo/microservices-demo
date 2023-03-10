@@ -1,0 +1,5 @@
+What we want to do is:
+1. Generate folders/files with examples.
+2. These file names need to be unique. Timestamp should work. Unix time, keep the now_unix() variable. 
+2. Labels should be inferred from the directory name.
+3. Then make tool that gets label names to generate array of labels to go with the thingamajigs.
