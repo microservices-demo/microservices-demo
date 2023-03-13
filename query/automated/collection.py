@@ -1,10 +1,9 @@
 import csv
 import requests
-from datetime import datetime
-from time import mktime
 import json
+import os
 
-def collection(time, step, source, filename, tag):
+def collection(time, step, source, filename, tag, now_unix):
     """
     time: time in minutes
     step: query interval within the timeframe in seconds
@@ -12,8 +11,6 @@ def collection(time, step, source, filename, tag):
     filename: created csv file will have this name
     tag: locust tags to execute
     """
-    now = datetime.now()
-    now_unix = mktime(now.timetuple())
     file = open(source)
     metrics = json.load(file)['data']
 
