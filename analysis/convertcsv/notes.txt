@@ -5,3 +5,12 @@ I probably want to use some auto-generated names then, and just keep the labels 
 Send in tuple, get out tuple.
 
 USe Seaborn for data visualization
+
+Bruh help
+
+All right lets think properly about This
+Now I need to pass in 'y' parameter
+After that I need enough generatedstuff
+
+For today: Make better generator.
+Goals to pass: 
