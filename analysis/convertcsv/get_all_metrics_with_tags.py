@@ -18,4 +18,7 @@ def get_all_metrics_with_tags(directory:str) -> list:
     
 
 if __name__ == "__main__":
-    print(get_all_metrics_with_tags(r"F:\Master\Kubernetes\sockshop\microservices-demo\query\automated\generated_csvs"))
+    filepath = input("Provide the file path to a directory containing directories with tagged csvs. File structure: One directory, with each subdirectory being named after the csv tag it contains. This program does not care about the individual file names, only folder names. Alternatively leave empty for default location.")
+    if filepath == "":
+        filepath = r"F:\Master\Kubernetes\sockshop\microservices-demo\query\automated\generated_csvs"
+    print(get_all_metrics_with_tags(filepath))
