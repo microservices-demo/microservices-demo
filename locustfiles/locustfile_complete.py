@@ -83,6 +83,11 @@ class UserTasks(HttpUser):
         self.client.get("/health")
         self.client.post("/paymentAuth", json={"authorised":"true"})
 
+    @tag('idle')
+    @task
+    def idle(self):
+        return
+
 def createcreds(usr,pwd):
     input = "" + usr + ":" + pwd
     return "Basic " +  base64.b64encode(input.encode("ascii")).decode("ascii")

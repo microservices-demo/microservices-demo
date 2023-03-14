@@ -37,7 +37,7 @@ def collection(time, step, source, filename, tag, now_unix):
             labelnames.update(result['metric'].keys())
         labelnames = sorted(labelnames)
         
-        with open("generated_csvs/" + tag + "/" +filename + ".csv", mode = "a") as f:
+        with open("generated_csvs_2/" + str(tag) + "/" + str(filename) + ".csv", mode = "w") as f:
             writer = csv.writer(f, lineterminator='\n')
             if(first):
                 first = False

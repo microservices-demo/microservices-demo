@@ -49,7 +49,10 @@ def main(runtime=RUN_TIME):
     jsonfile = open(TAGS_AND_AMOUNTS_LOCATION)
     tags_and_amounts = json.load(jsonfile)
 
-    setLoop(tags_and_amounts, runtime)
+    runs = int(input("Amount of runs: integer only"))
+
+    for x in range(runs):
+        setLoop(tags_and_amounts, runtime)
 
     # for tag in tags_and_amounts["tags"]:
 
@@ -80,6 +83,26 @@ def setLoop(tags_and_amounts, runtime):
             
             time.sleep(15)
             collection.collection(RUN_TIME+1, DEFAULT_STEP, "./metrics.json", now_unix,tag, now_unix)
+
+def setloop_random(tags_and_amounts, runtime):
+    now = datetime.now()
+    now_unix = time.mktime(now.timetuple())
+
+    for tag in tags_and_amounts["tags"]:
+        amount = random.randint(tags_and_amounts["lower_bound_users"],tags_and_amounts["upper_bound_users"])
+        
+        command = buildCommand(amount, DEFAULT_SPAWNRATE, runtime, tag, LOCUSTFILE_COMPLETE_LOCATION)
+        print("Running Locust with tag " + tag + " with " + str(amount) + " users")
+        print("command: ", command)
+        result = cmd(command)
+        if result.stderr:
+            with open("Print_output.txt","a") as outputfile:
+                outputfile.write(str(result.stderr))
+                outputfile.close()
+        
+        time.sleep(15)
+        collection.collection(RUN_TIME+1, DEFAULT_STEP, "./metrics.json", "rand " + now_unix + "_" + amount,tag, now_unix)
+
 
 if __name__ == "__main__":
     main()

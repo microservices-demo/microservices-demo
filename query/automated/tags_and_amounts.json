@@ -1,5 +1,5 @@
 {
-    "tags": ["even_load","carts","users","catalog"],
+    "tags": ["even_load","carts","users","catalog","idle"],
     "lower_bound_users": 100,
     "upper_bound_users": 2000,
     "lower_bound_spawnrate": 10,
