@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: microservices-sock-demo
+  annotations:
+    github.com/project-slug: vaibhav-infracloud/microservices-sock-demo
+spec:
+  type: other
+  lifecycle: unknown
+  owner: vaibhav
