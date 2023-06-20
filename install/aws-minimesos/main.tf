@@ -16,6 +16,11 @@ resource "aws_instance" "minimesos" {
   }
 
   instance_type = "m4.xlarge"
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+  
   key_name = "${var.aws_key_name}"
   subnet_id = "${aws_subnet.terraform.id}"
 
