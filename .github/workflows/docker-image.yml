@@ -1,0 +1,14 @@
+name: Basic GitHub Actions Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo "This is a basic GitHub Actions workflow with some basic code."
+
