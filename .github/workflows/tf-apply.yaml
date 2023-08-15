@@ -1,0 +1,26 @@
+name: Terraform Apply on PR
+
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  terraform-apply:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./infra
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Initialize Terraform
+      run: terraform init
+
+    - name: Apply Terraform changes
+      run: terraform apply -auto-approve
