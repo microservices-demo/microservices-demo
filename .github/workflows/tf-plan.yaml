@@ -2,8 +2,8 @@ name: Terraform Plan
 
 on:
   push:
-    paths:
-      - 'infra/**'  # Trigger on changes in the 'infra' directory
+    branches:
+      - nkuzman
 
 jobs:
   terraform:

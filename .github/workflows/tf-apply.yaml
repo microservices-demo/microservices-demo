@@ -3,7 +3,7 @@ name: Terraform Apply
 on:
   pull_request:
     types:
-      - closed
+      - master
 
 jobs:
   terraform-apply:
@@ -31,3 +31,27 @@ jobs:
 
     - name: Apply Terraform changes
       run: terraform apply -auto-approve
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: gd-gcp-gridu-devops-t1-t2
+          service_account_key: ${{ secrets.GCLOUD_AUTH_KEY }}
+          export_default_credentials: true
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker
+
+      - name: Authenticate Kubectl
+        run: gcloud container clusters get-credentials nkuzman --region us-central1 --project gd-gcp-gridu-devops-t1-t2
+
+      - name: Apply Kubernetes Manifests
+        run: |
+          kubectl apply -f deploy/kubernetes/complete-demo.yaml
