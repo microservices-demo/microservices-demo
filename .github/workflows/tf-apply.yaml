@@ -1,8 +1,8 @@
 name: Terraform Apply
 
 on:
-  pull_request:
-    types:
+  push:
+    branches:
       - master
 
 jobs:
