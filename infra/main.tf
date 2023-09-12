@@ -1,3 +1,10 @@
+terraform {
+  backend "gcs" {
+    bucket = "nkuzman"
+    prefix = "terraform/state"
+  }
+}
+
 provider "google" {
   project = var.project_id
   region  = var.region
@@ -38,4 +45,10 @@ resource "google_container_cluster" "my_cluster" {
       machine_type = "n1-standard-2"
     }
   }
+}
+
+resource "google_storage_bucket" "my_bucket" {
+  name          = "nkuzman"
+  location      = "US" 
+  force_destroy = true
 }
