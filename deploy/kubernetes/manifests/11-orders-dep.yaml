@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders
+  name: sock-shop-orders
   labels:
     name: orders
   namespace: sock-shop
