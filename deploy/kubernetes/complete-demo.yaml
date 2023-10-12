@@ -307,7 +307,7 @@ metadata:
   annotations:
         prometheus.io/scrape: 'true'
   labels:
-    name: front-end
+    name: front-end-service
   namespace: sock-shop
 spec:
   type: NodePort
