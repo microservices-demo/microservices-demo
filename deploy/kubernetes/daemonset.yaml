@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: myapp-deployment
+  labels:
+    app: myapp
+    type: front-end
+
+spec:
+  template:
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+        environment: homelab
+        type: frontend
+    spec:
+      containers:
+      - name: nginx-controller
+        image: nginx:1.24.0
+
+  selector: 
+    matchLabels:
+      type: frontend
