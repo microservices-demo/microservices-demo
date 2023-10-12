@@ -254,7 +254,7 @@ metadata:
   name: front-end
   namespace: sock-shop
 spec:
-  replicas: 5
+  replicas: 2
   selector:
     matchLabels:
       name: front-end
