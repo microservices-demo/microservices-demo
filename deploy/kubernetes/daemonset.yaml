@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: myapp-deployment
+  name: myapp1-deployment
   labels:
     app: myapp
     type: front-end
