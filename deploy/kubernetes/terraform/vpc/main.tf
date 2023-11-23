@@ -1,75 +1,92 @@
-provider "aws" {
-  region = var.region
+provider "google" {
+project = var.project_id
+region = var.region
 }
 
-resource "aws_vpc" "vpc_main_amatic" {
-  cidr_block = var.vpc_cidr_block
-  #enable_dns_hostnames = true
+#Dev environment configuration
+resource "google_compute_network" "amatic-dev-vpc" {
+name = "amatic-dev-vpc"
+auto_create_subnetworks = false
 
-  tags =  {
-    Name = "vpc_main_amatic"
-  }
-}
-resource "aws_internet_gateway" "gateway_amatic" {
-  vpc_id = aws_vpc.vpc_main_amatic.id
-  tags =  {
-    Name = "gateway_matic"
-  }
+routing_mode = "GLOBAL"
+
 }
 
-// Public subnetwork it's route table and it's association
-resource "aws_subnet" "public_subnetwork_amatic" {
-  vpc_id = aws_vpc.vpc_main_amatic.id
-  cidr_block = var.public_subnetwork_cidr_block
-  tags = {
-    Name = "public_subnetwork_amatic"
-  }
-  availability_zone = var.availability_zone
+resource "google_compute_subnetwork" "amatic_dev_public_subnet" {
+name = "amatic-dev-public-subnet"
+ip_cidr_range = var.dev_public_subnet_cidr_block
 
-  map_public_ip_on_launch = true
-}
-resource "aws_route_table" "public_subnetwork_route_table_amatic" {
-  vpc_id = aws_vpc.vpc_main_amatic.id
-
-  route {
-    cidr_block = var.route_table_cidr_block
-    gateway_id = aws_internet_gateway.gateway_amatic.id
-  }
-
-  tags  = {
-    Name = "public_subnetwork_route_table_amatic"
-  }
-}
-resource "aws_route_table_association" "public_route_table_association_amatic" {
-  subnet_id = aws_subnet.public_subnetwork_amatic.id
-  route_table_id = aws_route_table.public_subnetwork_route_table_amatic.id
+region = var.region
+network = google_compute_network.amatic-dev-vpc.self_link
+private_ip_google_access = false
 }
 
+resource "google_compute_subnetwork" "amatic_dev_private_subnet" {
+name = "amatic-dev-private-subnet"
+ip_cidr_range = var.dev_private_subnet_cidr_block
 
-// Private subnetwork it's route table and it's association
-resource "aws_subnet" "private_subnetwork_amatic" {
-  vpc_id = aws_vpc.vpc_main_amatic.id
-  cidr_block = var.private_subnetwork_cidr_block
-  tags =  {
-    Name = "private_subnetwork_amatic"
-  }
-  availability_zone = var.availability_zone
-
-  map_public_ip_on_launch = true
+region = var.region
+network = google_compute_network.amatic-dev-vpc.self_link
+private_ip_google_access = true
 }
-resource "aws_route_table" "private_subnetwork_route_table_amatic" {
-  vpc_id = aws_vpc.vpc_main_amatic.id
 
-  route {
-    cidr_block = var.route_table_cidr_block
-    gateway_id = aws_internet_gateway.gateway_amatic.id
-  }
+#End of dev environment configuration
 
-  tags = {
-    Name = "private_subnetwork_route_table_amatic"
-  }
+#Staging environment configuration
+resource "google_compute_network" "amatic-stage-vpc" {
+name = "amatic-stage-vpc"
+auto_create_subnetworks = false
+
+routing_mode = "GLOBAL"
+
 }
-resource "aws_route_table_association" "private_route_table_association_amatic" {
-  subnet_id = aws_subnet.private_subnetwork_amatic.id
-  route_table_id = aws_route_table.private_subnetwork_route_table_amatic.id
+
+resource "google_compute_subnetwork" "amatic_stage_public_subnet" {
+name = "amatic-stage-public-subnet"
+ip_cidr_range = var.stage_public_subnet_cidr_block
+
+region = var.region
+network = google_compute_network.amatic-stage-vpc.self_link
+private_ip_google_access = false
 }
+
+resource "google_compute_subnetwork" "amatic_stage_private_subnet" {
+name = "amatic-stage-private-subnet"
+ip_cidr_range = var.stage_private_subnet_cidr_block
+
+region = var.region
+network = google_compute_network.amatic-stage-vpc.self_link
+private_ip_google_access = true
+}
+
+#End of staging environment configuration
+
+#Production environment configuration
+
+resource "google_compute_network" "amatic-prod-vpc" {
+name = "amatic-prod-vpc"
+auto_create_subnetworks = false
+
+routing_mode = "GLOBAL"
+
+}
+
+resource "google_compute_subnetwork" "amatic_prod_public_subnet" {
+name = "amatic-prod-public-subnet"
+ip_cidr_range = var.prod_public_subnet_cidr_block
+
+region = var.region
+network = google_compute_network.amatic-prod-vpc.self_link
+private_ip_google_access = false
+}
+
+resource "google_compute_subnetwork" "amatic_prod_private_subnet" {
+name = "amatic-prod-private-subnet"
+ip_cidr_range = var.prod_private_subnet_cidr_block
+
+region = var.region
+network = google_compute_network.amatic-prod-vpc.self_link
+private_ip_google_access = true
+}
+
+#End of production environment configuration
