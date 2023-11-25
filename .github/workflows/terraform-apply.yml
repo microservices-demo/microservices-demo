@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./deploy/kubernetes/terraform/vpc/
+        working-directory: ./infrastructure/
 
     steps:
     - name: Checkout code

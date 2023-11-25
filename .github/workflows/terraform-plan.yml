@@ -5,14 +5,14 @@ on:
     branches:
       - 'development'
     paths:
-      - 'deploy/kubernetes/terraform/vpc/**'
+      - './infrastructure/**'
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./deploy/kubernetes/terraform/vpc/
+        working-directory: ./infrastructure/
 
     steps:
     - name: Checkout code
