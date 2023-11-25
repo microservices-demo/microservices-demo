@@ -1,0 +1,35 @@
+name: Terraform Plan
+
+on:
+  push:
+    branches:
+      - 'development'
+    paths:
+      - './infrastructure/**'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./infrastructure/
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+    
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0
+      with:
+        service_account_key: ${{ secrets.SA_KEY }}
+        project_id: gd-gcp-gridu-devops-t1-t2
+        export_default_credentials: true
+
+    - name: Terraform Init
+      run: terraform init 
+
+    - name: Terraform Plan
+      run: terraform plan 
