@@ -91,7 +91,7 @@ spec:
     spec:
       containers:
       - name: carts-db
-        image: mongo
+        image: mongo:7.0
         ports:
         - name: mongo
           containerPort: 27017
@@ -254,7 +254,7 @@ metadata:
   name: front-end
   namespace: sock-shop
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       name: front-end
@@ -307,7 +307,7 @@ metadata:
   annotations:
         prometheus.io/scrape: 'true'
   labels:
-    name: front-end
+    name: front-end-service
   namespace: sock-shop
 spec:
   type: NodePort
