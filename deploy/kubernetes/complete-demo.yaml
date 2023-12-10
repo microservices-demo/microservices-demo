@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: carts
-        image: weaveworksdemos/carts:0.4.8
+        image: frgpow/sec-sox-shop-carts
         env:
          - name: JAVA_OPTS
            value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
@@ -148,7 +148,7 @@ spec:
     spec:
       containers:
       - name: catalogue
-        image: weaveworksdemos/catalogue:0.3.5
+        image: frgpow/sec-sox-shop-catalogue
         command: ["/app"]
         args:
         - -port=80
@@ -221,7 +221,7 @@ spec:
     spec:
       containers:
       - name: catalogue-db
-        image: weaveworksdemos/catalogue-db:0.3.0
+        image: frgpow/sec-sox-shop-catalogue-db
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: fake_password
@@ -265,7 +265,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: weaveworksdemos/front-end:0.3.12
+        image: frgpow/sec-sox-shop-front-end
         resources:
           limits:
             cpu: 300m
@@ -337,7 +337,7 @@ spec:
     spec:
       containers:
       - name: orders
-        image: weaveworksdemos/orders:0.4.7
+        image: frgpow/sec-sox-shop-orders
         env:
          - name: JAVA_OPTS
            value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
@@ -462,7 +462,7 @@ spec:
     spec:
       containers:
       - name: payment
-        image: weaveworksdemos/payment:0.4.3
+        image: frgpow/sec-sox-shop-payment
         resources:
           limits:
             cpu: 200m
@@ -532,7 +532,7 @@ spec:
     spec:
       containers:
       - name: queue-master
-        image: weaveworksdemos/queue-master:0.3.1
+        image: frgpow/sec-sox-shop-queue-master
         env:
          - name: JAVA_OPTS
            value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
@@ -704,7 +704,7 @@ spec:
     spec:
       containers:
       - name: shipping
-        image: weaveworksdemos/shipping:0.4.8
+        image: frgpow/sec-sox-shop-shipping
         env:
          - name: ZIPKIN
            value: zipkin.jaeger.svc.cluster.local
@@ -775,7 +775,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: weaveworksdemos/user:0.4.7
+        image: frgpow/sec-sox-shop-user
         resources:
           limits:
             cpu: 300m
@@ -849,7 +849,7 @@ spec:
     spec:
       containers:
       - name: user-db
-        image: weaveworksdemos/user-db:0.3.0
+        image: frgpow/sec-sox-shop-db
 
         ports:
         - name: mongo

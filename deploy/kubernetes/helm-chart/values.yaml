@@ -34,8 +34,8 @@ cartsdb:
 
 carts:
     image:
-        repo: weaveworksdemos/carts
-        tag: 0.4.8
+        repo: frgpow/sec-sox-shop-carts
+        tag: latest
     containerPort: 80
     resources:
         limits:
@@ -47,8 +47,8 @@ carts:
 
 cataloguedb:
     image:
-        repo: weaveworksdemos/catalogue-db
-        tag: 0.3.0
+        repo:frgpow/sec-sox-shop-catalogue-db
+        tag: latest
     resources:
         limits:
             cpu: 300m
@@ -59,8 +59,8 @@ cataloguedb:
 
 catalogue:
     image:
-        repo: weaveworksdemos/catalogue
-        tag: 0.3.5
+        repo: frgpow/sec-sox-shop-catalogue
+        tag: latest
     containerPort: 80
     resources:
         limits:
@@ -73,8 +73,8 @@ catalogue:
 frontend:
     replicas: 1
     image:
-        repo: weaveworksdemos/front-end
-        tag: 0.3.12
+        repo: frgpow/sec-sox-shop-front-end
+        tag: latest
     resources:
         limits:
             cpu: 300m
@@ -88,7 +88,7 @@ loadtest:
     enabled: false
     image:
         repo: weaveworksdemos/load-test
-        tag: 0.1.1
+        tag: latest
     resources:
         limits:
             cpu: 300m
@@ -114,8 +114,8 @@ ordersdb:
 
 orders:
     image:
-        repo: weaveworksdemos/orders
-        tag: 0.4.7
+        repo:frgpow/sec-sox-shop-orders
+        tag: latest
     containerPort: 80
     resources:
         limits:
@@ -127,8 +127,8 @@ orders:
 
 payment:
     image:
-        repo: weaveworksdemos/payment
-        tag: 0.4.3
+        repo: frgpow/sec-sox-shop-payment
+        tag: latest
     declinePaymentsOverAmount: 200
     containerPort: 8080
     resources:
@@ -141,8 +141,8 @@ payment:
 
 queuemaster:
     image:
-        repo: weaveworksdemos/queue-master
-        tag: 0.3.1
+        repo: frgpow/sec-sox-shop-queue-master
+        tag: latest
     resources:
         limits:
             cpu: 300m
@@ -180,8 +180,8 @@ sessiondb:
 
 shipping:
     image:
-        repo: weaveworksdemos/shipping
-        tag: 0.4.8
+        repo: frgpow/sec-sox-shop-shipping
+        tag: latest
     containerPort: 80
     resources:
         limits:
@@ -193,8 +193,8 @@ shipping:
 
 userdb:
     image:
-        repo: weaveworksdemos/user-db
-        tag: 0.4.0
+        repo: frgpow/sec-sox-shop-db
+        tag: latest
     resources:
         limits:
             cpu: 300m
@@ -205,8 +205,8 @@ userdb:
 
 user:
     image:
-        repo: weaveworksdemos/user
-        tag: 0.4.7
+        repo: frgpow/sec-sox-shop-user
+        tag: latest
     containerPort: 80
     resources:
         limits:
