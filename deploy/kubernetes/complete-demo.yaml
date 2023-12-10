@@ -318,6 +318,20 @@ spec:
   selector:
     name: front-end
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-external
+  namespace: sock-shop
+spec:
+  type: LoadBalancer
+  selector:
+    name: front-end
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8079
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
