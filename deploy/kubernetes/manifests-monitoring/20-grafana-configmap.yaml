@@ -86,7 +86,7 @@ data:
               "show": false
             },
             "targets": [{
-              "expr": "(time() - process_start_time_seconds{name="prometheus"})",
+              "expr": "(time() - process_start_time_seconds{name='prometheus'})",
               "intervalFactor": 2,
               "refId": "A",
               "step": 4
